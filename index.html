@@ -5,15 +5,10 @@
 
 <meta charset="UTF-8">
 
-<title>Safety Cab Mini App</title>
+<title>Safety Cab Admin Panel</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
-
-<link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
 
 <style>
 
@@ -35,31 +30,13 @@ border-radius:12px;
 margin-bottom:15px;
 }
 
-input,button{
+input{
 width:100%;
 box-sizing:border-box;
 padding:12px;
 margin:6px 0;
-border-radius:6px;
-}
-
-input{
 border:1px solid #ccc;
-}
-
-button{
-background:#168a3a;
-color:white;
-border:0;
-font-size:16px;
-}
-
-.stop{
-background:#d32f2f;
-}
-
-.delete{
-background:#555;
+border-radius:6px;
 }
 
 .driver{
@@ -67,23 +44,35 @@ background:white;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
-border-left:5px solid #168a3a;
+border-left:5px solid green;
 }
 
-.online{
+.selectBox{
+display:flex;
+align-items:center;
+gap:8px;
+margin-bottom:10px;
+}
+
+.selectBox input{
+width:20px;
+height:20px;
+margin:0;
+}
+
+.deleteBtn{
+background:#d32f2f;
+color:white;
+border:0;
+padding:10px;
+border-radius:6px;
+margin-top:10px;
+width:100%;
+}
+
+.status{
 color:green;
 font-weight:bold;
-}
-
-#map{
-height:400px;
-width:100%;
-border-radius:10px;
-}
-
-.small{
-font-size:13px;
-color:#666;
 }
 
 </style>
@@ -94,82 +83,22 @@ color:#666;
 <body>
 
 
-<h2>🚕 Safety Cab</h2>
-
-
-<div class="box">
-
-<h3>Driver Registration</h3>
-
-
-<input
-id="driverId"
-placeholder="Driver ID">
-
-
-<input
-id="driverName"
-placeholder="Driver Name">
-
-
-<input
-id="vehicleNumber"
-placeholder="Vehicle Number">
-
-
-<button onclick="startGPS()">
-📍 Start Live GPS
-</button>
-
-
-<button
-class="stop"
-onclick="stopGPS()">
-
-⛔ Stop Live GPS
-
-</button>
-
-
-<p id="gps">
-GPS Waiting...
-</p>
-
-
-<button onclick="saveDriver()">
-
-➕ Save Driver
-
-</button>
-
-
-<button
-class="delete"
-onclick="deleteAll()">
-
-🗑️ Delete All Drivers
-
-</button>
-
-</div>
-
+<h2>🚕 Safety Cab Admin</h2>
 
 
 <div class="box">
 
 <h3>🔎 Search Driver</h3>
 
-
 <input
 id="search"
-placeholder="Name / ID / Vehicle"
-oninput="searchDrivers()">
+placeholder="Driver Name / ID / Vehicle"
+oninput="showDrivers()">
 
 </div>
 
 
-
-<h3>👨‍✈️ All Drivers</h3>
+<h3>👨‍✈️ Driver List</h3>
 
 
 <div id="list">
@@ -177,29 +106,11 @@ Loading...
 </div>
 
 
-
-<h3>🗺️ Driver Map</h3>
-
-
-<div id="map"></div>
-
-
-<p class="small">
-Safety Cab Mini App — Demo Version
-</p>
-
-
-
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
-
-
 <script>
 
+
 /* =========================
-   DATA
+   LOAD SAVED DRIVERS
 ========================= */
 
 let drivers =
@@ -208,376 +119,133 @@ localStorage.getItem("drivers")
 ) || [];
 
 
-let currentLat = "";
-
-let currentLng = "";
-
-let watchId = null;
-
 
 /* =========================
-   MAP
+   SHOW DRIVERS
 ========================= */
 
-let map =
-L.map("map").setView(
-[17.2872833,78.4661983],
-13
-);
+function showDrivers(){
 
+let search =
+document.getElementById("search")
+.value
+.toLowerCase()
+.trim();
 
-L.tileLayer(
-"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-maxZoom:19,
-attribution:"© OpenStreetMap"
-}
-).addTo(map);
-
-
-let markers = [];
-
-
-/* =========================
-   GPS START
-========================= */
-
-function startGPS(){
-
-if(!navigator.geolocation){
-
-alert(
-"इस Browser में GPS उपलब्ध नहीं है"
-);
-
-return;
-
-}
-
-
-if(watchId !== null){
-
-navigator.geolocation.clearWatch(
-watchId
-);
-
-}
-
-
-watchId =
-navigator.geolocation.watchPosition(
-
-function(position){
-
-currentLat =
-position.coords.latitude;
-
-currentLng =
-position.coords.longitude;
-
-
-document.getElementById("gps").innerHTML =
-
-"🟢 Live GPS ON" +
-
-"<br>Latitude: " +
-currentLat +
-
-"<br>Longitude: " +
-currentLng;
-
-
-/* Current Driver Update */
-
-let id =
-document.getElementById("driverId")
-.value.trim();
-
-
-let driver =
-drivers.find(
-d => d.id === id
-);
-
-
-if(driver){
-
-driver.latitude =
-currentLat;
-
-driver.longitude =
-currentLng;
-
-driver.status =
-"Online";
-
-driver.time =
-new Date().toLocaleString();
-
-
-saveData();
-
-showDrivers();
-
-showMap();
-
-}
-
-},
-
-
-function(){
-
-document.getElementById("gps")
-.innerHTML =
-"🔴 GPS Permission Error";
-
-},
-
-
-{
-
-enableHighAccuracy:true,
-
-timeout:15000,
-
-maximumAge:0
-
-}
-
-);
-
-}
-
-
-/* =========================
-   STOP GPS
-========================= */
-
-function stopGPS(){
-
-if(watchId !== null){
-
-navigator.geolocation.clearWatch(
-watchId
-);
-
-watchId = null;
-
-}
-
-
-document.getElementById("gps")
-.innerHTML =
-"🔴 Live GPS OFF";
-
-}
-
-
-/* =========================
-   SAVE DRIVER
-========================= */
-
-function saveDriver(){
-
-let id =
-document.getElementById("driverId")
-.value.trim();
-
-
-let name =
-document.getElementById("driverName")
-.value.trim();
-
-
-let vehicle =
-document.getElementById("vehicleNumber")
-.value.trim();
-
-
-if(id === ""){
-
-alert("Driver ID डालिए");
-
-return;
-
-}
-
-
-if(name === ""){
-
-alert("Driver Name डालिए");
-
-return;
-
-}
-
-
-if(vehicle === ""){
-
-alert("Vehicle Number डालिए");
-
-return;
-
-}
-
-
-if(
-currentLat === "" ||
-currentLng === ""
-){
-
-alert(
-"पहले Start Live GPS दबाइए"
-);
-
-return;
-
-}
-
-
-/* Existing Driver */
-
-let existing =
-drivers.find(
-d => d.id === id
-);
-
-
-if(existing){
-
-existing.name =
-name;
-
-existing.vehicle =
-vehicle;
-
-existing.latitude =
-currentLat;
-
-existing.longitude =
-currentLng;
-
-existing.status =
-"Online";
-
-existing.time =
-new Date().toLocaleString();
-
-}
-
-
-/* New Driver */
-
-else{
-
-drivers.push({
-
-id:id,
-
-name:name,
-
-vehicle:vehicle,
-
-latitude:currentLat,
-
-longitude:currentLng,
-
-status:"Online",
-
-time:new Date().toLocaleString()
-
-});
-
-}
-
-
-saveData();
-
-showDrivers();
-
-showMap();
-
-
-alert(
-"Driver Successfully Saved"
-);
-
-}
-
-
-/* =========================
-   SAVE LOCAL DATA
-========================= */
-
-function saveData(){
-
-localStorage.setItem(
-"drivers",
-JSON.stringify(drivers)
-);
-
-}
-
-
-/* =========================
-   DRIVER LIST
-========================= */
-
-function showDrivers(data=drivers){
 
 let html = "";
 
 
-if(data.length === 0){
+let filtered =
+drivers.filter(function(d){
+
+return (
+
+String(d.id || "")
+.toLowerCase()
+.includes(search)
+
+||
+
+String(d.name || "")
+.toLowerCase()
+.includes(search)
+
+||
+
+String(d.vehicle || "")
+.toLowerCase()
+.includes(search)
+
+);
+
+});
+
+
+if(filtered.length === 0){
 
 html =
-"<p>कोई Driver नहीं है।</p>";
+"<p>कोई Driver नहीं मिला।</p>";
 
 }
 
 
-data.forEach(function(d){
+filtered.forEach(function(d){
+
+/*
+   Original array में Driver का index
+*/
+
+let index =
+drivers.indexOf(d);
+
 
 html += `
 
 <div class="driver">
 
-<b>Driver ID:</b>
-${d.id}
+<div class="selectBox">
 
-<br>
+<input
+type="checkbox"
+id="select_${index}">
+
+<label for="select_${index}">
+Select Driver
+</label>
+
+</div>
+
+
+<b>Driver ID:</b>
+${d.id || "-"}
+
+<br><br>
+
 
 <b>Name:</b>
-${d.name}
+${d.name || "-"}
 
-<br>
+<br><br>
+
 
 <b>Vehicle:</b>
-${d.vehicle}
+${d.vehicle || "-"}
 
-<br>
+<br><br>
+
 
 <b>Latitude:</b>
-${d.latitude}
+${d.latitude || "-"}
 
 <br>
 
 <b>Longitude:</b>
-${d.longitude}
+${d.longitude || "-"}
 
-<br>
+<br><br>
+
 
 <b>Status:</b>
 
-<span class="online">
-🟢 ${d.status}
+<span class="status">
+🟢 ${d.status || "Online"}
 </span>
 
-<br>
+<br><br>
+
 
 <b>Last Update:</b>
-${d.time}
+${d.time || "-"}
+
+
+<button
+class="deleteBtn"
+onclick="deleteDriver(${index})">
+
+🗑️ Delete This Driver
+
+</button>
 
 </div>
 
@@ -592,145 +260,29 @@ document.getElementById("list")
 }
 
 
-/* =========================
-   SEARCH
-========================= */
-
-function searchDrivers(){
-
-let text =
-document.getElementById("search")
-.value
-.toLowerCase()
-.trim();
-
-
-let result =
-drivers.filter(function(d){
-
-return (
-
-d.name
-.toLowerCase()
-.includes(text)
-
-||
-
-d.id
-.toLowerCase()
-.includes(text)
-
-||
-
-d.vehicle
-.toLowerCase()
-.includes(text)
-
-);
-
-});
-
-
-showDrivers(result);
-
-}
-
 
 /* =========================
-   MAP MARKERS
+   DELETE ONE DRIVER
 ========================= */
 
-function showMap(){
+function deleteDriver(index){
 
-/* Remove old markers */
-
-markers.forEach(function(marker){
-
-map.removeLayer(marker);
-
-});
+let driver =
+drivers[index];
 
 
-markers = [];
+if(!driver){
 
-
-/* Add new markers */
-
-drivers.forEach(function(d){
-
-if(
-d.latitude !== "" &&
-d.longitude !== ""
-){
-
-let marker =
-L.marker([
-Number(d.latitude),
-Number(d.longitude)
-])
-
-
-.addTo(map)
-
-
-.bindPopup(`
-
-<b>Driver:</b>
-${d.name}
-
-<br>
-
-<b>ID:</b>
-${d.id}
-
-<br>
-
-<b>Vehicle:</b>
-${d.vehicle}
-
-<br>
-
-<b>Status:</b>
-🟢 ${d.status}
-
-`);
-
-
-markers.push(marker);
+return;
 
 }
 
-});
-
-
-/* Fit map */
-
-if(markers.length > 0){
-
-let group =
-L.featureGroup(markers);
-
-map.fitBounds(
-group.getBounds(),
-{
-padding:[30,30]
-}
-);
-
-}
-
-}
-
-
-/* =========================
-   DELETE ALL
-========================= */
-
-function deleteAll(){
 
 let ok =
 confirm(
-"क्या सभी Driver Data Delete करना है?"
+"क्या " +
+(driver.name || "इस Driver") +
+" को Delete करना है?"
 );
 
 
@@ -741,24 +293,36 @@ return;
 }
 
 
-drivers = [];
+/*
+   सिर्फ Selected Driver Delete
+*/
+
+drivers.splice(index,1);
 
 
-localStorage.removeItem(
-"drivers"
+/*
+   Save remaining Drivers
+*/
+
+localStorage.setItem(
+"drivers",
+JSON.stringify(drivers)
 );
 
+
+/*
+   Refresh List
+*/
 
 showDrivers();
 
-showMap();
-
 
 alert(
-"सभी Driver Delete हो गए"
+"Driver Delete हो गया"
 );
 
 }
+
 
 
 /* =========================
@@ -766,8 +330,6 @@ alert(
 ========================= */
 
 showDrivers();
-
-showMap();
 
 </script>
 

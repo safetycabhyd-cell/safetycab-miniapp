@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 
-<title>Safety Cab Driver List</title>
+<title>Safety Cab Admin</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
@@ -14,7 +14,12 @@ content="width=device-width, initial-scale=1">
 body{
 font-family:Arial,sans-serif;
 background:#f2f2f2;
+margin:0;
 padding:15px;
+}
+
+h2{
+margin-top:5px;
 }
 
 .box{
@@ -28,8 +33,26 @@ input{
 width:100%;
 box-sizing:border-box;
 padding:12px;
+margin:6px 0;
 border:1px solid #ccc;
 border-radius:6px;
+font-size:15px;
+}
+
+button{
+width:100%;
+box-sizing:border-box;
+padding:12px;
+margin:6px 0;
+border:0;
+border-radius:6px;
+background:#168a3a;
+color:white;
+font-size:16px;
+}
+
+.stop{
+background:#d32f2f;
 }
 
 .driver{
@@ -37,21 +60,19 @@ background:white;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
-border-left:5px solid green;
+border-left:5px solid #168a3a;
 }
 
 .delete{
-width:100%;
-padding:11px;
-margin-top:12px;
 background:#d32f2f;
-color:white;
-border:0;
-border-radius:6px;
 }
 
-.status{
+.online{
 color:green;
+font-weight:bold;
+}
+
+#message{
 font-weight:bold;
 }
 
@@ -61,171 +82,356 @@ font-weight:bold;
 
 <body>
 
+
 <h2>🚕 Safety Cab Admin Panel</h2>
+
+
+<div class="box">
+
+<h3>➕ Add Driver</h3>
+
+
+<input
+id="driverId"
+placeholder="Driver ID">
+
+
+<input
+id="driverName"
+placeholder="Driver Name">
+
+
+<input
+id="phone"
+placeholder="Phone Number">
+
+
+<input
+id="vehicle"
+placeholder="Vehicle Number">
+
+
+<button onclick="getGPS()">
+
+📍 Get GPS Location
+
+</button>
+
+
+<p id="gps">
+GPS Waiting...
+</p>
+
+
+<button onclick="saveDriver()">
+
+💾 Save Driver
+
+</button>
+
+
+<p id="message"></p>
+
+</div>
+
 
 
 <div class="box">
 
 <h3>🔎 Search Driver</h3>
 
+
 <input
 id="search"
-placeholder="Name / Driver ID / Vehicle"
+placeholder="Name / ID / Vehicle"
 oninput="showDrivers()">
 
 </div>
 
 
+
 <h3>👨‍✈️ Driver List</h3>
+
 
 <div id="list">
 Loading...
 </div>
 
 
+
 <script>
 
 /* =========================
-   READ ALL OLD DATA
+   LOAD DATA
 ========================= */
-
-let allData = [];
-
-
-/* Old key: drivers */
-
-try{
-
-let old1 =
-JSON.parse(
-localStorage.getItem("drivers")
-);
-
-if(Array.isArray(old1)){
-
-allData =
-allData.concat(old1);
-
-}
-
-}catch(e){}
-
-
-/* Old key: safetycab_drivers */
-
-try{
-
-let old2 =
-JSON.parse(
-localStorage.getItem("safetycab_drivers")
-);
-
-if(Array.isArray(old2)){
-
-allData =
-allData.concat(old2);
-
-}
-
-}catch(e){}
-
-
-/* Remove duplicate records */
 
 let drivers = [];
 
+try{
 
-allData.forEach(function(d){
+drivers =
+JSON.parse(
+localStorage.getItem(
+"safetycab_final_drivers"
+)
+) || [];
+
+}catch(error){
+
+drivers = [];
+
+}
+
+
+let latitude = "";
+
+let longitude = "";
+
+
+/* =========================
+   GPS
+========================= */
+
+function getGPS(){
+
+if(!navigator.geolocation){
+
+alert(
+"इस Browser में GPS उपलब्ध नहीं है"
+);
+
+return;
+
+}
+
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+latitude =
+position.coords.latitude;
+
+longitude =
+position.coords.longitude;
+
+
+document.getElementById("gps")
+.innerHTML =
+
+"🟢 GPS Ready" +
+
+"<br>Latitude: " +
+latitude +
+
+"<br>Longitude: " +
+longitude;
+
+},
+
+function(){
+
+alert(
+"GPS Permission Allow करें"
+);
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+timeout:15000,
+
+maximumAge:0
+
+}
+
+);
+
+}
+
+
+/* =========================
+   SAVE DRIVER
+========================= */
+
+function saveDriver(){
 
 let id =
-d.id ||
-d.driver_id ||
-"";
+document.getElementById(
+"driverId"
+).value.trim();
 
 
 let name =
-d.name ||
-"";
-
-
-let vehicle =
-d.vehicle ||
-d.vehicle_number ||
-"";
+document.getElementById(
+"driverName"
+).value.trim();
 
 
 let phone =
-d.phone ||
-"";
+document.getElementById(
+"phone"
+).value.trim();
 
 
-let latitude =
-d.latitude ||
-"";
+let vehicle =
+document.getElementById(
+"vehicle"
+).value.trim();
 
 
-let longitude =
-d.longitude ||
-"";
+if(id === ""){
+
+alert("Driver ID डालिए");
+
+return;
+
+}
 
 
-let status =
-d.status ||
-d.online_status ||
-"Online";
+if(name === ""){
+
+alert("Driver Name डालिए");
+
+return;
+
+}
 
 
-let time =
-d.time ||
-d.last_update_time ||
-"";
+if(vehicle === ""){
 
+alert("Vehicle Number डालिए");
 
-/* Ignore completely empty records */
+return;
+
+}
+
 
 if(
-id !== "" ||
-name !== "" ||
-vehicle !== ""
+latitude === "" ||
+longitude === ""
 ){
+
+alert(
+"पहले Get GPS Location दबाइए"
+);
+
+return;
+
+}
+
+
+/* Check existing driver */
+
+let existing =
+drivers.find(
+d => d.id === id
+);
+
+
+if(existing){
+
+existing.name =
+name;
+
+existing.phone =
+phone;
+
+existing.vehicle =
+vehicle;
+
+existing.latitude =
+latitude;
+
+existing.longitude =
+longitude;
+
+existing.status =
+"Online";
+
+existing.time =
+new Date().toLocaleString();
+
+}
+
+else{
 
 drivers.push({
 
-id:String(id),
+id:id,
 
-name:String(name),
+name:name,
 
-phone:String(phone),
+phone:phone,
 
-vehicle:String(vehicle),
+vehicle:vehicle,
 
-latitude:String(latitude),
+latitude:latitude,
 
-longitude:String(longitude),
+longitude:longitude,
 
-status:
-status === true
-? "Online"
-: String(status),
+status:"Online",
 
-time:String(time)
+time:new Date().toLocaleString()
 
 });
 
 }
 
-});
+
+/* SAVE */
+
+localStorage.setItem(
+
+"safetycab_final_drivers",
+
+JSON.stringify(drivers)
+
+);
+
+
+showDrivers();
+
+
+document.getElementById(
+"message"
+).innerHTML =
+"✅ Driver Saved Successfully";
+
+
+/* Clear form */
+
+document.getElementById(
+"driverId"
+).value = "";
+
+document.getElementById(
+"driverName"
+).value = "";
+
+document.getElementById(
+"phone"
+).value = "";
+
+document.getElementById(
+"vehicle"
+).value = "";
+
+}
 
 
 /* =========================
-   SHOW
+   SHOW DRIVERS
 ========================= */
 
 function showDrivers(){
 
 let search =
-document.getElementById("search")
-.value
+document.getElementById(
+"search"
+).value
 .toLowerCase()
 .trim();
 
@@ -235,22 +441,20 @@ drivers.filter(function(d){
 
 return (
 
-d.id.toLowerCase()
+String(d.id)
+.toLowerCase()
 .includes(search)
 
 ||
 
-d.name.toLowerCase()
+String(d.name)
+.toLowerCase()
 .includes(search)
 
 ||
 
-d.phone.toLowerCase()
-.includes(search)
-
-||
-
-d.vehicle.toLowerCase()
+String(d.vehicle)
+.toLowerCase()
 .includes(search)
 
 );
@@ -271,7 +475,7 @@ html = `
 
 <br><br>
 
-Total Saved Data:
+Total Drivers:
 ${drivers.length}
 
 </div>
@@ -292,12 +496,12 @@ html += `
 <div class="driver">
 
 <b>Driver ID:</b>
-${d.id || "-"}
+${d.id}
 
 <br><br>
 
 <b>Name:</b>
-${d.name || "-"}
+${d.name}
 
 <br><br>
 
@@ -307,30 +511,30 @@ ${d.phone || "-"}
 <br><br>
 
 <b>Vehicle:</b>
-${d.vehicle || "-"}
+${d.vehicle}
 
 <br><br>
 
 <b>Latitude:</b>
-${d.latitude || "-"}
+${d.latitude}
 
 <br>
 
 <b>Longitude:</b>
-${d.longitude || "-"}
+${d.longitude}
 
 <br><br>
 
 <b>Status:</b>
 
-<span class="status">
-🟢 ${d.status || "Online"}
+<span class="online">
+🟢 ${d.status}
 </span>
 
 <br><br>
 
 <b>Last Update:</b>
-${d.time || "-"}
+${d.time}
 
 
 <button
@@ -348,17 +552,25 @@ onclick="deleteDriver(${index})">
 });
 
 
-document.getElementById("list")
-.innerHTML = html;
+document.getElementById(
+"list"
+).innerHTML = html;
 
 }
 
 
 /* =========================
-   DELETE ONE
+   DELETE ONE DRIVER
 ========================= */
 
 function deleteDriver(index){
+
+if(!drivers[index]){
+
+return;
+
+}
+
 
 let ok =
 confirm(
@@ -375,76 +587,19 @@ return;
 }
 
 
-let id =
-drivers[index].id;
-
-let name =
-drivers[index].name;
-
-let vehicle =
-drivers[index].vehicle;
-
-
-/* Remove from local list */
-
 drivers.splice(index,1);
 
 
-/* Save corrected list */
-
 localStorage.setItem(
-"safetycab_drivers",
+
+"safetycab_final_drivers",
+
 JSON.stringify(drivers)
-);
 
-
-/* Also update old key */
-
-let oldDrivers =
-JSON.parse(
-localStorage.getItem("drivers")
-) || [];
-
-
-oldDrivers =
-oldDrivers.filter(function(d){
-
-let oldId =
-d.id ||
-d.driver_id ||
-"";
-
-let oldName =
-d.name ||
-"";
-
-let oldVehicle =
-d.vehicle ||
-d.vehicle_number ||
-"";
-
-
-return !(
-String(oldId) === String(id) &&
-String(oldName) === String(name) &&
-String(oldVehicle) === String(vehicle)
-);
-
-});
-
-
-localStorage.setItem(
-"drivers",
-JSON.stringify(oldDrivers)
 );
 
 
 showDrivers();
-
-
-alert(
-"Driver Delete हो गया"
-);
 
 }
 

@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 
-<title>Safety Cab Admin</title>
+<title>Safety Cab Driver List</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
@@ -14,12 +14,7 @@ content="width=device-width, initial-scale=1">
 body{
 font-family:Arial,sans-serif;
 background:#f2f2f2;
-margin:0;
 padding:15px;
-}
-
-h2{
-margin-top:5px;
 }
 
 .box{
@@ -33,7 +28,6 @@ input{
 width:100%;
 box-sizing:border-box;
 padding:12px;
-margin:6px 0;
 border:1px solid #ccc;
 border-radius:6px;
 }
@@ -46,19 +40,6 @@ border-radius:10px;
 border-left:5px solid green;
 }
 
-.select{
-display:flex;
-align-items:center;
-gap:8px;
-margin-bottom:10px;
-}
-
-.select input{
-width:20px;
-height:20px;
-margin:0;
-}
-
 .delete{
 width:100%;
 padding:11px;
@@ -67,28 +48,18 @@ background:#d32f2f;
 color:white;
 border:0;
 border-radius:6px;
-font-size:15px;
 }
 
-.online{
+.status{
 color:green;
 font-weight:bold;
-}
-
-.noDriver{
-background:white;
-padding:20px;
-border-radius:10px;
-text-align:center;
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <h2>🚕 Safety Cab Admin Panel</h2>
 
@@ -99,7 +70,6 @@ text-align:center;
 
 <input
 id="search"
-type="text"
 placeholder="Name / Driver ID / Vehicle"
 oninput="showDrivers()">
 
@@ -108,34 +78,148 @@ oninput="showDrivers()">
 
 <h3>👨‍✈️ Driver List</h3>
 
-<div id="list"></div>
+<div id="list">
+Loading...
+</div>
 
 
 <script>
 
-/* =================================
-   LOAD EXISTING DRIVER DATA
-================================= */
+/* =========================
+   READ ALL OLD DATA
+========================= */
 
-let drivers = [];
+let allData = [];
+
+
+/* Old key: drivers */
 
 try{
 
-drivers =
+let old1 =
 JSON.parse(
 localStorage.getItem("drivers")
-) || [];
+);
 
-}catch(error){
+if(Array.isArray(old1)){
 
-drivers = [];
+allData =
+allData.concat(old1);
 
 }
 
+}catch(e){}
 
-/* =================================
-   SHOW DRIVER LIST
-================================= */
+
+/* Old key: safetycab_drivers */
+
+try{
+
+let old2 =
+JSON.parse(
+localStorage.getItem("safetycab_drivers")
+);
+
+if(Array.isArray(old2)){
+
+allData =
+allData.concat(old2);
+
+}
+
+}catch(e){}
+
+
+/* Remove duplicate records */
+
+let drivers = [];
+
+
+allData.forEach(function(d){
+
+let id =
+d.id ||
+d.driver_id ||
+"";
+
+
+let name =
+d.name ||
+"";
+
+
+let vehicle =
+d.vehicle ||
+d.vehicle_number ||
+"";
+
+
+let phone =
+d.phone ||
+"";
+
+
+let latitude =
+d.latitude ||
+"";
+
+
+let longitude =
+d.longitude ||
+"";
+
+
+let status =
+d.status ||
+d.online_status ||
+"Online";
+
+
+let time =
+d.time ||
+d.last_update_time ||
+"";
+
+
+/* Ignore completely empty records */
+
+if(
+id !== "" ||
+name !== "" ||
+vehicle !== ""
+){
+
+drivers.push({
+
+id:String(id),
+
+name:String(name),
+
+phone:String(phone),
+
+vehicle:String(vehicle),
+
+latitude:String(latitude),
+
+longitude:String(longitude),
+
+status:
+status === true
+? "Online"
+: String(status),
+
+time:String(time)
+
+});
+
+}
+
+});
+
+
+/* =========================
+   SHOW
+========================= */
 
 function showDrivers(){
 
@@ -149,25 +233,25 @@ document.getElementById("search")
 let result =
 drivers.filter(function(d){
 
-let id =
-String(d.id || d.driver_id || "")
-.toLowerCase();
-
-let name =
-String(d.name || "")
-.toLowerCase();
-
-let vehicle =
-String(d.vehicle || d.vehicle_number || "")
-.toLowerCase();
-
 return (
 
-id.includes(search) ||
+d.id.toLowerCase()
+.includes(search)
 
-name.includes(search) ||
+||
 
-vehicle.includes(search)
+d.name.toLowerCase()
+.includes(search)
+
+||
+
+d.phone.toLowerCase()
+.includes(search)
+
+||
+
+d.vehicle.toLowerCase()
+.includes(search)
 
 );
 
@@ -181,15 +265,14 @@ if(result.length === 0){
 
 html = `
 
-<div class="noDriver">
+<div class="box">
 
 ❌ कोई Driver नहीं मिला।
 
 <br><br>
 
-अगर आपने Driver पहले Save किया था,
-तो उसी Browser में वही
-index.html खोलें जिसमें Driver दिखाई दे रहा था।
+Total Saved Data:
+${drivers.length}
 
 </div>
 
@@ -200,112 +283,63 @@ index.html खोलें जिसमें Driver दिखाई दे र�
 
 result.forEach(function(d){
 
-let originalIndex =
+let index =
 drivers.indexOf(d);
-
-
-let id =
-d.id || d.driver_id || "-";
-
-let name =
-d.name || "-";
-
-let vehicle =
-d.vehicle ||
-d.vehicle_number ||
-"-";
-
-let latitude =
-d.latitude || "-";
-
-let longitude =
-d.longitude || "-";
-
-let status =
-d.status ||
-d.online_status ||
-"Offline";
-
-let time =
-d.time ||
-d.last_update_time ||
-"-";
 
 
 html += `
 
 <div class="driver">
 
-
-<div class="select">
-
-<input
-type="checkbox"
-id="driver_${originalIndex}">
-
-<label
-for="driver_${originalIndex}">
-
-☑️ Select Driver
-
-</label>
-
-</div>
-
-
 <b>Driver ID:</b>
-${id}
+${d.id || "-"}
 
 <br><br>
-
 
 <b>Name:</b>
-${name}
+${d.name || "-"}
 
 <br><br>
 
-
-<b>Vehicle Number:</b>
-${vehicle}
+<b>Phone:</b>
+${d.phone || "-"}
 
 <br><br>
 
+<b>Vehicle:</b>
+${d.vehicle || "-"}
+
+<br><br>
 
 <b>Latitude:</b>
-${latitude}
+${d.latitude || "-"}
 
 <br>
 
-
 <b>Longitude:</b>
-${longitude}
+${d.longitude || "-"}
 
 <br><br>
 
-
 <b>Status:</b>
 
-<span class="online">
-
-🟢 ${status}
-
+<span class="status">
+🟢 ${d.status || "Online"}
 </span>
 
 <br><br>
 
-
 <b>Last Update:</b>
-${time}
+${d.time || "-"}
 
 
 <button
 class="delete"
-onclick="deleteDriver(${originalIndex})">
+onclick="deleteDriver(${index})">
 
 🗑️ Delete This Driver
 
 </button>
-
 
 </div>
 
@@ -320,28 +354,16 @@ document.getElementById("list")
 }
 
 
-/* =================================
-   DELETE ONLY ONE DRIVER
-================================= */
+/* =========================
+   DELETE ONE
+========================= */
 
 function deleteDriver(index){
-
-if(!drivers[index]){
-
-return;
-
-}
-
-
-let name =
-drivers[index].name ||
-"इस Driver";
-
 
 let ok =
 confirm(
 "क्या " +
-name +
+drivers[index].name +
 " को Delete करना है?"
 );
 
@@ -353,12 +375,67 @@ return;
 }
 
 
+let id =
+drivers[index].id;
+
+let name =
+drivers[index].name;
+
+let vehicle =
+drivers[index].vehicle;
+
+
+/* Remove from local list */
+
 drivers.splice(index,1);
+
+
+/* Save corrected list */
+
+localStorage.setItem(
+"safetycab_drivers",
+JSON.stringify(drivers)
+);
+
+
+/* Also update old key */
+
+let oldDrivers =
+JSON.parse(
+localStorage.getItem("drivers")
+) || [];
+
+
+oldDrivers =
+oldDrivers.filter(function(d){
+
+let oldId =
+d.id ||
+d.driver_id ||
+"";
+
+let oldName =
+d.name ||
+"";
+
+let oldVehicle =
+d.vehicle ||
+d.vehicle_number ||
+"";
+
+
+return !(
+String(oldId) === String(id) &&
+String(oldName) === String(name) &&
+String(oldVehicle) === String(vehicle)
+);
+
+});
 
 
 localStorage.setItem(
 "drivers",
-JSON.stringify(drivers)
+JSON.stringify(oldDrivers)
 );
 
 
@@ -372,14 +449,13 @@ alert(
 }
 
 
-/* =================================
+/* =========================
    START
-================================= */
+========================= */
 
 showDrivers();
 
 </script>
-
 
 </body>
 </html>

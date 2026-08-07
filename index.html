@@ -1,115 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafetyCab</title>
 
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-text-align:center;
-padding:20px;
+function bookRide() {
+  let pickup = document.getElementById("pickup").value;
+  let drop = document.getElementById("drop").value;
+
+  if (pickup === "" || drop === "") {
+    alert("Please enter Pick-up and Drop Location.");
+    return;
+  }
+
+  window.open(
+    "https://www.google.com/maps/dir/?api=1&origin=" +
+    encodeURIComponent(pickup) +
+    "&destination=" +
+    encodeURIComponent(drop),
+    "_blank"
+  );
 }
-
-input,button{
-width:90%;
-padding:15px;
-margin:10px;
-font-size:18px;
-border-radius:10px;
-}
-
-button{
-border:none;
-color:white;
-cursor:pointer;
-}
-
-.blue{background:#007bff;}
-.green{background:green;}
-.red{background:red;}
-
-#location{
-color:blue;
-font-weight:bold;
-}
-</style>
-
-</head>
-<body>
-
-<h1>🚖 SafetyCab</h1>
-<h2>Book Your Ride</h2>
-
-<input id="pickup" placeholder="📍 Pick-up Location">
-
-<input id="drop" placeholder="📍 Drop Location">
-
-<button class="blue" onclick="getLocation()">
-📍 Use Current Location
-</button>
-
-<button class="green" onclick="bookRide()">
-🚕 Book Ride
-</button>
-
-<button class="red" onclick="sos()">
-🚨 SOS Emergency
-</button>
-
-<p id="location"></p>
-
-<script>
-
-function getLocation(){
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-let lat=position.coords.latitude;
-let lon=position.coords.longitude;
-
-document.getElementById("pickup").value=lat+", "+lon;
-
-document.getElementById("location").innerHTML=
-"Current Location:<br>"+lat+", "+lon;
-
-});
-
-}else{
-
-alert("Location not supported");
-
-}
-
-}
-
-function bookRide(){
-
-let pickup=document.getElementById("pickup").value;
-let drop=document.getElementById("drop").value;
-
-if(pickup==""||drop==""){
-alert("Please enter Pickup and Drop.");
-return;
-}
-
-let msg="Pickup: "+pickup+"\nDrop: "+drop;
-
-alert("Ride Booked!\n\n"+msg);
-
-}
-
-function sos(){
-
-window.location.href="tel:112";
-
-}
-
-</script>
-
-</body>
-</html>

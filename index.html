@@ -1,103 +1,70 @@
 // server.js
 
 const express = require("express");
-const mysql = require("mysql2");
 const app = express();
 
 app.use(express.json());
 
-// Database Connection
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "password",
-    database: "driver_app"
-});
-
-db.connect(err => {
-    if(err) throw err;
-    console.log("Database Connected");
-});
+let drivers = [];
 
 
-// 1. Driver Registration + First Location Save
-app.post("/add-driver", (req,res)=>{
+// Driver Add
+app.post("/add-driver", (req, res) => {
 
-    const {
-        driver_id,
-        name,
-        phone,
-        vehicle_number,
-        latitude,
-        longitude
-    } = req.body;
+    const driver = {
+        driver_id: req.body.driver_id,
+        name: req.body.name,
+        phone: req.body.phone,
+        vehicle_number: req.body.vehicle_number,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        online_status: true,
+        last_update_time: new Date()
+    };
 
-    const sql = `
-    INSERT INTO drivers
-    (driver_id,name,phone,vehicle_number,latitude,longitude,online_status)
-    VALUES (?,?,?,?,?,?,true)
-    `;
+    drivers.push(driver);
 
-    db.query(sql,
-    [
-        driver_id,
-        name,
-        phone,
-        vehicle_number,
-        latitude,
-        longitude
-    ],
-    (err,result)=>{
-        if(err) return res.json(err);
-
-        res.json({
-            message:"Driver Added Successfully"
-        });
+    res.json({
+        message: "Driver Added",
+        data: driver
     });
 });
 
 
-// 2. Driver GPS Update
-app.post("/update-location",(req,res)=>{
+// GPS Update
+app.post("/update-location", (req,res)=>{
 
-    const {
-        driver_id,
-        latitude,
-        longitude,
-        online_status
-    } = req.body;
+    let driver = drivers.find(
+        d => d.driver_id == req.body.driver_id
+    );
 
-
-    const sql = `
-    UPDATE drivers SET
-    latitude=?,
-    longitude=?,
-    online_status=?,
-    last_update_time=NOW()
-    WHERE driver_id=?
-    `;
-
-
-    db.query(sql,
-    [
-        latitude,
-        longitude,
-        online_status,
-        driver_id
-    ],
-    (err,result)=>{
-
-        if(err) return res.json(err);
-
-        res.json({
-            message:"Location Updated"
+    if(!driver){
+        return res.json({
+            message:"Driver Not Found"
         });
+    }
 
+
+    driver.latitude = req.body.latitude;
+    driver.longitude = req.body.longitude;
+    driver.online_status = true;
+    driver.last_update_time = new Date();
+
+
+    res.json({
+        message:"Location Updated",
+        data:driver
     });
 
+});
+
+
+// All Driver List
+app.get("/drivers",(req,res)=>{
+    res.json(drivers);
 });
 
 
 app.listen(3000,()=>{
-    console.log("Server Running on Port 3000");
+    console.log("Mini App Server Started");
 });

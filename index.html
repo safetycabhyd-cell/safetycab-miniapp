@@ -1,1 +1,227 @@
-<input id="name" placeholder="Driver Name">
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Driver Mini App</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+padding:15px;
+}
+
+.box,.driver{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin:5px 0;
+}
+
+button{
+background:green;
+color:white;
+border:0;
+border-radius:5px;
+}
+
+.driver{
+border-left:5px solid green;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<h2>🚕 Driver Mini App</h2>
+
+
+<div class="box">
+
+<input id="driverId" placeholder="Driver ID">
+
+<input id="driverName" placeholder="Driver Name">
+
+<input id="vehicleNumber" placeholder="Vehicle Number">
+
+
+<button onclick="getGPS()">
+📍 Get GPS Location
+</button>
+
+
+<p id="gps">
+GPS Waiting...
+</p>
+
+
+<button onclick="addDriver()">
+Add Driver
+</button>
+
+
+</div>
+
+
+
+<h3>Driver List</h3>
+
+<div id="list"></div>
+
+
+
+<script>
+
+
+let drivers =
+JSON.parse(localStorage.getItem("drivers")) || [];
+
+
+let latitude="";
+let longitude="";
+
+
+
+// GPS
+
+function getGPS(){
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+latitude =
+position.coords.latitude;
+
+longitude =
+position.coords.longitude;
+
+
+document.getElementById("gps").innerHTML =
+"Latitude: "+latitude+
+"<br>Longitude: "+longitude;
+
+},
+
+function(){
+
+alert("GPS Permission Allow करें");
+
+}
+
+);
+
+}
+
+
+
+// Add Driver
+
+function addDriver(){
+
+
+let driver={
+
+id:
+document.getElementById("driverId").value,
+
+name:
+document.getElementById("driverName").value,
+
+vehicle:
+document.getElementById("vehicleNumber").value,
+
+latitude:latitude,
+
+longitude:longitude,
+
+status:"Online",
+
+time:new Date().toLocaleString()
+
+};
+
+
+
+drivers.push(driver);
+
+
+
+localStorage.setItem(
+"drivers",
+JSON.stringify(drivers)
+);
+
+
+
+showDrivers();
+
+
+}
+
+
+
+
+// Show Drivers
+
+function showDrivers(){
+
+
+let html="";
+
+
+drivers.forEach(function(d){
+
+
+html += `
+
+<div class="driver">
+
+<b>Driver Name:</b> ${d.name}<br>
+
+<b>Vehicle:</b> ${d.vehicle}<br>
+
+<b>Location:</b><br>
+${d.latitude}, ${d.longitude}<br>
+
+<b>Status:</b> 🟢 ${d.status}<br>
+
+<b>Last Update:</b> ${d.time}
+
+</div>
+
+`;
+
+
+});
+
+
+document.getElementById("list").innerHTML=html;
+
+
+}
+
+
+
+
+showDrivers();
+
+
+</script>
+
+
+</body>
+</html>

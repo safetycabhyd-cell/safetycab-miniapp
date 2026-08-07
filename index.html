@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Safety Cab Admin</title>
+<title>Safety Cab - Live GPS</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
@@ -19,6 +19,7 @@ padding:15px;
 background:white;
 padding:15px;
 border-radius:10px;
+margin-bottom:15px;
 }
 
 input,button{
@@ -33,6 +34,11 @@ background:green;
 color:white;
 border:0;
 border-radius:6px;
+font-size:16px;
+}
+
+.stop{
+background:#d32f2f;
 }
 
 .driver{
@@ -40,6 +46,12 @@ background:white;
 padding:15px;
 margin-top:10px;
 border-radius:10px;
+border-left:5px solid green;
+}
+
+.online{
+color:green;
+font-weight:bold;
 }
 
 </style>
@@ -48,9 +60,12 @@ border-radius:10px;
 
 <body>
 
-<h2>🚕 Safety Cab Admin Panel</h2>
+<h2>🚕 Safety Cab - Live GPS</h2>
+
 
 <div class="box">
+
+<h3>Driver Details</h3>
 
 <input
 id="driverId"
@@ -65,8 +80,15 @@ id="vehicle"
 placeholder="Vehicle Number">
 
 
-<button onclick="getGPS()">
-📍 Get GPS
+<button onclick="startGPS()">
+📍 Start Live GPS
+</button>
+
+
+<button
+class="stop"
+onclick="stopGPS()">
+⛔ Stop Live GPS
 </button>
 
 
@@ -76,13 +98,9 @@ GPS Waiting...
 
 
 <button onclick="addDriver()">
-➕ Add Driver
+➕ Add / Save Driver
 </button>
 
-
-<button onclick="clearAll()">
-🗑️ Delete All Drivers
-</button>
 
 </div>
 
@@ -96,7 +114,10 @@ Loading...
 
 <script>
 
-/* SAVED DATA LOAD */
+
+/* =========================
+   SAVED DATA
+========================= */
 
 let drivers =
 JSON.parse(
@@ -104,48 +125,108 @@ localStorage.getItem("drivers")
 ) || [];
 
 
-let lat = "";
-let lng = "";
+let watchId = null;
+
+let currentLat = "";
+
+let currentLng = "";
 
 
+/* =========================
+   START LIVE GPS
+========================= */
 
-/* GPS */
+function startGPS(){
 
-function getGPS(){
+if(!navigator.geolocation){
 
-navigator.geolocation.getCurrentPosition(
+alert(
+"इस Browser में GPS उपलब्ध नहीं है"
+);
+
+return;
+
+}
+
+
+watchId =
+navigator.geolocation.watchPosition(
 
 function(position){
 
-lat =
+currentLat =
 position.coords.latitude;
 
-lng =
+currentLng =
 position.coords.longitude;
 
 
 document.getElementById("gps").innerHTML =
 
-"Latitude: " + lat +
-"<br>Longitude: " + lng;
+"🟢 Live GPS ON" +
+
+"<br>Latitude: " +
+currentLat +
+
+"<br>Longitude: " +
+currentLng;
+
+
+updateDriverLocation();
 
 },
 
-function(){
 
-alert(
-"GPS Permission Allow करें"
-);
+function(error){
+
+document.getElementById("gps").innerHTML =
+"🔴 GPS Permission / Error";
+
+},
+
+
+{
+
+enableHighAccuracy:true,
+
+timeout:15000,
+
+maximumAge:0
 
 }
 
 );
 
+
 }
 
 
+/* =========================
+   STOP GPS
+========================= */
 
-/* ADD DRIVER */
+function stopGPS(){
+
+if(watchId !== null){
+
+navigator.geolocation.clearWatch(
+watchId
+);
+
+watchId = null;
+
+}
+
+
+document.getElementById("gps").innerHTML =
+"🔴 Live GPS OFF";
+
+}
+
+
+/* =========================
+   ADD DRIVER
+========================= */
 
 function addDriver(){
 
@@ -162,12 +243,38 @@ document.getElementById("vehicle")
 .value.trim();
 
 
-if(id === "" ||
-name === "" ||
-vehicle === ""){
+if(id === ""){
+
+alert("Driver ID डालिए");
+
+return;
+
+}
+
+
+if(name === ""){
+
+alert("Driver Name डालिए");
+
+return;
+
+}
+
+
+if(vehicle === ""){
+
+alert("Vehicle Number डालिए");
+
+return;
+
+}
+
+
+if(currentLat === "" ||
+currentLng === ""){
 
 alert(
-"Driver ID, Name और Vehicle Number भरें"
+"पहले Start Live GPS दबाइए"
 );
 
 return;
@@ -175,18 +282,35 @@ return;
 }
 
 
-if(lat === "" || lng === ""){
-
-alert(
-"पहले Get GPS दबाएं"
+let existing =
+drivers.find(
+d => d.id === id
 );
 
-return;
+
+if(existing){
+
+existing.name = name;
+
+existing.vehicle = vehicle;
+
+existing.latitude =
+currentLat;
+
+existing.longitude =
+currentLng;
+
+existing.status =
+"Online";
+
+existing.time =
+new Date().toLocaleString();
 
 }
 
+else{
 
-let driver = {
+drivers.push({
 
 id:id,
 
@@ -194,42 +318,99 @@ name:name,
 
 vehicle:vehicle,
 
-latitude:lat,
+latitude:currentLat,
 
-longitude:lng,
+longitude:currentLng,
 
 status:"Online",
 
 time:new Date().toLocaleString()
 
-};
+});
+
+}
 
 
-drivers.push(driver);
+saveData();
+
+showDrivers();
 
 
-/* SAVE */
+alert(
+"Driver Saved Successfully"
+);
+
+}
+
+
+/* =========================
+   UPDATE LOCATION
+========================= */
+
+function updateDriverLocation(){
+
+let id =
+document.getElementById("driverId")
+.value.trim();
+
+
+if(id === ""){
+
+return;
+
+}
+
+
+let driver =
+drivers.find(
+d => d.id === id
+);
+
+
+if(!driver){
+
+return;
+
+}
+
+
+driver.latitude =
+currentLat;
+
+driver.longitude =
+currentLng;
+
+driver.status =
+"Online";
+
+driver.time =
+new Date().toLocaleString();
+
+
+saveData();
+
+showDrivers();
+
+}
+
+
+/* =========================
+   SAVE DATA
+========================= */
+
+function saveData(){
 
 localStorage.setItem(
 "drivers",
 JSON.stringify(drivers)
 );
 
-
-/* SHOW */
-
-showDrivers();
-
-
-alert(
-"Driver Successfully Saved"
-);
-
 }
 
 
-
-/* SHOW DRIVERS */
+/* =========================
+   SHOW DRIVERS
+========================= */
 
 function showDrivers(){
 
@@ -276,7 +457,9 @@ ${d.longitude}
 <br>
 
 <b>Status:</b>
+<span class="online">
 🟢 ${d.status}
+</span>
 
 <br>
 
@@ -296,32 +479,9 @@ document.getElementById("list")
 }
 
 
-
-/* DELETE ALL */
-
-function clearAll(){
-
-if(
-confirm(
-"क्या सभी Driver Delete करना है?"
-)
-){
-
-drivers = [];
-
-localStorage.removeItem(
-"drivers"
-);
-
-showDrivers();
-
-}
-
-}
-
-
-
-/* PAGE START */
+/* =========================
+   START PAGE
+========================= */
 
 showDrivers();
 

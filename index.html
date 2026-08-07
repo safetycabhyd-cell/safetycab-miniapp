@@ -1,58 +1,57 @@
-const express = require("express");
-
-const app = express();
-
-app.use(express.json());
+const http = require("http");
 
 let drivers = [];
 
-// Add Driver
-app.post("/add-driver", (req, res) => {
 
-    let driver = {
-        driver_id: req.body.driver_id,
-        name: req.body.name,
-        phone: req.body.phone,
-        vehicle_number: req.body.vehicle_number,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        online_status: true,
-        last_update_time: new Date()
-    };
+const server = http.createServer((req, res) => {
 
-    drivers.push(driver);
-
-    res.send(driver);
-});
+    res.setHeader("Content-Type", "application/json");
 
 
-// Update Location
-app.post("/update-location", (req,res)=>{
+    // Driver List
+    if(req.url === "/drivers" && req.method === "GET") {
 
-    let driver = drivers.find(
-        x => x.driver_id === req.body.driver_id
-    );
+        res.end(JSON.stringify(drivers));
 
-    if(!driver){
-        return res.status(404).send({
-            message:"Driver Not Found"
-        });
     }
 
-    driver.latitude = req.body.latitude;
-    driver.longitude = req.body.longitude;
-    driver.last_update_time = new Date();
 
-    res.send(driver);
+    // Add Driver
+    else if(req.url === "/add-driver" && req.method === "POST") {
+
+        let driver = {
+            driver_id: "DRV001",
+            name: "Test Driver",
+            phone: "9999999999",
+            vehicle_number: "TS09AB1234",
+            latitude: 17.385,
+            longitude: 78.486,
+            online_status: true,
+            last_update_time: new Date()
+        };
+
+
+        drivers.push(driver);
+
+        res.end(JSON.stringify({
+            message:"Driver Added",
+            data:driver
+        }));
+
+    }
+
+
+    else {
+
+        res.end(JSON.stringify({
+            message:"API Not Found"
+        }));
+
+    }
+
 });
 
 
-// Show All Drivers
-app.get("/drivers",(req,res)=>{
-    res.json(drivers);
-});
-
-
-app.listen(3000,()=>{
-    console.log("Server Running Port 3000");
+server.listen(3000, () => {
+    console.log("Server Started on Port 3000");
 });

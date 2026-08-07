@@ -1,147 +1,595 @@
-
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafetyCab</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SafetyCab Hyderabad</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
+*{box-sizing:border-box}
+
 body{
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  text-align:center;
-  padding:20px;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f7fa;
+color:#17202a
 }
 
-input,select,button{
-  width:90%;
-  padding:15px;
-  margin:10px;
-  font-size:18px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  box-sizing:border-box;
+header{
+background:#111827;
+color:white;
+padding:16px;
+text-align:center;
+font-weight:700;
+font-size:20px
+}
+
+.wrap{padding:12px}
+
+.card{
+background:white;
+border-radius:16px;
+padding:14px;
+margin-bottom:12px;
+box-shadow:0 2px 10px #0001
 }
 
 button{
-  border:none;
-  color:white;
-  cursor:pointer;
+border:0;
+border-radius:12px;
+padding:13px 15px;
+font-size:15px;
+font-weight:700;
+margin:4px
 }
 
-#locationBtn{
-  background:#007bff;
+.primary{background:#16a34a;color:white}
+.secondary{background:#2563eb;color:white}
+.danger{background:#dc2626;color:white}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #d1d5db;
+border-radius:10px;
+margin:5px 0 10px;
+font-size:16px
 }
 
-#bookBtn{
-  background:green;
+#map{
+height:360px;
+border-radius:14px;
+overflow:hidden
 }
 
-#sosBtn{
-  background:red;
+.status{
+font-size:14px;
+padding:8px;
+border-radius:8px;
+background:#eef2ff
 }
 
-#location{
-  color:blue;
-  font-size:16px;
+.driver{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #eee;
+padding:10px 0
 }
+
+.dot{
+display:inline-block;
+width:10px;
+height:10px;
+border-radius:50%;
+background:#16a34a;
+margin-right:6px
+}
+
+small{color:#6b7280}
+
+.row{
+display:flex;
+gap:5px
+}
+
+.row>*{flex:1}
 </style>
 </head>
 
 <body>
 
-<h1>🚖 SafetyCab</h1>
-<h2>Book Your Ride</h2>
+<header>
+🚕 SafetyCab Hyderabad
+</header>
 
-<input id="name" type="text" placeholder="👤 Full Name">
+<div class="wrap">
 
-<input id="mobile" type="tel" placeholder="📱 Mobile Number">
+<div class="card">
 
-<select id="vehicle">
-  <option value="">🚖 Select Vehicle</option>
-  <option value="Bike">🏍 Bike</option>
-  <option value="Auto">🛺 Auto</option>
-  <option value="Cab">🚕 Cab</option>
-</select>
+<b>Driver Registration</b>
 
-<input id="pickup" type="text" placeholder="📍 Pick-up Location">
+<input
+id="driverName"
+placeholder="Driver Name">
 
-<input id="drop" type="text" placeholder="📍 Drop Location">
+<input
+id="vehicle"
+placeholder="Vehicle Number">
 
-<button id="locationBtn" onclick="getLocation()">
-📍 Use Current Location
+<button
+class="primary"
+onclick="saveDriver()">
+Save Driver
 </button>
 
-<button id="bookBtn" onclick="bookRide()">
-🚕 Book Ride
+<button
+class="secondary"
+onclick="startLocation()">
+📍 Start Live Location
 </button>
 
-<button id="sosBtn" onclick="sos()">
-🚨 SOS Emergency
+<button
+class="danger"
+onclick="stopLocation()">
+⛔ Stop Location
 </button>
 
-<p id="location"></p>
+<div
+id="status"
+class="status">
+Location अभी शुरू नहीं हुई है।
+</div>
+
+</div>
+
+
+<div class="card">
+
+<b>Drivers Map</b>
+
+<div id="map"></div>
+
+</div>
+
+
+<div class="card">
+
+<b>Online Drivers</b>
+
+<div id="drivers"></div>
+
+</div>
+
+
+<div class="card">
+
+<b>Booking</b>
+
+<input
+id="pickup"
+placeholder="Pickup Location">
+
+<input
+id="drop"
+placeholder="Drop Location">
+
+<button
+class="primary"
+onclick="bookRide()">
+🚖 Book Ride
+</button>
+
+<div id="bookingStatus"></div>
+
+</div>
+
+</div>
+
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 <script>
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
+const TG =
+window.Telegram &&
+window.Telegram.WebApp
+? window.Telegram.WebApp
+: null;
 
-      let lat = position.coords.latitude;
-      let lon = position.coords.longitude;
-
-      document.getElementById("pickup").value = lat + "," + lon;
-
-      document.getElementById("location").innerHTML =
-      "Current Location:<br>" + lat + "," + lon;
-
-    }, function() {
-      alert("Location permission denied.");
-    });
-
-  } else {
-    alert("Geolocation is not supported.");
-  }
+if(TG){
+TG.ready();
+TG.expand();
 }
 
-function bookRide() {
 
-  let name = document.getElementById("name").value;
-  let mobile = document.getElementById("mobile").value;
-  let vehicle = document.getElementById("vehicle").value;
-  let pickup = document.getElementById("pickup").value;
-  let drop = document.getElementById("drop").value;
+const map =
+L.map('map')
+.setView([17.3850,78.4867],12);
 
-  if(name=="" || mobile=="" || vehicle=="" || pickup=="" || drop==""){
-    alert("Please fill all details.");
-    return;
-  }
 
-  alert(
-    "✅ Booking Confirmed!\n\n"+
-    "Name: "+name+
-    "\nMobile: "+mobile+
-    "\nVehicle: "+vehicle+
-    "\nPickup: "+pickup+
-    "\nDrop: "+drop
-  );
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'© OpenStreetMap contributors'
+}
+).addTo(map);
 
-  window.open(
-    "https://www.google.com/maps/dir/?api=1&origin="+
-    encodeURIComponent(pickup)+
-    "&destination="+
-    encodeURIComponent(drop)+
-    "&travelmode=driving",
-    "_blank"
-  );
+
+let myMarker=null;
+let watchId=null;
+
+
+let drivers =
+JSON.parse(
+localStorage.getItem(
+'safetycab_demo_drivers'
+) || '[]'
+);
+
+
+function saveDriver(){
+
+const name =
+document
+.getElementById('driverName')
+.value
+.trim();
+
+const vehicle =
+document
+.getElementById('vehicle')
+.value
+.trim();
+
+if(!name){
+alert('Driver Name डालें');
+return;
+}
+
+
+const old =
+drivers.find(
+d=>d.id==='me'
+);
+
+
+const d={
+id:'me',
+name:name,
+vehicle:vehicle,
+lat:old ? old.lat : null,
+lng:old ? old.lng : null,
+last:Date.now()
+};
+
+
+drivers=[
+d,
+...drivers.filter(
+x=>x.id!=='me'
+)
+];
+
+
+localStorage.setItem(
+'safetycab_demo_drivers',
+JSON.stringify(drivers)
+);
+
+
+renderDrivers();
+
+setStatus(
+'Driver details saved.'
+);
 
 }
 
-function sos(){
-  window.location.href="tel:112";
+
+function setStatus(text){
+
+document
+.getElementById('status')
+.textContent=text;
+
 }
+
+
+function startLocation(){
+
+if(!navigator.geolocation){
+
+setStatus(
+'इस फोन में GPS उपलब्ध नहीं है।'
+);
+
+return;
+}
+
+
+if(watchId!==null){
+return;
+}
+
+
+setStatus(
+'GPS permission माँगी जा रही है...'
+);
+
+
+watchId =
+navigator.geolocation.watchPosition(
+
+function(pos){
+
+const lat =
+pos.coords.latitude;
+
+const lng =
+pos.coords.longitude;
+
+
+const me =
+drivers.find(
+d=>d.id==='me'
+);
+
+
+if(me){
+
+me.lat=lat;
+me.lng=lng;
+me.last=Date.now();
+
+
+localStorage.setItem(
+'safetycab_demo_drivers',
+JSON.stringify(drivers)
+);
+
+}
+
+
+if(myMarker){
+
+myMarker.setLatLng(
+[lat,lng]
+);
+
+}else{
+
+myMarker =
+L.marker(
+[lat,lng]
+)
+.addTo(map)
+.bindPopup(
+'📍 मेरी Location'
+);
+
+}
+
+
+map.setView(
+[lat,lng],
+15
+);
+
+
+setStatus(
+'Live GPS ON • ' +
+lat.toFixed(6) +
+', ' +
+lng.toFixed(6)
+);
+
+
+renderDrivers();
+
+},
+
+
+function(error){
+
+setStatus(
+'GPS Error: ' +
+error.message
+);
+
+},
+
+
+{
+enableHighAccuracy:true,
+maximumAge:5000,
+timeout:15000
+}
+
+);
+
+}
+
+
+function stopLocation(){
+
+if(watchId!==null){
+
+navigator.geolocation.clearWatch(
+watchId
+);
+
+watchId=null;
+
+}
+
+setStatus(
+'Live GPS बंद है।'
+);
+
+}
+
+
+function renderDrivers(){
+
+const box =
+document.getElementById(
+'drivers'
+);
+
+
+if(!drivers.length){
+
+box.innerHTML =
+'<small>अभी कोई driver registered नहीं है।</small>';
+
+return;
+
+}
+
+
+box.innerHTML =
+drivers.map(
+
+d=>`
+
+<div class="driver">
+
+<div>
+
+<span class="dot"></span>
+
+<b>
+${escapeHtml(d.name)}
+</b>
+
+<br>
+
+<small>
+${escapeHtml(
+d.vehicle || 'Vehicle not set'
+)}
+</small>
+
+</div>
+
+
+<button
+class="secondary"
+onclick="focusDriver('${d.id}')">
+
+📍 Map
+
+</button>
+
+</div>
+
+`
+
+).join('');
+
+}
+
+
+function focusDriver(id){
+
+const d =
+drivers.find(
+x=>x.id===id
+);
+
+
+if(
+d &&
+d.lat &&
+d.lng
+){
+
+map.setView(
+[d.lat,d.lng],
+16
+);
+
+}else{
+
+alert(
+'इस driver की GPS location अभी उपलब्ध नहीं है।'
+);
+
+}
+
+}
+
+
+function bookRide(){
+
+const pickup =
+document
+.getElementById('pickup')
+.value
+.trim();
+
+
+const drop =
+document
+.getElementById('drop')
+.value
+.trim();
+
+
+if(!pickup || !drop){
+
+alert(
+'Pickup और Drop दोनों डालें'
+);
+
+return;
+
+}
+
+
+document
+.getElementById(
+'bookingStatus'
+)
+.innerHTML =
+'<p>✅ Booking request तैयार है। Backend जोड़ने के बाद इसे driver को भेजा जाएगा।</p>';
+
+}
+
+
+function escapeHtml(text){
+
+return String(text)
+.replace(
+/[&<>"']/g,
+
+function(m){
+
+return {
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+
+}[m];
+
+}
+
+);
+
+}
+
+
+renderDrivers();
 
 </script>
 

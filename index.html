@@ -64,16 +64,24 @@ placeholder="Driver Name">
 id="vehicle"
 placeholder="Vehicle Number">
 
+
 <button onclick="getGPS()">
 📍 Get GPS
 </button>
+
 
 <p id="gps">
 GPS Waiting...
 </p>
 
+
 <button onclick="addDriver()">
 ➕ Add Driver
+</button>
+
+
+<button onclick="clearAll()">
+🗑️ Delete All Drivers
 </button>
 
 </div>
@@ -82,17 +90,26 @@ GPS Waiting...
 <h3>Driver List</h3>
 
 <div id="list">
-No Driver Added
+Loading...
 </div>
 
 
 <script>
 
-let drivers = [];
+/* SAVED DATA LOAD */
+
+let drivers =
+JSON.parse(
+localStorage.getItem("drivers")
+) || [];
+
 
 let lat = "";
 let lng = "";
 
+
+
+/* GPS */
 
 function getGPS(){
 
@@ -106,7 +123,9 @@ position.coords.latitude;
 lng =
 position.coords.longitude;
 
+
 document.getElementById("gps").innerHTML =
+
 "Latitude: " + lat +
 "<br>Longitude: " + lng;
 
@@ -114,7 +133,9 @@ document.getElementById("gps").innerHTML =
 
 function(){
 
-alert("GPS Permission Allow करें");
+alert(
+"GPS Permission Allow करें"
+);
 
 }
 
@@ -123,23 +144,42 @@ alert("GPS Permission Allow करें");
 }
 
 
+
+/* ADD DRIVER */
+
 function addDriver(){
 
 let id =
-document.getElementById("driverId").value;
+document.getElementById("driverId")
+.value.trim();
 
 let name =
-document.getElementById("driverName").value;
+document.getElementById("driverName")
+.value.trim();
 
 let vehicle =
-document.getElementById("vehicle").value;
+document.getElementById("vehicle")
+.value.trim();
 
 
 if(id === "" ||
 name === "" ||
 vehicle === ""){
 
-alert("तीनों जानकारी भरें");
+alert(
+"Driver ID, Name और Vehicle Number भरें"
+);
+
+return;
+
+}
+
+
+if(lat === "" || lng === ""){
+
+alert(
+"पहले Get GPS दबाएं"
+);
 
 return;
 
@@ -168,15 +208,40 @@ time:new Date().toLocaleString()
 drivers.push(driver);
 
 
+/* SAVE */
+
+localStorage.setItem(
+"drivers",
+JSON.stringify(drivers)
+);
+
+
+/* SHOW */
+
 showDrivers();
 
+
+alert(
+"Driver Successfully Saved"
+);
 
 }
 
 
+
+/* SHOW DRIVERS */
+
 function showDrivers(){
 
 let html = "";
+
+
+if(drivers.length === 0){
+
+html =
+"<p>कोई Driver नहीं है</p>";
+
+}
 
 
 drivers.forEach(function(d){
@@ -200,8 +265,12 @@ ${d.vehicle}
 
 <br>
 
-<b>Location:</b>
-${d.latitude},
+<b>Latitude:</b>
+${d.latitude}
+
+<br>
+
+<b>Longitude:</b>
 ${d.longitude}
 
 <br>
@@ -221,10 +290,40 @@ ${d.time}
 });
 
 
-document.getElementById("list").innerHTML =
-html;
+document.getElementById("list")
+.innerHTML = html;
 
 }
+
+
+
+/* DELETE ALL */
+
+function clearAll(){
+
+if(
+confirm(
+"क्या सभी Driver Delete करना है?"
+)
+){
+
+drivers = [];
+
+localStorage.removeItem(
+"drivers"
+);
+
+showDrivers();
+
+}
+
+}
+
+
+
+/* PAGE START */
+
+showDrivers();
 
 </script>
 

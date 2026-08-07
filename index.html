@@ -8,36 +8,43 @@
 
 <style>
 body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-text-align:center;
-padding:20px;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  text-align:center;
+  padding:20px;
 }
 
-input,button{
-width:90%;
-padding:15px;
-margin:10px;
-font-size:18px;
-border-radius:10px;
+input,select,button{
+  width:90%;
+  padding:15px;
+  margin:10px;
+  font-size:18px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  box-sizing:border-box;
 }
 
 button{
-border:none;
-color:white;
-cursor:pointer;
+  border:none;
+  color:white;
+  cursor:pointer;
 }
 
 #locationBtn{
-background:#007bff;
+  background:#007bff;
 }
 
 #bookBtn{
-background:green;
+  background:green;
 }
 
 #sosBtn{
-background:red;
+  background:red;
+}
+
+#location{
+  color:blue;
+  font-size:16px;
 }
 </style>
 </head>
@@ -46,6 +53,17 @@ background:red;
 
 <h1>🚖 SafetyCab</h1>
 <h2>Book Your Ride</h2>
+
+<input id="name" type="text" placeholder="👤 Full Name">
+
+<input id="mobile" type="tel" placeholder="📱 Mobile Number">
+
+<select id="vehicle">
+  <option value="">🚖 Select Vehicle</option>
+  <option value="Bike">🏍 Bike</option>
+  <option value="Auto">🛺 Auto</option>
+  <option value="Cab">🚕 Cab</option>
+</select>
 
 <input id="pickup" type="text" placeholder="📍 Pick-up Location">
 
@@ -66,45 +84,65 @@ background:red;
 <p id="location"></p>
 
 <script>
-  function getLocation() {
+
+function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
+
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
 
       document.getElementById("pickup").value = lat + "," + lon;
+
       document.getElementById("location").innerHTML =
-        "Current Location:<br>" + lat + "," + lon;
+      "Current Location:<br>" + lat + "," + lon;
+
     }, function() {
       alert("Location permission denied.");
     });
+
   } else {
     alert("Geolocation is not supported.");
   }
 }
 
 function bookRide() {
+
+  let name = document.getElementById("name").value;
+  let mobile = document.getElementById("mobile").value;
+  let vehicle = document.getElementById("vehicle").value;
   let pickup = document.getElementById("pickup").value;
   let drop = document.getElementById("drop").value;
 
-  if (pickup === "" || drop === "") {
-    alert("Please enter Pick-up and Drop Location.");
+  if(name=="" || mobile=="" || vehicle=="" || pickup=="" || drop==""){
+    alert("Please fill all details.");
     return;
   }
 
+  alert(
+    "✅ Booking Confirmed!\n\n"+
+    "Name: "+name+
+    "\nMobile: "+mobile+
+    "\nVehicle: "+vehicle+
+    "\nPickup: "+pickup+
+    "\nDrop: "+drop
+  );
+
   window.open(
-    "https://www.google.com/maps/dir/?api=1&origin=" +
-    encodeURIComponent(pickup) +
-    "&destination=" +
-    encodeURIComponent(drop) +
+    "https://www.google.com/maps/dir/?api=1&origin="+
+    encodeURIComponent(pickup)+
+    "&destination="+
+    encodeURIComponent(drop)+
     "&travelmode=driving",
     "_blank"
   );
+
 }
 
-function sos() {
-  window.location.href = "tel:112";
+function sos(){
+  window.location.href="tel:112";
 }
+
 </script>
 
 </body>

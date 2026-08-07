@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,9 +28,17 @@ color:white;
 cursor:pointer;
 }
 
-#locationBtn{background:#007bff;}
-#bookBtn{background:green;}
-#sosBtn{background:red;}
+#locationBtn{
+background:#007bff;
+}
+
+#bookBtn{
+background:green;
+}
+
+#sosBtn{
+background:red;
+}
 </style>
 </head>
 
@@ -57,62 +66,45 @@ cursor:pointer;
 <p id="location"></p>
 
 <script>
+  function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
 
-function getLocation(){
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-let lat=position.coords.latitude;
-let lon=position.coords.longitude;
-
-document.getElementById("pickup").value=lat+","+lon;
-
-document.getElementById("location").innerHTML=
-"Current Location:<br>"+lat+","+lon;
-
-},function(){
-
-alert("Location permission denied.");
-
-});
-
-}else{
-
-alert("Geolocation not supported.");
-
+      document.getElementById("pickup").value = lat + "," + lon;
+      document.getElementById("location").innerHTML =
+        "Current Location:<br>" + lat + "," + lon;
+    }, function() {
+      alert("Location permission denied.");
+    });
+  } else {
+    alert("Geolocation is not supported.");
+  }
 }
 
+function bookRide() {
+  let pickup = document.getElementById("pickup").value;
+  let drop = document.getElementById("drop").value;
+
+  if (pickup === "" || drop === "") {
+    alert("Please enter Pick-up and Drop Location.");
+    return;
+  }
+
+  window.open(
+    "https://www.google.com/maps/dir/?api=1&origin=" +
+    encodeURIComponent(pickup) +
+    "&destination=" +
+    encodeURIComponent(drop) +
+    "&travelmode=driving",
+    "_blank"
+  );
 }
 
-function bookRide(){
-
-let pickup=document.getElementById("pickup").value;
-let drop=document.getElementById("drop").value;
-
-if(pickup===""||drop===""){
-alert("Please enter Pick-up and Drop Location.");
-return;
+function sos() {
+  window.location.href = "tel:112";
 }
-
-window.open(
-"https://www.google.com/maps/dir/?api=1&origin="
-+encodeURIComponent(pickup)+
-"&destination="
-+encodeURIComponent(drop)+
-"&travelmode=driving",
-"_blank"
-);
-
-}
-
-function sos(){
-
-window.location.href="tel:112";
-
-}
-
 </script>
 
 </body>

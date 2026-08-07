@@ -12,74 +12,97 @@ content="width=device-width, initial-scale=1">
 <style>
 
 body{
-font-family:Arial,sans-serif;
-background:#f2f2f2;
-margin:0;
-padding:15px;
+    font-family:Arial,sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:15px;
+}
+
+h2{
+    margin-top:5px;
 }
 
 .box{
-background:white;
-padding:15px;
-border-radius:12px;
-margin-bottom:15px;
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
 }
 
 input{
-width:100%;
-box-sizing:border-box;
-padding:12px;
-margin:6px 0;
-border:1px solid #ccc;
-border-radius:6px;
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    margin:6px 0;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
 }
 
 button{
-width:100%;
-padding:12px;
-margin:6px 0;
-border:0;
-border-radius:6px;
-background:#168a3a;
-color:white;
-font-size:16px;
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    margin:6px 0;
+    border:0;
+    border-radius:6px;
+    background:#168a3a;
+    color:white;
+    font-size:16px;
 }
 
 .stop{
-background:#d32f2f;
+    background:#d32f2f;
+}
+
+.delete{
+    background:#d32f2f;
 }
 
 .driver{
-background:white;
-padding:15px;
-margin:10px 0;
-border-radius:10px;
-border-left:5px solid #168a3a;
+    background:white;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    border-left:5px solid #168a3a;
 }
 
 .online{
-color:green;
-font-weight:bold;
+    color:green;
+    font-weight:bold;
 }
 
 .offline{
-color:red;
-font-weight:bold;
+    color:red;
+    font-weight:bold;
+}
+
+.selectBox{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.selectBox input{
+    width:20px;
+    height:20px;
 }
 
 </style>
 
 </head>
 
+
 <body>
 
 
-<h2>🚕 Safety Cab Live GPS</h2>
+<h2>🚕 Safety Cab Admin</h2>
 
 
 <div class="box">
 
-<h3>👨‍✈️ Driver Details</h3>
+<h3>👨‍✈️ Driver Registration</h3>
 
 
 <input
@@ -118,17 +141,19 @@ onclick="stopLiveGPS()">
 </button>
 
 
-<div id="gpsStatus">
+<p id="gpsStatus">
 
 🔴 GPS OFF
 
-</div>
+</p>
 
 
 <p id="location">
+
 Latitude: -
 <br>
 Longitude: -
+
 </p>
 
 
@@ -142,27 +167,53 @@ Longitude: -
 
 
 
+<div class="box">
+
+<h3>🔎 Search Driver</h3>
+
+<input
+id="search"
+placeholder="Name / Driver ID / Vehicle"
+oninput="showDrivers()">
+
+</div>
+
+
+
 <h3>👨‍✈️ Driver List</h3>
 
 
 <div id="list">
-No Driver
+
+Loading...
+
 </div>
 
 
 
 <script>
 
+
 /* =========================
-   DATA
+   LOAD DATA
 ========================= */
 
-let drivers =
+let drivers = [];
+
+try{
+
+drivers =
 JSON.parse(
 localStorage.getItem(
 "safetycab_final_drivers"
 )
 ) || [];
+
+}catch(error){
+
+drivers = [];
+
+}
 
 
 let watchId = null;
@@ -220,21 +271,15 @@ document.getElementById(
 "Latitude: " +
 currentLat +
 
-"<br>" +
-
-"Longitude: " +
+"<br>Longitude: " +
 currentLng +
 
-"<br>" +
-
-"Accuracy: " +
+"<br>Accuracy: " +
 Math.round(
 position.coords.accuracy
 ) +
 " meters";
 
-
-/* Current Driver ID */
 
 let id =
 document.getElementById(
@@ -288,22 +333,6 @@ if(error.code === 1){
 
 alert(
 "Location Permission Allow करें"
-);
-
-}
-
-else if(error.code === 2){
-
-alert(
-"GPS Location उपलब्ध नहीं है"
-);
-
-}
-
-else if(error.code === 3){
-
-alert(
-"GPS Timeout"
 );
 
 }
@@ -517,7 +546,7 @@ showDrivers();
 
 
 alert(
-"✅ Driver Saved"
+"✅ Driver Saved Successfully"
 );
 
 }
@@ -541,61 +570,136 @@ JSON.stringify(drivers)
 
 
 /* =========================
-   DRIVER LIST
+   SHOW DRIVER LIST
 ========================= */
 
 function showDrivers(){
 
-if(drivers.length === 0){
-
+let search =
 document.getElementById(
-"list"
-).innerHTML =
-"<div class='box'>❌ कोई Driver नहीं है</div>";
+"search"
+).value
+.toLowerCase()
+.trim();
 
-return;
 
-}
+let result =
+drivers.filter(function(d){
+
+return (
+
+String(d.id)
+.toLowerCase()
+.includes(search)
+
+||
+
+String(d.name)
+.toLowerCase()
+.includes(search)
+
+||
+
+String(d.phone)
+.toLowerCase()
+.includes(search)
+
+||
+
+String(d.vehicle)
+.toLowerCase()
+.includes(search)
+
+);
+
+});
 
 
 let html = "";
 
 
-drivers.forEach(function(d){
+if(result.length === 0){
+
+html = `
+
+<div class="box">
+
+❌ कोई Driver नहीं मिला।
+
+<br><br>
+
+Total Drivers:
+${drivers.length}
+
+</div>
+
+`;
+
+}
+
+
+result.forEach(function(d){
+
+let index =
+drivers.indexOf(d);
+
 
 html += `
 
 <div class="driver">
+
+
+<div class="selectBox">
+
+<input
+type="checkbox"
+id="select_${index}">
+
+<label
+for="select_${index}">
+
+☑️ Select Driver
+
+</label>
+
+</div>
+
 
 <b>Driver ID:</b>
 ${d.id}
 
 <br><br>
 
+
 <b>Name:</b>
 ${d.name}
 
 <br><br>
+
 
 <b>Phone:</b>
 ${d.phone || "-"}
 
 <br><br>
 
+
 <b>Vehicle:</b>
 ${d.vehicle}
 
 <br><br>
+
 
 <b>Latitude:</b>
 ${d.latitude}
 
 <br>
 
+
 <b>Longitude:</b>
 ${d.longitude}
 
 <br><br>
+
 
 <b>Status:</b>
 
@@ -615,8 +719,19 @@ d.status === "Online"
 
 <br><br>
 
+
 <b>Last Update:</b>
 ${d.time}
+
+
+<button
+class="delete"
+onclick="deleteDriver(${index})">
+
+🗑️ Delete This Driver
+
+</button>
+
 
 </div>
 
@@ -633,6 +748,54 @@ document.getElementById(
 
 
 /* =========================
+   DELETE ONE DRIVER
+========================= */
+
+function deleteDriver(index){
+
+if(!drivers[index]){
+
+return;
+
+}
+
+
+let name =
+drivers[index].name;
+
+
+let ok =
+confirm(
+"क्या " +
+name +
+" को Delete करना है?"
+);
+
+
+if(!ok){
+
+return;
+
+}
+
+
+drivers.splice(index,1);
+
+
+saveData();
+
+
+showDrivers();
+
+
+alert(
+"✅ Driver Delete हो गया"
+);
+
+}
+
+
+/* =========================
    START
 ========================= */
 
@@ -640,5 +803,7 @@ showDrivers();
 
 </script>
 
+
 </body>
+
 </html>

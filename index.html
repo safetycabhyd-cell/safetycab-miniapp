@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Driver Map App</title>
+<title>Driver Admin Panel</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -30,60 +30,44 @@ margin:5px 0;
 }
 
 button{
-background:green;
+background:blue;
 color:white;
 border:0;
 }
 
 #map{
 height:400px;
-width:100%;
 }
 
 </style>
 
 </head>
 
+
 <body>
 
 
-<h2>🚕 Driver Live Map</h2>
+<h2>🛡️ Admin Panel</h2>
 
 
 <div class="box">
 
-<input id="driverId" placeholder="Driver ID">
+<input id="search" placeholder="Search Driver Name">
 
-<input id="driverName" placeholder="Driver Name">
-
-<input id="vehicleNumber" placeholder="Vehicle Number">
-
-
-<button onclick="getGPS()">
-📍 Get GPS
+<button onclick="searchDriver()">
+Search
 </button>
-
-
-<p id="gps">
-GPS Waiting...
-</p>
-
-
-<button onclick="addDriver()">
-Add Driver
-</button>
-
 
 </div>
 
 
 
-<h3>Driver List</h3>
+<h3>All Drivers</h3>
 
 <div id="list"></div>
 
 
-<h3>Map</h3>
+<h3>Driver Map</h3>
 
 <div id="map"></div>
 
@@ -99,89 +83,16 @@ let drivers =
 JSON.parse(localStorage.getItem("drivers")) || [];
 
 
-let lat="";
-let lng="";
 
+// List Show
 
-
-// GPS
-
-function getGPS(){
-
-navigator.geolocation.getCurrentPosition(
-
-function(position){
-
-lat = position.coords.latitude;
-
-lng = position.coords.longitude;
-
-
-document.getElementById("gps").innerHTML =
-"Latitude: "+lat+
-"<br>Longitude: "+lng;
-
-}
-
-);
-
-}
-
-
-
-
-// Add Driver
-
-function addDriver(){
-
-
-let driver={
-
-id:driverId.value,
-
-name:driverName.value,
-
-vehicle:vehicleNumber.value,
-
-latitude:lat,
-
-longitude:lng,
-
-status:"Online",
-
-time:new Date().toLocaleString()
-
-};
-
-
-drivers.push(driver);
-
-
-localStorage.setItem(
-"drivers",
-JSON.stringify(drivers)
-);
-
-
-showDrivers();
-
-showMap();
-
-
-}
-
-
-
-
-// Driver List
-
-function showDrivers(){
+function showDrivers(data){
 
 
 let html="";
 
 
-drivers.forEach(d=>{
+data.forEach(d=>{
 
 
 html += `
@@ -195,9 +106,11 @@ html += `
 <b>Location:</b>
 ${d.latitude}, ${d.longitude}<br>
 
-<b>Status:</b> 🟢 ${d.status}<br>
+<b>Status:</b>
+🟢 ${d.status}<br>
 
-<b>Time:</b> ${d.time}
+<b>Update:</b>
+${d.time}
 
 </div>
 
@@ -208,8 +121,30 @@ ${d.latitude}, ${d.longitude}<br>
 
 document.getElementById("list").innerHTML=html;
 
+
 }
 
+
+
+
+// Search
+
+function searchDriver(){
+
+
+let text =
+document.getElementById("search").value.toLowerCase();
+
+
+let result =
+drivers.filter(d=>
+d.name.toLowerCase().includes(text)
+);
+
+
+showDrivers(result);
+
+}
 
 
 
@@ -227,9 +162,6 @@ L.tileLayer(
 
 
 
-function showMap(){
-
-
 drivers.forEach(d=>{
 
 
@@ -241,27 +173,20 @@ L.marker(
 Number(d.latitude),
 Number(d.longitude)
 ]
+
 )
-
 .addTo(map)
-
-.bindPopup(
-d.name
-);
+.bindPopup(d.name);
 
 
 }
+
 
 });
 
 
-}
 
-
-
-showDrivers();
-
-showMap();
+showDrivers(drivers);
 
 
 </script>

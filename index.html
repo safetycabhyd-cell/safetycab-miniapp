@@ -1,39 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
+
 <head>
 
-<title>Safety Cab - Live GPS</title>
+<meta charset="UTF-8">
+
+<title>Safety Cab Mini App</title>
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
 
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 <style>
 
 body{
-font-family:Arial;
+font-family:Arial,sans-serif;
 background:#f2f2f2;
+margin:0;
 padding:15px;
+}
+
+h2{
+margin-top:5px;
 }
 
 .box{
 background:white;
 padding:15px;
-border-radius:10px;
+border-radius:12px;
 margin-bottom:15px;
 }
 
 input,button{
 width:100%;
+box-sizing:border-box;
 padding:12px;
 margin:6px 0;
-box-sizing:border-box;
+border-radius:6px;
+}
+
+input{
+border:1px solid #ccc;
 }
 
 button{
-background:green;
+background:#168a3a;
 color:white;
 border:0;
-border-radius:6px;
 font-size:16px;
 }
 
@@ -41,12 +58,16 @@ font-size:16px;
 background:#d32f2f;
 }
 
+.delete{
+background:#555;
+}
+
 .driver{
 background:white;
 padding:15px;
-margin-top:10px;
+margin:10px 0;
 border-radius:10px;
-border-left:5px solid green;
+border-left:5px solid #168a3a;
 }
 
 .online{
@@ -54,29 +75,45 @@ color:green;
 font-weight:bold;
 }
 
+#map{
+height:400px;
+width:100%;
+border-radius:10px;
+}
+
+.small{
+font-size:13px;
+color:#666;
+}
+
 </style>
 
 </head>
 
+
 <body>
 
-<h2>🚕 Safety Cab - Live GPS</h2>
+
+<h2>🚕 Safety Cab</h2>
 
 
 <div class="box">
 
-<h3>Driver Details</h3>
+<h3>Driver Registration</h3>
+
 
 <input
 id="driverId"
 placeholder="Driver ID">
 
+
 <input
 id="driverName"
 placeholder="Driver Name">
 
+
 <input
-id="vehicle"
+id="vehicleNumber"
 placeholder="Vehicle Number">
 
 
@@ -88,7 +125,9 @@ placeholder="Vehicle Number">
 <button
 class="stop"
 onclick="stopGPS()">
+
 ⛔ Stop Live GPS
+
 </button>
 
 
@@ -97,26 +136,70 @@ GPS Waiting...
 </p>
 
 
-<button onclick="addDriver()">
-➕ Add / Save Driver
+<button onclick="saveDriver()">
+
+➕ Save Driver
+
 </button>
 
+
+<button
+class="delete"
+onclick="deleteAll()">
+
+🗑️ Delete All Drivers
+
+</button>
 
 </div>
 
 
-<h3>Driver List</h3>
+
+<div class="box">
+
+<h3>🔎 Search Driver</h3>
+
+
+<input
+id="search"
+placeholder="Name / ID / Vehicle"
+oninput="searchDrivers()">
+
+</div>
+
+
+
+<h3>👨‍✈️ All Drivers</h3>
+
 
 <div id="list">
 Loading...
 </div>
 
 
+
+<h3>🗺️ Driver Map</h3>
+
+
+<div id="map"></div>
+
+
+<p class="small">
+Safety Cab Mini App — Demo Version
+</p>
+
+
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+
 <script>
 
-
 /* =========================
-   SAVED DATA
+   DATA
 ========================= */
 
 let drivers =
@@ -125,15 +208,38 @@ localStorage.getItem("drivers")
 ) || [];
 
 
-let watchId = null;
-
 let currentLat = "";
 
 let currentLng = "";
 
+let watchId = null;
+
 
 /* =========================
-   START LIVE GPS
+   MAP
+========================= */
+
+let map =
+L.map("map").setView(
+[17.2872833,78.4661983],
+13
+);
+
+
+L.tileLayer(
+"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:"© OpenStreetMap"
+}
+).addTo(map);
+
+
+let markers = [];
+
+
+/* =========================
+   GPS START
 ========================= */
 
 function startGPS(){
@@ -145,6 +251,15 @@ alert(
 );
 
 return;
+
+}
+
+
+if(watchId !== null){
+
+navigator.geolocation.clearWatch(
+watchId
+);
 
 }
 
@@ -172,15 +287,50 @@ currentLat +
 currentLng;
 
 
-updateDriverLocation();
+/* Current Driver Update */
+
+let id =
+document.getElementById("driverId")
+.value.trim();
+
+
+let driver =
+drivers.find(
+d => d.id === id
+);
+
+
+if(driver){
+
+driver.latitude =
+currentLat;
+
+driver.longitude =
+currentLng;
+
+driver.status =
+"Online";
+
+driver.time =
+new Date().toLocaleString();
+
+
+saveData();
+
+showDrivers();
+
+showMap();
+
+}
 
 },
 
 
-function(error){
+function(){
 
-document.getElementById("gps").innerHTML =
-"🔴 GPS Permission / Error";
+document.getElementById("gps")
+.innerHTML =
+"🔴 GPS Permission Error";
 
 },
 
@@ -196,7 +346,6 @@ maximumAge:0
 }
 
 );
-
 
 }
 
@@ -218,28 +367,31 @@ watchId = null;
 }
 
 
-document.getElementById("gps").innerHTML =
+document.getElementById("gps")
+.innerHTML =
 "🔴 Live GPS OFF";
 
 }
 
 
 /* =========================
-   ADD DRIVER
+   SAVE DRIVER
 ========================= */
 
-function addDriver(){
+function saveDriver(){
 
 let id =
 document.getElementById("driverId")
 .value.trim();
 
+
 let name =
 document.getElementById("driverName")
 .value.trim();
 
+
 let vehicle =
-document.getElementById("vehicle")
+document.getElementById("vehicleNumber")
 .value.trim();
 
 
@@ -270,8 +422,10 @@ return;
 }
 
 
-if(currentLat === "" ||
-currentLng === ""){
+if(
+currentLat === "" ||
+currentLng === ""
+){
 
 alert(
 "पहले Start Live GPS दबाइए"
@@ -282,6 +436,8 @@ return;
 }
 
 
+/* Existing Driver */
+
 let existing =
 drivers.find(
 d => d.id === id
@@ -290,9 +446,11 @@ d => d.id === id
 
 if(existing){
 
-existing.name = name;
+existing.name =
+name;
 
-existing.vehicle = vehicle;
+existing.vehicle =
+vehicle;
 
 existing.latitude =
 currentLat;
@@ -307,6 +465,9 @@ existing.time =
 new Date().toLocaleString();
 
 }
+
+
+/* New Driver */
 
 else{
 
@@ -335,67 +496,18 @@ saveData();
 
 showDrivers();
 
+showMap();
+
 
 alert(
-"Driver Saved Successfully"
+"Driver Successfully Saved"
 );
 
 }
 
 
 /* =========================
-   UPDATE LOCATION
-========================= */
-
-function updateDriverLocation(){
-
-let id =
-document.getElementById("driverId")
-.value.trim();
-
-
-if(id === ""){
-
-return;
-
-}
-
-
-let driver =
-drivers.find(
-d => d.id === id
-);
-
-
-if(!driver){
-
-return;
-
-}
-
-
-driver.latitude =
-currentLat;
-
-driver.longitude =
-currentLng;
-
-driver.status =
-"Online";
-
-driver.time =
-new Date().toLocaleString();
-
-
-saveData();
-
-showDrivers();
-
-}
-
-
-/* =========================
-   SAVE DATA
+   SAVE LOCAL DATA
 ========================= */
 
 function saveData(){
@@ -409,23 +521,23 @@ JSON.stringify(drivers)
 
 
 /* =========================
-   SHOW DRIVERS
+   DRIVER LIST
 ========================= */
 
-function showDrivers(){
+function showDrivers(data=drivers){
 
 let html = "";
 
 
-if(drivers.length === 0){
+if(data.length === 0){
 
 html =
-"<p>कोई Driver नहीं है</p>";
+"<p>कोई Driver नहीं है।</p>";
 
 }
 
 
-drivers.forEach(function(d){
+data.forEach(function(d){
 
 html += `
 
@@ -457,6 +569,7 @@ ${d.longitude}
 <br>
 
 <b>Status:</b>
+
 <span class="online">
 🟢 ${d.status}
 </span>
@@ -480,12 +593,185 @@ document.getElementById("list")
 
 
 /* =========================
-   START PAGE
+   SEARCH
+========================= */
+
+function searchDrivers(){
+
+let text =
+document.getElementById("search")
+.value
+.toLowerCase()
+.trim();
+
+
+let result =
+drivers.filter(function(d){
+
+return (
+
+d.name
+.toLowerCase()
+.includes(text)
+
+||
+
+d.id
+.toLowerCase()
+.includes(text)
+
+||
+
+d.vehicle
+.toLowerCase()
+.includes(text)
+
+);
+
+});
+
+
+showDrivers(result);
+
+}
+
+
+/* =========================
+   MAP MARKERS
+========================= */
+
+function showMap(){
+
+/* Remove old markers */
+
+markers.forEach(function(marker){
+
+map.removeLayer(marker);
+
+});
+
+
+markers = [];
+
+
+/* Add new markers */
+
+drivers.forEach(function(d){
+
+if(
+d.latitude !== "" &&
+d.longitude !== ""
+){
+
+let marker =
+L.marker([
+Number(d.latitude),
+Number(d.longitude)
+])
+
+
+.addTo(map)
+
+
+.bindPopup(`
+
+<b>Driver:</b>
+${d.name}
+
+<br>
+
+<b>ID:</b>
+${d.id}
+
+<br>
+
+<b>Vehicle:</b>
+${d.vehicle}
+
+<br>
+
+<b>Status:</b>
+🟢 ${d.status}
+
+`);
+
+
+markers.push(marker);
+
+}
+
+});
+
+
+/* Fit map */
+
+if(markers.length > 0){
+
+let group =
+L.featureGroup(markers);
+
+map.fitBounds(
+group.getBounds(),
+{
+padding:[30,30]
+}
+);
+
+}
+
+}
+
+
+/* =========================
+   DELETE ALL
+========================= */
+
+function deleteAll(){
+
+let ok =
+confirm(
+"क्या सभी Driver Data Delete करना है?"
+);
+
+
+if(!ok){
+
+return;
+
+}
+
+
+drivers = [];
+
+
+localStorage.removeItem(
+"drivers"
+);
+
+
+showDrivers();
+
+showMap();
+
+
+alert(
+"सभी Driver Delete हो गए"
+);
+
+}
+
+
+/* =========================
+   START
 ========================= */
 
 showDrivers();
 
+showMap();
+
 </script>
 
+
 </body>
+
 </html>

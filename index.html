@@ -1,57 +1,16 @@
 const http = require("http");
 
-let drivers = [];
-
-
 const server = http.createServer((req, res) => {
 
-    res.setHeader("Content-Type", "application/json");
+    res.write("Driver Mini App Server Running");
 
-
-    // Driver List
-    if(req.url === "/drivers" && req.method === "GET") {
-
-        res.end(JSON.stringify(drivers));
-
-    }
-
-
-    // Add Driver
-    else if(req.url === "/add-driver" && req.method === "POST") {
-
-        let driver = {
-            driver_id: "DRV001",
-            name: "Test Driver",
-            phone: "9999999999",
-            vehicle_number: "TS09AB1234",
-            latitude: 17.385,
-            longitude: 78.486,
-            online_status: true,
-            last_update_time: new Date()
-        };
-
-
-        drivers.push(driver);
-
-        res.end(JSON.stringify({
-            message:"Driver Added",
-            data:driver
-        }));
-
-    }
-
-
-    else {
-
-        res.end(JSON.stringify({
-            message:"API Not Found"
-        }));
-
-    }
+    res.end();
 
 });
 
 
 server.listen(3000, () => {
-    console.log("Server Started on Port 3000");
+
+    console.log("Server Started");
+
 });

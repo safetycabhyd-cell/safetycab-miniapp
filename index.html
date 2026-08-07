@@ -1,52 +1,176 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>GPS Test</title>
+
+<title>Driver GPS App</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px;
+background:#f2f2f2;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:10px;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin:5px 0;
+}
+
+button{
+background:green;
+color:white;
+border:0;
+}
+
+#result{
+background:white;
+padding:10px;
+margin-top:10px;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-<h2>Driver GPS Test</h2>
+
+<h2>🚕 Driver GPS App</h2>
+
+
+<div class="box">
+
+
+<input id="driver_id" placeholder="Driver ID">
+
+<input id="name" placeholder="Driver Name">
+
+<input id="vehicle" placeholder="Vehicle Number">
+
 
 <button onclick="getGPS()">
-Get Location
+📍 Get GPS Location
 </button>
 
+
 <p id="result">
-Location Waiting...
+GPS Waiting...
 </p>
+
+
+<button onclick="saveDriver()">
+Save Driver
+</button>
+
+
+</div>
+
 
 
 <script>
 
+
+let latitude="";
+let longitude="";
+
+
 function getGPS(){
+
 
 navigator.geolocation.getCurrentPosition(
 
 function(position){
 
-let lat = position.coords.latitude;
-let lng = position.coords.longitude;
+
+latitude = position.coords.latitude;
+
+longitude = position.coords.longitude;
+
 
 document.getElementById("result").innerHTML =
-"Latitude: " + lat +
-"<br>Longitude: " + lng;
+
+"Latitude: "+latitude+
+"<br>Longitude: "+longitude;
+
 
 },
 
-function(error){
 
-document.getElementById("result").innerHTML =
-"GPS Error: Permission Allow करें";
+function(){
+
+alert("GPS Permission Allow करें");
 
 }
+
 
 );
 
+
 }
 
+
+
+function saveDriver(){
+
+
+let driver={
+
+
+driver_id:
+document.getElementById("driver_id").value,
+
+
+name:
+document.getElementById("name").value,
+
+
+vehicle_number:
+document.getElementById("vehicle").value,
+
+
+latitude:latitude,
+
+
+longitude:longitude,
+
+
+online_status:"Online",
+
+
+last_update_time:
+new Date().toLocaleString()
+
+
+};
+
+
+
+localStorage.setItem(
+"driver",
+JSON.stringify(driver)
+);
+
+
+
+alert("Driver Saved Successfully");
+
+
+}
+
+
 </script>
+
 
 </body>
 </html>

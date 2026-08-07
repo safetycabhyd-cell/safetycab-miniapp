@@ -1,17 +1,15 @@
-// server.js
-
 const express = require("express");
+
 const app = express();
 
 app.use(express.json());
 
 let drivers = [];
 
-
-// Driver Add
+// Add Driver
 app.post("/add-driver", (req, res) => {
 
-    const driver = {
+    let driver = {
         driver_id: req.body.driver_id,
         name: req.body.name,
         phone: req.body.phone,
@@ -24,47 +22,37 @@ app.post("/add-driver", (req, res) => {
 
     drivers.push(driver);
 
-    res.json({
-        message: "Driver Added",
-        data: driver
-    });
+    res.send(driver);
 });
 
 
-// GPS Update
+// Update Location
 app.post("/update-location", (req,res)=>{
 
     let driver = drivers.find(
-        d => d.driver_id == req.body.driver_id
+        x => x.driver_id === req.body.driver_id
     );
 
     if(!driver){
-        return res.json({
+        return res.status(404).send({
             message:"Driver Not Found"
         });
     }
 
-
     driver.latitude = req.body.latitude;
     driver.longitude = req.body.longitude;
-    driver.online_status = true;
     driver.last_update_time = new Date();
 
-
-    res.json({
-        message:"Location Updated",
-        data:driver
-    });
-
+    res.send(driver);
 });
 
 
-// All Driver List
+// Show All Drivers
 app.get("/drivers",(req,res)=>{
     res.json(drivers);
 });
 
 
 app.listen(3000,()=>{
-    console.log("Mini App Server Started");
+    console.log("Server Running Port 3000");
 });

@@ -1,16 +1,165 @@
-const http = require("http");
+<!DOCTYPE html>
+<html>
+<head>
+<title>Driver Mini App</title>
 
-const server = http.createServer((req, res) => {
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    res.write("Driver Mini App Server Running");
+<style>
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    padding:20px;
+}
 
-    res.end();
+.box{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+input,button{
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    border-radius:5px;
+}
+
+button{
+    background:green;
+    color:white;
+    border:none;
+}
+
+.driver{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🚕 Driver Mini App</h2>
+
+
+<div class="box">
+
+<h3>Add Driver</h3>
+
+<input id="driver_id" placeholder="Driver ID">
+
+<input id="name" placeholder="Driver Name">
+
+<input id="phone" placeholder="Phone Number">
+
+<input id="vehicle" placeholder="Vehicle Number">
+
+<input id="lat" placeholder="Latitude">
+
+<input id="lng" placeholder="Longitude">
+
+
+<button onclick="addDriver()">
+Add Driver
+</button>
+
+</div>
+
+
+<h3>Driver List</h3>
+
+<div id="list"></div>
+
+
+
+<script>
+
+let drivers=[];
+
+
+function addDriver(){
+
+let driver={
+
+driver_id:
+document.getElementById("driver_id").value,
+
+name:
+document.getElementById("name").value,
+
+phone:
+document.getElementById("phone").value,
+
+vehicle_number:
+document.getElementById("vehicle").value,
+
+latitude:
+document.getElementById("lat").value,
+
+longitude:
+document.getElementById("lng").value,
+
+online_status:"Online",
+
+last_update_time:
+new Date().toLocaleString()
+
+};
+
+
+drivers.push(driver);
+
+showDrivers();
+
+}
+
+
+
+function showDrivers(){
+
+let html="";
+
+
+drivers.forEach(function(d){
+
+html += `
+
+<div class="driver">
+
+<b>Driver ID:</b> ${d.driver_id}<br>
+
+<b>Name:</b> ${d.name}<br>
+
+<b>Phone:</b> ${d.phone}<br>
+
+<b>Vehicle:</b> ${d.vehicle_number}<br>
+
+<b>Latitude:</b> ${d.latitude}<br>
+
+<b>Longitude:</b> ${d.longitude}<br>
+
+<b>Status:</b> 🟢 ${d.online_status}<br>
+
+<b>Last Update:</b> ${d.last_update_time}
+
+</div>
+
+`;
 
 });
 
 
-server.listen(3000, () => {
+document.getElementById("list").innerHTML=html;
 
-    console.log("Server Started");
+}
 
-});
+</script>
+
+
+</body>
+</html>

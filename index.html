@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 
-<title>Driver Mini App</title>
+<title>Driver Map App</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 <style>
 
@@ -19,7 +20,7 @@ padding:15px;
 background:white;
 padding:15px;
 border-radius:10px;
-margin-bottom:15px;
+margin-bottom:10px;
 }
 
 input,button{
@@ -32,11 +33,11 @@ button{
 background:green;
 color:white;
 border:0;
-border-radius:5px;
 }
 
-.driver{
-border-left:5px solid green;
+#map{
+height:400px;
+width:100%;
 }
 
 </style>
@@ -46,7 +47,7 @@ border-left:5px solid green;
 <body>
 
 
-<h2>🚕 Driver Mini App</h2>
+<h2>🚕 Driver Live Map</h2>
 
 
 <div class="box">
@@ -59,7 +60,7 @@ border-left:5px solid green;
 
 
 <button onclick="getGPS()">
-📍 Get GPS Location
+📍 Get GPS
 </button>
 
 
@@ -82,6 +83,14 @@ Add Driver
 <div id="list"></div>
 
 
+<h3>Map</h3>
+
+<div id="map"></div>
+
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 
 <script>
 
@@ -90,8 +99,8 @@ let drivers =
 JSON.parse(localStorage.getItem("drivers")) || [];
 
 
-let latitude="";
-let longitude="";
+let lat="";
+let lng="";
 
 
 
@@ -103,28 +112,21 @@ navigator.geolocation.getCurrentPosition(
 
 function(position){
 
-latitude =
-position.coords.latitude;
+lat = position.coords.latitude;
 
-longitude =
-position.coords.longitude;
+lng = position.coords.longitude;
 
 
 document.getElementById("gps").innerHTML =
-"Latitude: "+latitude+
-"<br>Longitude: "+longitude;
-
-},
-
-function(){
-
-alert("GPS Permission Allow करें");
+"Latitude: "+lat+
+"<br>Longitude: "+lng;
 
 }
 
 );
 
 }
+
 
 
 
@@ -135,18 +137,15 @@ function addDriver(){
 
 let driver={
 
-id:
-document.getElementById("driverId").value,
+id:driverId.value,
 
-name:
-document.getElementById("driverName").value,
+name:driverName.value,
 
-vehicle:
-document.getElementById("vehicleNumber").value,
+vehicle:vehicleNumber.value,
 
-latitude:latitude,
+latitude:lat,
 
-longitude:longitude,
+longitude:lng,
 
 status:"Online",
 
@@ -155,9 +154,7 @@ time:new Date().toLocaleString()
 };
 
 
-
 drivers.push(driver);
-
 
 
 localStorage.setItem(
@@ -166,8 +163,9 @@ JSON.stringify(drivers)
 );
 
 
-
 showDrivers();
+
+showMap();
 
 
 }
@@ -175,7 +173,7 @@ showDrivers();
 
 
 
-// Show Drivers
+// Driver List
 
 function showDrivers(){
 
@@ -183,41 +181,87 @@ function showDrivers(){
 let html="";
 
 
-drivers.forEach(function(d){
+drivers.forEach(d=>{
 
 
 html += `
 
 <div class="driver">
 
-<b>Driver Name:</b> ${d.name}<br>
+<b>Name:</b> ${d.name}<br>
 
 <b>Vehicle:</b> ${d.vehicle}<br>
 
-<b>Location:</b><br>
+<b>Location:</b>
 ${d.latitude}, ${d.longitude}<br>
 
 <b>Status:</b> 🟢 ${d.status}<br>
 
-<b>Last Update:</b> ${d.time}
+<b>Time:</b> ${d.time}
 
 </div>
 
 `;
-
 
 });
 
 
 document.getElementById("list").innerHTML=html;
 
-
 }
 
 
 
 
+// Map
+
+let map = L.map('map').setView(
+[17.2872833,78.4661983],
+13
+);
+
+
+L.tileLayer(
+'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+).addTo(map);
+
+
+
+function showMap(){
+
+
+drivers.forEach(d=>{
+
+
+if(d.latitude && d.longitude){
+
+
+L.marker(
+[
+Number(d.latitude),
+Number(d.longitude)
+]
+)
+
+.addTo(map)
+
+.bindPopup(
+d.name
+);
+
+
+}
+
+});
+
+
+}
+
+
+
 showDrivers();
+
+showMap();
 
 
 </script>

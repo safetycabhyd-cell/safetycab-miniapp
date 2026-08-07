@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<title>Driver GPS App</title>
+<title>Driver Group View</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -10,19 +10,20 @@
 
 body{
 font-family:Arial;
-padding:20px;
 background:#f2f2f2;
+padding:20px;
 }
 
-.box{
+.box,.driver{
 background:white;
-padding:20px;
+padding:15px;
 border-radius:10px;
+margin-bottom:10px;
 }
 
 input,button{
 width:100%;
-padding:12px;
+padding:10px;
 margin:5px 0;
 }
 
@@ -32,10 +33,8 @@ color:white;
 border:0;
 }
 
-#result{
-background:white;
-padding:10px;
-margin-top:10px;
+.driver{
+border-left:5px solid green;
 }
 
 </style>
@@ -46,11 +45,10 @@ margin-top:10px;
 <body>
 
 
-<h2>🚕 Driver GPS App</h2>
+<h2>🚕 Driver Group</h2>
 
 
 <div class="box">
-
 
 <input id="driver_id" placeholder="Driver ID">
 
@@ -60,17 +58,17 @@ margin-top:10px;
 
 
 <button onclick="getGPS()">
-📍 Get GPS Location
+📍 Get GPS
 </button>
 
 
-<p id="result">
+<p id="gps">
 GPS Waiting...
 </p>
 
 
-<button onclick="saveDriver()">
-Save Driver
+<button onclick="addDriver()">
+Add Driver
 </button>
 
 
@@ -78,11 +76,22 @@ Save Driver
 
 
 
+<h3>All Drivers</h3>
+
+<div id="list"></div>
+
+
+
 <script>
 
 
-let latitude="";
-let longitude="";
+let drivers =
+JSON.parse(localStorage.getItem("drivers")) || [];
+
+
+let lat="";
+let lng="";
+
 
 
 function getGPS(){
@@ -92,27 +101,18 @@ navigator.geolocation.getCurrentPosition(
 
 function(position){
 
+lat=position.coords.latitude;
 
-latitude = position.coords.latitude;
-
-longitude = position.coords.longitude;
-
-
-document.getElementById("result").innerHTML =
-
-"Latitude: "+latitude+
-"<br>Longitude: "+longitude;
+lng=position.coords.longitude;
 
 
-},
+document.getElementById("gps").innerHTML=
 
+"Latitude: "+lat+
+"<br>Longitude: "+lng;
 
-function(){
-
-alert("GPS Permission Allow करें");
 
 }
-
 
 );
 
@@ -121,52 +121,88 @@ alert("GPS Permission Allow करें");
 
 
 
-function saveDriver(){
+function addDriver(){
 
 
 let driver={
 
-
 driver_id:
-document.getElementById("driver_id").value,
-
+driver_id.value,
 
 name:
-document.getElementById("name").value,
+name.value,
 
+vehicle:
+vehicle.value,
 
-vehicle_number:
-document.getElementById("vehicle").value,
+latitude:lat,
 
+longitude:lng,
 
-latitude:latitude,
+status:"Online",
 
-
-longitude:longitude,
-
-
-online_status:"Online",
-
-
-last_update_time:
-new Date().toLocaleString()
-
+time:new Date().toLocaleString()
 
 };
 
 
+drivers.push(driver);
+
 
 localStorage.setItem(
-"driver",
-JSON.stringify(driver)
+"drivers",
+JSON.stringify(drivers)
 );
 
 
-
-alert("Driver Saved Successfully");
+showDrivers();
 
 
 }
+
+
+
+function showDrivers(){
+
+
+let html="";
+
+
+drivers.forEach((d,index)=>{
+
+
+html += `
+
+<div class="driver">
+
+<b>Driver ID:</b> ${d.driver_id}<br>
+
+<b>Name:</b> ${d.name}<br>
+
+<b>Vehicle:</b> ${d.vehicle}<br>
+
+<b>Location:</b><br>
+${d.latitude}, ${d.longitude}<br>
+
+<b>Status:</b> 🟢 ${d.status}<br>
+
+<b>Last Update:</b> ${d.time}
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("list").innerHTML=html;
+
+
+}
+
+
+
+showDrivers();
 
 
 </script>

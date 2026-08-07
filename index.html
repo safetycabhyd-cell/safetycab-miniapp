@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +31,7 @@ margin:5px 0;
 }
 
 button{
-background:blue;
+background:green;
 color:white;
 border:0;
 }
@@ -43,11 +44,35 @@ height:400px;
 
 </head>
 
-
 <body>
 
 
-<h2>🛡️ Admin Panel</h2>
+<h2>🚕 Driver Admin Panel</h2>
+
+
+<div class="box">
+
+<input id="driverId" placeholder="Driver ID">
+
+<input id="driverName" placeholder="Driver Name">
+
+<input id="vehicleNumber" placeholder="Vehicle Number">
+
+
+<button onclick="getGPS()">
+📍 Get GPS
+</button>
+
+
+<p id="gps">GPS Waiting...</p>
+
+
+<button onclick="addDriver()">
+Add Driver
+</button>
+
+</div>
+
 
 
 <div class="box">
@@ -62,12 +87,12 @@ Search
 
 
 
-<h3>All Drivers</h3>
+<h3>Driver List</h3>
 
 <div id="list"></div>
 
 
-<h3>Driver Map</h3>
+<h3>Map</h3>
 
 <div id="map"></div>
 
@@ -83,19 +108,75 @@ let drivers =
 JSON.parse(localStorage.getItem("drivers")) || [];
 
 
+let lat="";
+let lng="";
 
-// List Show
+
+
+function getGPS(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+lat=pos.coords.latitude;
+lng=pos.coords.longitude;
+
+document.getElementById("gps").innerHTML=
+"Latitude: "+lat+
+"<br>Longitude: "+lng;
+
+});
+
+}
+
+
+
+function addDriver(){
+
+let d={
+
+id:driverId.value,
+
+name:driverName.value,
+
+vehicle:vehicleNumber.value,
+
+latitude:lat,
+
+longitude:lng,
+
+status:"Online",
+
+time:new Date().toLocaleString()
+
+};
+
+
+drivers.push(d);
+
+
+localStorage.setItem(
+"drivers",
+JSON.stringify(drivers)
+);
+
+
+showDrivers(drivers);
+
+showMap();
+
+}
+
+
+
 
 function showDrivers(data){
-
 
 let html="";
 
 
 data.forEach(d=>{
 
-
-html += `
+html+=`
 
 <div class="driver">
 
@@ -106,11 +187,9 @@ html += `
 <b>Location:</b>
 ${d.latitude}, ${d.longitude}<br>
 
-<b>Status:</b>
-🟢 ${d.status}<br>
+<b>Status:</b> 🟢 ${d.status}<br>
 
-<b>Update:</b>
-${d.time}
+<b>Update:</b> ${d.time}
 
 </div>
 
@@ -121,24 +200,20 @@ ${d.time}
 
 document.getElementById("list").innerHTML=html;
 
-
 }
 
 
 
 
-// Search
-
 function searchDriver(){
 
-
-let text =
+let s=
 document.getElementById("search").value.toLowerCase();
 
 
-let result =
+let result=
 drivers.filter(d=>
-d.name.toLowerCase().includes(text)
+d.name.toLowerCase().includes(s)
 );
 
 
@@ -148,9 +223,8 @@ showDrivers(result);
 
 
 
-// Map
 
-let map = L.map('map').setView(
+let map=L.map('map').setView(
 [17.2872833,78.4661983],
 13
 );
@@ -162,31 +236,32 @@ L.tileLayer(
 
 
 
-drivers.forEach(d=>{
+function showMap(){
 
+drivers.forEach(d=>{
 
 if(d.latitude && d.longitude){
 
-
-L.marker(
-[
+L.marker([
 Number(d.latitude),
 Number(d.longitude)
-]
+])
 
-)
 .addTo(map)
+
 .bindPopup(d.name);
 
+}
+
+});
 
 }
 
 
-});
-
-
 
 showDrivers(drivers);
+
+showMap();
 
 
 </script>

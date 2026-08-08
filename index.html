@@ -4,14 +4,14 @@
 
 <meta charset="UTF-8">
 
-<title>Safety Cab Live GPS</title>
+<title>Safety Cab Admin Panel</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link
 rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
 
@@ -36,6 +36,7 @@ padding:12px;
 margin:6px 0;
 border:1px solid #ccc;
 border-radius:6px;
+font-size:15px;
 }
 
 button{
@@ -44,12 +45,14 @@ padding:12px;
 margin:6px 0;
 border:0;
 border-radius:6px;
-background:#168a3a;
-color:white;
 font-size:16px;
+color:white;
+background:#168a3a;
 }
 
-.stop,.delete{
+.stop,
+.dutyOff,
+.delete{
 background:#d32f2f;
 }
 
@@ -71,6 +74,47 @@ color:red;
 font-weight:bold;
 }
 
+.dutyOn{
+color:#168a3a;
+font-weight:bold;
+}
+
+.dutyOffText{
+color:#d32f2f;
+font-weight:bold;
+}
+
+.stars{
+font-size:28px;
+letter-spacing:3px;
+margin:8px 0;
+}
+
+.star{
+cursor:pointer;
+color:#ccc;
+}
+
+.star.active{
+color:#f5b400;
+}
+
+/* CAR ICON */
+
+.car-icon{
+font-size:30px;
+width:40px;
+height:40px;
+line-height:40px;
+text-align:center;
+filter:drop-shadow(1px 2px 2px #555);
+}
+
+.car-offline{
+filter:grayscale(1);
+opacity:.65;
+}
+
 #map{
 height:400px;
 width:100%;
@@ -82,9 +126,12 @@ margin-bottom:20px;
 
 </head>
 
+
 <body>
 
-<h2>🚕 Safety Cab Admin</h2>
+
+<h2>🚕 Safety Cab Admin Panel</h2>
+
 
 <div class="box">
 
@@ -106,9 +153,11 @@ placeholder="Phone Number">
 id="vehicle"
 placeholder="Vehicle Number">
 
+
 <button onclick="startLiveGPS()">
 📍 START LIVE GPS
 </button>
+
 
 <button
 class="stop"
@@ -116,15 +165,18 @@ onclick="stopLiveGPS()">
 ⛔ STOP GPS
 </button>
 
+
 <p id="gpsStatus">
 🔴 GPS OFF
 </p>
+
 
 <p id="location">
 Latitude: -
 <br>
 Longitude: -
 </p>
+
 
 <button onclick="saveDriver()">
 💾 SAVE DRIVER
@@ -133,16 +185,18 @@ Longitude: -
 </div>
 
 
+
 <div class="box">
 
 <h3>🔎 Search Driver</h3>
 
 <input
 id="search"
-placeholder="Name / Driver ID / Vehicle"
+placeholder="Name / ID / Vehicle"
 oninput="showDrivers()">
 
 </div>
+
 
 
 <h3>👨‍✈️ Driver List</h3>
@@ -152,28 +206,39 @@ Loading...
 </div>
 
 
+
 <h3>🗺️ Driver Map</h3>
 
 <div id="map"></div>
 
 
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
 <script>
 
 /* =========================
-   DATA
+   LOAD DATA
 ========================= */
 
-let drivers =
+let drivers = [];
+
+try{
+
+drivers =
 JSON.parse(
 localStorage.getItem(
 "safetycab_final_drivers"
 )
 ) || [];
+
+}catch(error){
+
+drivers = [];
+
+}
+
 
 let watchId = null;
 
@@ -182,6 +247,27 @@ let currentLat = "";
 let currentLng = "";
 
 let markers = [];
+
+
+/* =========================
+   OLD DATA FIX
+========================= */
+
+drivers.forEach(function(d){
+
+if(typeof d.online === "undefined"){
+d.online = false;
+}
+
+if(typeof d.duty === "undefined"){
+d.duty = false;
+}
+
+if(typeof d.rating === "undefined"){
+d.rating = 0;
+}
+
+});
 
 
 /* =========================
@@ -194,6 +280,7 @@ L.map("map").setView(
 13
 );
 
+
 L.tileLayer(
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
@@ -204,7 +291,45 @@ attribution:"© OpenStreetMap"
 
 
 /* =========================
-   LIVE GPS
+   CAR ICON
+========================= */
+
+function createCarIcon(driver){
+
+let carClass =
+driver.online
+? "car-icon"
+: "car-icon car-offline";
+
+
+let carSymbol =
+driver.online
+? "🚕"
+: "🚕";
+
+
+return L.divIcon({
+
+className:"",
+
+html:
+`<div class="${carClass}">
+${carSymbol}
+</div>`,
+
+iconSize:[40,40],
+
+iconAnchor:[20,20],
+
+popupAnchor:[0,-20]
+
+});
+
+}
+
+
+/* =========================
+   START LIVE GPS
 ========================= */
 
 function startLiveGPS(){
@@ -218,6 +343,7 @@ alert(
 return;
 
 }
+
 
 document.getElementById(
 "gpsStatus"
@@ -240,7 +366,7 @@ position.coords.longitude;
 document.getElementById(
 "gpsStatus"
 ).innerHTML =
-"🟢 GPS LIVE";
+"🟢 GPS ONLINE";
 
 
 document.getElementById(
@@ -274,11 +400,12 @@ currentLat;
 driver.longitude =
 currentLng;
 
-driver.status =
-"Online";
+driver.online =
+true;
 
-driver.time =
+driver.lastUpdate =
 new Date().toLocaleString();
+
 
 saveData();
 
@@ -290,23 +417,31 @@ showMap();
 
 },
 
-function(){
+function(error){
 
 document.getElementById(
 "gpsStatus"
 ).innerHTML =
-"🔴 GPS ERROR";
+"🔴 GPS OFFLINE";
+
+if(error.code === 1){
 
 alert(
 "Location Permission Allow करें"
 );
 
+}
+
 },
 
 {
+
 enableHighAccuracy:true,
+
 timeout:15000,
+
 maximumAge:0
+
 }
 
 );
@@ -330,10 +465,40 @@ watchId = null;
 
 }
 
+
 document.getElementById(
 "gpsStatus"
 ).innerHTML =
-"🔴 GPS OFF";
+"🔴 GPS OFFLINE";
+
+
+let id =
+document.getElementById(
+"driverId"
+).value.trim();
+
+
+let driver =
+drivers.find(
+d => d.id === id
+);
+
+
+if(driver){
+
+driver.online =
+false;
+
+driver.lastUpdate =
+new Date().toLocaleString();
+
+saveData();
+
+showDrivers();
+
+showMap();
+
+}
 
 }
 
@@ -365,13 +530,27 @@ document.getElementById(
 ).value.trim();
 
 
-if(id === "" ||
-name === "" ||
-vehicle === ""){
+if(id === ""){
 
-alert(
-"Driver ID, Name और Vehicle भरें"
-);
+alert("Driver ID डालिए");
+
+return;
+
+}
+
+
+if(name === ""){
+
+alert("Driver Name डालिए");
+
+return;
+
+}
+
+
+if(vehicle === ""){
+
+alert("Vehicle Number डालिए");
 
 return;
 
@@ -406,21 +585,16 @@ driver.phone = phone;
 
 driver.vehicle = vehicle;
 
-driver.latitude =
-currentLat;
+driver.latitude = currentLat;
 
-driver.longitude =
-currentLng;
+driver.longitude = currentLng;
 
-driver.status =
-"Online";
+driver.online = true;
 
-driver.time =
+driver.lastUpdate =
 new Date().toLocaleString();
 
-}
-
-else{
+}else{
 
 drivers.push({
 
@@ -436,9 +610,14 @@ latitude:currentLat,
 
 longitude:currentLng,
 
-status:"Online",
+online:true,
 
-time:new Date().toLocaleString()
+duty:false,
+
+rating:0,
+
+lastUpdate:
+new Date().toLocaleString()
 
 });
 
@@ -450,6 +629,7 @@ saveData();
 showDrivers();
 
 showMap();
+
 
 alert(
 "✅ Driver Saved"
@@ -465,9 +645,103 @@ alert(
 function saveData(){
 
 localStorage.setItem(
+
 "safetycab_final_drivers",
+
 JSON.stringify(drivers)
+
 );
+
+}
+
+
+/* =========================
+   DUTY ON
+========================= */
+
+function dutyOn(index){
+
+if(!drivers[index]){
+return;
+}
+
+drivers[index].duty = true;
+
+saveData();
+
+showDrivers();
+
+showMap();
+
+}
+
+
+/* =========================
+   DUTY OFF
+========================= */
+
+function dutyOff(index){
+
+if(!drivers[index]){
+return;
+}
+
+drivers[index].duty = false;
+
+saveData();
+
+showDrivers();
+
+showMap();
+
+}
+
+
+/* =========================
+   RATING
+========================= */
+
+function setRating(index,rating){
+
+if(!drivers[index]){
+return;
+}
+
+drivers[index].rating = rating;
+
+saveData();
+
+showDrivers();
+
+showMap();
+
+}
+
+
+/* =========================
+   STAR DISPLAY
+========================= */
+
+function getStars(index,rating){
+
+let html = "";
+
+for(let i=1;i<=5;i++){
+
+html += `
+
+<span
+class="star ${i <= rating ? "active" : ""}"
+onclick="setRating(${index},${i})">
+
+★
+</span>
+
+`;
+
+}
+
+return html;
 
 }
 
@@ -503,6 +777,12 @@ String(d.name)
 
 ||
 
+String(d.phone)
+.toLowerCase()
+.includes(search)
+
+||
+
 String(d.vehicle)
 .toLowerCase()
 .includes(search)
@@ -517,8 +797,20 @@ let html = "";
 
 if(result.length === 0){
 
-html =
-"<div class='box'>❌ कोई Driver नहीं मिला।</div>";
+html = `
+
+<div class="box">
+
+❌ कोई Driver नहीं मिला।
+
+<br><br>
+
+Total Drivers:
+${drivers.length}
+
+</div>
+
+`;
 
 }
 
@@ -553,22 +845,16 @@ ${d.vehicle}
 
 <br><br>
 
-<b>Location:</b>
-${d.latitude},
-${d.longitude}
-
-<br><br>
-
-<b>Status:</b>
+<b>GPS Status:</b>
 
 <span class="${
-d.status === "Online"
+d.online
 ? "online"
 : "offline"
 }">
 
 ${
-d.status === "Online"
+d.online
 ? "🟢 Online"
 : "🔴 Offline"
 }
@@ -577,14 +863,81 @@ d.status === "Online"
 
 <br><br>
 
-<b>Last Update:</b>
-${d.time}
+<b>Duty Status:</b>
+
+<span class="${
+d.duty
+? "dutyOn"
+: "dutyOffText"
+}">
+
+${
+d.duty
+? "🟢 Duty ON"
+: "🔴 Duty OFF"
+}
+
+</span>
+
+<br><br>
+
+<b>⭐ Driver Rating:</b>
+
+<div class="stars">
+
+${getStars(
+index,
+d.rating || 0
+)}
+
+</div>
+
+<div>
+
+${
+d.rating
+? d.rating + " / 5"
+: "Not Rated"
+}
+
+</div>
+
+<br>
+
+<b>Location:</b>
+
+${d.latitude || "-"},
+${d.longitude || "-"}
+
+<br><br>
+
+<b>Last GPS Update:</b>
+
+${d.lastUpdate || "-"}
+
+
+<button
+onclick="dutyOn(${index})">
+
+🟢 DUTY ON
+
+</button>
+
+
+<button
+class="dutyOff"
+onclick="dutyOff(${index})">
+
+🔴 DUTY OFF
+
+</button>
+
 
 <button
 class="delete"
 onclick="deleteDriver(${index})">
 
-🗑️ Delete This Driver
+🗑️ DELETE DRIVER
 
 </button>
 
@@ -603,7 +956,7 @@ document.getElementById(
 
 
 /* =========================
-   DELETE ONE
+   DELETE DRIVER
 ========================= */
 
 function deleteDriver(index){
@@ -612,6 +965,7 @@ if(!drivers[index]){
 return;
 }
 
+
 let ok =
 confirm(
 "क्या " +
@@ -619,9 +973,11 @@ drivers[index].name +
 " को Delete करना है?"
 );
 
+
 if(!ok){
 return;
 }
+
 
 drivers.splice(index,1);
 
@@ -635,7 +991,7 @@ showMap();
 
 
 /* =========================
-   MAP MARKERS
+   MAP WITH CAR
 ========================= */
 
 function showMap(){
@@ -645,6 +1001,7 @@ markers.forEach(function(marker){
 map.removeLayer(marker);
 
 });
+
 
 markers = [];
 
@@ -664,30 +1021,49 @@ if(
 ){
 
 let marker =
-L.marker([lat,lng])
-.addTo(map);
+L.marker(
+[lat,lng],
+{
+icon:createCarIcon(d)
+}
+).addTo(map);
+
 
 marker.bindPopup(`
 
-<b>Driver:</b>
+<b>🚕 Driver:</b>
 ${d.name}
 
-<br>
-
-<b>ID:</b>
-${d.id}
-
-<br>
+<br><br>
 
 <b>Vehicle:</b>
 ${d.vehicle}
 
 <br>
 
-<b>Status:</b>
-🟢 ${d.status}
+<b>GPS:</b>
+${
+d.online
+? "🟢 Online"
+: "🔴 Offline"
+}
+
+<br>
+
+<b>Duty:</b>
+${
+d.duty
+? "🟢 ON"
+: "🔴 OFF"
+}
+
+<br>
+
+<b>Rating:</b>
+⭐ ${d.rating || 0} / 5
 
 `);
+
 
 markers.push(marker);
 
@@ -722,6 +1098,7 @@ showDrivers();
 showMap();
 
 </script>
+
 
 </body>
 </html>

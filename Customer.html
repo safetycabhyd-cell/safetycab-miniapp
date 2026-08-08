@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -12,10 +13,12 @@
   padding:0;
   font-family:Arial,sans-serif;
 }
+
 body{
   background:#f1f5f9;
   color:#172033;
 }
+
 .header{
   background:#111827;
   color:#fff;
@@ -24,11 +27,13 @@ body{
   font-size:23px;
   font-weight:bold;
 }
+
 .container{
   max-width:520px;
   margin:auto;
   padding:15px;
 }
+
 .card{
   background:#fff;
   border-radius:18px;
@@ -36,11 +41,13 @@ body{
   margin-bottom:15px;
   box-shadow:0 3px 14px rgba(0,0,0,.08);
 }
+
 .title{
   font-size:19px;
   font-weight:bold;
   margin-bottom:14px;
 }
+
 input,select{
   width:100%;
   padding:14px;
@@ -49,6 +56,7 @@ input,select{
   border-radius:11px;
   font-size:15px;
 }
+
 button{
   width:100%;
   padding:14px;
@@ -60,6 +68,7 @@ button{
   font-size:16px;
   font-weight:bold;
 }
+
 .blue{background:#2563eb}
 .red{background:#dc2626}
 .dark{background:#111827}
@@ -71,6 +80,7 @@ button{
   background:#111827;
   color:#fff;
 }
+
 .info{
   background:#f8fafc;
   padding:12px;
@@ -90,6 +100,7 @@ button{
   overflow:hidden;
   border:1px solid #cbd5e1;
 }
+
 .road{
   position:absolute;
   width:130%;
@@ -99,6 +110,7 @@ button{
   left:-30px;
   transform:rotate(-12deg);
 }
+
 .car{
   position:absolute;
   top:105px;
@@ -106,6 +118,7 @@ button{
   font-size:36px;
   transition:.8s;
 }
+
 .pin{
   position:absolute;
   bottom:35px;
@@ -119,14 +132,17 @@ button{
   text-align:center;
   font-weight:bold;
 }
+
 .online{
   background:#ecfdf5;
   color:#166534;
 }
+
 .waiting{
   background:#fffbeb;
   color:#92400e;
 }
+
 .cancelled{
   background:#fef2f2;
   color:#991b1b;
@@ -138,12 +154,14 @@ button{
   border-radius:14px;
   padding:15px;
 }
+
 .row{
   display:flex;
   justify-content:space-between;
   padding:8px 0;
   border-bottom:1px solid #dcfce7;
 }
+
 .total{
   font-size:22px;
   font-weight:bold;
@@ -156,6 +174,7 @@ button{
   align-items:center;
   gap:13px;
 }
+
 .driverIcon{
   width:60px;
   height:60px;
@@ -166,6 +185,7 @@ button{
   justify-content:center;
   font-size:30px;
 }
+
 .rating{
   color:#f59e0b;
   font-size:20px;
@@ -176,18 +196,21 @@ button{
   border-radius:12px;
   padding:18px;
 }
+
 .invoiceHeader{
   text-align:center;
   border-bottom:2px solid #111827;
   padding-bottom:12px;
   margin-bottom:12px;
 }
+
 .invoiceRow{
   display:flex;
   justify-content:space-between;
   padding:8px 0;
   border-bottom:1px solid #eee;
 }
+
 .invoiceTotal{
   display:flex;
   justify-content:space-between;
@@ -200,6 +223,7 @@ button{
   color:#64748b;
   font-size:12px;
 }
+
 .bottom{
   text-align:center;
   color:#64748b;
@@ -390,7 +414,6 @@ button{
     👨‍✈️ Check Driver
   </button>
 
-  <!-- CANCEL -->
   <button id="cancelButton"
           class="red"
           onclick="cancelBooking()">
@@ -410,7 +433,7 @@ button{
     <div class="driverIcon">👨‍✈️</div>
 
     <div>
-      <b>Jaweed</b><br>
+      <b id="driverName">Mohd reyan</b><br>
 
       <span style="color:#16a34a;font-weight:bold">
         🟢 Online
@@ -426,8 +449,15 @@ button{
 
   <br>
 
-  <p>🚕 Vehicle: TS08UE0850</p>
-  <p>📱 Phone: 9398179229</p>
+  <p>
+    🚕 Vehicle:
+    <span id="driverVehicle">TS08UE0850</span>
+  </p>
+
+  <p>
+    📱 Phone:
+    <span id="driverPhone">9398179229</span>
+  </p>
 
   <button onclick="callDriver()">
     📞 Call Driver
@@ -637,10 +667,6 @@ button{
 
 <script>
 
-/* =========================
-   FARE SETTINGS
-========================= */
-
 const fares = {
 
   Mini:{
@@ -663,12 +689,7 @@ const fares = {
 
 };
 
-
-/* =========================
-   AUTO UPDATE
-========================= */
-
-const APP_VERSION="2026.08.08.01";
+const APP_VERSION="2026.08.08.02";
 
 localStorage.setItem(
   "SafetyCab_App_Version",
@@ -676,17 +697,15 @@ localStorage.setItem(
 );
 
 
-/* =========================
-   LOGIN
-========================= */
+/* LOGIN */
 
 function loginCustomer(){
 
-  const name=
+  const name =
     document.getElementById("customerName")
     .value.trim();
 
-  const phone=
+  const phone =
     document.getElementById("customerPhone")
     .value.trim();
 
@@ -695,16 +714,16 @@ function loginCustomer(){
     return;
   }
 
-  if(phone.length!==10){
+  if(phone.length !== 10){
     alert("सही 10 digit Mobile Number डालें");
     return;
   }
 
   document.getElementById("showName")
-    .innerText=name;
+    .innerText = name;
 
   document.getElementById("showPhone")
-    .innerText=phone;
+    .innerText = phone;
 
   document.getElementById("loginPage")
     .classList.add("hidden");
@@ -713,18 +732,14 @@ function loginCustomer(){
     .classList.remove("hidden");
 
   updateFare();
-
 }
 
 
-/* =========================
-   CUSTOMER GPS
-========================= */
+/* CUSTOMER GPS */
 
 function useMyLocation(){
 
   if(!navigator.geolocation){
-
     alert("GPS उपलब्ध नहीं है");
     return;
   }
@@ -733,23 +748,19 @@ function useMyLocation(){
 
     function(position){
 
-      const lat=
+      const lat =
         position.coords.latitude.toFixed(6);
 
-      const lng=
+      const lng =
         position.coords.longitude.toFixed(6);
 
       document.getElementById("pickup")
-        .value=lat+", "+lng;
+        .value = lat + ", " + lng;
 
     },
 
     function(){
-
-      alert(
-        "GPS permission Allow करें"
-      );
-
+      alert("GPS permission Allow करें");
     },
 
     {
@@ -762,9 +773,7 @@ function useMyLocation(){
 }
 
 
-/* =========================
-   FARE
-========================= */
+/* FARE */
 
 document.getElementById("cabType")
 .addEventListener(
@@ -772,74 +781,71 @@ document.getElementById("cabType")
   updateFare
 );
 
-
 function updateFare(){
 
-  const cab=
+  const cab =
     document.getElementById("cabType")
     .value;
 
-  const fare=fares[cab];
+  const fare = fares[cab];
 
   document.getElementById("fareCab")
-    .innerText=cab;
+    .innerText = cab;
 
   document.getElementById("baseFare")
-    .innerText=fare.base;
+    .innerText = fare.base;
 
   document.getElementById("perKmFare")
-    .innerText=fare.perKm;
+    .innerText = fare.perKm;
 
   document.getElementById("perMinuteFare")
-    .innerText=fare.perMinute;
+    .innerText = fare.perMinute;
 
   calculateFare();
-
 }
 
 
 function calculateFare(){
 
-  const cab=
+  const cab =
     document.getElementById("cabType")
     .value;
 
-  const fare=fares[cab];
+  const fare = fares[cab];
 
-  const distance=
+  const distance =
     Number(
       document.getElementById("distance")
       .innerText
     ) || 0;
 
-  const minutes=
+  const minutes =
     Number(
       document.getElementById("tripMinutes")
       .innerText
     ) || 0;
 
-  const total=
-    fare.base+
-    distance*fare.perKm+
-    minutes*fare.perMinute;
+  const total =
+    fare.base +
+    distance * fare.perKm +
+    minutes * fare.perMinute;
 
   document.getElementById("estimatedTotal")
-    .innerText=Math.round(total);
-
+    .innerText = Math.round(total);
 }
 
 
-/* =========================
-   BOOKING
-========================= */
+/* BOOKING */
+
+let bookingCancelled = false;
 
 function bookCab(){
 
-  const pickup=
+  const pickup =
     document.getElementById("pickup")
     .value.trim();
 
-  const drop=
+  const drop =
     document.getElementById("drop")
     .value.trim();
 
@@ -852,15 +858,17 @@ function bookCab(){
     return;
   }
 
+  bookingCancelled = false;
+
   document.getElementById("bookingStatus")
     .classList.remove("hidden");
 
   document.getElementById("statusText")
-    .className="statusBox waiting";
+    .className = "statusBox waiting";
 
   document.getElementById("statusText")
-    .innerText=
-    "🟡 Driver खोजा जा रहा है...";
+    .innerText =
+      "🟡 Driver खोजा जा रहा है...";
 
   document.getElementById("cancelButton")
     .classList.remove("hidden");
@@ -870,12 +878,11 @@ function bookCab(){
     if(!bookingCancelled){
 
       document.getElementById("statusText")
-        .className="statusBox online";
+        .className = "statusBox online";
 
       document.getElementById("statusText")
-        .innerText=
-        "🟢 Driver मिल गया!";
-
+        .innerText =
+          "🟢 Driver मिल गया!";
     }
 
   },2000);
@@ -883,30 +890,24 @@ function bookCab(){
 }
 
 
-/* =========================
-   CANCEL BOOKING
-========================= */
-
-let bookingCancelled=false;
+/* CANCEL */
 
 function cancelBooking(){
 
-  if(
-    !confirm(
-      "क्या आप Booking Cancel करना चाहते हैं?"
-    )
-  ){
+  if(!confirm(
+    "क्या आप Booking Cancel करना चाहते हैं?"
+  )){
     return;
   }
 
-  bookingCancelled=true;
+  bookingCancelled = true;
 
   document.getElementById("statusText")
-    .className="statusBox cancelled";
+    .className = "statusBox cancelled";
 
   document.getElementById("statusText")
-    .innerText=
-    "🔴 Booking Cancelled";
+    .innerText =
+      "🔴 Booking Cancelled";
 
   document.getElementById("cancelButton")
     .classList.add("hidden");
@@ -920,42 +921,70 @@ function cancelBooking(){
   alert(
     "आपकी Booking Cancel हो गई है।"
   );
-
 }
 
 
-/* =========================
-   DRIVER
-========================= */
+/* DRIVER DETAILS */
+
+function setDriverDetails(){
+
+  /*
+    अभी टेस्ट Driver
+  */
+
+  const driver = {
+    name:"Mohd reyan",
+    id:"SC-001",
+    vehicle:"TS08UE0850",
+    phone:"9398179229",
+    rating:"4.8"
+  };
+
+  document.getElementById("driverName")
+    .innerText = driver.name;
+
+  document.getElementById("driverVehicle")
+    .innerText = driver.vehicle;
+
+  document.getElementById("driverPhone")
+    .innerText = driver.phone;
+}
+
+
+/* SHOW DRIVER */
 
 function showDriver(){
 
   if(bookingCancelled){
-    alert("Booking Cancel हो चुकी है");
+
+    alert(
+      "Booking Cancel हो चुकी है"
+    );
+
     return;
   }
 
+  setDriverDetails();
+
   document.getElementById("driverCard")
     .classList.remove("hidden");
-
 }
 
 
-/* =========================
-   CALL
-========================= */
+/* CALL DRIVER */
 
 function callDriver(){
 
-  window.location.href=
-    "tel:9398179229";
+  const phone =
+    document.getElementById("driverPhone")
+    .innerText;
 
+  window.location.href =
+    "tel:" + phone;
 }
 
 
-/* =========================
-   START TRIP
-========================= */
+/* START TRIP */
 
 function startTrip(){
 
@@ -967,61 +996,30 @@ function startTrip(){
     .classList.remove("hidden");
 
   document.getElementById("tripStatus")
-    .innerText=
-    "🟢 Trip Started";
-
-  /*
-    Trip शुरू होने के बाद
-    Cancel button बंद
-  */
+    .innerText =
+      "🟢 Trip Started";
 
   document.getElementById("cancelButton")
     .classList.add("hidden");
 
   startDriverLocationListener();
-
 }
 
 
-/* =========================
-   DRIVER LIVE LOCATION
-========================= */
-
-/*
-  अभी यह interface तैयार है।
-
-  Real Driver GPS के लिए:
-  Driver App
-       ↓
-  Server / Database
-       ↓
-  Customer App
-
-  यहाँ बाद में server से
-  latitude/longitude आएगा।
-*/
+/* DRIVER GPS */
 
 function updateDriverLocation(lat,lng){
 
   document.getElementById("gpsStatus")
-    .innerText=
-    "🟢 LIVE";
+    .innerText =
+      "🟢 LIVE";
 
   document.getElementById("lastUpdate")
-    .innerText=
-    new Date().toLocaleTimeString("en-IN");
-
-  /*
-    Demo map पर vehicle position.
-    Real map आने पर यही coordinates
-    Google/Leaflet map marker में जाएंगे।
-  */
-
+    .innerText =
+      new Date()
+      .toLocaleTimeString("en-IN");
 }
 
-
-/* Customer browser GPS सिर्फ
-   testing/interface के लिए */
 
 function startDriverLocationListener(){
 
@@ -1033,17 +1031,11 @@ function startDriverLocationListener(){
 
     function(position){
 
-      const lat=
+      const lat =
         position.coords.latitude;
 
-      const lng=
+      const lng =
         position.coords.longitude;
-
-      /*
-        अभी Customer device location.
-        इसे बाद में Driver server location
-        से replace किया जाएगा।
-      */
 
       updateDriverLocation(
         lat,
@@ -1053,9 +1045,10 @@ function startDriverLocationListener(){
     },
 
     function(){
+
       document.getElementById("gpsStatus")
-        .innerText=
-        "🔴 GPS OFFLINE";
+        .innerText =
+          "🔴 GPS OFFLINE";
     },
 
     {
@@ -1065,13 +1058,10 @@ function startDriverLocationListener(){
     }
 
   );
-
 }
 
 
-/* =========================
-   COMPLETE TRIP
-========================= */
+/* COMPLETE TRIP */
 
 function completeTrip(){
 
@@ -1079,138 +1069,129 @@ function completeTrip(){
     return;
   }
 
-  const cab=
+  const cab =
     document.getElementById("cabType")
     .value;
 
-  const fare=fares[cab];
+  const fare = fares[cab];
 
-  /*
-    अभी demo distance/time.
-    Real GPS जोड़ने के बाद
-    automatic calculation होगा।
-  */
+  const distance = 10;
+  const minutes = 10;
 
-  const distance=10;
-  const minutes=10;
+  const distanceCharge =
+    distance * fare.perKm;
 
-  const distanceCharge=
-    distance*fare.perKm;
+  const timeCharge =
+    minutes * fare.perMinute;
 
-  const timeCharge=
-    minutes*fare.perMinute;
-
-  const total=
-    fare.base+
-    distanceCharge+
+  const total =
+    fare.base +
+    distanceCharge +
     timeCharge;
-
 
   document.getElementById("billCard")
     .classList.remove("hidden");
 
   document.getElementById("billCab")
-    .innerText=cab;
+    .innerText = cab;
 
   document.getElementById("billDistance")
-    .innerText=distance;
+    .innerText = distance;
 
   document.getElementById("billMinutes")
-    .innerText=minutes;
+    .innerText = minutes;
 
   document.getElementById("billBase")
-    .innerText=fare.base;
+    .innerText = fare.base;
 
   document.getElementById("billDistanceCharge")
-    .innerText=
-    distanceCharge.toFixed(2);
+    .innerText =
+      distanceCharge.toFixed(2);
 
   document.getElementById("billTimeCharge")
-    .innerText=
-    timeCharge.toFixed(2);
+    .innerText =
+      timeCharge.toFixed(2);
 
   document.getElementById("billTotal")
-    .innerText=
-    total.toFixed(2);
+    .innerText =
+      total.toFixed(2);
 
   document.getElementById("ratingCard")
     .classList.remove("hidden");
-
 }
 
 
-/* =========================
-   INVOICE
-========================= */
+/* INVOICE */
 
 function generateInvoice(){
 
-  const cab=
+  const cab =
     document.getElementById("billCab")
     .innerText;
 
-  const invoiceNo=
-    "SC-"+Date.now();
+  const invoiceNo =
+    "SC-" + Date.now();
 
   document.getElementById("invoiceNumber")
-    .innerText=invoiceNo;
+    .innerText = invoiceNo;
 
   document.getElementById("invoiceDate")
-    .innerText=
-    new Date().toLocaleString("en-IN");
+    .innerText =
+      new Date()
+      .toLocaleString("en-IN");
 
   document.getElementById("invoiceCustomer")
-    .innerText=
-    document.getElementById("showName")
-    .innerText;
+    .innerText =
+      document.getElementById("showName")
+      .innerText;
 
   document.getElementById("invoiceMobile")
-    .innerText=
-    document.getElementById("showPhone")
-    .innerText;
+    .innerText =
+      document.getElementById("showPhone")
+      .innerText;
 
   document.getElementById("invoicePickup")
-    .innerText=
-    document.getElementById("pickup")
-    .value;
+    .innerText =
+      document.getElementById("pickup")
+      .value;
 
   document.getElementById("invoiceDrop")
-    .innerText=
-    document.getElementById("drop")
-    .value;
+    .innerText =
+      document.getElementById("drop")
+      .value;
 
   document.getElementById("invoiceCab")
-    .innerText=cab;
+    .innerText = cab;
 
   document.getElementById("invoiceDistance")
-    .innerText=
-    document.getElementById("billDistance")
-    .innerText;
+    .innerText =
+      document.getElementById("billDistance")
+      .innerText;
 
   document.getElementById("invoiceMinutes")
-    .innerText=
-    document.getElementById("billMinutes")
-    .innerText;
+    .innerText =
+      document.getElementById("billMinutes")
+      .innerText;
 
   document.getElementById("invoiceBase")
-    .innerText=
-    document.getElementById("billBase")
-    .innerText;
+    .innerText =
+      document.getElementById("billBase")
+      .innerText;
 
   document.getElementById("invoiceDistanceCharge")
-    .innerText=
-    document.getElementById("billDistanceCharge")
-    .innerText;
+    .innerText =
+      document.getElementById("billDistanceCharge")
+      .innerText;
 
   document.getElementById("invoiceTimeCharge")
-    .innerText=
-    document.getElementById("billTimeCharge")
-    .innerText;
+    .innerText =
+      document.getElementById("billTimeCharge")
+      .innerText;
 
   document.getElementById("invoiceTotal")
-    .innerText=
-    document.getElementById("billTotal")
-    .innerText;
+    .innerText =
+      document.getElementById("billTotal")
+      .innerText;
 
   document.getElementById("invoiceCard")
     .classList.remove("hidden");
@@ -1219,37 +1200,29 @@ function generateInvoice(){
     .scrollIntoView({
       behavior:"smooth"
     });
-
 }
 
 
-/* =========================
-   RATING
-========================= */
+/* RATING */
 
 function submitRating(){
 
-  const rating=
+  const rating =
     document.getElementById("rating")
     .value;
 
   alert(
-    "धन्यवाद! Driver को "+
-    rating+
+    "धन्यवाद! Driver को " +
+    rating +
     " Star Rating दी गई।"
   );
-
 }
 
 
-/* =========================
-   LOGOUT
-========================= */
+/* LOGOUT */
 
 function logout(){
-
   location.reload();
-
 }
 
 </script>

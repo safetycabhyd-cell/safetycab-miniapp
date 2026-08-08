@@ -2,8 +2,9 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safety Cab - Customer Panel</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>SafetyCab Customer</title>
 
 <style>
 *{
@@ -14,178 +15,394 @@
 }
 
 body{
-    background:#f3f5f7;
-    color:#222;
+    background:#f1f5f9;
+    color:#111827;
 }
 
+.app{
+    max-width:520px;
+    margin:auto;
+    min-height:100vh;
+    background:#f1f5f9;
+}
+
+/* HEADER */
 .header{
     background:#111827;
     color:white;
-    padding:18px;
-    text-align:center;
-    font-size:22px;
+    padding:18px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.logo{
+    font-size:21px;
     font-weight:bold;
 }
 
-.container{
-    max-width:500px;
-    margin:auto;
+.logo span{
+    color:#22c55e;
+}
+
+.header small{
+    font-size:12px;
+    color:#d1d5db;
+}
+
+/* LOGIN */
+.loginPage{
+    padding:25px 16px;
+}
+
+.loginBox{
+    background:white;
+    border-radius:22px;
+    padding:25px 20px;
+    margin-top:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.loginLogo{
+    width:75px;
+    height:75px;
+    background:#111827;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:38px;
+    margin:5px auto 15px;
+}
+
+.loginTitle{
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.loginSub{
+    text-align:center;
+    color:#6b7280;
+    margin:8px 0 22px;
+    font-size:14px;
+}
+
+/* INPUT */
+input,select{
+    width:100%;
     padding:15px;
+    margin:7px 0;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:15px;
+    outline:none;
+    background:white;
+}
+
+input:focus,select:focus{
+    border-color:#16a34a;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    margin-top:9px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#16a34a;
+    color:white;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.red{
+    background:#dc2626;
+}
+
+.dark{
+    background:#111827;
+}
+
+.orange{
+    background:#f59e0b;
+}
+
+/* PANEL */
+.container{
+    padding:14px;
 }
 
 .card{
     background:white;
-    border-radius:16px;
-    padding:18px;
-    margin-bottom:15px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    border-radius:18px;
+    padding:17px;
+    margin-bottom:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
 }
 
 .title{
     font-size:18px;
     font-weight:bold;
-    margin-bottom:14px;
+    margin-bottom:13px;
 }
 
-input,select{
-    width:100%;
-    padding:14px;
-    margin:7px 0;
-    border:1px solid #ddd;
-    border-radius:10px;
-    font-size:15px;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    border:0;
-    border-radius:10px;
-    background:#16a34a;
+.welcome{
+    background:linear-gradient(135deg,#111827,#1f2937);
     color:white;
-    font-size:16px;
+}
+
+.welcomePhone{
+    margin-top:8px;
+    color:#d1d5db;
+    font-size:14px;
+}
+
+/* QUICK BUTTONS */
+.quick{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+}
+
+.quick button{
+    margin:0;
+    font-size:14px;
+}
+
+/* BOOKING */
+.locationBox{
+    background:#f8fafc;
+    border-radius:13px;
+    padding:5px;
+}
+
+.locationBox input{
+    border:0;
+    background:transparent;
+}
+
+/* STATUS */
+.statusBox{
+    padding:13px;
+    border-radius:12px;
+    background:#f0fdf4;
+    color:#166534;
     font-weight:bold;
-    margin-top:10px;
-    cursor:pointer;
 }
 
-button:hover{
-    opacity:.9;
-}
-
-.login{
-    margin-top:40px;
-}
-
-.hidden{
-    display:none;
-}
-
+/* MAP */
 .map{
-    height:280px;
-    border-radius:14px;
-    background:
-    linear-gradient(45deg,#e5e7eb 25%,transparent 25%),
-    linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),
-    #f8fafc;
-    background-size:40px 40px;
-    position:relative;
+    height:290px;
+    border-radius:16px;
     overflow:hidden;
-    border:1px solid #ddd;
+    position:relative;
+    background:
+      linear-gradient(30deg,#e2e8f0 12%,transparent 12.5%,transparent 87%,#e2e8f0 87.5%),
+      linear-gradient(150deg,#e2e8f0 12%,transparent 12.5%,transparent 87%,#e2e8f0 87.5%),
+      #f8fafc;
+    background-size:80px 80px;
+    border:1px solid #cbd5e1;
 }
 
-.road{
+.road1{
     position:absolute;
     width:120%;
-    height:45px;
-    background:#d1d5db;
-    top:105px;
+    height:48px;
+    background:#cbd5e1;
+    top:115px;
     left:-20px;
     transform:rotate(-12deg);
+}
+
+.road2{
+    position:absolute;
+    width:120%;
+    height:35px;
+    background:#d1d5db;
+    top:175px;
+    left:-30px;
+    transform:rotate(20deg);
+}
+
+.mapLabel{
+    position:absolute;
+    top:12px;
+    left:12px;
+    background:white;
+    padding:8px 11px;
+    border-radius:9px;
+    font-size:12px;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
 .car{
     position:absolute;
     top:105px;
-    left:55%;
-    font-size:34px;
+    left:53%;
+    font-size:35px;
+    transition:all 2s;
 }
 
-.location{
+.pickMarker{
     position:absolute;
     bottom:35px;
     left:20%;
     font-size:32px;
 }
 
-.maptext{
-    position:absolute;
-    top:10px;
-    left:10px;
-    background:white;
-    padding:8px 10px;
-    border-radius:8px;
-    font-size:13px;
-}
-
+/* DRIVER */
 .driver{
     display:flex;
+    gap:13px;
     align-items:center;
-    gap:12px;
 }
 
 .driverIcon{
-    width:55px;
-    height:55px;
+    width:60px;
+    height:60px;
     border-radius:50%;
     background:#e5e7eb;
     display:flex;
-    align-items:center;
     justify-content:center;
-    font-size:28px;
+    align-items:center;
+    font-size:31px;
 }
 
-.status{
-    color:#16a34a;
+.driverName{
+    font-size:17px;
     font-weight:bold;
 }
 
-.rating{
-    color:#f59e0b;
-    font-size:20px;
+.online{
+    color:#16a34a;
+    font-weight:bold;
+    font-size:13px;
 }
 
+.stars{
+    color:#f59e0b;
+    font-size:18px;
+}
+
+/* INFO */
+.infoRow{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+}
+
+.infoRow:last-child{
+    border-bottom:0;
+}
+
+/* BOTTOM */
 .bottom{
     text-align:center;
-    color:#777;
+    color:#6b7280;
     font-size:12px;
-    padding:15px;
+    padding:20px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* NAV */
+.nav{
+    position:sticky;
+    bottom:0;
+    background:white;
+    border-top:1px solid #ddd;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    padding:8px;
+    z-index:30;
+}
+
+.nav button{
+    background:white;
+    color:#374151;
+    margin:0;
+    padding:9px 4px;
+    font-size:12px;
+}
+
+.nav button.active{
+    color:#16a34a;
+}
+
+/* SUCCESS */
+.success{
+    background:#ecfdf5;
+    color:#166534;
+    padding:14px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
+<!-- HEADER -->
 <div class="header">
-    🚕 Safety Cab
+    <div class="logo">🚕 Safety<span>Cab</span></div>
+    <small>Customer</small>
 </div>
 
-<div class="container">
 
 <!-- LOGIN -->
-<div id="loginPage" class="card login">
+<div id="loginPage" class="loginPage">
 
-    <div class="title">Customer Login</div>
+    <div class="loginBox">
 
-    <input type="text" id="customerName"
-           placeholder="Customer Name">
+        <div class="loginLogo">🚕</div>
 
-    <input type="tel" id="customerPhone"
-           placeholder="Mobile Number">
+        <div class="loginTitle">
+            Welcome to SafetyCab
+        </div>
 
-    <button onclick="loginCustomer()">
-        Login
-    </button>
+        <div class="loginSub">
+            Safe • Reliable • Easy Cab Booking
+        </div>
+
+        <input
+            type="text"
+            id="customerName"
+            placeholder="Customer Name">
+
+        <input
+            type="tel"
+            id="customerPhone"
+            maxlength="10"
+            placeholder="Mobile Number">
+
+        <button onclick="loginCustomer()">
+            🚕 Continue
+        </button>
+
+        <div class="loginSub" style="margin-top:15px;">
+            OTP अभी आवश्यक नहीं है
+        </div>
+
+    </div>
 
 </div>
 
@@ -193,182 +410,298 @@ button:hover{
 <!-- CUSTOMER PANEL -->
 <div id="customerPanel" class="hidden">
 
-    <div class="card">
-        <div class="title">
-            Welcome, <span id="showName">Customer</span> 👋
-        </div>
+<div class="container">
 
-        <div>
-            📱 <span id="showPhone"></span>
-        </div>
+<!-- WELCOME -->
+<div class="card welcome">
+
+    <div class="title">
+        Hello, <span id="showName">Customer</span> 👋
     </div>
 
+    <div class="welcomePhone">
+        📱 <span id="showPhone"></span>
+    </div>
 
-    <!-- BOOK CAB -->
-    <div class="card">
+</div>
 
-        <div class="title">
-            🚕 Book Your Cab
-        </div>
 
-        <input type="text"
-               id="pickup"
-               placeholder="📍 Pickup Location">
+<!-- QUICK ACTION -->
+<div class="card">
 
-        <input type="text"
-               id="drop"
-               placeholder="📍 Drop Location">
+    <div class="title">
+        Quick Actions
+    </div>
 
-        <select id="cabType">
-            <option>Mini Cab</option>
-            <option>Sedan</option>
-            <option>SUV</option>
-        </select>
+    <div class="quick">
 
-        <button onclick="bookCab()">
-            🚕 Book Now
+        <button onclick="scrollBooking()">
+            🚕 Book Cab
         </button>
-
-    </div>
-
-
-    <!-- BOOKING STATUS -->
-    <div id="bookingStatus" class="card hidden">
-
-        <div class="title">
-            Booking Status
-        </div>
-
-        <p id="statusText">
-            Searching for driver...
-        </p>
-
-        <button onclick="showDriver()">
-            Check Driver
-        </button>
-
-    </div>
-
-
-    <!-- MAP -->
-    <div id="mapCard" class="card hidden">
-
-        <div class="title">
-            📍 Live Trip Tracking
-        </div>
-
-        <div class="map">
-
-            <div class="maptext">
-                Driver Live Location
-            </div>
-
-            <div class="road"></div>
-
-            <div class="car">
-                🚕
-            </div>
-
-            <div class="location">
-                📍
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DRIVER -->
-    <div id="driverCard" class="card hidden">
-
-        <div class="title">
-            👨‍✈️ Driver Details
-        </div>
-
-        <div class="driver">
-
-            <div class="driverIcon">
-                👨‍✈️
-            </div>
-
-            <div>
-                <b>Jaweed</b><br>
-                <span class="status">
-                    🟢 Online
-                </span><br>
-                ⭐ <span class="rating">4.8</span>
-            </div>
-
-        </div>
-
-        <br>
-
-        <p>🚕 Vehicle: TS08UE0850</p>
-        <p>📱 Phone: 9398179229</p>
 
         <button onclick="callDriver()">
             📞 Call Driver
         </button>
 
-        <button onclick="startTrip()">
-            ▶️ Start Trip
-        </button>
-
-    </div>
-
-
-    <!-- TRIP -->
-    <div id="tripCard" class="card hidden">
-
-        <div class="title">
-            🛣️ Trip Status
-        </div>
-
-        <p id="tripStatus">
-            Trip Started
-        </p>
-
-        <button onclick="completeTrip()">
-            ✅ Complete Trip
-        </button>
-
-    </div>
-
-
-    <!-- RATING -->
-    <div id="ratingCard" class="card hidden">
-
-        <div class="title">
-            ⭐ Rate Your Driver
-        </div>
-
-        <select id="rating">
-            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-            <option value="4">⭐⭐⭐⭐ Good</option>
-            <option value="3">⭐⭐⭐ Average</option>
-            <option value="2">⭐⭐ Poor</option>
-            <option value="1">⭐ Very Poor</option>
-        </select>
-
-        <button onclick="submitRating()">
-            Submit Rating
-        </button>
-
-    </div>
-
-
-    <div class="card">
-        <button onclick="logout()"
-                style="background:#dc2626;">
-            Logout
-        </button>
     </div>
 
 </div>
 
+
+<!-- BOOK CAB -->
+<div class="card" id="bookingCard">
+
+    <div class="title">
+        🚕 Book Your Cab
+    </div>
+
+    <div class="locationBox">
+
+        <input
+            type="text"
+            id="pickup"
+            placeholder="📍 Pickup Location">
+
+        <input
+            type="text"
+            id="drop"
+            placeholder="🏁 Drop Location">
+
+    </div>
+
+    <select id="cabType">
+
+        <option value="Mini Cab">
+            🚕 Mini Cab
+        </option>
+
+        <option value="Sedan">
+            🚘 Sedan
+        </option>
+
+        <option value="SUV">
+            🚙 SUV
+        </option>
+
+    </select>
+
+    <button onclick="bookCab()">
+        🚕 Book Now
+    </button>
+
+</div>
+
+
+<!-- BOOKING STATUS -->
+<div id="bookingStatus" class="card hidden">
+
+    <div class="title">
+        📋 Booking Status
+    </div>
+
+    <div id="statusText"
+         class="statusBox">
+        🟡 Searching for driver...
+    </div>
+
+    <button
+        class="dark"
+        onclick="showDriver()">
+        👨‍✈️ Check Driver
+    </button>
+
+</div>
+
+
+<!-- MAP -->
+<div id="mapCard" class="card hidden">
+
+    <div class="title">
+        📍 Live Trip Tracking
+    </div>
+
+    <div class="map">
+
+        <div class="mapLabel">
+            🟢 Driver Location
+        </div>
+
+        <div class="road1"></div>
+        <div class="road2"></div>
+
+        <div id="car"
+             class="car">
+            🚕
+        </div>
+
+        <div class="pickMarker">
+            📍
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DRIVER -->
+<div id="driverCard" class="card hidden">
+
+    <div class="title">
+        👨‍✈️ Driver Details
+    </div>
+
+    <div class="driver">
+
+        <div class="driverIcon">
+            👨‍✈️
+        </div>
+
+        <div>
+
+            <div class="driverName">
+                Jaweed
+            </div>
+
+            <div class="online">
+                🟢 Online
+            </div>
+
+            <div class="stars">
+                ★★★★★
+                <span style="font-size:13px;color:#555;">
+                    4.8
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="infoRow">
+        <span>🚕 Vehicle</span>
+        <b>TS08UE0850</b>
+    </div>
+
+    <div class="infoRow">
+        <span>📱 Phone</span>
+        <b>9398179229</b>
+    </div>
+
+    <button onclick="callDriver()">
+        📞 Call Driver
+    </button>
+
+    <button
+        class="dark"
+        onclick="startTrip()">
+        ▶️ Start Trip
+    </button>
+
+</div>
+
+
+<!-- TRIP -->
+<div id="tripCard" class="card hidden">
+
+    <div class="title">
+        🛣️ Trip Status
+    </div>
+
+    <div id="tripStatus"
+         class="statusBox">
+        🟢 Trip Started
+    </div>
+
+    <button
+        class="orange"
+        onclick="completeTrip()">
+        ✅ Complete Trip
+    </button>
+
+</div>
+
+
+<!-- RATING -->
+<div id="ratingCard" class="card hidden">
+
+    <div class="title">
+        ⭐ Rate Your Driver
+    </div>
+
+    <select id="rating">
+
+        <option value="5">
+            ⭐⭐⭐⭐⭐ Excellent
+        </option>
+
+        <option value="4">
+            ⭐⭐⭐⭐ Good
+        </option>
+
+        <option value="3">
+            ⭐⭐⭐ Average
+        </option>
+
+        <option value="2">
+            ⭐⭐ Poor
+        </option>
+
+        <option value="1">
+            ⭐ Very Poor
+        </option>
+
+    </select>
+
+    <button onclick="submitRating()">
+        ⭐ Submit Rating
+    </button>
+
+</div>
+
+
+<!-- LOGOUT -->
+<div class="card">
+
+    <button
+        class="red"
+        onclick="logout()">
+        🚪 Logout
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+
+    <button
+        class="active"
+        onclick="scrollTopPage()">
+        🏠 Home
+    </button>
+
+    <button onclick="scrollBooking()">
+        🚕 Booking
+    </button>
+
+    <button onclick="showDriver()">
+        👨‍✈️ Driver
+    </button>
+
+</div>
+
+</div>
+
+
 <div class="bottom">
-    Safety Cab Customer Panel<br>
-    © 2026 Safety Cab
+
+    SafetyCab Customer App<br>
+    © 2026 SafetyCab
+
 </div>
 
 </div>
@@ -376,18 +709,36 @@ button:hover{
 
 <script>
 
+/* LOGIN */
+
 function loginCustomer(){
 
-    let name =
-        document.getElementById("customerName").value;
+    const name =
+        document.getElementById("customerName").value.trim();
 
-    let phone =
-        document.getElementById("customerPhone").value;
+    const phone =
+        document.getElementById("customerPhone").value.trim();
 
-    if(name === "" || phone === ""){
-        alert("कृपया Name और Mobile Number डालें");
+    if(name === ""){
+
+        alert("कृपया Customer Name डालें");
         return;
+
     }
+
+    if(phone.length !== 10 ||
+       isNaN(phone)){
+
+        alert("कृपया सही 10 Digit Mobile Number डालें");
+        return;
+
+    }
+
+    document.getElementById("showName")
+        .innerText = name;
+
+    document.getElementById("showPhone")
+        .innerText = phone;
 
     document.getElementById("loginPage")
         .classList.add("hidden");
@@ -395,25 +746,76 @@ function loginCustomer(){
     document.getElementById("customerPanel")
         .classList.remove("hidden");
 
-    document.getElementById("showName")
-        .innerText = name;
+    localStorage.setItem(
+        "safetycab_customer_name",
+        name
+    );
 
-    document.getElementById("showPhone")
-        .innerText = phone;
+    localStorage.setItem(
+        "safetycab_customer_phone",
+        phone
+    );
+
 }
 
 
+/* AUTO LOGIN */
+
+window.onload = function(){
+
+    const name =
+        localStorage.getItem(
+            "safetycab_customer_name"
+        );
+
+    const phone =
+        localStorage.getItem(
+            "safetycab_customer_phone"
+        );
+
+    if(name && phone){
+
+        document.getElementById("showName")
+            .innerText = name;
+
+        document.getElementById("showPhone")
+            .innerText = phone;
+
+        document.getElementById("loginPage")
+            .classList.add("hidden");
+
+        document.getElementById("customerPanel")
+            .classList.remove("hidden");
+
+    }
+
+};
+
+
+/* BOOK CAB */
+
 function bookCab(){
 
-    let pickup =
-        document.getElementById("pickup").value;
+    const pickup =
+        document.getElementById("pickup")
+        .value.trim();
 
-    let drop =
-        document.getElementById("drop").value;
+    const drop =
+        document.getElementById("drop")
+        .value.trim();
+
+    const cab =
+        document.getElementById("cabType")
+        .value;
 
     if(pickup === "" || drop === ""){
-        alert("Pickup और Drop Location डालें");
+
+        alert(
+            "कृपया Pickup और Drop Location डालें"
+        );
+
         return;
+
     }
 
     document.getElementById("bookingStatus")
@@ -421,7 +823,8 @@ function bookCab(){
 
     document.getElementById("statusText")
         .innerText =
-        "🟡 Driver खोजा जा रहा है...";
+        "🟡 " + cab +
+        " के लिए Driver खोजा जा रहा है...";
 
     setTimeout(function(){
 
@@ -431,8 +834,15 @@ function bookCab(){
 
     },2000);
 
+    document.getElementById("bookingStatus")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
 }
 
+
+/* DRIVER */
 
 function showDriver(){
 
@@ -442,8 +852,15 @@ function showDriver(){
     document.getElementById("mapCard")
         .classList.remove("hidden");
 
+    document.getElementById("driverCard")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
 }
 
+
+/* CALL */
 
 function callDriver(){
 
@@ -452,6 +869,8 @@ function callDriver(){
 
 }
 
+
+/* START TRIP */
 
 function startTrip(){
 
@@ -462,25 +881,49 @@ function startTrip(){
         .innerText =
         "🟢 Trip Started - Driver आपकी तरफ आ रहा है।";
 
+    document.getElementById("tripCard")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+    /* Demo car movement */
+
+    setTimeout(function(){
+
+        document.getElementById("car")
+            .style.left = "70%";
+
+    },500);
+
 }
 
+
+/* COMPLETE TRIP */
 
 function completeTrip(){
 
     document.getElementById("tripStatus")
         .innerText =
-        "✅ Trip Completed";
+        "✅ Trip Completed Successfully";
 
     document.getElementById("ratingCard")
         .classList.remove("hidden");
 
+    document.getElementById("ratingCard")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
 }
 
 
+/* RATING */
+
 function submitRating(){
 
-    let rating =
-        document.getElementById("rating").value;
+    const rating =
+        document.getElementById("rating")
+        .value;
 
     alert(
         "धन्यवाद! आपने Driver को " +
@@ -491,9 +934,40 @@ function submitRating(){
 }
 
 
+/* LOGOUT */
+
 function logout(){
 
+    localStorage.removeItem(
+        "safetycab_customer_name"
+    );
+
+    localStorage.removeItem(
+        "safetycab_customer_phone"
+    );
+
     location.reload();
+
+}
+
+
+/* SCROLL */
+
+function scrollBooking(){
+
+    document.getElementById("bookingCard")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+function scrollTopPage(){
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 
 }
 

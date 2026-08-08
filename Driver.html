@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#009b3a">
+<title>Safety Cab Driver Panel</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#f2f5f3;color:#202522;
+ font-family:Arial,sans-serif;padding-bottom:85px
+}
+button,input{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.top{
+ background:#009b3a;color:white;padding:20px 18px 25px;
+ border-radius:0 0 28px 28px
+}
+.wrap{max-width:560px;margin:auto}
+.toprow{
+ display:flex;justify-content:space-between;align-items:center
+}
+.logo{font-size:24px;font-weight:bold}
+.status{
+ background:#ffffff22;border-radius:22px;
+ padding:9px 13px;font-size:13px
+}
+.sub{margin-top:17px;font-size:14px}
+
+.card{
+ background:white;margin:14px;border-radius:18px;
+ padding:18px;box-shadow:0 3px 14px #0000000d
+}
+.driver{display:flex;align-items:center;gap:13px}
+.avatar{
+ width:58px;height:58px;border-radius:50%;
+ background:#dff6e7;display:grid;place-items:center;font-size:29px
+}
+.name{font-size:21px;font-weight:bold}
+.muted{font-size:13px;color:#68716b;margin-top:5px}
+
+.dutybox{
+ margin-top:17px;border:1px solid #e0e5e2;
+ border-radius:15px;padding:13px
+}
+.row{display:flex;align-items:center;justify-content:space-between}
+
+.switch{
+ width:64px;height:38px;border:0;border-radius:25px;
+ background:#c9ccca;padding:4px
+}
+.switch span{
+ display:block;width:30px;height:30px;border-radius:50%;
+ background:white;box-shadow:0 2px 5px #0003;
+ transition:.2s
+}
+.switch.on{background:#009b3a}
+.switch.on span{transform:translateX(26px)}
+
+.gpsbox{
+ margin-top:14px;padding:13px;border-radius:13px;
+ background:#e5f8ec;color:#00883a;font-weight:bold
+}
+
+.map{
+ height:230px;margin-top:14px;border-radius:15px;
+ overflow:hidden;position:relative;background:#dcebe1
+}
+.road{
+ position:absolute;width:150%;height:3px;background:white;
+ transform:rotate(-18deg);top:50%;left:-20%;
+ box-shadow:0 65px white,-90px -65px white
+}
+.car{
+ position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);
+ width:54px;height:54px;border-radius:50%;
+ background:white;border:3px solid #009b3a;
+ display:grid;place-items:center;font-size:30px;
+ box-shadow:0 3px 10px #0003
+}
+.coords{
+ margin-top:10px;font-size:13px;
+ line-height:1.5;color:#68716b
+}
+
+.btn{
+ width:100%;border:0;border-radius:12px;
+ padding:14px;margin-top:11px;
+ font-weight:bold;color:white;font-size:15px
+}
+.green{background:#009b3a}
+.red{background:#ed1025}
+.orange{background:#d66a00}
+
+.ride{
+ border:2px solid #edf0ee;
+ border-radius:15px;padding:14px;margin-top:12px
+}
+.badge{
+ display:inline-block;background:#fff2cf;color:#9b6c00;
+ border-radius:18px;padding:6px 10px;
+ font-size:12px;font-weight:bold
+}
+.place{font-weight:bold;margin:14px 0;font-size:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.page{display:none}
+.page.show{display:block}
+
+.profile input{
+ width:100%;padding:13px;
+ border:1px solid #d8ded9;border-radius:10px;
+ margin:6px 0 12px
+}
+
+.nav{
+ position:fixed;bottom:0;left:0;right:0;
+ height:76px;background:white;border-top:1px solid #ddd;
+ display:flex;z-index:99;
+ padding-bottom:env(safe-area-inset-bottom)
+}
+.nav button{
+ width:33.33%;border:0;background:white;
+ color:#68716b;font-size:12px
+}
+.nav button.active{
+ color:#009b3a;font-weight:bold
+}
+
+.empty{
+ text-align:center;color:#68716b;padding:25px 10px
+}
+
+.toast{
+ position:fixed;z-index:200;left:50%;bottom:92px;
+ transform:translate(-50%,20px);
+ background:#222;color:white;
+ padding:12px 16px;border-radius:10px;
+ opacity:0;transition:.2s;
+ max-width:90%;text-align:center
+}
+.toast.show{
+ opacity:1;transform:translate(-50%,0)
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+<div class="wrap">
+ <div class="toprow">
+  <div class="logo">🚕 Safety Cab</div>
+  <div class="status" id="headerStatus">🔴 Offline</div>
+ </div>
+ <div class="sub">Driver Panel</div>
+</div>
+</header>
+
+<main class="wrap">
+
+<!-- HOME -->
+<section id="homePage" class="page show">
+
+<div class="card">
+
+ <div class="driver">
+  <div class="avatar">👨‍✈️</div>
+
+  <div>
+   <div class="name" id="driverName">Driver Name</div>
+   <div class="muted">
+    ID: <span id="driverId">SC-001</span>
+    · 🚕 <span id="vehicle">Vehicle</span>
+   </div>
+  </div>
+ </div>
+
+ <div class="dutybox">
+  <div class="row">
+
+   <div>
+    <b>Duty Status</b>
+    <div class="muted" id="dutyText">🔴 Duty OFF</div>
+   </div>
+
+   <button
+    id="dutySwitch"
+    class="switch"
+    type="button"
+    onclick="toggleDuty()">
+    <span></span>
+   </button>
+
+  </div>
+ </div>
+
+ <div class="gpsbox" id="gpsStatus">
+  🔴 GPS OFFLINE
+ </div>
+
+</div>
+
+
+<!-- GPS -->
+
+<div class="card">
+
+ <b>📍 Live Location</b>
+
+ <div class="map">
+  <div class="road"></div>
+  <div class="car">🚕</div>
+ </div>
+
+ <div class="coords">
+  Latitude: <span id="latitude">-</span><br>
+  Longitude: <span id="longitude">-</span>
+ </div>
+
+ <button
+  class="btn green"
+  id="gpsButton"
+  onclick="toggleGPS()">
+  📍 START LIVE GPS
+ </button>
+
+</div>
+
+
+<!-- RIDE -->
+
+<div class="card">
+
+ <b>📋 Current Ride</b>
+
+ <div id="rideBox">
+
+  <div class="ride">
+
+   <span class="badge">NEW RIDE</span>
+
+   <div class="place">
+    📍 Pickup:
+    <span id="pickup">Pickup location</span>
+   </div>
+
+   <div style="color:#009b3a">↓</div>
+
+   <div class="place">
+    🏁 Drop:
+    <span id="drop">Drop location</span>
+   </div>
+
+   <div class="two">
+
+    <button
+     class="btn green"
+     onclick="acceptRide()">
+     ✅ ACCEPT
+    </button>
+
+    <button
+     class="btn red"
+     onclick="rejectRide()">
+     ❌ REJECT
+    </button>
+
+   </div>
+
+  </div>
+
+ </div>
+
+</div>
+
+</section>
+
+
+<!-- RIDES -->
+
+<section id="ridesPage" class="page">
+
+<div class="card">
+
+ <h3>📋 My Rides</h3>
+
+ <div id="history" class="empty">
+  अभी कोई completed ride नहीं है।
+ </div>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profilePage" class="page">
+
+<div class="card">
+
+ <h3>👤 Driver Profile</h3>
+
+ <label>Driver Name</label>
+ <input id="nameInput" placeholder="Driver Name">
+
+ <label>Driver ID</label>
+ <input id="idInput" placeholder="SC-001">
+
+ <label>Vehicle Number</label>
+ <input id="vehicleInput" placeholder="Vehicle Number">
+
+ <button
+  class="btn green"
+  onclick="saveProfile()">
+  💾 SAVE PROFILE
+ </button>
+
+</div>
+
+
+<div class="card">
+
+ <b>⭐ Driver Rating</b>
+
+ <div style="font-size:26px;color:#f5b400;margin-top:8px">
+  ★★★★★
+ </div>
+
+ <div class="muted">5.0 / 5</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="nav">
+
+ <button
+  id="homeNav"
+  class="active"
+  onclick="openPage('home')">
+  🏠<br>Home
+ </button>
+
+ <button
+  id="ridesNav"
+  onclick="openPage('rides')">
+  📋<br>Rides
+ </button>
+
+ <button
+  id="profileNav"
+  onclick="openPage('profile')">
+  👤<br>Profile
+ </button>
+
+</nav>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+var duty=false;
+var watchId=null;
+
+var ride={
+ pickup:"Pickup location",
+ drop:"Drop location"
+};
+
+
+function $(id){
+ return document.getElementById(id);
+}
+
+
+/* TOAST */
+
+function toast(message){
+
+ var box=$("toast");
+
+ box.innerHTML=message;
+ box.classList.add("show");
+
+ clearTimeout(window.toastTimer);
+
+ window.toastTimer=setTimeout(function(){
+  box.classList.remove("show");
+ },2200);
+
+}
+
+
+/* PAGE NAVIGATION */
+
+function openPage(page){
+
+ $("homePage").classList.remove("show");
+ $("ridesPage").classList.remove("show");
+ $("profilePage").classList.remove("show");
+
+ $("homeNav").classList.remove("active");
+ $("ridesNav").classList.remove("active");
+ $("profileNav").classList.remove("active");
+
+
+ if(page==="home"){
+  $("homePage").classList.add("show");
+  $("homeNav").classList.add("active");
+ }
+
+ if(page==="rides"){
+  $("ridesPage").classList.add("show");
+  $("ridesNav").classList.add("active");
+ }
+
+ if(page==="profile"){
+  $("profilePage").classList.add("show");
+  $("profileNav").classList.add("active");
+ }
+
+ window.scrollTo(0,0);
+}
+
+
+/* DUTY */
+
+function toggleDuty(){
+
+ duty=!duty;
+
+ $("dutySwitch").classList.toggle("on",duty);
+
+ $("dutyText").innerHTML=
+  duty ? "🟢 Duty ON" : "🔴 Duty OFF";
+
+ $("headerStatus").innerHTML=
+  duty ? "🟢 Online" : "🔴 Offline";
+
+
+ try{
+  localStorage.setItem(
+   "safety_driver_duty",
+   duty ? "on" : "off"
+  );
+ }catch(e){}
+
+
+ if(duty){
+
+  toast("🟢 Duty ON हो गई");
+
+ }else{
+
+  stopGPS();
+
+  toast("🔴 Duty OFF हो गई");
+
+ }
+
+}
+
+
+/* GPS */
+
+function toggleGPS(){
+
+ if(watchId===null){
+
+  startGPS();
+
+ }else{
+
+  stopGPS();
+
+ }
+
+}
+
+
+function startGPS(){
+
+ if(!navigator.geolocation){
+
+  $("gpsStatus").innerHTML="🔴 GPS NOT SUPPORTED";
+
+  toast("इस Browser में GPS उपलब्ध नहीं है");
+
+  return;
+ }
+
+
+ $("gpsStatus").innerHTML="🟡 GPS UPDATING";
+
+ $("gpsButton").innerHTML="⛔ STOP LIVE GPS";
+
+
+ if(watchId!==null){
+
+  navigator.geolocation.clearWatch(watchId);
+
+ }
+
+
+ watchId=navigator.geolocation.watchPosition(
+
+  function(position){
+
+   var lat=position.coords.latitude;
+   var lng=position.coords.longitude;
+
+   $("latitude").innerHTML=lat.toFixed(6);
+   $("longitude").innerHTML=lng.toFixed(6);
+
+   $("gpsStatus").innerHTML="🟢 GPS ONLINE";
+
+  },
+
+
+  function(error){
+
+   $("gpsStatus").innerHTML="🔴 GPS OFFLINE";
+
+   if(error.code===1){
+
+    toast("📍 Location Permission Allow करें");
+
+   }else{
+
+    toast("GPS location नहीं मिल रही है");
+
+   }
+
+  },
+
+
+  {
+   enableHighAccuracy:true,
+   timeout:15000,
+   maximumAge:5000
+  }
+
+ );
+
+}
+
+
+function stopGPS(){
+
+ if(watchId!==null && navigator.geolocation){
+
+  navigator.geolocation.clearWatch(watchId);
+
+ }
+
+ watchId=null;
+
+ $("gpsStatus").innerHTML="🔴 GPS OFFLINE";
+
+ $("gpsButton").innerHTML="📍 START LIVE GPS";
+
+}
+
+
+/* RIDES */
+
+function acceptRide(){
+
+ $("rideBox").innerHTML=
+
+ '<div class="ride">'+
+
+ '<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
+ 'ACCEPTED'+
+ '</span>'+
+
+ '<div class="place">📍 Pickup: '+
+ escapeHTML(ride.pickup)+
+ '</div>'+
+
+ '<div style="color:#009b3a">↓</div>'+
+
+ '<div class="place">🏁 Drop: '+
+ escapeHTML(ride.drop)+
+ '</div>'+
+
+ '<button class="btn orange" onclick="completeRide()">'+
+ '🏁 COMPLETE RIDE'+
+ '</button>'+
+
+ '</div>';
+
+ toast("✅ Ride Accepted");
+
+}
+
+
+function rejectRide(){
+
+ $("rideBox").innerHTML=
+ '<div class="empty">❌ Ride Rejected</div>';
+
+ toast("❌ Ride Rejected");
+
+}
+
+
+function completeRide(){
+
+ var history=$("history");
+
+ if(history.classList.contains("empty")){
+
+  history.classList.remove("empty");
+  history.innerHTML="";
+
+ }
+
+
+ history.innerHTML=
+
+ '<div class="ride">'+
+ '<b>✅ Completed Ride</b>'+
+ '<div class="muted">📍 '+
+ escapeHTML(ride.pickup)+
+ '</div>'+
+ '<div class="muted">🏁 '+
+ escapeHTML(ride.drop)+
+ '</div>'+
+ '</div>'+
+ history.innerHTML;
+
+
+ $("rideBox").innerHTML=
+ '<div class="empty">अभी कोई नई ride नहीं है।</div>';
+
+ toast("🏁 Ride Complete");
+
+}
+
+
+/* PROFILE */
+
+function saveProfile(){
+
+ var profile={
+
+  name:$("nameInput").value.trim() || "Driver Name",
+
+  id:$("idInput").value.trim() || "SC-001",
+
+  vehicle:$("vehicleInput").value.trim() || "Vehicle"
+
+ };
+
+
+ try{
+
+  localStorage.setItem(
+   "safety_driver_profile",
+   JSON.stringify(profile)
+  );
+
+ }catch(e){}
+
+
+ $("driverName").innerHTML=escapeHTML(profile.name);
+ $("driverId").innerHTML=escapeHTML(profile.id);
+ $("vehicle").innerHTML=escapeHTML(profile.vehicle);
+
+ toast("✅ Profile Saved");
+
+}
+
+
+function loadProfile(){
+
+ try{
+
+  var profile=JSON.parse(
+   localStorage.getItem("safety_driver_profile") || "null"
+  );
+
+
+  if(profile){
+
+   $("nameInput").value=profile.name || "";
+   $("idInput").value=profile.id || "";
+   $("vehicleInput").value=profile.vehicle || "";
+
+   $("driverName").innerHTML=
+    escapeHTML(profile.name || "Driver Name");
+
+   $("driverId").innerHTML=
+    escapeHTML(profile.id || "SC-001");
+
+   $("vehicle").innerHTML=
+    escapeHTML(profile.vehicle || "Vehicle");
+
+  }
+
+ }catch(e){}
+
+}
+
+
+/* LOAD DUTY */
+
+function loadDuty(){
+
+ try{
+
+  if(localStorage.getItem("safety_driver_duty")==="on"){
+
+   duty=true;
+
+   $("dutySwitch").classList.add("on");
+
+   $("dutyText").innerHTML="🟢 Duty ON";
+
+   $("headerStatus").innerHTML="🟢 Online";
+
+  }
+
+ }catch(e){}
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(value){
+
+ return String(value).replace(
+  /[&<>"']/g,
+  function(char){
+
+   return {
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+   }[char];
+
+  }
+ );
+
+}
+
+
+/* START */
+
+window.addEventListener("load",function(){
+
+ loadProfile();
+ loadDuty();
+
+});
+
+
+window.addEventListener(
+ "beforeunload",
+ stopGPS
+);
+
+</script>
+
+</body>
+</html>

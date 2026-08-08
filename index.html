@@ -1,182 +1,245 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-
 <meta charset="UTF-8">
-
 <title>Safety Cab Admin Panel</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-
 body{
-font-family:Arial,sans-serif;
-background:#f2f2f2;
-margin:0;
-padding:15px;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  margin:0;
+  padding:15px;
 }
 
 .box{
-background:white;
-padding:15px;
-border-radius:12px;
-margin-bottom:15px;
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
 }
 
 input{
-width:100%;
-box-sizing:border-box;
-padding:12px;
-margin:6px 0;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:15px;
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin:6px 0;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:15px;
 }
 
 button{
-width:100%;
-padding:12px;
-margin:6px 0;
-border:0;
-border-radius:6px;
-font-size:16px;
-color:white;
-background:#168a3a;
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:0;
+  border-radius:6px;
+  font-size:16px;
+  color:white;
+  background:#168a3a;
 }
 
 .stop,
 .dutyOff,
 .delete{
-background:#d32f2f;
+  background:#d32f2f;
+}
+
+.searchBtn{
+  background:#1769aa;
+}
+
+.pickupBtn{
+  background:#168a3a;
+}
+
+.dropBtn{
+  background:#d66a00;
 }
 
 .driver{
-background:white;
-padding:15px;
-margin:10px 0;
-border-radius:10px;
-border-left:5px solid #168a3a;
+  background:white;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+  border-left:5px solid #168a3a;
 }
 
 .online{
-color:green;
-font-weight:bold;
+  color:green;
+  font-weight:bold;
 }
 
 .offline{
-color:red;
-font-weight:bold;
+  color:red;
+  font-weight:bold;
 }
 
 .dutyOn{
-color:#168a3a;
-font-weight:bold;
+  color:#168a3a;
+  font-weight:bold;
 }
 
 .dutyOffText{
-color:#d32f2f;
-font-weight:bold;
+  color:#d32f2f;
+  font-weight:bold;
+}
+
+.gps-indicator{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:20px;
+  font-weight:bold;
+  font-size:14px;
+  margin-top:5px;
+}
+
+.gps-green{
+  background:#d9f7df;
+  color:#168a3a;
+}
+
+.gps-red{
+  background:#ffe0e0;
+  color:#d32f2f;
+}
+
+.gps-yellow{
+  background:#fff4c2;
+  color:#9a7300;
 }
 
 .stars{
-font-size:28px;
-letter-spacing:3px;
-margin:8px 0;
+  font-size:28px;
+  letter-spacing:3px;
+  margin:8px 0;
 }
 
 .star{
-cursor:pointer;
-color:#ccc;
+  cursor:pointer;
+  color:#ccc;
 }
 
 .star.active{
-color:#f5b400;
+  color:#f5b400;
 }
 
-/* CAR ICON */
-
+/* SMALL CAR MAP ICON */
 .car-icon{
-font-size:30px;
-width:40px;
-height:40px;
-line-height:40px;
-text-align:center;
-filter:drop-shadow(1px 2px 2px #555);
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  font-size:23px;
+  background:white;
+  box-shadow:0 2px 6px rgba(0,0,0,.45);
+  border:3px solid #168a3a;
 }
 
 .car-offline{
-filter:grayscale(1);
-opacity:.65;
+  border-color:#d32f2f;
+  filter:grayscale(1);
+  opacity:.75;
+}
+
+.car-online{
+  border-color:#168a3a;
+}
+
+.car-updating{
+  border-color:#e0a800;
+}
+
+.pickup-marker{
+  font-size:30px;
+  filter:drop-shadow(1px 2px 2px #555);
+}
+
+.drop-marker{
+  font-size:30px;
+  filter:drop-shadow(1px 2px 2px #555);
 }
 
 #map{
-height:400px;
-width:100%;
-border-radius:10px;
-margin-bottom:20px;
+  height:400px;
+  width:100%;
+  border-radius:10px;
+  margin-bottom:20px;
 }
 
+#mapSection{
+  display:block;
+}
+
+.search-result{
+  background:#f8f8f8;
+  border:1px solid #ddd;
+  padding:10px;
+  margin:5px 0;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.search-result:hover{
+  background:#eaf4ff;
+}
+
+.small{
+  font-size:13px;
+  color:#666;
+}
 </style>
-
 </head>
-
 
 <body>
 
-
 <h2>🚕 Safety Cab Admin Panel</h2>
 
-
+<!-- DRIVER REGISTRATION -->
 <div class="box">
 
 <h3>👨‍✈️ Driver Registration</h3>
 
-<input
-id="driverId"
-placeholder="Driver ID">
+<input id="driverId" placeholder="Driver ID">
 
-<input
-id="driverName"
-placeholder="Driver Name">
+<input id="driverName" placeholder="Driver Name">
 
-<input
-id="phone"
-placeholder="Phone Number">
+<input id="phone" placeholder="Phone Number">
 
-<input
-id="vehicle"
-placeholder="Vehicle Number">
-
+<input id="vehicle" placeholder="Vehicle Number">
 
 <button onclick="startLiveGPS()">
 📍 START LIVE GPS
 </button>
 
-
-<button
-class="stop"
-onclick="stopLiveGPS()">
+<button class="stop" onclick="stopLiveGPS()">
 ⛔ STOP GPS
 </button>
 
-
-<p id="gpsStatus">
-🔴 GPS OFF
+<p>
+<b>GPS Status:</b>
+<span id="gpsStatus" class="offline">
+🔴 GPS OFFLINE
+</span>
 </p>
 
+<div id="gpsIndicator"
+class="gps-indicator gps-red">
+🔴 GPS OFFLINE
+</div>
 
 <p id="location">
 Latitude: -
 <br>
 Longitude: -
 </p>
-
 
 <button onclick="saveDriver()">
 💾 SAVE DRIVER
@@ -185,7 +248,7 @@ Longitude: -
 </div>
 
 
-
+<!-- SEARCH DRIVER -->
 <div class="box">
 
 <h3>🔎 Search Driver</h3>
@@ -198,6 +261,47 @@ oninput="showDrivers()">
 </div>
 
 
+<!-- PICKUP / DROP -->
+<div class="box">
+
+<h3>📍 Pickup & Drop</h3>
+
+<label><b>📍 Pickup Location</b></label>
+
+<input
+id="pickupSearch"
+placeholder="Pickup location search करें">
+
+<button
+class="pickupBtn"
+onclick="searchPickup()">
+🔎 SEARCH PICKUP
+</button>
+
+<div id="pickupResults"></div>
+
+<br>
+
+<label><b>🏁 Drop Location</b></label>
+
+<input
+id="dropSearch"
+placeholder="Drop location search करें">
+
+<button
+class="dropBtn"
+onclick="searchDrop()">
+🔎 SEARCH DROP
+</button>
+
+<div id="dropResults"></div>
+
+<p id="routeStatus" class="small">
+Pickup और Drop select करने के बाद Map पर दिखाई देंगे।
+</p>
+
+</div>
+
 
 <h3>👨‍✈️ Driver List</h3>
 
@@ -206,21 +310,23 @@ Loading...
 </div>
 
 
+<!-- MAP -->
+<div id="mapSection">
 
 <h3>🗺️ Driver Map</h3>
 
 <div id="map"></div>
 
+</div>
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-
 <script>
 
-/* =========================
-   LOAD DATA
-========================= */
+/* =====================================================
+   DATA
+===================================================== */
 
 let drivers = [];
 
@@ -248,10 +354,18 @@ let currentLng = "";
 
 let markers = [];
 
+let pickupMarker = null;
 
-/* =========================
+let dropMarker = null;
+
+let pickupLocation = null;
+
+let dropLocation = null;
+
+
+/* =====================================================
    OLD DATA FIX
-========================= */
+===================================================== */
 
 drivers.forEach(function(d){
 
@@ -267,12 +381,16 @@ if(typeof d.rating === "undefined"){
 d.rating = 0;
 }
 
+if(typeof d.lastUpdate === "undefined"){
+d.lastUpdate = "-";
+}
+
 });
 
 
-/* =========================
+/* =====================================================
    MAP
-========================= */
+===================================================== */
 
 let map =
 L.map("map").setView(
@@ -280,46 +398,47 @@ L.map("map").setView(
 13
 );
 
-
 L.tileLayer(
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
 maxZoom:19,
-attribution:"© OpenStreetMap"
+attribution:"© OpenStreetMap contributors"
 }
 ).addTo(map);
 
 
-/* =========================
+/* =====================================================
    CAR ICON
-========================= */
+===================================================== */
 
 function createCarIcon(driver){
 
-let carClass =
-driver.online
-? "car-icon"
-: "car-icon car-offline";
+let carClass = "car-icon ";
 
+if(driver.online){
 
-let carSymbol =
-driver.online
-? "🚕"
-: "🚕";
+carClass += "car-online";
 
+}else{
+
+carClass += "car-offline";
+
+}
 
 return L.divIcon({
 
 className:"",
 
 html:
-`<div class="${carClass}">
-${carSymbol}
-</div>`,
+`
+<div class="${carClass}">
+🚕
+</div>
+`,
 
-iconSize:[40,40],
+iconSize:[38,38],
 
-iconAnchor:[20,20],
+iconAnchor:[19,19],
 
 popupAnchor:[0,-20]
 
@@ -328,9 +447,76 @@ popupAnchor:[0,-20]
 }
 
 
-/* =========================
+/* =====================================================
+   GPS INDICATOR
+===================================================== */
+
+function setGPSIndicator(status){
+
+let indicator =
+document.getElementById(
+"gpsIndicator"
+);
+
+let gpsStatus =
+document.getElementById(
+"gpsStatus"
+);
+
+
+if(status === "online"){
+
+gpsStatus.innerHTML =
+"🟢 GPS ONLINE";
+
+gpsStatus.className =
+"online";
+
+indicator.innerHTML =
+"🟢 GPS ONLINE";
+
+indicator.className =
+"gps-indicator gps-green";
+
+}
+
+else if(status === "updating"){
+
+gpsStatus.innerHTML =
+"🟡 GPS UPDATING";
+
+gpsStatus.className = "";
+
+indicator.innerHTML =
+"🟡 GPS UPDATING";
+
+indicator.className =
+"gps-indicator gps-yellow";
+
+}
+
+else{
+
+gpsStatus.innerHTML =
+"🔴 GPS OFFLINE";
+
+gpsStatus.className =
+"offline";
+
+indicator.innerHTML =
+"🔴 GPS OFFLINE";
+
+indicator.className =
+"gps-indicator gps-red";
+
+}
+
+}
+
+
+/* =====================================================
    START LIVE GPS
-========================= */
+===================================================== */
 
 function startLiveGPS(){
 
@@ -345,10 +531,7 @@ return;
 }
 
 
-document.getElementById(
-"gpsStatus"
-).innerHTML =
-"🟡 GPS Starting...";
+setGPSIndicator("updating");
 
 
 watchId =
@@ -363,10 +546,7 @@ currentLng =
 position.coords.longitude;
 
 
-document.getElementById(
-"gpsStatus"
-).innerHTML =
-"🟢 GPS ONLINE";
+setGPSIndicator("online");
 
 
 document.getElementById(
@@ -406,7 +586,6 @@ true;
 driver.lastUpdate =
 new Date().toLocaleString();
 
-
 saveData();
 
 showDrivers();
@@ -419,10 +598,7 @@ showMap();
 
 function(error){
 
-document.getElementById(
-"gpsStatus"
-).innerHTML =
-"🔴 GPS OFFLINE";
+setGPSIndicator("offline");
 
 if(error.code === 1){
 
@@ -449,9 +625,9 @@ maximumAge:0
 }
 
 
-/* =========================
+/* =====================================================
    STOP GPS
-========================= */
+===================================================== */
 
 function stopLiveGPS(){
 
@@ -466,10 +642,7 @@ watchId = null;
 }
 
 
-document.getElementById(
-"gpsStatus"
-).innerHTML =
-"🔴 GPS OFFLINE";
+setGPSIndicator("offline");
 
 
 let id =
@@ -503,9 +676,9 @@ showMap();
 }
 
 
-/* =========================
+/* =====================================================
    SAVE DRIVER
-========================= */
+===================================================== */
 
 function saveDriver(){
 
@@ -638,9 +811,9 @@ alert(
 }
 
 
-/* =========================
+/* =====================================================
    SAVE DATA
-========================= */
+===================================================== */
 
 function saveData(){
 
@@ -655,9 +828,9 @@ JSON.stringify(drivers)
 }
 
 
-/* =========================
+/* =====================================================
    DUTY ON
-========================= */
+===================================================== */
 
 function dutyOn(index){
 
@@ -676,9 +849,9 @@ showMap();
 }
 
 
-/* =========================
+/* =====================================================
    DUTY OFF
-========================= */
+===================================================== */
 
 function dutyOff(index){
 
@@ -697,9 +870,9 @@ showMap();
 }
 
 
-/* =========================
+/* =====================================================
    RATING
-========================= */
+===================================================== */
 
 function setRating(index,rating){
 
@@ -718,9 +891,9 @@ showMap();
 }
 
 
-/* =========================
+/* =====================================================
    STAR DISPLAY
-========================= */
+===================================================== */
 
 function getStars(index,rating){
 
@@ -746,9 +919,34 @@ return html;
 }
 
 
-/* =========================
+/* =====================================================
+   GPS STATUS DISPLAY
+===================================================== */
+
+function getGPSIndicator(d){
+
+if(d.online){
+
+return `
+<span class="gps-indicator gps-green">
+🟢 GPS ONLINE
+</span>
+`;
+
+}
+
+return `
+<span class="gps-indicator gps-red">
+🔴 GPS OFFLINE
+</span>
+`;
+
+}
+
+
+/* =====================================================
    DRIVER LIST
-========================= */
+===================================================== */
 
 function showDrivers(){
 
@@ -847,19 +1045,9 @@ ${d.vehicle}
 
 <b>GPS Status:</b>
 
-<span class="${
-d.online
-? "online"
-: "offline"
-}">
+<br>
 
-${
-d.online
-? "🟢 Online"
-: "🔴 Offline"
-}
-
-</span>
+${getGPSIndicator(d)}
 
 <br><br>
 
@@ -955,9 +1143,9 @@ document.getElementById(
 }
 
 
-/* =========================
+/* =====================================================
    DELETE DRIVER
-========================= */
+===================================================== */
 
 function deleteDriver(index){
 
@@ -990,9 +1178,9 @@ showMap();
 }
 
 
-/* =========================
-   MAP WITH CAR
-========================= */
+/* =====================================================
+   SHOW DRIVER MAP
+===================================================== */
 
 function showMap(){
 
@@ -1062,6 +1250,11 @@ d.duty
 <b>Rating:</b>
 ⭐ ${d.rating || 0} / 5
 
+<br><br>
+
+<b>Location:</b>
+${lat}, ${lng}
+
 `);
 
 
@@ -1089,16 +1282,574 @@ padding:[30,30]
 }
 
 
-/* =========================
+/* =====================================================
+   AUTOMATIC MAP OPEN
+===================================================== */
+
+function openMapAutomatically(){
+
+setTimeout(function(){
+
+document.getElementById(
+"mapSection"
+).scrollIntoView({
+
+behavior:"smooth",
+
+block:"start"
+
+});
+
+
+setTimeout(function(){
+
+map.invalidateSize();
+
+},500);
+
+},200);
+
+}
+
+
+/* =====================================================
+   PICKUP ICON
+===================================================== */
+
+function createPickupIcon(){
+
+return L.divIcon({
+
+className:"",
+
+html:
+`
+<div class="pickup-marker">
+📍
+</div>
+`,
+
+iconSize:[35,35],
+
+iconAnchor:[17,35]
+
+});
+
+}
+
+
+/* =====================================================
+   DROP ICON
+===================================================== */
+
+function createDropIcon(){
+
+return L.divIcon({
+
+className:"",
+
+html:
+`
+<div class="drop-marker">
+🏁
+</div>
+`,
+
+iconSize:[35,35],
+
+iconAnchor:[17,35]
+
+});
+
+}
+
+
+/* =====================================================
+   SEARCH LOCATION
+   OpenStreetMap Nominatim
+===================================================== */
+
+async function searchLocation(query){
+
+if(!query){
+
+alert(
+"Location का नाम डालिए"
+);
+
+return [];
+
+}
+
+
+try{
+
+let url =
+"https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=in&q=" +
+encodeURIComponent(query);
+
+
+let response =
+await fetch(url,{
+headers:{
+"Accept":"application/json"
+}
+});
+
+
+let data =
+await response.json();
+
+
+return data;
+
+}catch(error){
+
+alert(
+"Location Search नहीं हो पाया। Internet Check करें।"
+);
+
+return [];
+
+}
+
+}
+
+
+/* =====================================================
+   SHOW SEARCH RESULTS
+===================================================== */
+
+function showSearchResults(
+data,
+containerId,
+type
+){
+
+let container =
+document.getElementById(
+containerId
+);
+
+container.innerHTML = "";
+
+
+if(data.length === 0){
+
+container.innerHTML =
+"<p>❌ Location नहीं मिली।</p>";
+
+return;
+
+}
+
+
+data.forEach(function(item){
+
+let div =
+document.createElement("div");
+
+div.className =
+"search-result";
+
+div.innerHTML =
+"📍 " +
+item.display_name;
+
+
+div.onclick =
+function(){
+
+selectLocation(
+item,
+type
+);
+
+};
+
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* =====================================================
+   SEARCH PICKUP
+===================================================== */
+
+async function searchPickup(){
+
+let query =
+document.getElementById(
+"pickupSearch"
+).value.trim();
+
+
+if(!query){
+
+alert(
+"Pickup Location डालिए"
+);
+
+return;
+
+}
+
+
+let data =
+await searchLocation(query);
+
+
+showSearchResults(
+data,
+"pickupResults",
+"pickup"
+);
+
+}
+
+
+/* =====================================================
+   SEARCH DROP
+===================================================== */
+
+async function searchDrop(){
+
+let query =
+document.getElementById(
+"dropSearch"
+).value.trim();
+
+
+if(!query){
+
+alert(
+"Drop Location डालिए"
+);
+
+return;
+
+}
+
+
+let data =
+await searchLocation(query);
+
+
+showSearchResults(
+data,
+"dropResults",
+"drop"
+);
+
+}
+
+
+/* =====================================================
+   SELECT PICKUP / DROP
+===================================================== */
+
+function selectLocation(item,type){
+
+let lat =
+Number(item.lat);
+
+let lng =
+Number(item.lon);
+
+
+if(type === "pickup"){
+
+pickupLocation = {
+lat:lat,
+lng:lng,
+name:item.display_name
+};
+
+
+if(pickupMarker){
+
+map.removeLayer(
+pickupMarker
+);
+
+}
+
+
+pickupMarker =
+L.marker(
+[lat,lng],
+{
+icon:createPickupIcon()
+}
+).addTo(map);
+
+
+pickupMarker.bindPopup(
+"<b>📍 PICKUP</b><br>" +
+item.display_name
+).openPopup();
+
+
+document.getElementById(
+"pickupSearch"
+).value =
+item.display_name;
+
+
+document.getElementById(
+"pickupResults"
+).innerHTML = "";
+
+
+/* AUTOMATIC MAP */
+openMapAutomatically();
+
+
+map.setView(
+[lat,lng],
+15
+);
+
+}
+
+
+if(type === "drop"){
+
+dropLocation = {
+lat:lat,
+lng:lng,
+name:item.display_name
+};
+
+
+if(dropMarker){
+
+map.removeLayer(
+dropMarker
+);
+
+}
+
+
+dropMarker =
+L.marker(
+[lat,lng],
+{
+icon:createDropIcon()
+}
+).addTo(map);
+
+
+dropMarker.bindPopup(
+"<b>🏁 DROP</b><br>" +
+item.display_name
+).openPopup();
+
+
+document.getElementById(
+"dropSearch"
+).value =
+item.display_name;
+
+
+document.getElementById(
+"dropResults"
+).innerHTML = "";
+
+
+openMapAutomatically();
+
+
+map.setView(
+[lat,lng],
+15
+);
+
+}
+
+
+/* FIT ALL LOCATIONS */
+
+fitAllLocations();
+
+updateRouteStatus();
+
+}
+
+
+/* =====================================================
+   FIT PICKUP + DROP + DRIVERS
+===================================================== */
+
+function fitAllLocations(){
+
+let points = [];
+
+
+drivers.forEach(function(d){
+
+let lat =
+Number(d.latitude);
+
+let lng =
+Number(d.longitude);
+
+if(
+!isNaN(lat) &&
+!isNaN(lng)
+){
+
+points.push(
+[lat,lng]
+);
+
+}
+
+});
+
+
+if(pickupLocation){
+
+points.push([
+pickupLocation.lat,
+pickupLocation.lng
+]);
+
+}
+
+
+if(dropLocation){
+
+points.push([
+dropLocation.lat,
+dropLocation.lng
+]);
+
+}
+
+
+if(points.length > 0){
+
+let bounds =
+L.latLngBounds(points);
+
+map.fitBounds(
+bounds,
+{
+padding:[40,40]
+}
+);
+
+}
+
+}
+
+
+/* =====================================================
+   ROUTE STATUS
+===================================================== */
+
+function updateRouteStatus(){
+
+let status =
+document.getElementById(
+"routeStatus"
+);
+
+
+if(
+pickupLocation &&
+dropLocation
+){
+
+status.innerHTML =
+"📍 Pickup + 🏁 Drop दोनों Map पर हैं। Route दिखाने के लिए Routing जोड़ सकते हैं।";
+
+}
+
+else if(pickupLocation){
+
+status.innerHTML =
+"📍 Pickup selected है। अब Drop Location चुनिए।";
+
+}
+
+else if(dropLocation){
+
+status.innerHTML =
+"🏁 Drop selected है। अब Pickup Location चुनिए।";
+
+}
+
+else{
+
+status.innerHTML =
+"Pickup और Drop select करने के बाद Map पर दिखाई देंगे।";
+
+}
+
+}
+
+
+/* =====================================================
+   CLICK MAP TO SET PICKUP
+===================================================== */
+
+map.on(
+"click",
+function(e){
+
+/*
+   Map पर खाली जगह tap करने पर
+   अभी सिर्फ location दिखाएँगे।
+*/
+
+let lat =
+e.latlng.lat.toFixed(7);
+
+let lng =
+e.latlng.lng.toFixed(7);
+
+
+L.popup()
+.setLatLng(e.latlng)
+.setContent(
+"📍 Location<br>" +
+lat +
+", " +
+lng
+)
+.openOn(map);
+
+});
+
+
+/* =====================================================
    START
-========================= */
+===================================================== */
 
 showDrivers();
 
 showMap();
 
-</script>
+updateRouteStatus();
 
+
+/* =====================================================
+   LIVE MAP REFRESH
+   हर 2 सेकंड में map update
+===================================================== */
+
+setInterval(function(){
+
+showMap();
+
+},2000);
+
+</script>
 
 </body>
 </html>

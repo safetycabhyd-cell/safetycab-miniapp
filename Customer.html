@@ -2,8 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SafetyCab Customer</title>
 
 <style>
@@ -16,113 +15,65 @@
 
 body{
     background:#f1f5f9;
-    color:#111827;
+    color:#172033;
 }
 
-.app{
-    max-width:520px;
-    margin:auto;
-    min-height:100vh;
-    background:#f1f5f9;
-}
-
-/* HEADER */
 .header{
     background:#111827;
     color:white;
-    padding:18px 16px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    position:sticky;
-    top:0;
-    z-index:20;
-}
-
-.logo{
-    font-size:21px;
+    padding:18px;
+    text-align:center;
+    font-size:23px;
     font-weight:bold;
 }
 
-.logo span{
-    color:#22c55e;
+.container{
+    max-width:520px;
+    margin:auto;
+    padding:15px;
 }
 
-.header small{
-    font-size:12px;
-    color:#d1d5db;
-}
-
-/* LOGIN */
-.loginPage{
-    padding:25px 16px;
-}
-
-.loginBox{
+.card{
     background:white;
-    border-radius:22px;
-    padding:25px 20px;
-    margin-top:25px;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 3px 14px rgba(0,0,0,.08);
 }
 
-.loginLogo{
-    width:75px;
-    height:75px;
-    background:#111827;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:38px;
-    margin:5px auto 15px;
-}
-
-.loginTitle{
-    text-align:center;
-    font-size:24px;
+.title{
+    font-size:19px;
     font-weight:bold;
+    margin-bottom:14px;
 }
 
-.loginSub{
-    text-align:center;
-    color:#6b7280;
-    margin:8px 0 22px;
-    font-size:14px;
-}
-
-/* INPUT */
 input,select{
     width:100%;
-    padding:15px;
+    padding:14px;
     margin:7px 0;
     border:1px solid #d1d5db;
-    border-radius:12px;
+    border-radius:11px;
     font-size:15px;
-    outline:none;
-    background:white;
 }
 
-input:focus,select:focus{
-    border-color:#16a34a;
-}
-
-/* BUTTON */
 button{
     width:100%;
-    border:0;
-    border-radius:12px;
     padding:14px;
     margin-top:9px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
+    border:0;
+    border-radius:11px;
     background:#16a34a;
     color:white;
+    font-size:16px;
+    font-weight:bold;
 }
 
 button:active{
     transform:scale(.98);
+}
+
+.blue{
+    background:#2563eb;
 }
 
 .red{
@@ -137,136 +88,88 @@ button:active{
     background:#f59e0b;
 }
 
-/* PANEL */
-.container{
-    padding:14px;
+.gray{
+    background:#475569;
 }
 
-.card{
-    background:white;
-    border-radius:18px;
-    padding:17px;
-    margin-bottom:14px;
-    box-shadow:0 4px 15px rgba(0,0,0,.06);
-}
-
-.title{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:13px;
+.hidden{
+    display:none !important;
 }
 
 .welcome{
-    background:linear-gradient(135deg,#111827,#1f2937);
+    background:#111827;
     color:white;
 }
 
-.welcomePhone{
-    margin-top:8px;
-    color:#d1d5db;
-    font-size:14px;
-}
-
-/* QUICK BUTTONS */
-.quick{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:12px;
-}
-
-.quick button{
-    margin:0;
-    font-size:14px;
-}
-
-/* BOOKING */
-.locationBox{
+.info{
     background:#f8fafc;
-    border-radius:13px;
-    padding:5px;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
 }
 
-.locationBox input{
-    border:0;
-    background:transparent;
-}
-
-/* STATUS */
-.statusBox{
-    padding:13px;
-    border-radius:12px;
-    background:#f0fdf4;
-    color:#166534;
-    font-weight:bold;
-}
-
-/* MAP */
 .map{
-    height:290px;
-    border-radius:16px;
-    overflow:hidden;
-    position:relative;
+    height:300px;
+    border-radius:14px;
     background:
-      linear-gradient(30deg,#e2e8f0 12%,transparent 12.5%,transparent 87%,#e2e8f0 87.5%),
-      linear-gradient(150deg,#e2e8f0 12%,transparent 12.5%,transparent 87%,#e2e8f0 87.5%),
-      #f8fafc;
-    background-size:80px 80px;
+    linear-gradient(45deg,#e2e8f0 25%,transparent 25%),
+    linear-gradient(-45deg,#e2e8f0 25%,transparent 25%),
+    #f8fafc;
+    background-size:50px 50px;
+    position:relative;
+    overflow:hidden;
     border:1px solid #cbd5e1;
 }
 
-.road1{
+.road{
     position:absolute;
-    width:120%;
+    width:130%;
     height:48px;
     background:#cbd5e1;
-    top:115px;
-    left:-20px;
-    transform:rotate(-12deg);
-}
-
-.road2{
-    position:absolute;
-    width:120%;
-    height:35px;
-    background:#d1d5db;
-    top:175px;
+    top:105px;
     left:-30px;
-    transform:rotate(20deg);
-}
-
-.mapLabel{
-    position:absolute;
-    top:12px;
-    left:12px;
-    background:white;
-    padding:8px 11px;
-    border-radius:9px;
-    font-size:12px;
-    font-weight:bold;
-    box-shadow:0 2px 8px rgba(0,0,0,.12);
+    transform:rotate(-12deg);
 }
 
 .car{
     position:absolute;
     top:105px;
-    left:53%;
-    font-size:35px;
-    transition:all 2s;
+    left:55%;
+    font-size:36px;
 }
 
-.pickMarker{
+.pin{
     position:absolute;
     bottom:35px;
     left:20%;
-    font-size:32px;
+    font-size:33px;
 }
 
-/* DRIVER */
+.fareBox{
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    border-radius:14px;
+    padding:15px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #dcfce7;
+}
+
+.total{
+    font-size:22px;
+    font-weight:bold;
+    color:#15803d;
+    padding-top:12px;
+}
+
 .driver{
     display:flex;
-    gap:13px;
     align-items:center;
+    gap:13px;
 }
 
 .driverIcon{
@@ -275,204 +178,198 @@ button:active{
     border-radius:50%;
     background:#e5e7eb;
     display:flex;
-    justify-content:center;
     align-items:center;
-    font-size:31px;
-}
-
-.driverName{
-    font-size:17px;
-    font-weight:bold;
+    justify-content:center;
+    font-size:30px;
 }
 
 .online{
     color:#16a34a;
     font-weight:bold;
-    font-size:13px;
 }
 
-.stars{
+.rating{
     color:#f59e0b;
-    font-size:18px;
+    font-size:20px;
 }
 
-/* INFO */
-.infoRow{
+.invoice{
+    border:2px solid #111827;
+    border-radius:12px;
+    padding:18px;
+    background:white;
+}
+
+.invoiceHeader{
+    text-align:center;
+    border-bottom:2px solid #111827;
+    padding-bottom:12px;
+    margin-bottom:12px;
+}
+
+.invoiceHeader h2{
+    font-size:23px;
+}
+
+.invoiceRow{
     display:flex;
     justify-content:space-between;
-    padding:10px 0;
+    gap:10px;
+    padding:8px 0;
     border-bottom:1px solid #eee;
     font-size:14px;
 }
 
-.infoRow:last-child{
-    border-bottom:0;
+.invoiceTotal{
+    display:flex;
+    justify-content:space-between;
+    font-size:22px;
+    font-weight:bold;
+    padding-top:15px;
 }
 
-/* BOTTOM */
+.success{
+    background:#ecfdf5;
+    color:#166534;
+    padding:13px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.reportBox{
+    background:#f8fafc;
+    border-radius:12px;
+    padding:13px;
+    margin-top:10px;
+}
+
+.reportRow{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.small{
+    color:#64748b;
+    font-size:12px;
+}
+
 .bottom{
     text-align:center;
-    color:#6b7280;
+    color:#64748b;
     font-size:12px;
     padding:20px;
 }
 
-.hidden{
-    display:none!important;
-}
+/* PRINT ONLY INVOICE */
 
-/* NAV */
-.nav{
-    position:sticky;
-    bottom:0;
-    background:white;
-    border-top:1px solid #ddd;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    padding:8px;
-    z-index:30;
-}
+@media print{
 
-.nav button{
-    background:white;
-    color:#374151;
-    margin:0;
-    padding:9px 4px;
-    font-size:12px;
-}
+    body{
+        background:white;
+    }
 
-.nav button.active{
-    color:#16a34a;
-}
+    .header,
+    .noPrint,
+    button{
+        display:none !important;
+    }
 
-/* SUCCESS */
-.success{
-    background:#ecfdf5;
-    color:#166534;
-    padding:14px;
-    border-radius:12px;
-    text-align:center;
-    font-weight:bold;
+    .container{
+        max-width:100%;
+        padding:0;
+    }
+
+    .card{
+        box-shadow:none;
+    }
+
+    #invoiceCard{
+        display:block !important;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
-<!-- HEADER -->
 <div class="header">
-    <div class="logo">🚕 Safety<span>Cab</span></div>
-    <small>Customer</small>
+    🚕 SafetyCab Customer
 </div>
-
-
-<!-- LOGIN -->
-<div id="loginPage" class="loginPage">
-
-    <div class="loginBox">
-
-        <div class="loginLogo">🚕</div>
-
-        <div class="loginTitle">
-            Welcome to SafetyCab
-        </div>
-
-        <div class="loginSub">
-            Safe • Reliable • Easy Cab Booking
-        </div>
-
-        <input
-            type="text"
-            id="customerName"
-            placeholder="Customer Name">
-
-        <input
-            type="tel"
-            id="customerPhone"
-            maxlength="10"
-            placeholder="Mobile Number">
-
-        <button onclick="loginCustomer()">
-            🚕 Continue
-        </button>
-
-        <div class="loginSub" style="margin-top:15px;">
-            OTP अभी आवश्यक नहीं है
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- CUSTOMER PANEL -->
-<div id="customerPanel" class="hidden">
 
 <div class="container">
 
+<!-- ================= LOGIN ================= -->
+
+<div id="loginPage" class="card">
+
+    <div class="title">
+        Customer Login
+    </div>
+
+    <input
+        id="customerName"
+        type="text"
+        placeholder="Customer Name">
+
+    <input
+        id="customerPhone"
+        type="tel"
+        maxlength="10"
+        placeholder="Mobile Number">
+
+    <button onclick="loginCustomer()">
+        🚕 Continue
+    </button>
+
+    <p class="small" style="text-align:center;margin-top:10px;">
+        OTP अभी नहीं है
+    </p>
+
+</div>
+
+
+<!-- ================= CUSTOMER PANEL ================= -->
+
+<div id="customerPanel" class="hidden">
+
 <!-- WELCOME -->
+
 <div class="card welcome">
 
     <div class="title">
         Hello, <span id="showName">Customer</span> 👋
     </div>
 
-    <div class="welcomePhone">
-        📱 <span id="showPhone"></span>
-    </div>
+    📱 <span id="showPhone"></span>
 
 </div>
 
 
-<!-- QUICK ACTION -->
+<!-- ================= BOOK CAB ================= -->
+
 <div class="card">
-
-    <div class="title">
-        Quick Actions
-    </div>
-
-    <div class="quick">
-
-        <button onclick="scrollBooking()">
-            🚕 Book Cab
-        </button>
-
-        <button onclick="callDriver()">
-            📞 Call Driver
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- BOOK CAB -->
-<div class="card" id="bookingCard">
 
     <div class="title">
         🚕 Book Your Cab
     </div>
 
-    <div class="locationBox">
+    <input
+        id="pickup"
+        type="text"
+        placeholder="📍 Pickup Location">
 
-        <input
-            type="text"
-            id="pickup"
-            placeholder="📍 Pickup Location">
-
-        <input
-            type="text"
-            id="drop"
-            placeholder="🏁 Drop Location">
-
-    </div>
+    <input
+        id="drop"
+        type="text"
+        placeholder="🏁 Drop Location">
 
     <select id="cabType">
 
-        <option value="Mini Cab">
-            🚕 Mini Cab
+        <option value="Mini">
+            🚕 Mini
         </option>
 
         <option value="Sedan">
@@ -485,6 +382,12 @@ button:active{
 
     </select>
 
+    <button
+        class="blue"
+        onclick="useMyLocation()">
+        📍 Use My Current Location
+    </button>
+
     <button onclick="bookCab()">
         🚕 Book Now
     </button>
@@ -492,58 +395,130 @@ button:active{
 </div>
 
 
-<!-- BOOKING STATUS -->
+<!-- ================= MAP ================= -->
+
+<div id="mapCard" class="card">
+
+    <div class="title">
+        🗺️ Trip Map
+    </div>
+
+    <div class="map">
+
+        <div class="road"></div>
+
+        <div class="car">
+            🚕
+        </div>
+
+        <div class="pin">
+            📍
+        </div>
+
+    </div>
+
+    <div class="info">
+
+        <b>Pickup:</b>
+        <span id="mapPickup">
+            Not selected
+        </span>
+
+        <br><br>
+
+        <b>Drop:</b>
+        <span id="mapDrop">
+            Not selected
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FARE ================= -->
+
+<div id="fareCard" class="card">
+
+    <div class="title">
+        💰 Fare Details
+    </div>
+
+    <div class="fareBox">
+
+        <div class="row">
+            <span>Cab</span>
+            <b id="fareCab">Mini</b>
+        </div>
+
+        <div class="row">
+            <span>Base Fare</span>
+            <b>₹<span id="baseFare">80</span></b>
+        </div>
+
+        <div class="row">
+            <span>Per KM</span>
+            <b>₹<span id="perKmFare">16</span></b>
+        </div>
+
+        <div class="row">
+            <span>Per Minute</span>
+            <b>₹<span id="perMinuteFare">1</span></b>
+        </div>
+
+        <div class="row">
+            <span>Distance</span>
+            <b>
+                <span id="distance">0</span> KM
+            </b>
+        </div>
+
+        <div class="row">
+            <span>Time</span>
+            <b>
+                <span id="tripMinutes">0</span> Min
+            </b>
+        </div>
+
+        <div class="row total">
+            <span>Estimated Total</span>
+            <span>
+                ₹<span id="estimatedTotal">80</span>
+            </span>
+        </div>
+
+    </div>
+
+    <button
+        class="gray"
+        onclick="calculateFare()">
+        🧮 Calculate Fare
+    </button>
+
+</div>
+
+
+<!-- ================= BOOKING STATUS ================= -->
+
 <div id="bookingStatus" class="card hidden">
 
     <div class="title">
         📋 Booking Status
     </div>
 
-    <div id="statusText"
-         class="statusBox">
-        🟡 Searching for driver...
+    <div id="statusText" class="success">
+        🟡 Driver खोजा जा रहा है...
     </div>
 
-    <button
-        class="dark"
-        onclick="showDriver()">
+    <button onclick="showDriver()">
         👨‍✈️ Check Driver
     </button>
 
 </div>
 
 
-<!-- MAP -->
-<div id="mapCard" class="card hidden">
+<!-- ================= DRIVER ================= -->
 
-    <div class="title">
-        📍 Live Trip Tracking
-    </div>
-
-    <div class="map">
-
-        <div class="mapLabel">
-            🟢 Driver Location
-        </div>
-
-        <div class="road1"></div>
-        <div class="road2"></div>
-
-        <div id="car"
-             class="car">
-            🚕
-        </div>
-
-        <div class="pickMarker">
-            📍
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- DRIVER -->
 <div id="driverCard" class="card hidden">
 
     <div class="title">
@@ -558,20 +533,19 @@ button:active{
 
         <div>
 
-            <div class="driverName">
-                Jaweed
-            </div>
+            <b>Jaweed</b><br>
 
-            <div class="online">
+            <span class="online">
                 🟢 Online
-            </div>
+            </span>
 
-            <div class="stars">
+            <br>
+
+            <span class="rating">
                 ★★★★★
-                <span style="font-size:13px;color:#555;">
-                    4.8
-                </span>
-            </div>
+            </span>
+
+            4.8
 
         </div>
 
@@ -579,15 +553,13 @@ button:active{
 
     <br>
 
-    <div class="infoRow">
-        <span>🚕 Vehicle</span>
-        <b>TS08UE0850</b>
-    </div>
+    <p>
+        🚕 Vehicle: TS08UE0850
+    </p>
 
-    <div class="infoRow">
-        <span>📱 Phone</span>
-        <b>9398179229</b>
-    </div>
+    <p>
+        📱 Phone: 9398179229
+    </p>
 
     <button onclick="callDriver()">
         📞 Call Driver
@@ -602,15 +574,15 @@ button:active{
 </div>
 
 
-<!-- TRIP -->
+<!-- ================= TRIP ================= -->
+
 <div id="tripCard" class="card hidden">
 
     <div class="title">
         🛣️ Trip Status
     </div>
 
-    <div id="tripStatus"
-         class="statusBox">
+    <div id="tripStatus" class="success">
         🟢 Trip Started
     </div>
 
@@ -623,7 +595,267 @@ button:active{
 </div>
 
 
-<!-- RATING -->
+<!-- ================= FINAL BILL ================= -->
+
+<div id="billCard" class="card hidden">
+
+    <div class="title">
+        💰 Final Bill
+    </div>
+
+    <div class="fareBox">
+
+        <div class="row">
+            <span>Cab</span>
+            <b id="billCab">Mini</b>
+        </div>
+
+        <div class="row">
+            <span>Distance</span>
+            <b>
+                <span id="billDistance">0</span> KM
+            </b>
+        </div>
+
+        <div class="row">
+            <span>Time</span>
+            <b>
+                <span id="billMinutes">0</span> Min
+            </b>
+        </div>
+
+        <div class="row">
+            <span>Base Fare</span>
+            <b>₹<span id="billBase">0</span></b>
+        </div>
+
+        <div class="row">
+            <span>Distance Charge</span>
+            <b>₹<span id="billDistanceCharge">0</span></b>
+        </div>
+
+        <div class="row">
+            <span>Time Charge</span>
+            <b>₹<span id="billTimeCharge">0</span></b>
+        </div>
+
+        <div class="row total">
+            <span>Grand Total</span>
+            <span>
+                ₹<span id="billTotal">0</span>
+            </span>
+        </div>
+
+    </div>
+
+    <button onclick="generateInvoice()">
+        🧾 Generate Invoice
+    </button>
+
+</div>
+
+
+<!-- ================= INVOICE ================= -->
+
+<div id="invoiceCard" class="card hidden">
+
+    <div class="invoice">
+
+        <div class="invoiceHeader">
+
+            <h2>
+                🚕 SafetyCab
+            </h2>
+
+            <p>
+                Customer Invoice
+            </p>
+
+            <p>
+                Invoice No:
+                <b id="invoiceNumber"></b>
+            </p>
+
+        </div>
+
+
+        <div class="invoiceRow">
+            <span>Date</span>
+            <b id="invoiceDate"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Customer</span>
+            <b id="invoiceCustomer"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Mobile</span>
+            <b id="invoiceMobile"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Pickup</span>
+            <b id="invoicePickup"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Drop</span>
+            <b id="invoiceDrop"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Cab</span>
+            <b id="invoiceCab"></b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Driver</span>
+            <b>Jaweed</b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Vehicle</span>
+            <b>TS08UE0850</b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Distance</span>
+            <b>
+                <span id="invoiceDistance"></span> KM
+            </b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Time</span>
+            <b>
+                <span id="invoiceMinutes"></span> Min
+            </b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Base Fare</span>
+            <b>
+                ₹<span id="invoiceBase"></span>
+            </b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Distance Charge</span>
+            <b>
+                ₹<span id="invoiceDistanceCharge"></span>
+            </b>
+        </div>
+
+        <div class="invoiceRow">
+            <span>Time Charge</span>
+            <b>
+                ₹<span id="invoiceTimeCharge"></span>
+            </b>
+        </div>
+
+        <div class="invoiceTotal">
+
+            <span>
+                Grand Total
+            </span>
+
+            <span>
+                ₹<span id="invoiceTotal"></span>
+            </span>
+
+        </div>
+
+        <br>
+
+        <p
+            style="text-align:center;font-size:12px;color:#64748b;">
+            Thank you for travelling with SafetyCab 🚕
+        </p>
+
+    </div>
+
+
+    <div class="noPrint">
+
+        <button
+            class="blue"
+            onclick="printInvoice()">
+            📄 Save / Print Invoice
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= REPORT ================= -->
+
+<div id="reportCard" class="card hidden">
+
+    <div class="title">
+        📊 Customer Trip Report
+    </div>
+
+    <div class="reportBox">
+
+        <div class="reportRow">
+            <span>Trip Status</span>
+            <b id="reportStatus">
+                Completed
+            </b>
+        </div>
+
+        <div class="reportRow">
+            <span>Cab</span>
+            <b id="reportCab"></b>
+        </div>
+
+        <div class="reportRow">
+            <span>Distance</span>
+            <b>
+                <span id="reportDistance"></span>
+                KM
+            </b>
+        </div>
+
+        <div class="reportRow">
+            <span>Trip Time</span>
+            <b>
+                <span id="reportMinutes"></span>
+                Min
+            </b>
+        </div>
+
+        <div class="reportRow">
+            <span>Driver</span>
+            <b>Jaweed</b>
+        </div>
+
+        <div class="reportRow">
+            <span>Vehicle</span>
+            <b>TS08UE0850</b>
+        </div>
+
+        <div class="reportRow">
+            <span>Invoice</span>
+            <b id="reportInvoice"></b>
+        </div>
+
+        <div class="reportRow">
+            <span>Total Paid</span>
+            <b>
+                ₹<span id="reportTotal"></span>
+            </b>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= RATING ================= -->
+
 <div id="ratingCard" class="card hidden">
 
     <div class="title">
@@ -661,8 +893,9 @@ button:active{
 </div>
 
 
-<!-- LOGOUT -->
-<div class="card">
+<!-- ================= LOGOUT ================= -->
+
+<div class="card noPrint">
 
     <button
         class="red"
@@ -675,33 +908,9 @@ button:active{
 </div>
 
 
-<!-- BOTTOM NAV -->
-<div class="nav">
-
-    <button
-        class="active"
-        onclick="scrollTopPage()">
-        🏠 Home
-    </button>
-
-    <button onclick="scrollBooking()">
-        🚕 Booking
-    </button>
-
-    <button onclick="showDriver()">
-        👨‍✈️ Driver
-    </button>
-
-</div>
-
-</div>
-
-
 <div class="bottom">
-
     SafetyCab Customer App<br>
     © 2026 SafetyCab
-
 </div>
 
 </div>
@@ -709,36 +918,66 @@ button:active{
 
 <script>
 
-/* LOGIN */
+/* ================= FARE SETTINGS ================= */
+
+const fares = {
+
+    Mini:{
+        base:80,
+        perKm:16,
+        perMinute:1
+    },
+
+    Sedan:{
+        base:100,
+        perKm:21,
+        perMinute:1
+    },
+
+    SUV:{
+        base:150,
+        perKm:26,
+        perMinute:1.50
+    }
+
+};
+
+
+/* ================= LOGIN ================= */
 
 function loginCustomer(){
 
     const name =
-        document.getElementById("customerName").value.trim();
+        document.getElementById("customerName")
+        .value.trim();
 
     const phone =
-        document.getElementById("customerPhone").value.trim();
+        document.getElementById("customerPhone")
+        .value.trim();
 
-    if(name === ""){
+    if(name===""){
 
-        alert("कृपया Customer Name डालें");
+        alert(
+            "Customer Name डालें"
+        );
+
         return;
-
     }
 
-    if(phone.length !== 10 ||
-       isNaN(phone)){
+    if(phone.length!==10){
 
-        alert("कृपया सही 10 Digit Mobile Number डालें");
+        alert(
+            "सही 10 digit Mobile Number डालें"
+        );
+
         return;
-
     }
 
     document.getElementById("showName")
-        .innerText = name;
+        .innerText=name;
 
     document.getElementById("showPhone")
-        .innerText = phone;
+        .innerText=phone;
 
     document.getElementById("loginPage")
         .classList.add("hidden");
@@ -746,53 +985,136 @@ function loginCustomer(){
     document.getElementById("customerPanel")
         .classList.remove("hidden");
 
-    localStorage.setItem(
-        "safetycab_customer_name",
-        name
-    );
+    updateFare();
 
-    localStorage.setItem(
-        "safetycab_customer_phone",
-        phone
+}
+
+
+/* ================= LOCATION ================= */
+
+function useMyLocation(){
+
+    if(!navigator.geolocation){
+
+        alert(
+            "इस मोबाइल में GPS उपलब्ध नहीं है"
+        );
+
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            const lat =
+                position.coords.latitude
+                .toFixed(6);
+
+            const lng =
+                position.coords.longitude
+                .toFixed(6);
+
+            const location =
+                lat+", "+lng;
+
+            document.getElementById("pickup")
+                .value=location;
+
+            document.getElementById("mapPickup")
+                .innerText=location;
+
+        },
+
+        function(){
+
+            alert(
+                "GPS permission Allow करें"
+            );
+
+        },
+
+        {
+            enableHighAccuracy:true,
+            timeout:15000
+        }
+
     );
 
 }
 
 
-/* AUTO LOGIN */
+/* ================= FARE UPDATE ================= */
 
-window.onload = function(){
-
-    const name =
-        localStorage.getItem(
-            "safetycab_customer_name"
-        );
-
-    const phone =
-        localStorage.getItem(
-            "safetycab_customer_phone"
-        );
-
-    if(name && phone){
-
-        document.getElementById("showName")
-            .innerText = name;
-
-        document.getElementById("showPhone")
-            .innerText = phone;
-
-        document.getElementById("loginPage")
-            .classList.add("hidden");
-
-        document.getElementById("customerPanel")
-            .classList.remove("hidden");
-
-    }
-
-};
+document.getElementById("cabType")
+.addEventListener(
+    "change",
+    updateFare
+);
 
 
-/* BOOK CAB */
+function updateFare(){
+
+    const cab =
+        document.getElementById("cabType")
+        .value;
+
+    const fare =
+        fares[cab];
+
+    document.getElementById("fareCab")
+        .innerText=cab;
+
+    document.getElementById("baseFare")
+        .innerText=fare.base;
+
+    document.getElementById("perKmFare")
+        .innerText=fare.perKm;
+
+    document.getElementById("perMinuteFare")
+        .innerText=fare.perMinute;
+
+    calculateFare();
+
+}
+
+
+/* ================= CALCULATE FARE ================= */
+
+function calculateFare(){
+
+    const cab =
+        document.getElementById("cabType")
+        .value;
+
+    const fare =
+        fares[cab];
+
+    const distance =
+        parseFloat(
+            document.getElementById("distance")
+            .innerText
+        ) || 0;
+
+    const minutes =
+        parseFloat(
+            document.getElementById("tripMinutes")
+            .innerText
+        ) || 0;
+
+    const total =
+        fare.base +
+        (distance * fare.perKm) +
+        (minutes * fare.perMinute);
+
+    document.getElementById("estimatedTotal")
+        .innerText=
+        Math.round(total);
+
+}
+
+
+/* ================= BOOK ================= */
 
 function bookCab(){
 
@@ -804,45 +1126,42 @@ function bookCab(){
         document.getElementById("drop")
         .value.trim();
 
-    const cab =
-        document.getElementById("cabType")
-        .value;
-
-    if(pickup === "" || drop === ""){
+    if(pickup==="" || drop===""){
 
         alert(
-            "कृपया Pickup और Drop Location डालें"
+            "Pickup और Drop Location डालें"
         );
 
         return;
-
     }
+
+    document.getElementById("mapDrop")
+        .innerText=drop;
 
     document.getElementById("bookingStatus")
         .classList.remove("hidden");
 
     document.getElementById("statusText")
-        .innerText =
-        "🟡 " + cab +
-        " के लिए Driver खोजा जा रहा है...";
+        .innerText=
+        "🟡 Driver खोजा जा रहा है...";
 
-    setTimeout(function(){
+    setTimeout(
 
-        document.getElementById("statusText")
-            .innerText =
-            "🟢 Driver मिल गया!";
+        function(){
 
-    },2000);
+            document.getElementById("statusText")
+                .innerText=
+                "🟢 Driver मिल गया!";
 
-    document.getElementById("bookingStatus")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+        },
+
+        2000
+    );
 
 }
 
 
-/* DRIVER */
+/* ================= DRIVER ================= */
 
 function showDriver(){
 
@@ -852,25 +1171,20 @@ function showDriver(){
     document.getElementById("mapCard")
         .classList.remove("hidden");
 
-    document.getElementById("driverCard")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
 }
 
 
-/* CALL */
+/* ================= CALL ================= */
 
 function callDriver(){
 
-    window.location.href =
+    window.location.href=
         "tel:9398179229";
 
 }
 
 
-/* START TRIP */
+/* ================= START TRIP ================= */
 
 function startTrip(){
 
@@ -878,38 +1192,189 @@ function startTrip(){
         .classList.remove("hidden");
 
     document.getElementById("tripStatus")
-        .innerText =
-        "🟢 Trip Started - Driver आपकी तरफ आ रहा है।";
-
-    document.getElementById("tripCard")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
-    /* Demo car movement */
-
-    setTimeout(function(){
-
-        document.getElementById("car")
-            .style.left = "70%";
-
-    },500);
+        .innerText=
+        "🟢 Trip Started";
 
 }
 
 
-/* COMPLETE TRIP */
+/* ================= COMPLETE TRIP ================= */
 
 function completeTrip(){
 
-    document.getElementById("tripStatus")
-        .innerText =
-        "✅ Trip Completed Successfully";
+    const cab =
+        document.getElementById("cabType")
+        .value;
+
+    const fare =
+        fares[cab];
+
+    /*
+       Demo values.
+       बाद में real GPS route से आएंगे.
+    */
+
+    const distance=10;
+
+    const minutes=10;
+
+    const distanceCharge =
+        distance * fare.perKm;
+
+    const timeCharge =
+        minutes * fare.perMinute;
+
+    const total =
+        fare.base +
+        distanceCharge +
+        timeCharge;
+
+
+    /* BILL */
+
+    document.getElementById("billCard")
+        .classList.remove("hidden");
+
+    document.getElementById("billCab")
+        .innerText=cab;
+
+    document.getElementById("billDistance")
+        .innerText=distance;
+
+    document.getElementById("billMinutes")
+        .innerText=minutes;
+
+    document.getElementById("billBase")
+        .innerText=fare.base;
+
+    document.getElementById("billDistanceCharge")
+        .innerText=
+        distanceCharge.toFixed(2);
+
+    document.getElementById("billTimeCharge")
+        .innerText=
+        timeCharge.toFixed(2);
+
+    document.getElementById("billTotal")
+        .innerText=
+        total.toFixed(2);
+
+
+    /* RATING */
 
     document.getElementById("ratingCard")
         .classList.remove("hidden");
 
-    document.getElementById("ratingCard")
+}
+
+
+/* ================= INVOICE ================= */
+
+function generateInvoice(){
+
+    const cab =
+        document.getElementById("billCab")
+        .innerText;
+
+    const invoiceNumber =
+        "SC-"+Date.now();
+
+    const now =
+        new Date().toLocaleString("en-IN");
+
+
+    document.getElementById("invoiceNumber")
+        .innerText=invoiceNumber;
+
+    document.getElementById("invoiceDate")
+        .innerText=now;
+
+    document.getElementById("invoiceCustomer")
+        .innerText=
+        document.getElementById("showName")
+        .innerText;
+
+    document.getElementById("invoiceMobile")
+        .innerText=
+        document.getElementById("showPhone")
+        .innerText;
+
+    document.getElementById("invoicePickup")
+        .innerText=
+        document.getElementById("pickup")
+        .value;
+
+    document.getElementById("invoiceDrop")
+        .innerText=
+        document.getElementById("drop")
+        .value;
+
+    document.getElementById("invoiceCab")
+        .innerText=cab;
+
+    document.getElementById("invoiceDistance")
+        .innerText=
+        document.getElementById("billDistance")
+        .innerText;
+
+    document.getElementById("invoiceMinutes")
+        .innerText=
+        document.getElementById("billMinutes")
+        .innerText;
+
+    document.getElementById("invoiceBase")
+        .innerText=
+        document.getElementById("billBase")
+        .innerText;
+
+    document.getElementById("invoiceDistanceCharge")
+        .innerText=
+        document.getElementById("billDistanceCharge")
+        .innerText;
+
+    document.getElementById("invoiceTimeCharge")
+        .innerText=
+        document.getElementById("billTimeCharge")
+        .innerText;
+
+    document.getElementById("invoiceTotal")
+        .innerText=
+        document.getElementById("billTotal")
+        .innerText;
+
+
+    document.getElementById("invoiceCard")
+        .classList.remove("hidden");
+
+
+    /* REPORT */
+
+    document.getElementById("reportCard")
+        .classList.remove("hidden");
+
+    document.getElementById("reportCab")
+        .innerText=cab;
+
+    document.getElementById("reportDistance")
+        .innerText=
+        document.getElementById("billDistance")
+        .innerText;
+
+    document.getElementById("reportMinutes")
+        .innerText=
+        document.getElementById("billMinutes")
+        .innerText;
+
+    document.getElementById("reportInvoice")
+        .innerText=invoiceNumber;
+
+    document.getElementById("reportTotal")
+        .innerText=
+        document.getElementById("billTotal")
+        .innerText;
+
+
+    document.getElementById("invoiceCard")
         .scrollIntoView({
             behavior:"smooth"
         });
@@ -917,7 +1382,16 @@ function completeTrip(){
 }
 
 
-/* RATING */
+/* ================= PRINT / PDF ================= */
+
+function printInvoice(){
+
+    window.print();
+
+}
+
+
+/* ================= RATING ================= */
 
 function submitRating(){
 
@@ -926,48 +1400,19 @@ function submitRating(){
         .value;
 
     alert(
-        "धन्यवाद! आपने Driver को " +
-        rating +
+        "धन्यवाद! आपने Driver को "+
+        rating+
         " Star Rating दी।"
     );
 
 }
 
 
-/* LOGOUT */
+/* ================= LOGOUT ================= */
 
 function logout(){
 
-    localStorage.removeItem(
-        "safetycab_customer_name"
-    );
-
-    localStorage.removeItem(
-        "safetycab_customer_phone"
-    );
-
     location.reload();
-
-}
-
-
-/* SCROLL */
-
-function scrollBooking(){
-
-    document.getElementById("bookingCard")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
-}
-
-function scrollTopPage(){
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
 
 }
 

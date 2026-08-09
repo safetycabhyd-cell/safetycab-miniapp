@@ -3,950 +3,1657 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1976d2">
 
 <title>SafetyCab Customer App</title>
 
 <style>
 *{
-    box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f2f5f9;
-    color:#222;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f1f5f9;
+  color:#222;
+}
+
+.app{
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
 }
 
 .header{
-    background:#1976d2;
-    color:white;
-    padding:20px;
-    text-align:center;
-    border-radius:0 0 20px 20px;
+  background:#1976d2;
+  color:white;
+  padding:22px 15px;
+  text-align:center;
+  border-radius:0 0 22px 22px;
 }
 
 .header h1{
-    margin:0;
-    font-size:27px;
+  margin:0;
+  font-size:28px;
 }
 
-.container{
-    width:100%;
-    max-width:600px;
-    margin:auto;
-    padding:15px;
+.header p{
+  margin:5px 0 0;
 }
 
 .card{
-    background:white;
-    padding:18px;
-    margin-bottom:15px;
-    border-radius:15px;
-    box-shadow:0 3px 12px rgba(0,0,0,.10);
+  background:white;
+  margin:15px;
+  padding:18px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
 
 .card h2{
-    margin-top:0;
+  margin-top:0;
+  font-size:22px;
 }
 
-input,
-select{
-    width:100%;
-    padding:13px;
-    margin:7px 0;
-    border:1px solid #ccc;
-    border-radius:9px;
-    font-size:16px;
+label{
+  display:block;
+  font-weight:bold;
+  margin:12px 0 6px;
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  border:1px solid #ccc;
+  border-radius:12px;
+  font-size:16px;
+  background:white;
 }
 
 button{
-    width:100%;
-    padding:14px;
-    margin-top:9px;
-    border:0;
-    border-radius:9px;
-    background:#1976d2;
-    color:white;
-    font-size:16px;
-    font-weight:bold;
+  width:100%;
+  border:0;
+  padding:14px;
+  margin-top:10px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.green{
-    background:#168a3a;
+.btn-blue{
+  background:#1976d2;
+  color:white;
 }
 
-.red{
-    background:#d32f2f;
+.btn-green{
+  background:#159447;
+  color:white;
 }
 
-.gray{
-    background:#555;
+.btn-gray{
+  background:#555;
+  color:white;
 }
 
-.orange{
-    background:#d66a00;
+.btn-red{
+  background:#d62828;
+  color:white;
 }
 
-.info{
-    background:#eef5ff;
-    padding:13px;
-    border-radius:10px;
-    margin-top:10px;
-}
-
-.status{
-    padding:13px;
-    background:#fff7d6;
-    border-radius:10px;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-.price{
-    color:#1976d2;
-    font-size:26px;
-    font-weight:bold;
-    margin-top:8px;
+.btn-orange{
+  background:#ef8b00;
+  color:white;
 }
 
 .hidden{
-    display:none !important;
+  display:none !important;
+}
+
+.welcome{
+  background:#eef5ff;
+  padding:14px;
+  border-radius:12px;
+  line-height:1.9;
+}
+
+.fare{
+  background:#eef5ff;
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
+}
+
+.fare strong{
+  font-size:27px;
+  color:#1976d2;
+}
+
+.status{
+  padding:15px;
+  border-radius:12px;
+  background:#fff7d6;
+  margin-top:12px;
+  line-height:1.7;
+}
+
+.driver-box{
+  background:#f3f3f3;
+  border-radius:14px;
+  padding:18px;
+  text-align:center;
+  min-height:160px;
+}
+
+.driver-car{
+  font-size:55px;
+}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  padding:7px 0;
+  border-bottom:1px solid #eee;
+}
+
+.login-logo{
+  font-size:55px;
+  text-align:center;
 }
 
 .small{
-    color:#666;
-    font-size:13px;
+  font-size:13px;
+  color:#666;
 }
 
-.map{
-    height:220px;
-    background:#e6e6e6;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
+.error{
+  background:#ffe5e5;
+  color:#b00020;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
 }
 
-.driverBox{
-    background:#f5faff;
-    border-left:5px solid #1976d2;
-    padding:13px;
-    border-radius:10px;
+.success{
+  background:#e4f8e9;
+  color:#126b2d;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
 }
 
-.successText{
-    color:#168a3a;
-    font-weight:bold;
+.language-box{
+  background:#fafafa;
+  padding:12px;
+  border-radius:12px;
 }
 
-.errorText{
-    color:#d32f2f;
-    font-weight:bold;
+.invoice{
+  border:1px dashed #999;
+  padding:15px;
+  border-radius:10px;
+  background:#fff;
 }
 
-footer{
-    text-align:center;
-    padding:20px;
-    color:#777;
+.footer{
+  text-align:center;
+  padding:25px;
+  color:#777;
+  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
+<!-- HEADER -->
 <div class="header">
-
-    <h1>🚕 SafetyCab</h1>
-
-    <div>
-        Customer App
-    </div>
-
+  <h1>🚕 SafetyCab</h1>
+  <p id="appSubtitle">Customer App</p>
 </div>
 
 
-<div class="container">
+<!-- ================= LOGIN ================= -->
 
+<div id="loginScreen">
 
-<!-- =====================================================
-     LOGIN
-===================================================== -->
+  <div class="card">
 
-<div id="loginCard" class="card">
+    <div class="login-logo">🚕</div>
 
-    <h2>👤 Customer Login</h2>
+    <h2 id="loginTitle" style="text-align:center;">
+      Customer Login
+    </h2>
 
-    <input
-        id="customerName"
-        type="text"
-        placeholder="अपना नाम डालें"
-    >
+    <label id="nameLabel">नाम</label>
 
     <input
-        id="customerPhone"
-        type="tel"
-        inputmode="numeric"
-        maxlength="10"
-        placeholder="10 अंकों का मोबाइल नंबर"
+      id="loginName"
+      type="text"
+      placeholder="अपना नाम लिखें"
+      autocomplete="name"
     >
 
-    <button onclick="loginCustomer()">
-        Continue
+    <label id="phoneLabel">फोन नंबर</label>
+
+    <input
+      id="loginPhone"
+      type="tel"
+      inputmode="numeric"
+      maxlength="10"
+      placeholder="10 अंकों का मोबाइल नंबर"
+      autocomplete="tel"
+    >
+
+    <button
+      class="btn-blue"
+      onclick="loginCustomer()"
+      id="continueBtn">
+      Continue
     </button>
 
-    <p class="small">
-        नाम और मोबाइल नंबर डालकर Login करें।
+    <div id="loginMessage"></div>
+
+    <p class="small" id="loginNote">
+      OTP अभी आवश्यक नहीं है। आपका लॉगिन इस डिवाइस पर सेव रहेगा।
     </p>
+
+  </div>
+
+
+  <!-- LANGUAGE -->
+
+  <div class="card">
+
+    <h2>🌐 Language / भाषा</h2>
+
+    <div class="language-box">
+
+      <select id="languageSelect" onchange="changeLanguage()">
+
+        <option value="hi">
+          हिन्दी
+        </option>
+
+        <option value="en">
+          English
+        </option>
+
+        <option value="ur">
+          اردو
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
 
 </div>
 
 
-
-<!-- =====================================================
-     CUSTOMER PANEL
-===================================================== -->
+<!-- ================= CUSTOMER PANEL ================= -->
 
 <div id="customerPanel" class="hidden">
 
 
-<!-- WELCOME -->
+  <!-- WELCOME -->
 
-<div class="card">
+  <div class="card">
 
-    <h2>👋 Welcome</h2>
+    <h2 id="welcomeTitle">
+      👋 Welcome
+    </h2>
 
-    <div class="info">
+    <div class="welcome">
 
-        <b>नाम:</b>
-        <span id="welcomeName"></span>
+      <div>
+        <b id="customerNameLabel">नाम:</b>
+        <span id="customerName"></span>
+      </div>
 
-        <br><br>
-
-        <b>फोन नंबर:</b>
-        <span id="welcomePhone"></span>
+      <div>
+        <b id="customerPhoneLabel">फोन नंबर:</b>
+        <span id="customerPhone"></span>
+      </div>
 
     </div>
 
-</div>
+  </div>
 
 
+  <!-- LANGUAGE -->
 
-<!-- BOOKING -->
+  <div class="card">
 
-<div class="card">
+    <h2 id="languageTitle">
+      🌐 Language Setting
+    </h2>
 
-    <h2>🚕 Book Your Ride</h2>
+    <select id="panelLanguage" onchange="changeLanguageFromPanel()">
+
+      <option value="hi">
+        हिन्दी
+      </option>
+
+      <option value="en">
+        English
+      </option>
+
+      <option value="ur">
+        اردو
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- BOOKING -->
+
+  <div class="card">
+
+    <h2 id="bookTitle">
+      🚕 Book Your Ride
+    </h2>
+
+    <label id="pickupLabel">
+      📍 Pickup Location
+    </label>
 
     <input
-        id="pickup"
-        type="text"
-        placeholder="📍 Pickup Location"
+      id="pickup"
+      type="text"
+      placeholder="Pickup Location"
     >
 
     <button
-        class="gray"
-        onclick="useMyLocation()">
-
-        📍 मेरी Current Location
-
+      class="btn-gray"
+      onclick="useMyLocation()"
+      id="locationBtn">
+      📍 मेरी Current Location
     </button>
 
+
+    <label id="dropLabel">
+      🏁 Drop Location
+    </label>
+
     <input
-        id="drop"
-        type="text"
-        placeholder="🏁 Drop Location"
+      id="drop"
+      type="text"
+      placeholder="Drop Location"
     >
 
 
-    <select
-        id="cabType"
-        onchange="updateFare()">
+    <label id="cabLabel">
+      Vehicle
+    </label>
 
-        <option value="Mini">
-            Mini
-        </option>
+    <select id="cabType" onchange="updateFare()">
 
-        <option value="Sedan">
-            Sedan
-        </option>
+      <option value="Mini">
+        Mini
+      </option>
 
-        <option value="SUV">
-            SUV
-        </option>
+      <option value="Sedan">
+        Sedan
+      </option>
+
+      <option value="SUV">
+        SUV
+      </option>
 
     </select>
 
 
-    <div class="info">
+    <div class="fare">
 
-        <b>Estimated Fare</b>
+      <div id="estimatedFareText">
+        Estimated Fare
+      </div>
 
-        <div
-            id="fareAmount"
-            class="price">
+      <strong>
+        ₹<span id="estimatedFare">80</span>
+      </strong>
 
-            ₹80
-
-        </div>
+      <div class="small">
+        <span id="fareDetails">
+          Base + Distance + Time
+        </span>
+      </div>
 
     </div>
 
 
     <button
-        class="green"
-        onclick="bookCab()">
-
-        🚕 BOOK NOW
-
+      class="btn-green"
+      onclick="bookCab()"
+      id="bookButton">
+      🚕 BOOK NOW
     </button>
 
-</div>
+  </div>
 
 
+  <!-- BOOKING STATUS -->
 
-<!-- =====================================================
-     DRIVER MAP
-===================================================== -->
+  <div
+    class="card hidden"
+    id="bookingStatusCard">
 
-<div class="card">
+    <h2 id="statusTitle">
+      📋 Booking Status
+    </h2>
 
-    <h2>🗺️ Driver Location</h2>
+    <div
+      class="status"
+      id="bookingStatus">
+      Driver खोजा जा रहा है...
+    </div>
 
-    <div class="map">
+    <div
+      class="small"
+      id="bookingIdText">
+    </div>
 
-        🚕 Driver GPS
+    <button
+      class="btn-red"
+      onclick="cancelBooking()"
+      id="cancelButton">
+      Cancel Booking
+    </button>
+
+  </div>
+
+
+  <!-- DRIVER -->
+
+  <div
+    class="card hidden"
+    id="driverCard">
+
+    <h2 id="driverTitle">
+      🚕 Driver Details
+    </h2>
+
+    <div class="welcome">
+
+      <div class="info-row">
+        <b id="driverNameLabel">Driver</b>
+        <span id="driverName">-</span>
+      </div>
+
+      <div class="info-row">
+        <b id="driverPhoneLabel">Phone</b>
+        <span id="driverPhone">-</span>
+      </div>
+
+      <div class="info-row">
+        <b id="driverVehicleLabel">Vehicle</b>
+        <span id="driverVehicle">-</span>
+      </div>
+
+      <div class="info-row">
+        <b>Driver ID</b>
+        <span id="driverId">-</span>
+      </div>
+
+      <div class="info-row">
+        <b>Rating</b>
+        <span id="driverRating">-</span>
+      </div>
 
     </div>
 
+
+    <button
+      class="btn-blue"
+      onclick="callDriver()"
+      id="callDriverButton">
+      📞 Call Driver
+    </button>
+
+    <button
+      class="btn-green"
+      onclick="startTrip()"
+      id="startTripButton">
+      ▶️ Start Trip
+    </button>
+
+  </div>
+
+
+  <!-- DRIVER LOCATION -->
+
+  <div class="card">
+
+    <h2 id="driverLocationTitle">
+      🗺️ Driver Location
+    </h2>
+
+    <div class="driver-box">
+
+      <div class="driver-car">
+        🚕
+      </div>
+
+      <div>
+        <b>Driver GPS</b>
+      </div>
+
+      <div
+        class="small"
+        id="driverCoordinates">
+        Waiting...
+      </div>
+
+    </div>
+
+
     <div class="status">
 
+      <b>
         GPS Status:
-        <span id="driverGpsStatus">
-            Waiting
-        </span>
+      </b>
 
-        <br><br>
+      <span id="gpsStatus">
+        Waiting
+      </span>
 
+      <br>
+
+      <b>
         Last Update:
-        <span id="lastUpdate">
-            -
-        </span>
+      </b>
+
+      <span id="lastUpdate">
+        -
+      </span>
 
     </div>
 
-</div>
+  </div>
 
 
+  <!-- TRIP -->
 
-<!-- =====================================================
-     BOOKING STATUS
-===================================================== -->
+  <div
+    class="card hidden"
+    id="tripCard">
 
-<div
-    id="bookingStatusCard"
-    class="card hidden">
+    <h2 id="tripTitle">
+      🚕 Trip Running
+    </h2>
 
-    <h2>📋 Booking Status</h2>
+    <div class="success">
+      <b id="tripMessage">
+        आपका ट्रिप चल रहा है।
+      </b>
+    </div>
+
+    <button
+      class="btn-green"
+      onclick="completeTrip()"
+      id="completeTripButton">
+      ✅ Complete Trip
+    </button>
+
+  </div>
+
+
+  <!-- BILL -->
+
+  <div
+    class="card hidden"
+    id="billCard">
+
+    <h2 id="billTitle">
+      💰 Final Bill
+    </h2>
+
+    <div class="invoice">
+
+      <div class="info-row">
+        <b>Cab</b>
+        <span id="billCab">Mini</span>
+      </div>
+
+      <div class="info-row">
+        <b>Base Fare</b>
+        <span>₹<span id="billBase">80</span></span>
+      </div>
+
+      <div class="info-row">
+        <b>Distance</b>
+        <span id="billDistance">0 KM</span>
+      </div>
+
+      <div class="info-row">
+        <b>Time</b>
+        <span id="billTime">0 Min</span>
+      </div>
+
+      <div class="info-row">
+        <b>Total</b>
+        <strong>
+          ₹<span id="billTotal">80</span>
+        </strong>
+      </div>
+
+    </div>
+
+
+    <button
+      class="btn-blue"
+      onclick="generateInvoice()"
+      id="invoiceButton">
+      🧾 Generate Invoice
+    </button>
+
+  </div>
+
+
+  <!-- INVOICE -->
+
+  <div
+    class="card hidden"
+    id="invoiceCard">
+
+    <h2 id="invoiceTitle">
+      🧾 Invoice
+    </h2>
 
     <div
-        id="bookingStatus"
-        class="status">
+      class="invoice"
+      id="invoiceContent">
 
-        🟡 Driver खोजा जा रहा है...
+      <h3>
+        🚕 SafetyCab
+      </h3>
 
-    </div>
+      <p>
+        <b>Booking ID:</b>
+        <span id="invoiceBookingId">-</span>
+      </p>
 
+      <p>
+        <b>Customer:</b>
+        <span id="invoiceCustomer">-</span>
+      </p>
 
-    <button
-        id="cancelButton"
-        class="red"
-        onclick="cancelBooking()">
+      <p>
+        <b>Phone:</b>
+        <span id="invoicePhone">-</span>
+      </p>
 
-        ❌ Cancel Booking
+      <p>
+        <b>Pickup:</b>
+        <span id="invoicePickup">-</span>
+      </p>
 
-    </button>
+      <p>
+        <b>Drop:</b>
+        <span id="invoiceDrop">-</span>
+      </p>
 
-</div>
+      <p>
+        <b>Vehicle:</b>
+        <span id="invoiceVehicle">-</span>
+      </p>
 
+      <hr>
 
-
-<!-- =====================================================
-     DRIVER DETAILS
-===================================================== -->
-
-<div
-    id="driverCard"
-    class="card hidden">
-
-    <h2>👨‍✈️ Driver Details</h2>
-
-
-    <div class="driverBox">
-
-        <b>Driver ID:</b>
-
-        <span id="driverId">
-            -
-        </span>
-
-        <br><br>
-
-
-        <b>Driver Name:</b>
-
-        <span id="driverName">
-            -
-        </span>
-
-        <br><br>
-
-
-        <b>Phone Number:</b>
-
-        <span id="driverPhone">
-            -
-        </span>
-
-        <br><br>
-
-
-        <b>Vehicle Number:</b>
-
-        <span id="driverVehicle">
-            -
-        </span>
-
-        <br><br>
-
-
-        <b>Duty:</b>
-
-        <span id="driverDuty">
-            -
-        </span>
-
-        <br><br>
-
-
-        <b>GPS:</b>
-
-        <span id="driverGPS">
-            -
-        </span>
+      <h2>
+        ₹<span id="invoiceTotal">0</span>
+      </h2>
 
     </div>
 
 
     <button
-        class="green"
-        onclick="callDriver()">
-
-        📞 Call Driver
-
+      class="btn-blue"
+      onclick="window.print()">
+      🖨️ Save / Print Invoice
     </button>
 
-
-    <button
-        onclick="startTrip()">
-
-        ▶️ Start Trip
-
-    </button>
-
-</div>
+  </div>
 
 
+  <!-- RATING -->
 
-<!-- =====================================================
-     TRIP
-===================================================== -->
+  <div
+    class="card hidden"
+    id="ratingCard">
 
-<div
-    id="tripCard"
-    class="card hidden">
-
-    <h2>🚗 Trip</h2>
-
-    <div class="status">
-
-        🟢 Trip Started
-
-    </div>
-
-
-    <button
-        class="green"
-        onclick="completeTrip()">
-
-        ✅ Complete Trip
-
-    </button>
-
-</div>
-
-
-
-<!-- =====================================================
-     BILL
-===================================================== -->
-
-<div
-    id="billCard"
-    class="card hidden">
-
-    <h2>💰 Final Bill</h2>
-
-
-    <div class="info">
-
-        <b>Final Fare:</b>
-
-        ₹<span id="finalFare">
-            0
-        </span>
-
-    </div>
-
-
-    <button
-        onclick="generateInvoice()">
-
-        🧾 Generate Invoice
-
-    </button>
-
-</div>
-
-
-
-<!-- =====================================================
-     INVOICE
-===================================================== -->
-
-<div
-    id="invoiceCard"
-    class="card hidden">
-
-    <h2>🧾 Invoice</h2>
-
-
-    <div
-        id="invoiceDetails"
-        class="info">
-
-    </div>
-
-
-    <button
-        onclick="window.print()">
-
-        🖨️ Save / Print Invoice
-
-    </button>
-
-</div>
-
-
-
-<!-- =====================================================
-     RATING
-===================================================== -->
-
-<div
-    id="ratingCard"
-    class="card hidden">
-
-    <h2>⭐ Driver Rating</h2>
-
+    <h2 id="ratingTitle">
+      ⭐ Rate Your Driver
+    </h2>
 
     <select id="rating">
 
-        <option value="5">
-            ⭐⭐⭐⭐⭐ 5
-        </option>
+      <option value="5">
+        ⭐⭐⭐⭐⭐ 5
+      </option>
 
-        <option value="4">
-            ⭐⭐⭐⭐ 4
-        </option>
+      <option value="4">
+        ⭐⭐⭐⭐ 4
+      </option>
 
-        <option value="3">
-            ⭐⭐⭐ 3
-        </option>
+      <option value="3">
+        ⭐⭐⭐ 3
+      </option>
 
-        <option value="2">
-            ⭐⭐ 2
-        </option>
+      <option value="2">
+        ⭐⭐ 2
+      </option>
 
-        <option value="1">
-            ⭐ 1
-        </option>
+      <option value="1">
+        ⭐ 1
+      </option>
 
     </select>
 
-
     <button
-        onclick="submitRating()">
-
-        Submit Rating
-
+      class="btn-green"
+      onclick="submitRating()"
+      id="ratingButton">
+      Submit Rating
     </button>
 
-</div>
+    <div id="ratingMessage"></div>
+
+  </div>
 
 
+  <!-- LOGOUT -->
 
-<!-- =====================================================
-     LOGOUT
-===================================================== -->
-
-<div class="card">
+  <div class="card">
 
     <button
-        class="red"
-        onclick="logoutCustomer()">
-
-        🚪 Logout
-
+      class="btn-red"
+      onclick="logoutCustomer()"
+      id="logoutButton">
+      🚪 Logout
     </button>
 
-</div>
-
-
-</div>
-
-
-<footer>
-
-    SafetyCab Customer App © 2026
-
-</footer>
-
+  </div>
 
 </div>
 
 
+<div class="footer">
+  SafetyCab Customer App © 2026
+</div>
 
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
+</div>
+
+
+<!-- ===================================================== -->
+<!-- FIREBASE -->
+<!-- ===================================================== -->
 
 <script type="module">
 
 import {
-    initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where,
-    updateDoc,
-    doc,
-    serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================================
-   YOUR FIREBASE CONFIG
-===================================================== */
+/*
+=========================================================
+IMPORTANT FIREBASE CONFIG
+=========================================================
+
+यहाँ अपने Firebase Project Settings से असली values डालें।
+
+Firebase:
+Project settings
+→ General
+→ Your apps
+→ Safety cab customer
+→ SDK setup and configuration
+→ CDN
+
+वहाँ से पूरा firebaseConfig कॉपी करके यहाँ रखें।
+*/
 
 const firebaseConfig = {
 
-    apiKey:
-    "AIzaSyCpKzlC8zDRXObOaqD3a5eyGtknGePl9Rc",
+  apiKey:
+    "PASTE_YOUR_FIREBASE_API_KEY_HERE",
 
-    authDomain:
+  authDomain:
     "safety-cab.firebaseapp.com",
 
-    projectId:
+  projectId:
     "safety-cab",
 
-    storageBucket:
+  storageBucket:
     "safety-cab.firebasestorage.app",
 
-    messagingSenderId:
+  messagingSenderId:
     "288347736605",
 
-    appId:
-    "1:288347736605:web:fb36e7a42e7bd58a3f14f4"
+  appId:
+    "PASTE_YOUR_FIREBASE_APP_ID_HERE"
 
 };
 
 
-/* =====================================================
-   INITIALIZE FIREBASE
-===================================================== */
-
-const app =
-initializeApp(firebaseConfig);
-
+const firebaseApp =
+  initializeApp(firebaseConfig);
 
 const db =
-getFirestore(app);
+  getFirestore(firebaseApp);
 
 
-/* दूसरे JavaScript के लिए उपलब्ध करें */
+/* Firebase को बाकी JavaScript के लिए उपलब्ध करें */
 
-window.safetyCabDB = db;
+window.firebaseDB = db;
 
-window.safetyCabCollection =
-collection;
+window.firebaseFunctions = {
 
-window.safetyCabAddDoc =
-addDoc;
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  onSnapshot
 
-window.safetyCabGetDocs =
-getDocs;
-
-window.safetyCabQuery =
-query;
-
-window.safetyCabWhere =
-where;
-
-window.safetyCabUpdateDoc =
-updateDoc;
-
-window.safetyCabDoc =
-doc;
-
-window.safetyCabServerTimestamp =
-serverTimestamp;
-
-
-console.log(
-    "🔥 SafetyCab Firebase Connected"
-);
-
-
-/* Firebase तैयार होने के बाद */
-
-window.firebaseReady = true;
-
-
-/* अगर Customer पहले से Login है */
-
-if(
-    typeof restoreCustomerLogin ===
-    "function"
-){
-
-    restoreCustomerLogin();
-
-}
+};
 
 </script>
 
 
-
-<!-- =====================================================
-     CUSTOMER JAVASCRIPT
-===================================================== -->
+<!-- ===================================================== -->
+<!-- MAIN JAVASCRIPT -->
+<!-- ===================================================== -->
 
 <script>
 
-/* =====================================================
-   FARES
-===================================================== */
+const APP_VERSION = "2026.08.08.06";
 
-const fares = {
+const FARES = {
 
-    Mini: {
-        base:80,
-        perKm:16,
-        perMinute:1
-    },
+  Mini:{
+    base:80,
+    perKm:16,
+    perMinute:1
+  },
 
-    Sedan: {
-        base:100,
-        perKm:21,
-        perMinute:1
-    },
+  Sedan:{
+    base:100,
+    perKm:21,
+    perMinute:1
+  },
 
-    SUV: {
-        base:150,
-        perKm:26,
-        perMinute:1.5
-    }
+  SUV:{
+    base:150,
+    perKm:26,
+    perMinute:1.5
+  }
 
 };
 
+
+let currentCustomer = null;
+
+let currentBooking = null;
+
+let currentDriver = null;
+
+let driverListener = null;
+
+let bookingListener = null;
+
+let bookingCancelled = false;
+
+let tripStartedAt = null;
+
+let currentLanguage =
+  localStorage.getItem("SafetyCab_Language") || "hi";
+
+
+/* =====================================================
+   LANGUAGE DATA
+===================================================== */
+
+const LANG = {
+
+hi:{
+
+  appSubtitle:"Customer App",
+
+  loginTitle:"Customer Login",
+
+  nameLabel:"नाम",
+
+  phoneLabel:"फोन नंबर",
+
+  namePlaceholder:"अपना नाम लिखें",
+
+  phonePlaceholder:"10 अंकों का मोबाइल नंबर",
+
+  continueBtn:"Continue",
+
+  loginNote:
+    "OTP अभी आवश्यक नहीं है। आपका लॉगिन इस डिवाइस पर सेव रहेगा।",
+
+  welcome:"👋 Welcome",
+
+  customerName:"नाम:",
+
+  customerPhone:"फोन नंबर:",
+
+  languageTitle:"🌐 Language Setting",
+
+  bookTitle:"🚕 Book Your Ride",
+
+  pickup:"📍 Pickup Location",
+
+  pickupPlaceholder:"Pickup Location",
+
+  currentLocation:"📍 मेरी Current Location",
+
+  drop:"🏁 Drop Location",
+
+  dropPlaceholder:"Drop Location",
+
+  vehicle:"Vehicle",
+
+  estimatedFare:"Estimated Fare",
+
+  bookNow:"🚕 BOOK NOW",
+
+  bookingStatus:"📋 Booking Status",
+
+  searching:"🟡 Driver खोजा जा रहा है...",
+
+  driverFound:"🟢 Driver मिल गया!",
+
+  cancelled:"🔴 Booking Cancelled",
+
+  cancel:"Cancel Booking",
+
+  driverDetails:"🚕 Driver Details",
+
+  callDriver:"📞 Call Driver",
+
+  startTrip:"▶️ Start Trip",
+
+  driverLocation:"🗺️ Driver Location",
+
+  waiting:"Waiting",
+
+  tripRunning:"🚕 Trip Running",
+
+  tripMessage:"आपका ट्रिप चल रहा है।",
+
+  completeTrip:"✅ Complete Trip",
+
+  finalBill:"💰 Final Bill",
+
+  generateInvoice:"🧾 Generate Invoice",
+
+  invoice:"🧾 Invoice",
+
+  rateDriver:"⭐ Rate Your Driver",
+
+  submitRating:"Submit Rating",
+
+  logout:"🚪 Logout",
+
+  invalidName:"कृपया नाम लिखें।",
+
+  invalidPhone:"कृपया सही 10 अंकों का मोबाइल नंबर डालें।",
+
+  loggedIn:"Login सफल हुआ।",
+
+  locationError:
+    "Location प्राप्त नहीं हो सकी। कृपया GPS Permission दें।",
+
+  bookingCreated:
+    "Booking Firebase में सेव हो गई।",
+
+  noDriver:
+    "अभी कोई Online Driver उपलब्ध नहीं है।",
+
+  confirmCancel:
+    "क्या आप Booking Cancel करना चाहते हैं?",
+
+  logoutConfirm:
+    "क्या आप Logout करना चाहते हैं?"
+
+},
+
+en:{
+
+  appSubtitle:"Customer App",
+
+  loginTitle:"Customer Login",
+
+  nameLabel:"Name",
+
+  phoneLabel:"Phone Number",
+
+  namePlaceholder:"Enter your name",
+
+  phonePlaceholder:"Enter 10 digit mobile number",
+
+  continueBtn:"Continue",
+
+  loginNote:
+    "OTP is not required yet. Your login will remain saved on this device.",
+
+  welcome:"👋 Welcome",
+
+  customerName:"Name:",
+
+  customerPhone:"Phone:",
+
+  languageTitle:"🌐 Language Setting",
+
+  bookTitle:"🚕 Book Your Ride",
+
+  pickup:"📍 Pickup Location",
+
+  pickupPlaceholder:"Pickup Location",
+
+  currentLocation:"📍 My Current Location",
+
+  drop:"🏁 Drop Location",
+
+  dropPlaceholder:"Drop Location",
+
+  vehicle:"Vehicle",
+
+  estimatedFare:"Estimated Fare",
+
+  bookNow:"🚕 BOOK NOW",
+
+  bookingStatus:"📋 Booking Status",
+
+  searching:"🟡 Searching for driver...",
+
+  driverFound:"🟢 Driver found!",
+
+  cancelled:"🔴 Booking Cancelled",
+
+  cancel:"Cancel Booking",
+
+  driverDetails:"🚕 Driver Details",
+
+  callDriver:"📞 Call Driver",
+
+  startTrip:"▶️ Start Trip",
+
+  driverLocation:"🗺️ Driver Location",
+
+  waiting:"Waiting",
+
+  tripRunning:"🚕 Trip Running",
+
+  tripMessage:"Your trip is running.",
+
+  completeTrip:"✅ Complete Trip",
+
+  finalBill:"💰 Final Bill",
+
+  generateInvoice:"🧾 Generate Invoice",
+
+  invoice:"🧾 Invoice",
+
+  rateDriver:"⭐ Rate Your Driver",
+
+  submitRating:"Submit Rating",
+
+  logout:"🚪 Logout",
+
+  invalidName:"Please enter your name.",
+
+  invalidPhone:"Please enter a valid 10 digit mobile number.",
+
+  loggedIn:"Login successful.",
+
+  locationError:
+    "Unable to get location. Please allow GPS permission.",
+
+  bookingCreated:
+    "Booking has been saved to Firebase.",
+
+  noDriver:
+    "No online driver is available right now.",
+
+  confirmCancel:
+    "Do you want to cancel this booking?",
+
+  logoutConfirm:
+    "Do you want to logout?"
+
+},
+
+ur:{
+
+  appSubtitle:"Customer App",
+
+  loginTitle:"Customer Login",
+
+  nameLabel:"نام",
+
+  phoneLabel:"فون نمبر",
+
+  namePlaceholder:"اپنا نام لکھیں",
+
+  phonePlaceholder:"10 ہندسوں کا موبائل نمبر",
+
+  continueBtn:"Continue",
+
+  loginNote:
+    "ابھی OTP ضروری نہیں ہے۔ لاگ اِن اسی موبائل میں محفوظ رہے گا۔",
+
+  welcome:"👋 خوش آمدید",
+
+  customerName:"نام:",
+
+  customerPhone:"فون نمبر:",
+
+  languageTitle:"🌐 زبان کی ترتیب",
+
+  bookTitle:"🚕 اپنی سواری بک کریں",
+
+  pickup:"📍 Pickup Location",
+
+  pickupPlaceholder:"Pickup Location",
+
+  currentLocation:"📍 میری موجودہ Location",
+
+  drop:"🏁 Drop Location",
+
+  dropPlaceholder:"Drop Location",
+
+  vehicle:"Vehicle",
+
+  estimatedFare:"Estimated Fare",
+
+  bookNow:"🚕 BOOK NOW",
+
+  bookingStatus:"📋 Booking Status",
+
+  searching:"🟡 Driver تلاش کیا جا رہا ہے...",
+
+  driverFound:"🟢 Driver مل گیا!",
+
+  cancelled:"🔴 Booking Cancelled",
+
+  cancel:"Cancel Booking",
+
+  driverDetails:"🚕 Driver Details",
+
+  callDriver:"📞 Call Driver",
+
+  startTrip:"▶️ Start Trip",
+
+  driverLocation:"🗺️ Driver Location",
+
+  waiting:"Waiting",
+
+  tripRunning:"🚕 Trip چل رہا ہے",
+
+  tripMessage:"آپ کا ٹرپ چل رہا ہے۔",
+
+  completeTrip:"✅ Complete Trip",
+
+  finalBill:"💰 Final Bill",
+
+  generateInvoice:"🧾 Generate Invoice",
+
+  invoice:"🧾 Invoice",
+
+  rateDriver:"⭐ Driver کو Rating دیں",
+
+  submitRating:"Submit Rating",
+
+  logout:"🚪 Logout",
+
+  invalidName:"براہ کرم نام لکھیں۔",
+
+  invalidPhone:
+    "براہ کرم صحیح 10 ہندسوں کا موبائل نمبر ڈالیں۔",
+
+  loggedIn:"Login کامیاب ہوگیا۔",
+
+  locationError:
+    "Location حاصل نہیں ہوسکی۔ GPS Permission دیں۔",
+
+  bookingCreated:
+    "Booking Firebase میں محفوظ ہوگئی۔",
+
+  noDriver:
+    "ابھی کوئی Online Driver دستیاب نہیں ہے۔",
+
+  confirmCancel:
+    "کیا آپ Booking Cancel کرنا چاہتے ہیں؟",
+
+  logoutConfirm:
+    "کیا آپ Logout کرنا چاہتے ہیں؟"
+
+}
+
+};
+
+
+/* =====================================================
+   LANGUAGE CHANGE
+===================================================== */
+
+function changeLanguage(){
+
+  const value =
+    document.getElementById("languageSelect").value;
+
+  currentLanguage = value;
+
+  localStorage.setItem(
+    "SafetyCab_Language",
+    value
+  );
+
+  applyLanguage();
+
+}
+
+
+function changeLanguageFromPanel(){
+
+  const value =
+    document.getElementById("panelLanguage").value;
+
+  currentLanguage = value;
+
+  localStorage.setItem(
+    "SafetyCab_Language",
+    value
+  );
+
+  applyLanguage();
+
+}
+
+
+function applyLanguage(){
+
+  const t = LANG[currentLanguage] || LANG.hi;
+
+  document.documentElement.lang =
+    currentLanguage;
+
+
+  const setText = (id,text)=>{
+
+    const el =
+      document.getElementById(id);
+
+    if(el) el.textContent = text;
+
+  };
+
+
+  setText("appSubtitle",t.appSubtitle);
+
+  setText("loginTitle",t.loginTitle);
+
+  setText("nameLabel",t.nameLabel);
+
+  setText("phoneLabel",t.phoneLabel);
+
+  setText("continueBtn",t.continueBtn);
+
+  setText("loginNote",t.loginNote);
+
+  setText("welcomeTitle",t.welcome);
+
+  setText("customerNameLabel",t.customerName);
+
+  setText("customerPhoneLabel",t.customerPhone);
+
+  setText("languageTitle",t.languageTitle);
+
+  setText("bookTitle",t.bookTitle);
+
+  setText("pickupLabel",t.pickup);
+
+  setText("locationBtn",t.currentLocation);
+
+  setText("dropLabel",t.drop);
+
+  setText("cabLabel",t.vehicle);
+
+  setText("estimatedFareText",t.estimatedFare);
+
+  setText("bookButton",t.bookNow);
+
+  setText("statusTitle",t.bookingStatus);
+
+  setText("cancelButton",t.cancel);
+
+  setText("driverTitle",t.driverDetails);
+
+  setText("callDriverButton",t.callDriver);
+
+  setText("startTripButton",t.startTrip);
+
+  setText("driverLocationTitle",t.driverLocation);
+
+  setText("tripTitle",t.tripRunning);
+
+  setText("tripMessage",t.tripMessage);
+
+  setText("completeTripButton",t.completeTrip);
+
+  setText("billTitle",t.finalBill);
+
+  setText("invoiceButton",t.generateInvoice);
+
+  setText("invoiceTitle",t.invoice);
+
+  setText("ratingTitle",t.rateDriver);
+
+  setText("ratingButton",t.submitRating);
+
+  setText("logoutButton",t.logout);
+
+
+  document.getElementById(
+    "loginName"
+  ).placeholder =
+    t.namePlaceholder;
+
+
+  document.getElementById(
+    "loginPhone"
+  ).placeholder =
+    t.phonePlaceholder;
+
+
+  document.getElementById(
+    "pickup"
+  ).placeholder =
+    t.pickupPlaceholder;
+
+
+  document.getElementById(
+    "drop"
+  ).placeholder =
+    t.dropPlaceholder;
+
+
+  const ls =
+    document.getElementById(
+      "languageSelect"
+    );
+
+  const ps =
+    document.getElementById(
+      "panelLanguage"
+    );
+
+  if(ls) ls.value = currentLanguage;
+
+  if(ps) ps.value = currentLanguage;
+
+}
 
 
 /* =====================================================
    LOGIN
 ===================================================== */
 
-function loginCustomer(){
+async function loginCustomer(){
 
-    const name =
-    document
-    .getElementById("customerName")
-    .value
-    .trim();
+  const t = LANG[currentLanguage];
 
+  const name =
+    document.getElementById(
+      "loginName"
+    ).value.trim();
 
-    const phone =
-    document
-    .getElementById("customerPhone")
-    .value
-    .trim();
-
-
-    if(name === ""){
-
-        alert(
-            "कृपया अपना नाम डालें"
-        );
-
-        return;
-
-    }
+  const phone =
+    document.getElementById(
+      "loginPhone"
+    ).value.trim();
 
 
-    if(
-        !/^[0-9]{10}$/.test(phone)
-    ){
+  if(name.length < 2){
 
-        alert(
-            "कृपया 10 अंकों का मोबाइल नंबर डालें"
-        );
-
-        return;
-
-    }
-
-
-    /*
-       Login को फोन में Save करें
-       Refresh के बाद भी रहेगा
-    */
-
-    localStorage.setItem(
-        "SafetyCab_Customer_Login",
-        "true"
+    showLoginMessage(
+      t.invalidName,
+      "error"
     );
 
+    return;
+  }
 
-    localStorage.setItem(
-        "SafetyCab_Customer_Name",
-        name
+
+  if(!/^[0-9]{10}$/.test(phone)){
+
+    showLoginMessage(
+      t.invalidPhone,
+      "error"
     );
 
+    return;
+  }
 
-    localStorage.setItem(
-        "SafetyCab_Customer_Phone",
+
+  currentCustomer = {
+
+    name:name,
+
+    phone:phone,
+
+    loginTime:
+      new Date().toISOString()
+
+  };
+
+
+  /*
+  IMPORTANT:
+  localStorage की वजह से Refresh के बाद
+  Customer Login बना रहेगा।
+  */
+
+  localStorage.setItem(
+    "SafetyCab_Customer",
+    JSON.stringify(
+      currentCustomer
+    )
+  );
+
+
+  localStorage.setItem(
+    "SafetyCab_App_Version",
+    APP_VERSION
+  );
+
+
+  showCustomerPanel();
+
+
+  /*
+  Firebase में customer profile सेव करें
+  */
+
+  try{
+
+    const {
+      doc,
+      setDoc
+    } = window.firebaseFunctions;
+
+    const db =
+      window.firebaseDB;
+
+
+    await setDoc(
+
+      doc(
+        db,
+        "customers",
         phone
+      ),
+
+      {
+
+        name:name,
+
+        phone:phone,
+
+        lastLogin:
+          new Date(),
+
+        appVersion:
+          APP_VERSION
+
+      },
+
+      {
+        merge:true
+      }
+
     );
 
-
-    showCustomerPanel(
-        name,
-        phone
-    );
-
+  }catch(error){
 
     console.log(
-        "Customer Login Saved"
+      "Firebase customer save:",
+      error
     );
+
+  }
 
 }
 
 
-
-/* =====================================================
-   SHOW CUSTOMER PANEL
-===================================================== */
-
-function showCustomerPanel(
-    name,
-    phone
+function showLoginMessage(
+  message,
+  type
 ){
 
-    document
-    .getElementById("loginCard")
-    .classList
-    .add("hidden");
+  const box =
+    document.getElementById(
+      "loginMessage"
+    );
 
+  box.className =
+    type === "error"
+      ? "error"
+      : "success";
 
-    document
-    .getElementById("customerPanel")
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById("welcomeName")
-    .textContent =
-    name;
-
-
-    document
-    .getElementById("welcomePhone")
-    .textContent =
-    phone;
-
-
-    updateFare();
+  box.textContent =
+    message;
 
 }
 
 
+function showCustomerPanel(){
+
+  document
+    .getElementById(
+      "loginScreen"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "customerPanel"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  if(!currentCustomer)
+    return;
+
+
+  document.getElementById(
+    "customerName"
+  ).textContent =
+    currentCustomer.name;
+
+
+  document.getElementById(
+    "customerPhone"
+  ).textContent =
+    currentCustomer.phone;
+
+
+  applyLanguage();
+
+  updateFare();
+
+}
+
 
 /* =====================================================
-   RESTORE LOGIN
+   AUTO LOGIN AFTER REFRESH
 ===================================================== */
 
-function restoreCustomerLogin(){
+function checkSavedLogin(){
 
-    const login =
-    localStorage.getItem(
-        "SafetyCab_Customer_Login"
-    );
+  try{
 
-
-    const name =
-    localStorage.getItem(
-        "SafetyCab_Customer_Name"
-    );
+    const saved =
+      localStorage.getItem(
+        "SafetyCab_Customer"
+      );
 
 
-    const phone =
-    localStorage.getItem(
-        "SafetyCab_Customer_Phone"
-    );
+    if(saved){
 
+      currentCustomer =
+        JSON.parse(saved);
 
-    if(
-        login === "true" &&
-        name &&
-        phone
-    ){
-
-        showCustomerPanel(
-            name,
-            phone
-        );
-
-
-        console.log(
-            "✅ Login Refresh के बाद Restore हुआ"
-        );
+      showCustomerPanel();
 
     }
 
-}
+  }catch(error){
 
+    console.log(error);
+
+    localStorage.removeItem(
+      "SafetyCab_Customer"
+    );
+
+  }
+
+}
 
 
 /* =====================================================
@@ -955,156 +1662,138 @@ function restoreCustomerLogin(){
 
 function logoutCustomer(){
 
-    const ok =
-    confirm(
-        "क्या आप Logout करना चाहते हैं?"
-    );
+  const t =
+    LANG[currentLanguage];
 
 
-    if(!ok){
-
-        return;
-
-    }
+  if(!confirm(t.logoutConfirm))
+    return;
 
 
-    localStorage.removeItem(
-        "SafetyCab_Customer_Login"
-    );
+  localStorage.removeItem(
+    "SafetyCab_Customer"
+  );
 
 
-    localStorage.removeItem(
-        "SafetyCab_Customer_Name"
-    );
+  currentCustomer = null;
+
+  currentBooking = null;
+
+  currentDriver = null;
 
 
-    localStorage.removeItem(
-        "SafetyCab_Customer_Phone"
-    );
-
-
-    document
-    .getElementById("customerPanel")
-    .classList
-    .add("hidden");
-
-
-    document
-    .getElementById("loginCard")
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById("customerName")
-    .value =
-    "";
-
-
-    document
-    .getElementById("customerPhone")
-    .value =
-    "";
-
-
-    alert(
-        "✅ Logout हो गया"
-    );
+  location.reload();
 
 }
 
 
-
 /* =====================================================
-   FARE UPDATE
-===================================================== */
-
-function updateFare(){
-
-    const cabType =
-    document
-    .getElementById("cabType")
-    .value;
-
-
-    const fare =
-    fares[cabType];
-
-
-    document
-    .getElementById("fareAmount")
-    .textContent =
-    "₹" + fare.base;
-
-}
-
-
-
-/* =====================================================
-   CURRENT LOCATION
+   LOCATION
 ===================================================== */
 
 function useMyLocation(){
 
-    if(
-        !navigator.geolocation
-    ){
+  const t =
+    LANG[currentLanguage];
 
-        alert(
-            "इस फोन में GPS उपलब्ध नहीं है"
-        );
 
-        return;
+  if(!navigator.geolocation){
+
+    alert(
+      t.locationError
+    );
+
+    return;
+
+  }
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    position => {
+
+      const lat =
+        position.coords.latitude;
+
+      const lng =
+        position.coords.longitude;
+
+
+      document.getElementById(
+        "pickup"
+      ).value =
+        lat.toFixed(6) +
+        ", " +
+        lng.toFixed(6);
+
+
+      localStorage.setItem(
+        "SafetyCab_LastLocation",
+        JSON.stringify({
+          lat:lat,
+          lng:lng
+        })
+      );
+
+    },
+
+    error => {
+
+      console.log(error);
+
+      alert(
+        t.locationError
+      );
+
+    },
+
+    {
+
+      enableHighAccuracy:true,
+
+      timeout:15000,
+
+      maximumAge:0
 
     }
 
-
-    navigator
-    .geolocation
-    .getCurrentPosition(
-
-        function(position){
-
-            const lat =
-            position.coords.latitude;
-
-
-            const lng =
-            position.coords.longitude;
-
-
-            document
-            .getElementById("pickup")
-            .value =
-            lat + ", " + lng;
-
-
-            alert(
-                "✅ Current Location मिल गई"
-            );
-
-        },
-
-
-        function(){
-
-            alert(
-                "GPS Permission Allow करें"
-            );
-
-        },
-
-
-        {
-            enableHighAccuracy:true,
-            timeout:15000,
-            maximumAge:0
-        }
-
-    );
+  );
 
 }
 
+
+/* =====================================================
+   FARE
+===================================================== */
+
+function updateFare(){
+
+  const type =
+    document.getElementById(
+      "cabType"
+    ).value;
+
+
+  const fare =
+    FARES[type];
+
+
+  if(!fare)
+    return;
+
+
+  document.getElementById(
+    "estimatedFare"
+  ).textContent =
+    fare.base;
+
+
+  document.getElementById(
+    "fareDetails"
+  ).textContent =
+    `Base ₹${fare.base} + ₹${fare.perKm}/KM + ₹${fare.perMinute}/Min`;
+
+}
 
 
 /* =====================================================
@@ -1113,453 +1802,609 @@ function useMyLocation(){
 
 async function bookCab(){
 
-    const name =
-    localStorage.getItem(
-        "SafetyCab_Customer_Name"
+  const t =
+    LANG[currentLanguage];
+
+
+  if(!currentCustomer){
+
+    alert(
+      t.loginTitle
+    );
+
+    return;
+
+  }
+
+
+  const pickup =
+    document.getElementById(
+      "pickup"
+    ).value.trim();
+
+
+  const drop =
+    document.getElementById(
+      "drop"
+    ).value.trim();
+
+
+  const cabType =
+    document.getElementById(
+      "cabType"
+    ).value;
+
+
+  if(!pickup){
+
+    alert(
+      t.pickupPlaceholder
+    );
+
+    return;
+
+  }
+
+
+  if(!drop){
+
+    alert(
+      t.dropPlaceholder
+    );
+
+    return;
+
+  }
+
+
+  const fare =
+    FARES[cabType];
+
+
+  const bookingId =
+    "BK" +
+    Date.now();
+
+
+  currentBooking = {
+
+    bookingId:bookingId,
+
+    customerName:
+      currentCustomer.name,
+
+    customerPhone:
+      currentCustomer.phone,
+
+    pickup:pickup,
+
+    drop:drop,
+
+    cabType:cabType,
+
+    fare:
+      fare.base,
+
+    status:
+      "searching",
+
+    driverId:"",
+
+    driverName:"",
+
+    driverPhone:"",
+
+    createdAt:
+      new Date()
+
+  };
+
+
+  bookingCancelled = false;
+
+
+  document
+    .getElementById(
+      "bookingStatusCard"
+    )
+    .classList.remove(
+      "hidden"
     );
 
 
-    const phone =
-    localStorage.getItem(
-        "SafetyCab_Customer_Phone"
+  document.getElementById(
+    "bookingStatus"
+  ).textContent =
+    t.searching;
+
+
+  document.getElementById(
+    "bookingIdText"
+  ).textContent =
+    "Booking ID: " +
+    bookingId;
+
+
+  try{
+
+    const {
+      doc,
+      setDoc,
+      collection,
+      addDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await setDoc(
+
+      doc(
+        db,
+        "bookings",
+        bookingId
+      ),
+
+      currentBooking
+
     );
 
 
-    const pickup =
-    document
-    .getElementById("pickup")
-    .value
-    .trim();
+    console.log(
+      "Booking saved:",
+      bookingId
+    );
 
 
-    const drop =
-    document
-    .getElementById("drop")
-    .value
-    .trim();
+    /*
+    Driver खोजें
+    */
+
+    await findOnlineDriver();
 
 
-    const cabType =
-    document
-    .getElementById("cabType")
-    .value;
+  }catch(error){
 
+    console.error(error);
 
-    if(!name || !phone){
+    /*
+    Firebase error होने पर भी
+    Demo booking status दिखाएँ
+    */
 
-        alert(
-            "पहले Login करें"
-        );
+    document.getElementById(
+      "bookingStatus"
+    ).textContent =
+      t.searching;
 
-        return;
-
-    }
-
-
-    if(!pickup){
-
-        alert(
-            "Pickup Location डालें"
-        );
-
-        return;
-
-    }
-
-
-    if(!drop){
-
-        alert(
-            "Drop Location डालें"
-        );
-
-        return;
-
-    }
-
-
-    const fare =
-    fares[cabType].base;
-
-
-    const bookingNumber =
-    "SC" + Date.now();
-
-
-    document
-    .getElementById(
-        "bookingStatusCard"
-    )
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById(
-        "bookingStatus"
-    )
-    .textContent =
-    "🟡 Driver खोजा जा रहा है...";
-
-
-    try{
-
-        const booking =
-        await window
-        .safetyCabAddDoc(
-
-            window
-            .safetyCabCollection(
-                window.safetyCabDB,
-                "bookings"
-            ),
-
-            {
-
-                bookingNumber:
-                bookingNumber,
-
-                customerName:
-                name,
-
-                customerPhone:
-                phone,
-
-                driverId:
-                "",
-
-                driverName:
-                "",
-
-                driverPhone:
-                "",
-
-                vehicleNumber:
-                "",
-
-                pickup:
-                pickup,
-
-                drop:
-                drop,
-
-                cabType:
-                cabType,
-
-                fare:
-                fare,
-
-                status:
-                "searching",
-
-                createdAt:
-                window
-                .safetyCabServerTimestamp()
-
-            }
-
-        );
-
-
-        localStorage.setItem(
-            "SafetyCab_Current_Booking",
-            booking.id
-        );
-
-
-        console.log(
-            "Booking Saved:",
-            booking.id
-        );
-
-
-        alert(
-            "✅ Booking Firebase में Save हो गई"
-        );
-
-
-        /*
-           Driver खोजने की शुरुआत
-        */
-
-        setTimeout(
-            findAvailableDriver,
-            1500
-        );
-
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-
-
-        alert(
-            "❌ Firebase में Booking Save नहीं हुई। Internet और Firebase Rules Check करें।"
-        );
-
-    }
+  }
 
 }
-
 
 
 /* =====================================================
-   FIND AVAILABLE DRIVER
+   FIND ONLINE DRIVER
 ===================================================== */
 
-async function findAvailableDriver(){
+async function findOnlineDriver(){
 
-    try{
-
-        const driversSnapshot =
-        await window
-        .safetyCabGetDocs(
-
-            window
-            .safetyCabCollection(
-                window.safetyCabDB,
-                "drivers"
-            )
-
-        );
+  const t =
+    LANG[currentLanguage];
 
 
-        let foundDriver = null;
+  if(!currentBooking)
+    return;
 
 
-        driversSnapshot.forEach(
-            function(item){
+  try{
 
-                const d =
-                item.data();
-
-
-                /*
-                   Duty ON और Online Driver
-                */
-
-                if(
-                    !foundDriver &&
-                    d.duty === true &&
-                    d.online === true
-                ){
-
-                    foundDriver = {
-
-                        firestoreId:
-                        item.id,
-
-                        ...d
-
-                    };
-
-                }
-
-            }
-        );
+    const {
+      collection,
+      getDocs
+    } =
+      window.firebaseFunctions;
 
 
-        if(foundDriver){
-
-            showDriver(
-                foundDriver
-            );
-
-        }else{
-
-            /*
-               अगर अभी Driver नहीं मिला
-            */
-
-            document
-            .getElementById(
-                "bookingStatus"
-            )
-            .textContent =
-            "🟡 अभी कोई Duty ON Driver उपलब्ध नहीं है।";
+    const db =
+      window.firebaseDB;
 
 
-            document
-            .getElementById(
-                "cancelButton"
-            )
-            .classList
-            .remove("hidden");
+    const snapshot =
+      await getDocs(
+        collection(
+          db,
+          "drivers"
+        )
+      );
+
+
+    let found = null;
+
+
+    snapshot.forEach(
+      driverDoc => {
+
+        if(found)
+          return;
+
+
+        const data =
+          driverDoc.data();
+
+
+        const duty =
+          String(
+            data.dutystatus ||
+            data.dutyStatus ||
+            ""
+          ).toLowerCase();
+
+
+        const gps =
+          String(
+            data.gpsstatus ||
+            data.gpsStatus ||
+            ""
+          ).toLowerCase();
+
+
+        if(
+          duty === "on" &&
+          (
+            gps === "online" ||
+            gps === "on"
+          )
+        ){
+
+          found = {
+
+            id:driverDoc.id,
+
+            ...data
+
+          };
 
         }
 
-
-    }catch(error){
-
-        console.error(
-            "Driver Search Error:",
-            error
-        );
+      }
+    );
 
 
-        /*
-           Firebase में Driver नहीं पढ़ पाए
-        */
+    if(!found){
 
-        document
-        .getElementById(
-            "bookingStatus"
-        )
-        .textContent =
-        "🟡 Driver खोजा जा रहा है...";
+      /*
+      अभी driver नहीं मिला।
+      */
+
+      document.getElementById(
+        "bookingStatus"
+      ).textContent =
+        t.noDriver;
+
+      return;
 
     }
 
+
+    currentDriver =
+      found;
+
+
+    await assignDriver(
+      found
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Driver search:",
+      error
+    );
+
+  }
+
 }
 
+
+/* =====================================================
+   ASSIGN DRIVER
+===================================================== */
+
+async function assignDriver(
+  driver
+){
+
+  const t =
+    LANG[currentLanguage];
+
+
+  if(!currentBooking)
+    return;
+
+
+  currentBooking.driverId =
+    driver.driverid ||
+    driver.driverId ||
+    driver.id;
+
+
+  currentBooking.driverName =
+    driver.name ||
+    "Driver";
+
+
+  currentBooking.driverPhone =
+    driver.phone ||
+    "";
+
+
+  currentBooking.status =
+    "driver_found";
+
+
+  try{
+
+    const {
+      doc,
+      updateDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await updateDoc(
+
+      doc(
+        db,
+        "bookings",
+        currentBooking.bookingId
+      ),
+
+      {
+
+        driverId:
+          currentBooking.driverId,
+
+        driverName:
+          currentBooking.driverName,
+
+        driverPhone:
+          currentBooking.driverPhone,
+
+        status:
+          "driver_found"
+
+      }
+
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+
+  document.getElementById(
+    "bookingStatus"
+  ).textContent =
+    t.driverFound;
+
+
+  document.getElementById(
+    "driverCard"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  showDriver(driver);
+
+
+  startDriverListener(
+    currentBooking.driverId
+  );
+
+}
 
 
 /* =====================================================
    SHOW DRIVER
 ===================================================== */
 
-async function showDriver(driver){
+function showDriver(driver){
 
-    document
-    .getElementById(
-        "bookingStatus"
-    )
-    .textContent =
-    "🟢 Driver मिल गया!";
-
-
-    document
-    .getElementById(
-        "cancelButton"
-    )
-    .classList
-    .add("hidden");
-
-
-    document
-    .getElementById(
-        "driverCard"
-    )
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById(
-        "driverId"
-    )
-    .textContent =
-    driver.id || "-";
-
-
-    document
-    .getElementById(
-        "driverName"
-    )
-    .textContent =
-    driver.name || "-";
-
-
-    document
-    .getElementById(
-        "driverPhone"
-    )
-    .textContent =
-    driver.phone || "-";
-
-
-    document
-    .getElementById(
-        "driverVehicle"
-    )
-    .textContent =
-    driver.vehicle ||
-    driver.vehicleNumber ||
+  document.getElementById(
+    "driverName"
+  ).textContent =
+    driver.name ||
     "-";
 
 
-    document
-    .getElementById(
-        "driverDuty"
-    )
-    .textContent =
-    driver.duty
-    ? "🟢 Duty ON"
-    : "🔴 Duty OFF";
+  document.getElementById(
+    "driverPhone"
+  ).textContent =
+    driver.phone ||
+    "-";
 
 
-    document
-    .getElementById(
-        "driverGPS"
-    )
-    .textContent =
-    driver.online
-    ? "🟢 GPS ONLINE"
-    : "🔴 GPS OFFLINE";
+  document.getElementById(
+    "driverVehicle"
+  ).textContent =
+    driver.Vehicle ||
+    driver.vehicle ||
+    "-";
 
 
-    /*
-       Booking में Driver की जानकारी Save
-    */
+  document.getElementById(
+    "driverId"
+  ).textContent =
+    driver.driverid ||
+    driver.driverId ||
+    driver.id ||
+    "-";
 
-    const bookingId =
-    localStorage.getItem(
-        "SafetyCab_Current_Booking"
-    );
+
+  const rating =
+    driver.rating;
 
 
-    if(bookingId){
-
-        try{
-
-            await window
-            .safetyCabUpdateDoc(
-
-                window
-                .safetyCabDoc(
-                    window.safetyCabDB,
-                    "bookings",
-                    bookingId
-                ),
-
-                {
-
-                    driverId:
-                    driver.id || "",
-
-                    driverName:
-                    driver.name || "",
-
-                    driverPhone:
-                    driver.phone || "",
-
-                    vehicleNumber:
-                    driver.vehicle ||
-                    driver.vehicleNumber ||
-                    "",
-
-                    status:
-                    "driver_assigned"
-
-                }
-
-            );
-
-        }catch(error){
-
-            console.error(
-                "Booking Update Error:",
-                error
-            );
-
-        }
-
-    }
+  document.getElementById(
+    "driverRating"
+  ).textContent =
+    rating
+      ? "⭐ " + rating
+      : "-";
 
 }
 
+
+/* =====================================================
+   REALTIME DRIVER GPS
+===================================================== */
+
+function startDriverListener(
+  driverId
+){
+
+  if(!driverId)
+    return;
+
+
+  try{
+
+    const {
+      doc,
+      onSnapshot
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    if(driverListener){
+
+      driverListener();
+
+      driverListener =
+        null;
+
+    }
+
+
+    driverListener =
+      onSnapshot(
+
+        doc(
+          db,
+          "drivers",
+          driverId
+        ),
+
+        snapshot => {
+
+          if(!snapshot.exists())
+            return;
+
+
+          const data =
+            snapshot.data();
+
+
+          currentDriver =
+            {
+
+              id:driverId,
+
+              ...data
+
+            };
+
+
+          showDriver(
+            currentDriver
+          );
+
+
+          updateDriverGPS(
+            data
+          );
+
+        },
+
+        error => {
+
+          console.log(
+            "Driver listener:",
+            error
+          );
+
+        }
+
+      );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+
+/* =====================================================
+   UPDATE DRIVER GPS
+===================================================== */
+
+function updateDriverGPS(
+  driver
+){
+
+  const lat =
+    driver.latitude;
+
+  const lng =
+    driver.longitude;
+
+
+  if(
+    typeof lat === "number" &&
+    typeof lng === "number"
+  ){
+
+    document.getElementById(
+      "driverCoordinates"
+    ).textContent =
+      lat.toFixed(6) +
+      ", " +
+      lng.toFixed(6);
+
+
+    document.getElementById(
+      "gpsStatus"
+    ).textContent =
+      driver.gpsstatus ||
+      driver.gpsStatus ||
+      "Online";
+
+
+    document.getElementById(
+      "lastUpdate"
+    ).textContent =
+      new Date().toLocaleTimeString();
+
+  }
+
+}
 
 
 /* =====================================================
@@ -1568,34 +2413,302 @@ async function showDriver(driver){
 
 function callDriver(){
 
-    const phone =
-    document
-    .getElementById(
-        "driverPhone"
-    )
-    .textContent
-    .trim();
+  if(
+    !currentDriver ||
+    !currentDriver.phone
+  ){
+
+    alert(
+      "Driver phone number उपलब्ध नहीं है।"
+    );
+
+    return;
+
+  }
 
 
-    if(
-        !phone ||
-        phone === "-"
-    ){
-
-        alert(
-            "Driver का फोन नंबर उपलब्ध नहीं है"
-        );
-
-        return;
-
-    }
-
-
-    window.location.href =
-    "tel:" + phone;
+  window.location.href =
+    "tel:" +
+    currentDriver.phone;
 
 }
 
+
+/* =====================================================
+   START TRIP
+===================================================== */
+
+async function startTrip(){
+
+  if(!currentBooking)
+    return;
+
+
+  tripStartedAt =
+    Date.now();
+
+
+  document.getElementById(
+    "tripCard"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "bookingStatus"
+  ).textContent =
+    "🟢 Trip Started";
+
+
+  try{
+
+    const {
+      doc,
+      updateDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await updateDoc(
+
+      doc(
+        db,
+        "bookings",
+        currentBooking.bookingId
+      ),
+
+      {
+
+        status:
+          "trip_started",
+
+        tripStartedAt:
+          new Date()
+
+      }
+
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+
+/* =====================================================
+   COMPLETE TRIP
+===================================================== */
+
+async function completeTrip(){
+
+  if(!currentBooking)
+    return;
+
+
+  let minutes = 10;
+
+
+  if(tripStartedAt){
+
+    minutes =
+      Math.max(
+        1,
+        Math.round(
+          (
+            Date.now() -
+            tripStartedAt
+          ) / 60000
+        )
+      );
+
+  }
+
+
+  const type =
+    currentBooking.cabType;
+
+
+  const fare =
+    FARES[type];
+
+
+  const distance =
+    0;
+
+
+  const total =
+    fare.base +
+    (distance * fare.perKm) +
+    (minutes * fare.perMinute);
+
+
+  document.getElementById(
+    "billCab"
+  ).textContent =
+    type;
+
+
+  document.getElementById(
+    "billBase"
+  ).textContent =
+    fare.base;
+
+
+  document.getElementById(
+    "billDistance"
+  ).textContent =
+    distance + " KM";
+
+
+  document.getElementById(
+    "billTime"
+  ).textContent =
+    minutes + " Min";
+
+
+  document.getElementById(
+    "billTotal"
+  ).textContent =
+    total.toFixed(2);
+
+
+  document.getElementById(
+    "billCard"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "ratingCard"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "bookingStatus"
+  ).textContent =
+    "🟢 Trip Completed";
+
+
+  try{
+
+    const {
+      doc,
+      updateDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await updateDoc(
+
+      doc(
+        db,
+        "bookings",
+        currentBooking.bookingId
+      ),
+
+      {
+
+        status:
+          "completed",
+
+        finalFare:
+          total,
+
+        tripMinutes:
+          minutes,
+
+        completedAt:
+          new Date()
+
+      }
+
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+
+/* =====================================================
+   GENERATE INVOICE
+===================================================== */
+
+function generateInvoice(){
+
+  if(!currentBooking)
+    return;
+
+
+  document.getElementById(
+    "invoiceBookingId"
+  ).textContent =
+    currentBooking.bookingId;
+
+
+  document.getElementById(
+    "invoiceCustomer"
+  ).textContent =
+    currentBooking.customerName;
+
+
+  document.getElementById(
+    "invoicePhone"
+  ).textContent =
+    currentBooking.customerPhone;
+
+
+  document.getElementById(
+    "invoicePickup"
+  ).textContent =
+    currentBooking.pickup;
+
+
+  document.getElementById(
+    "invoiceDrop"
+  ).textContent =
+    currentBooking.drop;
+
+
+  document.getElementById(
+    "invoiceVehicle"
+  ).textContent =
+    currentBooking.cabType;
+
+
+  document.getElementById(
+    "invoiceTotal"
+  ).textContent =
+    document.getElementById(
+      "billTotal"
+    ).textContent;
+
+
+  document.getElementById(
+    "invoiceCard"
+  ).classList.remove(
+    "hidden"
+  );
+
+}
 
 
 /* =====================================================
@@ -1604,283 +2717,205 @@ function callDriver(){
 
 async function cancelBooking(){
 
-    const bookingId =
-    localStorage.getItem(
-        "SafetyCab_Current_Booking"
+  const t =
+    LANG[currentLanguage];
+
+
+  if(!confirm(
+    t.confirmCancel
+  ))
+    return;
+
+
+  bookingCancelled =
+    true;
+
+
+  if(!currentBooking)
+    return;
+
+
+  currentBooking.status =
+    "cancelled";
+
+
+  document.getElementById(
+    "bookingStatus"
+  ).textContent =
+    t.cancelled;
+
+
+  document.getElementById(
+    "cancelButton"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "driverCard"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "tripCard"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  try{
+
+    const {
+      doc,
+      updateDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await updateDoc(
+
+      doc(
+        db,
+        "bookings",
+        currentBooking.bookingId
+      ),
+
+      {
+
+        status:
+          "cancelled",
+
+        cancelledAt:
+          new Date()
+
+      }
+
     );
 
+  }catch(error){
 
-    document
-    .getElementById(
-        "bookingStatus"
-    )
-    .textContent =
-    "🔴 Booking Cancelled";
+    console.log(error);
 
-
-    document
-    .getElementById(
-        "cancelButton"
-    )
-    .classList
-    .add("hidden");
-
-
-    document
-    .getElementById(
-        "driverCard"
-    )
-    .classList
-    .add("hidden");
-
-
-    if(bookingId){
-
-        try{
-
-            await window
-            .safetyCabUpdateDoc(
-
-                window
-                .safetyCabDoc(
-                    window.safetyCabDB,
-                    "bookings",
-                    bookingId
-                ),
-
-                {
-
-                    status:
-                    "cancelled"
-
-                }
-
-            );
-
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-        }
-
-    }
+  }
 
 }
-
-
-
-/* =====================================================
-   START TRIP
-===================================================== */
-
-function startTrip(){
-
-    document
-    .getElementById(
-        "tripCard"
-    )
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById(
-        "bookingStatus"
-    )
-    .textContent =
-    "🟢 Trip Started";
-
-
-    document
-    .getElementById(
-        "driverGpsStatus"
-    )
-    .textContent =
-    "🟢 Online";
-
-
-    updateLastTime();
-
-}
-
-
-
-/* =====================================================
-   COMPLETE TRIP
-===================================================== */
-
-function completeTrip(){
-
-    const fare =
-    document
-    .getElementById(
-        "fareAmount"
-    )
-    .textContent
-    .replace("₹","");
-
-
-    document
-    .getElementById(
-        "finalFare"
-    )
-    .textContent =
-    fare;
-
-
-    document
-    .getElementById(
-        "billCard"
-    )
-    .classList
-    .remove("hidden");
-
-
-    document
-    .getElementById(
-        "ratingCard"
-    )
-    .classList
-    .remove("hidden");
-
-}
-
-
-
-/* =====================================================
-   INVOICE
-===================================================== */
-
-function generateInvoice(){
-
-    const name =
-    localStorage.getItem(
-        "SafetyCab_Customer_Name"
-    );
-
-
-    const phone =
-    localStorage.getItem(
-        "SafetyCab_Customer_Phone"
-    );
-
-
-    const fare =
-    document
-    .getElementById(
-        "finalFare"
-    )
-    .textContent;
-
-
-    const pickup =
-    document
-    .getElementById(
-        "pickup"
-    )
-    .value;
-
-
-    const drop =
-    document
-    .getElementById(
-        "drop"
-    )
-    .value;
-
-
-    document
-    .getElementById(
-        "invoiceDetails"
-    )
-    .innerHTML = `
-
-        <b>🚕 SafetyCab Invoice</b>
-
-        <br><br>
-
-        <b>Customer:</b>
-        ${name}
-
-        <br><br>
-
-        <b>Phone:</b>
-        ${phone}
-
-        <br><br>
-
-        <b>Pickup:</b>
-        ${pickup}
-
-        <br><br>
-
-        <b>Drop:</b>
-        ${drop}
-
-        <br><br>
-
-        <b>Final Fare:</b>
-        ₹${fare}
-
-        <br><br>
-
-        धन्यवाद! SafetyCab इस्तेमाल करने के लिए धन्यवाद। 🚕
-    `;
-
-
-    document
-    .getElementById(
-        "invoiceCard"
-    )
-    .classList
-    .remove("hidden");
-
-}
-
 
 
 /* =====================================================
    RATING
 ===================================================== */
 
-function submitRating(){
+async function submitRating(){
 
-    const rating =
-    document
-    .getElementById(
+  if(
+    !currentDriver ||
+    !currentBooking
+  )
+    return;
+
+
+  const rating =
+    Number(
+      document.getElementById(
         "rating"
-    )
-    .value;
-
-
-    alert(
-        "धन्यवाद! आपने " +
-        rating +
-        " Star Rating दी ⭐"
+      ).value
     );
 
+
+  try{
+
+    const {
+      doc,
+      updateDoc
+    } =
+      window.firebaseFunctions;
+
+
+    const db =
+      window.firebaseDB;
+
+
+    await updateDoc(
+
+      doc(
+        db,
+        "bookings",
+        currentBooking.bookingId
+      ),
+
+      {
+
+        rating:rating
+
+      }
+
+    );
+
+
+    document.getElementById(
+      "ratingMessage"
+    ).className =
+      "success";
+
+
+    document.getElementById(
+      "ratingMessage"
+    ).textContent =
+      "⭐ Rating Saved";
+
+
+    /*
+    Driver की rating भी update करने के लिए
+    मौजूदा rating field सेव की जा सकती है।
+    */
+
+    try{
+
+      await updateDoc(
+
+        doc(
+          db,
+          "drivers",
+          currentDriver.id
+        ),
+
+        {
+
+          lastRating:
+            rating
+
+        }
+
+      );
+
+    }catch(error){
+
+      console.log(
+        "Driver rating:",
+        error
+      );
+
+    }
+
+  }catch(error){
+
+    console.log(error);
+
+    document.getElementById(
+      "ratingMessage"
+    ).textContent =
+      "Rating save नहीं हो सकी।";
+
+  }
+
 }
-
-
-
-/* =====================================================
-   GPS TIME
-===================================================== */
-
-function updateLastTime(){
-
-    document
-    .getElementById(
-        "lastUpdate"
-    )
-    .textContent =
-    new Date()
-    .toLocaleString();
-
-}
-
 
 
 /* =====================================================
@@ -1888,14 +2923,59 @@ function updateLastTime(){
 ===================================================== */
 
 document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+  "DOMContentLoaded",
+  () => {
 
-        updateFare();
+    applyLanguage();
 
-        restoreCustomerLogin();
+    checkSavedLogin();
+
+    updateFare();
+
+
+    /*
+    पहले से saved pickup location
+    */
+
+    try{
+
+      const savedLocation =
+        localStorage.getItem(
+          "SafetyCab_LastLocation"
+        );
+
+
+      if(savedLocation){
+
+        const loc =
+          JSON.parse(
+            savedLocation
+          );
+
+
+        if(
+          loc.lat &&
+          loc.lng
+        ){
+
+          document.getElementById(
+            "pickup"
+          ).value =
+            loc.lat.toFixed(6) +
+            ", " +
+            loc.lng.toFixed(6);
+
+        }
+
+      }
+
+    }catch(error){
+
+      console.log(error);
 
     }
+
+  }
 );
 
 </script>

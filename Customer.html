@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1976d2">
-
 <title>SafetyCab Customer App</title>
 
 <style>
@@ -61,7 +60,8 @@ label{
   margin:12px 0 6px;
 }
 
-input,select{
+input,
+select{
   width:100%;
   padding:14px;
   border:1px solid #ccc;
@@ -152,8 +152,14 @@ button{
 .info-row{
   display:flex;
   justify-content:space-between;
-  padding:7px 0;
+  gap:10px;
+  padding:8px 0;
   border-bottom:1px solid #eee;
+}
+
+.info-row span{
+  text-align:right;
+  word-break:break-word;
 }
 
 .login-logo{
@@ -200,6 +206,13 @@ button{
   padding:25px;
   color:#777;
   font-size:14px;
+}
+
+.firebase-status{
+  font-size:13px;
+  margin-top:10px;
+  text-align:center;
+  color:#666;
 }
 </style>
 </head>
@@ -256,6 +269,10 @@ button{
 
     <div id="loginMessage"></div>
 
+    <div class="firebase-status">
+      Firebase Database Connected
+    </div>
+
     <p class="small" id="loginNote">
       OTP अभी आवश्यक नहीं है। आपका लॉगिन इस डिवाइस पर सेव रहेगा।
     </p>
@@ -273,17 +290,11 @@ button{
 
       <select id="languageSelect" onchange="changeLanguage()">
 
-        <option value="hi">
-          हिन्दी
-        </option>
+        <option value="hi">हिन्दी</option>
 
-        <option value="en">
-          English
-        </option>
+        <option value="en">English</option>
 
-        <option value="ur">
-          اردو
-        </option>
+        <option value="ur">اردو</option>
 
       </select>
 
@@ -334,17 +345,11 @@ button{
 
     <select id="panelLanguage" onchange="changeLanguageFromPanel()">
 
-      <option value="hi">
-        हिन्दी
-      </option>
+      <option value="hi">हिन्दी</option>
 
-      <option value="en">
-        English
-      </option>
+      <option value="en">English</option>
 
-      <option value="ur">
-        اردو
-      </option>
+      <option value="ur">اردو</option>
 
     </select>
 
@@ -394,17 +399,11 @@ button{
 
     <select id="cabType" onchange="updateFare()">
 
-      <option value="Mini">
-        Mini
-      </option>
+      <option value="Mini">Mini</option>
 
-      <option value="Sedan">
-        Sedan
-      </option>
+      <option value="Sedan">Sedan</option>
 
-      <option value="SUV">
-        SUV
-      </option>
+      <option value="SUV">SUV</option>
 
     </select>
 
@@ -555,9 +554,7 @@ button{
 
     <div class="status">
 
-      <b>
-        GPS Status:
-      </b>
+      <b>GPS Status:</b>
 
       <span id="gpsStatus">
         Waiting
@@ -565,9 +562,7 @@ button{
 
       <br>
 
-      <b>
-        Last Update:
-      </b>
+      <b>Last Update:</b>
 
       <span id="lastUpdate">
         -
@@ -670,9 +665,7 @@ button{
       class="invoice"
       id="invoiceContent">
 
-      <h3>
-        🚕 SafetyCab
-      </h3>
+      <h3>🚕 SafetyCab</h3>
 
       <p>
         <b>Booking ID:</b>
@@ -734,25 +727,15 @@ button{
 
     <select id="rating">
 
-      <option value="5">
-        ⭐⭐⭐⭐⭐ 5
-      </option>
+      <option value="5">⭐⭐⭐⭐⭐ 5</option>
 
-      <option value="4">
-        ⭐⭐⭐⭐ 4
-      </option>
+      <option value="4">⭐⭐⭐⭐ 4</option>
 
-      <option value="3">
-        ⭐⭐⭐ 3
-      </option>
+      <option value="3">⭐⭐⭐ 3</option>
 
-      <option value="2">
-        ⭐⭐ 2
-      </option>
+      <option value="2">⭐⭐ 2</option>
 
-      <option value="1">
-        ⭐ 1
-      </option>
+      <option value="1">⭐ 1</option>
 
     </select>
 
@@ -799,7 +782,7 @@ button{
 
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
   getFirestore,
@@ -813,31 +796,19 @@ import {
   query,
   where,
   onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 /*
 =========================================================
-IMPORTANT FIREBASE CONFIG
+SAFETYCAB FIREBASE CONFIG
 =========================================================
-
-यहाँ अपने Firebase Project Settings से असली values डालें।
-
-Firebase:
-Project settings
-→ General
-→ Your apps
-→ Safety cab customer
-→ SDK setup and configuration
-→ CDN
-
-वहाँ से पूरा firebaseConfig कॉपी करके यहाँ रखें।
 */
 
 const firebaseConfig = {
 
   apiKey:
-    "PASTE_YOUR_FIREBASE_API_KEY_HERE",
+    "AIzaSyCpKzlC8zDRXObOaqD3a5eyGtknGePl9Rc",
 
   authDomain:
     "safety-cab.firebaseapp.com",
@@ -852,19 +823,27 @@ const firebaseConfig = {
     "288347736605",
 
   appId:
-    "PASTE_YOUR_FIREBASE_APP_ID_HERE"
+    "1:288347736605:web:fb36e7a42e7bd58a3f14f4"
 
 };
 
 
+/* Initialize Firebase */
+
 const firebaseApp =
   initializeApp(firebaseConfig);
+
+
+/* Initialize Firestore */
 
 const db =
   getFirestore(firebaseApp);
 
 
-/* Firebase को बाकी JavaScript के लिए उपलब्ध करें */
+/*
+Firebase को बाकी JavaScript
+के लिए उपलब्ध करें।
+*/
 
 window.firebaseDB = db;
 
@@ -883,6 +862,8 @@ window.firebaseFunctions = {
 
 };
 
+console.log("SafetyCab Firebase Connected");
+
 </script>
 
 
@@ -892,7 +873,12 @@ window.firebaseFunctions = {
 
 <script>
 
-const APP_VERSION = "2026.08.08.06";
+const APP_VERSION = "2026.08.09.01";
+
+
+/* =====================================================
+   FARE SETTINGS
+===================================================== */
 
 const FARES = {
 
@@ -925,14 +911,14 @@ let currentDriver = null;
 
 let driverListener = null;
 
-let bookingListener = null;
-
 let bookingCancelled = false;
 
 let tripStartedAt = null;
 
 let currentLanguage =
-  localStorage.getItem("SafetyCab_Language") || "hi";
+  localStorage.getItem(
+    "SafetyCab_Language"
+  ) || "hi";
 
 
 /* =====================================================
@@ -1004,8 +990,6 @@ hi:{
 
   driverLocation:"🗺️ Driver Location",
 
-  waiting:"Waiting",
-
   tripRunning:"🚕 Trip Running",
 
   tripMessage:"आपका ट्रिप चल रहा है।",
@@ -1024,11 +1008,14 @@ hi:{
 
   logout:"🚪 Logout",
 
-  invalidName:"कृपया नाम लिखें।",
+  invalidName:
+    "कृपया नाम लिखें।",
 
-  invalidPhone:"कृपया सही 10 अंकों का मोबाइल नंबर डालें।",
+  invalidPhone:
+    "कृपया सही 10 अंकों का मोबाइल नंबर डालें।",
 
-  loggedIn:"Login सफल हुआ।",
+  loggedIn:
+    "Login सफल हुआ।",
 
   locationError:
     "Location प्राप्त नहीं हो सकी। कृपया GPS Permission दें।",
@@ -1059,7 +1046,8 @@ en:{
 
   namePlaceholder:"Enter your name",
 
-  phonePlaceholder:"Enter 10 digit mobile number",
+  phonePlaceholder:
+    "Enter 10 digit mobile number",
 
   continueBtn:"Continue",
 
@@ -1110,8 +1098,6 @@ en:{
 
   driverLocation:"🗺️ Driver Location",
 
-  waiting:"Waiting",
-
   tripRunning:"🚕 Trip Running",
 
   tripMessage:"Your trip is running.",
@@ -1130,11 +1116,14 @@ en:{
 
   logout:"🚪 Logout",
 
-  invalidName:"Please enter your name.",
+  invalidName:
+    "Please enter your name.",
 
-  invalidPhone:"Please enter a valid 10 digit mobile number.",
+  invalidPhone:
+    "Please enter a valid 10 digit mobile number.",
 
-  loggedIn:"Login successful.",
+  loggedIn:
+    "Login successful.",
 
   locationError:
     "Unable to get location. Please allow GPS permission.",
@@ -1165,7 +1154,8 @@ ur:{
 
   namePlaceholder:"اپنا نام لکھیں",
 
-  phonePlaceholder:"10 ہندسوں کا موبائل نمبر",
+  phonePlaceholder:
+    "10 ہندسوں کا موبائل نمبر",
 
   continueBtn:"Continue",
 
@@ -1216,8 +1206,6 @@ ur:{
 
   driverLocation:"🗺️ Driver Location",
 
-  waiting:"Waiting",
-
   tripRunning:"🚕 Trip چل رہا ہے",
 
   tripMessage:"آپ کا ٹرپ چل رہا ہے۔",
@@ -1236,12 +1224,14 @@ ur:{
 
   logout:"🚪 Logout",
 
-  invalidName:"براہ کرم نام لکھیں۔",
+  invalidName:
+    "براہ کرم نام لکھیں۔",
 
   invalidPhone:
     "براہ کرم صحیح 10 ہندسوں کا موبائل نمبر ڈالیں۔",
 
-  loggedIn:"Login کامیاب ہوگیا۔",
+  loggedIn:
+    "Login کامیاب ہوگیا۔",
 
   locationError:
     "Location حاصل نہیں ہوسکی۔ GPS Permission دیں۔",
@@ -1270,7 +1260,9 @@ ur:{
 function changeLanguage(){
 
   const value =
-    document.getElementById("languageSelect").value;
+    document.getElementById(
+      "languageSelect"
+    ).value;
 
   currentLanguage = value;
 
@@ -1287,7 +1279,9 @@ function changeLanguage(){
 function changeLanguageFromPanel(){
 
   const value =
-    document.getElementById("panelLanguage").value;
+    document.getElementById(
+      "panelLanguage"
+    ).value;
 
   currentLanguage = value;
 
@@ -1303,85 +1297,185 @@ function changeLanguageFromPanel(){
 
 function applyLanguage(){
 
-  const t = LANG[currentLanguage] || LANG.hi;
+  const t =
+    LANG[currentLanguage] || LANG.hi;
 
   document.documentElement.lang =
     currentLanguage;
 
 
-  const setText = (id,text)=>{
+  const setText =
+    (id,text)=>{
 
-    const el =
-      document.getElementById(id);
+      const el =
+        document.getElementById(id);
 
-    if(el) el.textContent = text;
+      if(el){
+        el.textContent = text;
+      }
 
-  };
+    };
 
 
-  setText("appSubtitle",t.appSubtitle);
+  setText(
+    "appSubtitle",
+    t.appSubtitle
+  );
 
-  setText("loginTitle",t.loginTitle);
+  setText(
+    "loginTitle",
+    t.loginTitle
+  );
 
-  setText("nameLabel",t.nameLabel);
+  setText(
+    "nameLabel",
+    t.nameLabel
+  );
 
-  setText("phoneLabel",t.phoneLabel);
+  setText(
+    "phoneLabel",
+    t.phoneLabel
+  );
 
-  setText("continueBtn",t.continueBtn);
+  setText(
+    "continueBtn",
+    t.continueBtn
+  );
 
-  setText("loginNote",t.loginNote);
+  setText(
+    "loginNote",
+    t.loginNote
+  );
 
-  setText("welcomeTitle",t.welcome);
+  setText(
+    "welcomeTitle",
+    t.welcome
+  );
 
-  setText("customerNameLabel",t.customerName);
+  setText(
+    "customerNameLabel",
+    t.customerName
+  );
 
-  setText("customerPhoneLabel",t.customerPhone);
+  setText(
+    "customerPhoneLabel",
+    t.customerPhone
+  );
 
-  setText("languageTitle",t.languageTitle);
+  setText(
+    "languageTitle",
+    t.languageTitle
+  );
 
-  setText("bookTitle",t.bookTitle);
+  setText(
+    "bookTitle",
+    t.bookTitle
+  );
 
-  setText("pickupLabel",t.pickup);
+  setText(
+    "pickupLabel",
+    t.pickup
+  );
 
-  setText("locationBtn",t.currentLocation);
+  setText(
+    "locationBtn",
+    t.currentLocation
+  );
 
-  setText("dropLabel",t.drop);
+  setText(
+    "dropLabel",
+    t.drop
+  );
 
-  setText("cabLabel",t.vehicle);
+  setText(
+    "cabLabel",
+    t.vehicle
+  );
 
-  setText("estimatedFareText",t.estimatedFare);
+  setText(
+    "estimatedFareText",
+    t.estimatedFare
+  );
 
-  setText("bookButton",t.bookNow);
+  setText(
+    "bookButton",
+    t.bookNow
+  );
 
-  setText("statusTitle",t.bookingStatus);
+  setText(
+    "statusTitle",
+    t.bookingStatus
+  );
 
-  setText("cancelButton",t.cancel);
+  setText(
+    "cancelButton",
+    t.cancel
+  );
 
-  setText("driverTitle",t.driverDetails);
+  setText(
+    "driverTitle",
+    t.driverDetails
+  );
 
-  setText("callDriverButton",t.callDriver);
+  setText(
+    "callDriverButton",
+    t.callDriver
+  );
 
-  setText("startTripButton",t.startTrip);
+  setText(
+    "startTripButton",
+    t.startTrip
+  );
 
-  setText("driverLocationTitle",t.driverLocation);
+  setText(
+    "driverLocationTitle",
+    t.driverLocation
+  );
 
-  setText("tripTitle",t.tripRunning);
+  setText(
+    "tripTitle",
+    t.tripRunning
+  );
 
-  setText("tripMessage",t.tripMessage);
+  setText(
+    "tripMessage",
+    t.tripMessage
+  );
 
-  setText("completeTripButton",t.completeTrip);
+  setText(
+    "completeTripButton",
+    t.completeTrip
+  );
 
-  setText("billTitle",t.finalBill);
+  setText(
+    "billTitle",
+    t.finalBill
+  );
 
-  setText("invoiceButton",t.generateInvoice);
+  setText(
+    "invoiceButton",
+    t.generateInvoice
+  );
 
-  setText("invoiceTitle",t.invoice);
+  setText(
+    "invoiceTitle",
+    t.invoice
+  );
 
-  setText("ratingTitle",t.rateDriver);
+  setText(
+    "ratingTitle",
+    t.rateDriver
+  );
 
-  setText("ratingButton",t.submitRating);
+  setText(
+    "ratingButton",
+    t.submitRating
+  );
 
-  setText("logoutButton",t.logout);
+  setText(
+    "logoutButton",
+    t.logout
+  );
 
 
   document.getElementById(
@@ -1418,9 +1512,17 @@ function applyLanguage(){
       "panelLanguage"
     );
 
-  if(ls) ls.value = currentLanguage;
 
-  if(ps) ps.value = currentLanguage;
+  if(ls){
+    ls.value =
+      currentLanguage;
+  }
+
+
+  if(ps){
+    ps.value =
+      currentLanguage;
+  }
 
 }
 
@@ -1431,7 +1533,8 @@ function applyLanguage(){
 
 async function loginCustomer(){
 
-  const t = LANG[currentLanguage];
+  const t =
+    LANG[currentLanguage];
 
   const name =
     document.getElementById(
@@ -1452,6 +1555,7 @@ async function loginCustomer(){
     );
 
     return;
+
   }
 
 
@@ -1463,6 +1567,7 @@ async function loginCustomer(){
     );
 
     return;
+
   }
 
 
@@ -1477,12 +1582,6 @@ async function loginCustomer(){
 
   };
 
-
-  /*
-  IMPORTANT:
-  localStorage की वजह से Refresh के बाद
-  Customer Login बना रहेगा।
-  */
 
   localStorage.setItem(
     "SafetyCab_Customer",
@@ -1501,16 +1600,15 @@ async function loginCustomer(){
   showCustomerPanel();
 
 
-  /*
-  Firebase में customer profile सेव करें
-  */
+  /* Save customer to Firebase */
 
   try{
 
     const {
       doc,
       setDoc
-    } = window.firebaseFunctions;
+    } =
+      window.firebaseFunctions;
 
     const db =
       window.firebaseDB;
@@ -1544,10 +1642,16 @@ async function loginCustomer(){
 
     );
 
-  }catch(error){
 
     console.log(
-      "Firebase customer save:",
+      "Customer saved to Firebase"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Firebase customer error:",
       error
     );
 
@@ -1555,6 +1659,10 @@ async function loginCustomer(){
 
 }
 
+
+/* =====================================================
+   LOGIN MESSAGE
+===================================================== */
 
 function showLoginMessage(
   message,
@@ -1577,6 +1685,10 @@ function showLoginMessage(
 }
 
 
+/* =====================================================
+   SHOW CUSTOMER PANEL
+===================================================== */
+
 function showCustomerPanel(){
 
   document
@@ -1597,8 +1709,9 @@ function showCustomerPanel(){
     );
 
 
-  if(!currentCustomer)
+  if(!currentCustomer){
     return;
+  }
 
 
   document.getElementById(
@@ -1621,7 +1734,7 @@ function showCustomerPanel(){
 
 
 /* =====================================================
-   AUTO LOGIN AFTER REFRESH
+   AUTO LOGIN
 ===================================================== */
 
 function checkSavedLogin(){
@@ -1645,7 +1758,7 @@ function checkSavedLogin(){
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
     localStorage.removeItem(
       "SafetyCab_Customer"
@@ -1666,8 +1779,23 @@ function logoutCustomer(){
     LANG[currentLanguage];
 
 
-  if(!confirm(t.logoutConfirm))
+  if(
+    !confirm(
+      t.logoutConfirm
+    )
+  ){
     return;
+  }
+
+
+  if(driverListener){
+
+    driverListener();
+
+    driverListener =
+      null;
+
+  }
 
 
   localStorage.removeItem(
@@ -1688,7 +1816,7 @@ function logoutCustomer(){
 
 
 /* =====================================================
-   LOCATION
+   CURRENT LOCATION
 ===================================================== */
 
 function useMyLocation(){
@@ -1728,11 +1856,17 @@ function useMyLocation(){
 
 
       localStorage.setItem(
+
         "SafetyCab_LastLocation",
+
         JSON.stringify({
+
           lat:lat,
+
           lng:lng
+
         })
+
       );
 
     },
@@ -1778,8 +1912,9 @@ function updateFare(){
     FARES[type];
 
 
-  if(!fare)
+  if(!fare){
     return;
+  }
 
 
   document.getElementById(
@@ -1862,8 +1997,7 @@ async function bookCab(){
 
 
   const bookingId =
-    "BK" +
-    Date.now();
+    "BK" + Date.now();
 
 
   currentBooking = {
@@ -1882,11 +2016,15 @@ async function bookCab(){
 
     cabType:cabType,
 
-    fare:
-      fare.base,
+    baseFare:fare.base,
 
-    status:
-      "searching",
+    perKm:fare.perKm,
+
+    perMinute:fare.perMinute,
+
+    estimatedFare:fare.base,
+
+    status:"searching",
 
     driverId:"",
 
@@ -1894,13 +2032,13 @@ async function bookCab(){
 
     driverPhone:"",
 
-    createdAt:
-      new Date()
+    createdAt:new Date()
 
   };
 
 
-  bookingCancelled = false;
+  bookingCancelled =
+    false;
 
 
   document
@@ -1929,9 +2067,7 @@ async function bookCab(){
 
     const {
       doc,
-      setDoc,
-      collection,
-      addDoc
+      setDoc
     } =
       window.firebaseFunctions;
 
@@ -1959,26 +2095,21 @@ async function bookCab(){
     );
 
 
-    /*
-    Driver खोजें
-    */
-
     await findOnlineDriver();
 
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Booking Firebase error:",
+      error
+    );
 
-    /*
-    Firebase error होने पर भी
-    Demo booking status दिखाएँ
-    */
 
     document.getElementById(
       "bookingStatus"
     ).textContent =
-      t.searching;
+      "⚠️ Firebase में Booking save नहीं हुई।";
 
   }
 
@@ -1995,8 +2126,9 @@ async function findOnlineDriver(){
     LANG[currentLanguage];
 
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   try{
@@ -2014,10 +2146,12 @@ async function findOnlineDriver(){
 
     const snapshot =
       await getDocs(
+
         collection(
           db,
           "drivers"
         )
+
       );
 
 
@@ -2025,10 +2159,12 @@ async function findOnlineDriver(){
 
 
     snapshot.forEach(
+
       driverDoc => {
 
-        if(found)
+        if(found){
           return;
+        }
 
 
         const data =
@@ -2037,26 +2173,49 @@ async function findOnlineDriver(){
 
         const duty =
           String(
+
             data.dutystatus ||
             data.dutyStatus ||
             ""
+
           ).toLowerCase();
 
 
         const gps =
           String(
+
             data.gpsstatus ||
             data.gpsStatus ||
             ""
+
           ).toLowerCase();
 
 
+        /*
+        Driver collection में:
+
+        dutystatus = on
+
+        gpsstatus = online
+
+        होना चाहिए।
+        */
+
+
         if(
-          duty === "on" &&
+
+          (
+            duty === "on" ||
+            duty === "online"
+          )
+
+          &&
+
           (
             gps === "online" ||
             gps === "on"
           )
+
         ){
 
           found = {
@@ -2070,14 +2229,11 @@ async function findOnlineDriver(){
         }
 
       }
+
     );
 
 
     if(!found){
-
-      /*
-      अभी driver नहीं मिला।
-      */
 
       document.getElementById(
         "bookingStatus"
@@ -2101,9 +2257,15 @@ async function findOnlineDriver(){
   }catch(error){
 
     console.error(
-      "Driver search:",
+      "Driver search error:",
       error
     );
+
+
+    document.getElementById(
+      "bookingStatus"
+    ).textContent =
+      "⚠️ Driver search में समस्या हुई।";
 
   }
 
@@ -2122,8 +2284,9 @@ async function assignDriver(
     LANG[currentLanguage];
 
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   currentBooking.driverId =
@@ -2187,7 +2350,7 @@ async function assignDriver(
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
   }
 
@@ -2205,7 +2368,9 @@ async function assignDriver(
   );
 
 
-  showDriver(driver);
+  showDriver(
+    driver
+  );
 
 
   startDriverListener(
@@ -2219,7 +2384,9 @@ async function assignDriver(
    SHOW DRIVER
 ===================================================== */
 
-function showDriver(driver){
+function showDriver(
+  driver
+){
 
   document.getElementById(
     "driverName"
@@ -2238,6 +2405,7 @@ function showDriver(driver){
   document.getElementById(
     "driverVehicle"
   ).textContent =
+
     driver.Vehicle ||
     driver.vehicle ||
     "-";
@@ -2246,6 +2414,7 @@ function showDriver(driver){
   document.getElementById(
     "driverId"
   ).textContent =
+
     driver.driverid ||
     driver.driverId ||
     driver.id ||
@@ -2259,6 +2428,7 @@ function showDriver(driver){
   document.getElementById(
     "driverRating"
   ).textContent =
+
     rating
       ? "⭐ " + rating
       : "-";
@@ -2267,15 +2437,16 @@ function showDriver(driver){
 
 
 /* =====================================================
-   REALTIME DRIVER GPS
+   REALTIME DRIVER LISTENER
 ===================================================== */
 
 function startDriverListener(
   driverId
 ){
 
-  if(!driverId)
+  if(!driverId){
     return;
+  }
 
 
   try{
@@ -2302,6 +2473,7 @@ function startDriverListener(
 
 
     driverListener =
+
       onSnapshot(
 
         doc(
@@ -2312,22 +2484,24 @@ function startDriverListener(
 
         snapshot => {
 
-          if(!snapshot.exists())
+          if(
+            !snapshot.exists()
+          ){
             return;
+          }
 
 
           const data =
             snapshot.data();
 
 
-          currentDriver =
-            {
+          currentDriver = {
 
-              id:driverId,
+            id:driverId,
 
-              ...data
+            ...data
 
-            };
+          };
 
 
           showDriver(
@@ -2343,7 +2517,7 @@ function startDriverListener(
 
         error => {
 
-          console.log(
+          console.error(
             "Driver listener:",
             error
           );
@@ -2354,7 +2528,7 @@ function startDriverListener(
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
   }
 
@@ -2370,20 +2544,27 @@ function updateDriverGPS(
 ){
 
   const lat =
-    driver.latitude;
+    Number(
+      driver.latitude
+    );
 
   const lng =
-    driver.longitude;
+    Number(
+      driver.longitude
+    );
 
 
   if(
-    typeof lat === "number" &&
-    typeof lng === "number"
+
+    Number.isFinite(lat) &&
+    Number.isFinite(lng)
+
   ){
 
     document.getElementById(
       "driverCoordinates"
     ).textContent =
+
       lat.toFixed(6) +
       ", " +
       lng.toFixed(6);
@@ -2392,6 +2573,7 @@ function updateDriverGPS(
     document.getElementById(
       "gpsStatus"
     ).textContent =
+
       driver.gpsstatus ||
       driver.gpsStatus ||
       "Online";
@@ -2400,6 +2582,7 @@ function updateDriverGPS(
     document.getElementById(
       "lastUpdate"
     ).textContent =
+
       new Date().toLocaleTimeString();
 
   }
@@ -2414,8 +2597,10 @@ function updateDriverGPS(
 function callDriver(){
 
   if(
+
     !currentDriver ||
     !currentDriver.phone
+
   ){
 
     alert(
@@ -2440,8 +2625,9 @@ function callDriver(){
 
 async function startTrip(){
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   tripStartedAt =
@@ -2496,7 +2682,7 @@ async function startTrip(){
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
   }
 
@@ -2509,8 +2695,9 @@ async function startTrip(){
 
 async function completeTrip(){
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   let minutes = 10;
@@ -2520,13 +2707,18 @@ async function completeTrip(){
 
     minutes =
       Math.max(
+
         1,
+
         Math.round(
+
           (
             Date.now() -
             tripStartedAt
           ) / 60000
+
         )
+
       );
 
   }
@@ -2540,14 +2732,27 @@ async function completeTrip(){
     FARES[type];
 
 
-  const distance =
-    0;
+  /*
+  अभी actual map distance नहीं है,
+  इसलिए distance 0 रखा गया है।
+  */
+
+  const distance = 0;
 
 
   const total =
+
     fare.base +
-    (distance * fare.perKm) +
-    (minutes * fare.perMinute);
+
+    (
+      distance *
+      fare.perKm
+    ) +
+
+    (
+      minutes *
+      fare.perMinute
+    );
 
 
   document.getElementById(
@@ -2565,13 +2770,15 @@ async function completeTrip(){
   document.getElementById(
     "billDistance"
   ).textContent =
-    distance + " KM";
+    distance +
+    " KM";
 
 
   document.getElementById(
     "billTime"
   ).textContent =
-    minutes + " Min";
+    minutes +
+    " Min";
 
 
   document.getElementById(
@@ -2632,6 +2839,9 @@ async function completeTrip(){
         tripMinutes:
           minutes,
 
+        distanceKm:
+          distance,
+
         completedAt:
           new Date()
 
@@ -2641,7 +2851,7 @@ async function completeTrip(){
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
   }
 
@@ -2654,8 +2864,9 @@ async function completeTrip(){
 
 function generateInvoice(){
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   document.getElementById(
@@ -2697,6 +2908,7 @@ function generateInvoice(){
   document.getElementById(
     "invoiceTotal"
   ).textContent =
+
     document.getElementById(
       "billTotal"
     ).textContent;
@@ -2721,18 +2933,22 @@ async function cancelBooking(){
     LANG[currentLanguage];
 
 
-  if(!confirm(
-    t.confirmCancel
-  ))
+  if(
+    !confirm(
+      t.confirmCancel
+    )
+  ){
     return;
+  }
 
 
   bookingCancelled =
     true;
 
 
-  if(!currentBooking)
+  if(!currentBooking){
     return;
+  }
 
 
   currentBooking.status =
@@ -2764,6 +2980,16 @@ async function cancelBooking(){
   ).classList.add(
     "hidden"
   );
+
+
+  if(driverListener){
+
+    driverListener();
+
+    driverListener =
+      null;
+
+  }
 
 
   try{
@@ -2801,7 +3027,7 @@ async function cancelBooking(){
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
 
   }
 
@@ -2815,17 +3041,24 @@ async function cancelBooking(){
 async function submitRating(){
 
   if(
+
     !currentDriver ||
     !currentBooking
-  )
+
+  ){
+
     return;
+
+  }
 
 
   const rating =
     Number(
+
       document.getElementById(
         "rating"
       ).value
+
     );
 
 
@@ -2872,41 +3105,51 @@ async function submitRating(){
 
 
     /*
-    Driver की rating भी update करने के लिए
-    मौजूदा rating field सेव की जा सकती है।
+    Driver document में lastRating save।
     */
 
-    try{
+    if(currentDriver.id){
 
-      await updateDoc(
+      try{
 
-        doc(
-          db,
-          "drivers",
-          currentDriver.id
-        ),
+        await updateDoc(
 
-        {
+          doc(
+            db,
+            "drivers",
+            currentDriver.id
+          ),
 
-          lastRating:
-            rating
+          {
 
-        }
+            lastRating:
+              rating
 
-      );
+          }
 
-    }catch(error){
+        );
 
-      console.log(
-        "Driver rating:",
-        error
-      );
+      }catch(error){
+
+        console.error(
+          "Driver rating:",
+          error
+        );
+
+      }
 
     }
 
   }catch(error){
 
-    console.log(error);
+    console.error(error);
+
+
+    document.getElementById(
+      "ratingMessage"
+    ).className =
+      "error";
+
 
     document.getElementById(
       "ratingMessage"
@@ -2919,11 +3162,71 @@ async function submitRating(){
 
 
 /* =====================================================
+   LOAD SAVED LOCATION
+===================================================== */
+
+function loadSavedLocation(){
+
+  try{
+
+    const savedLocation =
+      localStorage.getItem(
+        "SafetyCab_LastLocation"
+      );
+
+
+    if(!savedLocation){
+      return;
+    }
+
+
+    const loc =
+      JSON.parse(
+        savedLocation
+      );
+
+
+    if(
+
+      Number.isFinite(
+        Number(loc.lat)
+      )
+
+      &&
+
+      Number.isFinite(
+        Number(loc.lng)
+      )
+
+    ){
+
+      document.getElementById(
+        "pickup"
+      ).value =
+
+        Number(loc.lat).toFixed(6) +
+        ", " +
+        Number(loc.lng).toFixed(6);
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =====================================================
    PAGE START
 ===================================================== */
 
 document.addEventListener(
+
   "DOMContentLoaded",
+
   () => {
 
     applyLanguage();
@@ -2932,50 +3235,10 @@ document.addEventListener(
 
     updateFare();
 
-
-    /*
-    पहले से saved pickup location
-    */
-
-    try{
-
-      const savedLocation =
-        localStorage.getItem(
-          "SafetyCab_LastLocation"
-        );
-
-
-      if(savedLocation){
-
-        const loc =
-          JSON.parse(
-            savedLocation
-          );
-
-
-        if(
-          loc.lat &&
-          loc.lng
-        ){
-
-          document.getElementById(
-            "pickup"
-          ).value =
-            loc.lat.toFixed(6) +
-            ", " +
-            loc.lng.toFixed(6);
-
-        }
-
-      }
-
-    }catch(error){
-
-      console.log(error);
-
-    }
+    loadSavedLocation();
 
   }
+
 );
 
 </script>

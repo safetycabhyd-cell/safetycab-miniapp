@@ -1,316 +1,584 @@
+
 <!DOCTYPE html>
 <html lang="hi">
-<head>
-<meta charset="UTF-8">
-<title>Safety Cab Admin Panel</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<head>
+
+<meta charset="UTF-8">
+
+<title>Safety Cab Admin Panel</title>
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1"
+>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
+
+*{
+box-sizing:border-box;
+}
+
 body{
-  font-family:Arial,sans-serif;
-  background:#f2f2f2;
-  margin:0;
-  padding:15px;
+
+font-family:Arial,sans-serif;
+
+background:#f2f2f2;
+
+margin:0;
+
+padding:15px;
+
+}
+
+h2{
+
+font-size:28px;
+
+margin:10px 0 20px;
+
+}
+
+h3{
+
+margin-top:5px;
+
 }
 
 .box{
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px;
+
+background:white;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-bottom:15px;
+
 }
 
 input{
-  width:100%;
-  box-sizing:border-box;
-  padding:12px;
-  margin:6px 0;
-  border:1px solid #ccc;
-  border-radius:6px;
-  font-size:15px;
+
+width:100%;
+
+box-sizing:border-box;
+
+padding:12px;
+
+margin:6px 0;
+
+border:1px solid #ccc;
+
+border-radius:6px;
+
+font-size:15px;
+
 }
 
 button{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:0;
-  border-radius:6px;
-  font-size:16px;
-  color:white;
-  background:#168a3a;
+
+width:100%;
+
+padding:12px;
+
+margin:6px 0;
+
+border:0;
+
+border-radius:6px;
+
+font-size:16px;
+
+color:white;
+
+background:#168a3a;
+
+cursor:pointer;
+
+}
+
+button:active{
+
+opacity:.8;
+
 }
 
 .stop,
 .dutyOff,
 .delete{
-  background:#d32f2f;
+
+background:#d32f2f;
+
 }
 
 .searchBtn{
-  background:#1769aa;
+
+background:#1769aa;
+
 }
 
 .pickupBtn{
-  background:#168a3a;
+
+background:#168a3a;
+
 }
 
 .dropBtn{
-  background:#d66a00;
+
+background:#d66a00;
+
 }
 
 .driver{
-  background:white;
-  padding:15px;
-  margin:10px 0;
-  border-radius:10px;
-  border-left:5px solid #168a3a;
+
+background:white;
+
+padding:15px;
+
+margin:10px 0;
+
+border-radius:10px;
+
+border-left:5px solid #168a3a;
+
 }
 
 .online{
-  color:green;
-  font-weight:bold;
+
+color:green;
+
+font-weight:bold;
+
 }
 
 .offline{
-  color:red;
-  font-weight:bold;
+
+color:red;
+
+font-weight:bold;
+
 }
 
 .dutyOn{
-  color:#168a3a;
-  font-weight:bold;
+
+color:#168a3a;
+
+font-weight:bold;
+
 }
 
 .dutyOffText{
-  color:#d32f2f;
-  font-weight:bold;
+
+color:#d32f2f;
+
+font-weight:bold;
+
 }
 
 .gps-indicator{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:20px;
-  font-weight:bold;
-  font-size:14px;
-  margin-top:5px;
+
+display:inline-block;
+
+padding:6px 10px;
+
+border-radius:20px;
+
+font-weight:bold;
+
+font-size:14px;
+
+margin-top:5px;
+
 }
 
 .gps-green{
-  background:#d9f7df;
-  color:#168a3a;
+
+background:#d9f7df;
+
+color:#168a3a;
+
 }
 
 .gps-red{
-  background:#ffe0e0;
-  color:#d32f2f;
+
+background:#ffe0e0;
+
+color:#d32f2f;
+
 }
 
 .gps-yellow{
-  background:#fff4c2;
-  color:#9a7300;
+
+background:#fff4c2;
+
+color:#9a7300;
+
 }
 
 .stars{
-  font-size:28px;
-  letter-spacing:3px;
-  margin:8px 0;
+
+font-size:28px;
+
+letter-spacing:3px;
+
+margin:8px 0;
+
 }
 
 .star{
-  cursor:pointer;
-  color:#ccc;
+
+cursor:pointer;
+
+color:#ccc;
+
 }
 
 .star.active{
-  color:#f5b400;
+
+color:#f5b400;
+
 }
 
-/* SMALL CAR MAP ICON */
 .car-icon{
-  width:32px;
-  height:32px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  font-size:23px;
-  background:white;
-  box-shadow:0 2px 6px rgba(0,0,0,.45);
-  border:3px solid #168a3a;
+
+width:32px;
+
+height:32px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:50%;
+
+font-size:23px;
+
+background:white;
+
+box-shadow:0 2px 6px rgba(0,0,0,.45);
+
+border:3px solid #168a3a;
+
 }
 
 .car-offline{
-  border-color:#d32f2f;
-  filter:grayscale(1);
-  opacity:.75;
+
+border-color:#d32f2f;
+
+filter:grayscale(1);
+
+opacity:.75;
+
 }
 
 .car-online{
-  border-color:#168a3a;
+
+border-color:#168a3a;
+
 }
 
 .car-updating{
-  border-color:#e0a800;
+
+border-color:#e0a800;
+
 }
 
 .pickup-marker{
-  font-size:30px;
-  filter:drop-shadow(1px 2px 2px #555);
+
+font-size:30px;
+
+filter:drop-shadow(1px 2px 2px #555);
+
 }
 
 .drop-marker{
-  font-size:30px;
-  filter:drop-shadow(1px 2px 2px #555);
+
+font-size:30px;
+
+filter:drop-shadow(1px 2px 2px #555);
+
 }
 
 #map{
-  height:400px;
-  width:100%;
-  border-radius:10px;
-  margin-bottom:20px;
+
+height:400px;
+
+width:100%;
+
+border-radius:10px;
+
+margin-bottom:20px;
+
 }
 
 #mapSection{
-  display:block;
+
+display:block;
+
 }
 
 .search-result{
-  background:#f8f8f8;
-  border:1px solid #ddd;
-  padding:10px;
-  margin:5px 0;
-  border-radius:7px;
-  cursor:pointer;
+
+background:#f8f8f8;
+
+border:1px solid #ddd;
+
+padding:10px;
+
+margin:5px 0;
+
+border-radius:7px;
+
+cursor:pointer;
+
 }
 
 .search-result:hover{
-  background:#eaf4ff;
+
+background:#eaf4ff;
+
 }
 
 .small{
-  font-size:13px;
-  color:#666;
+
+font-size:13px;
+
+color:#666;
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <h2>🚕 Safety Cab Admin Panel</h2>
 
-<!-- DRIVER REGISTRATION -->
+
+<!-- =====================================================
+     DRIVER REGISTRATION
+===================================================== -->
+
 <div class="box">
 
 <h3>👨‍✈️ Driver Registration</h3>
 
-<input id="driverId" placeholder="Driver ID">
 
-<input id="driverName" placeholder="Driver Name">
+<input
+id="driverId"
+placeholder="Driver ID"
+>
 
-<input id="phone" placeholder="Phone Number">
 
-<input id="vehicle" placeholder="Vehicle Number">
+<input
+id="driverName"
+placeholder="Driver Name"
+>
+
+
+<input
+id="phone"
+placeholder="Phone Number"
+inputmode="numeric"
+>
+
+
+<input
+id="vehicle"
+placeholder="Vehicle Number"
+>
+
 
 <button onclick="startLiveGPS()">
+
 📍 START LIVE GPS
+
 </button>
 
-<button class="stop" onclick="stopLiveGPS()">
+
+<button
+class="stop"
+onclick="stopLiveGPS()"
+>
+
 ⛔ STOP GPS
+
 </button>
+
 
 <p>
+
 <b>GPS Status:</b>
-<span id="gpsStatus" class="offline">
+
+<span
+id="gpsStatus"
+class="offline"
+>
+
 🔴 GPS OFFLINE
+
 </span>
+
 </p>
 
-<div id="gpsIndicator"
-class="gps-indicator gps-red">
+
+<div
+id="gpsIndicator"
+class="gps-indicator gps-red"
+>
+
 🔴 GPS OFFLINE
+
 </div>
+
 
 <p id="location">
+
 Latitude: -
+
 <br>
+
 Longitude: -
+
 </p>
 
+
 <button onclick="saveDriver()">
+
 💾 SAVE DRIVER
+
 </button>
+
 
 </div>
 
 
-<!-- SEARCH DRIVER -->
+
+<!-- =====================================================
+     SEARCH DRIVER
+===================================================== -->
+
 <div class="box">
 
 <h3>🔎 Search Driver</h3>
 
+
 <input
 id="search"
 placeholder="Name / ID / Vehicle"
-oninput="showDrivers()">
+oninput="showDrivers()"
+>
 
 </div>
 
 
-<!-- PICKUP / DROP -->
+
+<!-- =====================================================
+     PICKUP / DROP
+===================================================== -->
+
 <div class="box">
 
 <h3>📍 Pickup & Drop</h3>
 
-<label><b>📍 Pickup Location</b></label>
+
+<label>
+
+<b>📍 Pickup Location</b>
+
+</label>
+
 
 <input
 id="pickupSearch"
-placeholder="Pickup location search करें">
+placeholder="Pickup location search करें"
+>
+
 
 <button
 class="pickupBtn"
-onclick="searchPickup()">
+onclick="searchPickup()"
+>
+
 🔎 SEARCH PICKUP
+
 </button>
+
 
 <div id="pickupResults"></div>
 
+
 <br>
 
-<label><b>🏁 Drop Location</b></label>
+
+<label>
+
+<b>🏁 Drop Location</b>
+
+</label>
+
 
 <input
 id="dropSearch"
-placeholder="Drop location search करें">
+placeholder="Drop location search करें"
+>
+
 
 <button
 class="dropBtn"
-onclick="searchDrop()">
+onclick="searchDrop()"
+>
+
 🔎 SEARCH DROP
+
 </button>
+
 
 <div id="dropResults"></div>
 
-<p id="routeStatus" class="small">
+
+<p
+id="routeStatus"
+class="small"
+>
+
 Pickup और Drop select करने के बाद Map पर दिखाई देंगे।
+
 </p>
 
 </div>
 
 
+
+<!-- =====================================================
+     DRIVER LIST
+===================================================== -->
+
 <h3>👨‍✈️ Driver List</h3>
 
+
 <div id="list">
+
 Loading...
+
 </div>
 
 
-<!-- MAP -->
+
+<!-- =====================================================
+     DRIVER MAP
+===================================================== -->
+
 <div id="mapSection">
 
 <h3>🗺️ Driver Map</h3>
@@ -320,22 +588,40 @@ Loading...
 </div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
 
 <script>
 
 /* =====================================================
-   DATA
+   STORAGE KEYS
+===================================================== */
+
+const DRIVER_STORAGE_KEY =
+"safetycab_final_drivers";
+
+const FORM_STORAGE_KEY =
+"safetycab_driver_form";
+
+
+
+/* =====================================================
+   DRIVERS
 ===================================================== */
 
 let drivers = [];
+
 
 try{
 
 drivers =
 JSON.parse(
 localStorage.getItem(
-"safetycab_final_drivers"
+DRIVER_STORAGE_KEY
 )
 ) || [];
 
@@ -346,11 +632,22 @@ drivers = [];
 }
 
 
+
+/* =====================================================
+   GPS VARIABLES
+===================================================== */
+
 let watchId = null;
 
 let currentLat = "";
 
 let currentLng = "";
+
+
+
+/* =====================================================
+   MAP VARIABLES
+===================================================== */
 
 let markers = [];
 
@@ -363,6 +660,7 @@ let pickupLocation = null;
 let dropLocation = null;
 
 
+
 /* =====================================================
    OLD DATA FIX
 ===================================================== */
@@ -370,22 +668,190 @@ let dropLocation = null;
 drivers.forEach(function(d){
 
 if(typeof d.online === "undefined"){
+
 d.online = false;
+
 }
 
 if(typeof d.duty === "undefined"){
+
 d.duty = false;
+
 }
 
 if(typeof d.rating === "undefined"){
+
 d.rating = 0;
+
 }
 
 if(typeof d.lastUpdate === "undefined"){
+
 d.lastUpdate = "-";
+
+}
+
+if(typeof d.phone === "undefined"){
+
+d.phone = "";
+
+}
+
+if(typeof d.vehicle === "undefined"){
+
+d.vehicle = "";
+
 }
 
 });
+
+
+
+/* =====================================================
+   SAVE DRIVERS
+===================================================== */
+
+function saveData(){
+
+localStorage.setItem(
+
+DRIVER_STORAGE_KEY,
+
+JSON.stringify(drivers)
+
+);
+
+}
+
+
+
+/* =====================================================
+   FORM DRAFT SAVE
+===================================================== */
+
+function saveFormDraft(){
+
+const formData = {
+
+driverId:
+document.getElementById(
+"driverId"
+).value,
+
+driverName:
+document.getElementById(
+"driverName"
+).value,
+
+phone:
+document.getElementById(
+"phone"
+).value,
+
+vehicle:
+document.getElementById(
+"vehicle"
+).value
+
+};
+
+
+localStorage.setItem(
+
+FORM_STORAGE_KEY,
+
+JSON.stringify(formData)
+
+);
+
+}
+
+
+
+/* =====================================================
+   FORM DRAFT RESTORE
+===================================================== */
+
+function restoreFormDraft(){
+
+try{
+
+const saved =
+JSON.parse(
+localStorage.getItem(
+FORM_STORAGE_KEY
+)
+);
+
+
+if(!saved){
+
+return;
+
+}
+
+
+document.getElementById(
+"driverId"
+).value =
+saved.driverId || "";
+
+
+document.getElementById(
+"driverName"
+).value =
+saved.driverName || "";
+
+
+document.getElementById(
+"phone"
+).value =
+saved.phone || "";
+
+
+document.getElementById(
+"vehicle"
+).value =
+saved.vehicle || "";
+
+
+}catch(error){
+
+console.log(
+"Form restore error:",
+error
+);
+
+}
+
+}
+
+
+
+/* =====================================================
+   AUTO SAVE FORM WHILE TYPING
+===================================================== */
+
+[
+"driverId",
+"driverName",
+"phone",
+"vehicle"
+]
+.forEach(function(id){
+
+document.getElementById(id)
+.addEventListener(
+"input",
+function(){
+
+saveFormDraft();
+
+}
+);
+
+});
+
 
 
 /* =====================================================
@@ -394,17 +860,29 @@ d.lastUpdate = "-";
 
 let map =
 L.map("map").setView(
+
 [17.2872833,78.4662117],
+
 13
+
 );
 
+
 L.tileLayer(
+
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+
 {
+
 maxZoom:19,
-attribution:"© OpenStreetMap contributors"
+
+attribution:
+"© OpenStreetMap contributors"
+
 }
+
 ).addTo(map);
+
 
 
 /* =====================================================
@@ -413,23 +891,29 @@ attribution:"© OpenStreetMap contributors"
 
 function createCarIcon(driver){
 
-let carClass = "car-icon ";
+let carClass =
+"car-icon ";
+
 
 if(driver.online){
 
-carClass += "car-online";
+carClass +=
+"car-online";
 
 }else{
 
-carClass += "car-offline";
+carClass +=
+"car-offline";
 
 }
+
 
 return L.divIcon({
 
 className:"",
 
 html:
+
 `
 <div class="${carClass}">
 🚕
@@ -445,6 +929,7 @@ popupAnchor:[0,-20]
 });
 
 }
+
 
 
 /* =====================================================
@@ -472,6 +957,7 @@ gpsStatus.innerHTML =
 gpsStatus.className =
 "online";
 
+
 indicator.innerHTML =
 "🟢 GPS ONLINE";
 
@@ -485,7 +971,9 @@ else if(status === "updating"){
 gpsStatus.innerHTML =
 "🟡 GPS UPDATING";
 
-gpsStatus.className = "";
+gpsStatus.className =
+"";
+
 
 indicator.innerHTML =
 "🟡 GPS UPDATING";
@@ -503,6 +991,7 @@ gpsStatus.innerHTML =
 gpsStatus.className =
 "offline";
 
+
 indicator.innerHTML =
 "🔴 GPS OFFLINE";
 
@@ -512,6 +1001,7 @@ indicator.className =
 }
 
 }
+
 
 
 /* =====================================================
@@ -531,7 +1021,18 @@ return;
 }
 
 
-setGPSIndicator("updating");
+setGPSIndicator(
+"updating"
+);
+
+
+if(watchId !== null){
+
+navigator.geolocation.clearWatch(
+watchId
+);
+
+}
 
 
 watchId =
@@ -546,7 +1047,9 @@ currentLng =
 position.coords.longitude;
 
 
-setGPSIndicator("online");
+setGPSIndicator(
+"online"
+);
 
 
 document.getElementById(
@@ -586,6 +1089,7 @@ true;
 driver.lastUpdate =
 new Date().toLocaleString();
 
+
 saveData();
 
 showDrivers();
@@ -598,12 +1102,31 @@ showMap();
 
 function(error){
 
-setGPSIndicator("offline");
+setGPSIndicator(
+"offline"
+);
+
 
 if(error.code === 1){
 
 alert(
 "Location Permission Allow करें"
+);
+
+}
+
+else if(error.code === 2){
+
+alert(
+"GPS Location उपलब्ध नहीं है"
+);
+
+}
+
+else if(error.code === 3){
+
+alert(
+"GPS Timeout हुआ"
 );
 
 }
@@ -625,6 +1148,7 @@ maximumAge:0
 }
 
 
+
 /* =====================================================
    STOP GPS
 ===================================================== */
@@ -642,7 +1166,9 @@ watchId = null;
 }
 
 
-setGPSIndicator("offline");
+setGPSIndicator(
+"offline"
+);
 
 
 let id =
@@ -665,6 +1191,7 @@ false;
 driver.lastUpdate =
 new Date().toLocaleString();
 
+
 saveData();
 
 showDrivers();
@@ -674,6 +1201,7 @@ showMap();
 }
 
 }
+
 
 
 /* =====================================================
@@ -687,15 +1215,18 @@ document.getElementById(
 "driverId"
 ).value.trim();
 
+
 let name =
 document.getElementById(
 "driverName"
 ).value.trim();
 
+
 let phone =
 document.getElementById(
 "phone"
 ).value.trim();
+
 
 let vehicle =
 document.getElementById(
@@ -703,9 +1234,12 @@ document.getElementById(
 ).value.trim();
 
 
+
 if(id === ""){
 
-alert("Driver ID डालिए");
+alert(
+"Driver ID डालिए"
+);
 
 return;
 
@@ -714,7 +1248,20 @@ return;
 
 if(name === ""){
 
-alert("Driver Name डालिए");
+alert(
+"Driver Name डालिए"
+);
+
+return;
+
+}
+
+
+if(phone === ""){
+
+alert(
+"Phone Number डालिए"
+);
 
 return;
 
@@ -723,17 +1270,44 @@ return;
 
 if(vehicle === ""){
 
-alert("Vehicle Number डालिए");
+alert(
+"Vehicle Number डालिए"
+);
 
 return;
 
 }
 
 
+
+/* पुराने Driver की location */
+
+let driver =
+drivers.find(
+d => d.id === id
+);
+
+
 if(
 currentLat === "" ||
 currentLng === ""
 ){
+
+if(
+driver &&
+driver.latitude !== undefined &&
+driver.longitude !== undefined &&
+driver.latitude !== "" &&
+driver.longitude !== ""
+){
+
+currentLat =
+driver.latitude;
+
+currentLng =
+driver.longitude;
+
+}else{
 
 alert(
 "पहले START LIVE GPS दबाइए"
@@ -743,31 +1317,41 @@ return;
 
 }
 
+}
 
-let driver =
-drivers.find(
-d => d.id === id
-);
 
+
+/* Existing Driver */
 
 if(driver){
 
-driver.name = name;
+driver.name =
+name;
 
-driver.phone = phone;
+driver.phone =
+phone;
 
-driver.vehicle = vehicle;
+driver.vehicle =
+vehicle;
 
-driver.latitude = currentLat;
+driver.latitude =
+currentLat;
 
-driver.longitude = currentLng;
+driver.longitude =
+currentLng;
 
-driver.online = true;
+driver.online =
+true;
 
 driver.lastUpdate =
 new Date().toLocaleString();
 
-}else{
+}
+
+
+/* New Driver */
+
+else{
 
 drivers.push({
 
@@ -799,6 +1383,8 @@ new Date().toLocaleString()
 
 saveData();
 
+saveFormDraft();
+
 showDrivers();
 
 showMap();
@@ -811,22 +1397,6 @@ alert(
 }
 
 
-/* =====================================================
-   SAVE DATA
-===================================================== */
-
-function saveData(){
-
-localStorage.setItem(
-
-"safetycab_final_drivers",
-
-JSON.stringify(drivers)
-
-);
-
-}
-
 
 /* =====================================================
    DUTY ON
@@ -835,10 +1405,15 @@ JSON.stringify(drivers)
 function dutyOn(index){
 
 if(!drivers[index]){
+
 return;
+
 }
 
-drivers[index].duty = true;
+
+drivers[index].duty =
+true;
+
 
 saveData();
 
@@ -847,6 +1422,7 @@ showDrivers();
 showMap();
 
 }
+
 
 
 /* =====================================================
@@ -856,10 +1432,15 @@ showMap();
 function dutyOff(index){
 
 if(!drivers[index]){
+
 return;
+
 }
 
-drivers[index].duty = false;
+
+drivers[index].duty =
+false;
+
 
 saveData();
 
@@ -868,6 +1449,7 @@ showDrivers();
 showMap();
 
 }
+
 
 
 /* =====================================================
@@ -877,10 +1459,15 @@ showMap();
 function setRating(index,rating){
 
 if(!drivers[index]){
+
 return;
+
 }
 
-drivers[index].rating = rating;
+
+drivers[index].rating =
+rating;
+
 
 saveData();
 
@@ -889,6 +1476,7 @@ showDrivers();
 showMap();
 
 }
+
 
 
 /* =====================================================
@@ -899,24 +1487,39 @@ function getStars(index,rating){
 
 let html = "";
 
-for(let i=1;i<=5;i++){
 
-html += `
+for(
+let i=1;
+i<=5;
+i++
+){
+
+html +=
+
+`
 
 <span
-class="star ${i <= rating ? "active" : ""}"
-onclick="setRating(${index},${i})">
+class="star ${
+i <= rating
+? "active"
+: ""
+}"
+onclick="setRating(${index},${i})"
+>
 
 ★
+
 </span>
 
 `;
 
 }
 
+
 return html;
 
 }
+
 
 
 /* =====================================================
@@ -928,20 +1531,34 @@ function getGPSIndicator(d){
 if(d.online){
 
 return `
-<span class="gps-indicator gps-green">
+
+<span
+class="gps-indicator gps-green"
+>
+
 🟢 GPS ONLINE
+
 </span>
+
 `;
 
 }
+
 
 return `
-<span class="gps-indicator gps-red">
+
+<span
+class="gps-indicator gps-red"
+>
+
 🔴 GPS OFFLINE
+
 </span>
+
 `;
 
 }
+
 
 
 /* =====================================================
@@ -959,7 +1576,8 @@ document.getElementById(
 
 
 let result =
-drivers.filter(function(d){
+drivers.filter(
+function(d){
 
 return (
 
@@ -1013,7 +1631,9 @@ ${drivers.length}
 }
 
 
-result.forEach(function(d){
+
+result.forEach(
+function(d){
 
 let index =
 drivers.indexOf(d);
@@ -1024,24 +1644,32 @@ html += `
 <div class="driver">
 
 <b>Driver ID:</b>
+
 ${d.id}
 
 <br><br>
 
+
 <b>Name:</b>
+
 ${d.name}
 
 <br><br>
 
+
 <b>Phone:</b>
+
 ${d.phone || "-"}
 
 <br><br>
 
+
 <b>Vehicle:</b>
-${d.vehicle}
+
+${d.vehicle || "-"}
 
 <br><br>
+
 
 <b>GPS Status:</b>
 
@@ -1050,6 +1678,7 @@ ${d.vehicle}
 ${getGPSIndicator(d)}
 
 <br><br>
+
 
 <b>Duty Status:</b>
 
@@ -1069,6 +1698,7 @@ d.duty
 
 <br><br>
 
+
 <b>⭐ Driver Rating:</b>
 
 <div class="stars">
@@ -1079,6 +1709,7 @@ d.rating || 0
 )}
 
 </div>
+
 
 <div>
 
@@ -1092,6 +1723,7 @@ d.rating
 
 <br>
 
+
 <b>Location:</b>
 
 ${d.latitude || "-"},
@@ -1099,13 +1731,15 @@ ${d.longitude || "-"}
 
 <br><br>
 
+
 <b>Last GPS Update:</b>
 
 ${d.lastUpdate || "-"}
 
 
 <button
-onclick="dutyOn(${index})">
+onclick="dutyOn(${index})"
+>
 
 🟢 DUTY ON
 
@@ -1114,7 +1748,8 @@ onclick="dutyOn(${index})">
 
 <button
 class="dutyOff"
-onclick="dutyOff(${index})">
+onclick="dutyOff(${index})"
+>
 
 🔴 DUTY OFF
 
@@ -1123,11 +1758,13 @@ onclick="dutyOff(${index})">
 
 <button
 class="delete"
-onclick="deleteDriver(${index})">
+onclick="deleteDriver(${index})"
+>
 
 🗑️ DELETE DRIVER
 
 </button>
+
 
 </div>
 
@@ -1138,9 +1775,11 @@ onclick="deleteDriver(${index})">
 
 document.getElementById(
 "list"
-).innerHTML = html;
+).innerHTML =
+html;
 
 }
+
 
 
 /* =====================================================
@@ -1150,26 +1789,71 @@ document.getElementById(
 function deleteDriver(index){
 
 if(!drivers[index]){
+
 return;
+
 }
 
 
 let ok =
 confirm(
+
 "क्या " +
 drivers[index].name +
 " को Delete करना है?"
+
 );
 
 
 if(!ok){
+
 return;
+
 }
 
 
-drivers.splice(index,1);
+let deletedId =
+drivers[index].id;
+
+
+drivers.splice(
+index,
+1
+);
+
 
 saveData();
+
+
+/* अगर यही Driver form में है */
+
+if(
+document.getElementById(
+"driverId"
+).value.trim()
+=== deletedId
+){
+
+document.getElementById(
+"driverId"
+).value = "";
+
+document.getElementById(
+"driverName"
+).value = "";
+
+document.getElementById(
+"phone"
+).value = "";
+
+document.getElementById(
+"vehicle"
+).value = "";
+
+saveFormDraft();
+
+}
+
 
 showDrivers();
 
@@ -1178,23 +1862,27 @@ showMap();
 }
 
 
+
 /* =====================================================
    SHOW DRIVER MAP
 ===================================================== */
 
 function showMap(){
 
-markers.forEach(function(marker){
+markers.forEach(
+function(marker){
 
 map.removeLayer(marker);
 
-});
+}
+);
 
 
 markers = [];
 
 
-drivers.forEach(function(d){
+drivers.forEach(
+function(d){
 
 let lat =
 Number(d.latitude);
@@ -1210,49 +1898,73 @@ if(
 
 let marker =
 L.marker(
+
 [lat,lng],
+
 {
-icon:createCarIcon(d)
+
+icon:
+createCarIcon(d)
+
 }
+
 ).addTo(map);
 
 
 marker.bindPopup(`
 
 <b>🚕 Driver:</b>
+
 ${d.name}
 
 <br><br>
 
+<b>Driver ID:</b>
+
+${d.id}
+
+<br><br>
+
+<b>Phone:</b>
+
+${d.phone || "-"}
+
+<br><br>
+
 <b>Vehicle:</b>
+
 ${d.vehicle}
 
-<br>
+<br><br>
 
 <b>GPS:</b>
+
 ${
 d.online
 ? "🟢 Online"
 : "🔴 Offline"
 }
 
-<br>
+<br><br>
 
 <b>Duty:</b>
+
 ${
 d.duty
 ? "🟢 ON"
 : "🔴 OFF"
 }
 
-<br>
+<br><br>
 
 <b>Rating:</b>
+
 ⭐ ${d.rating || 0} / 5
 
 <br><br>
 
 <b>Location:</b>
+
 ${lat}, ${lng}
 
 `);
@@ -1270,16 +1982,23 @@ if(markers.length > 0){
 let group =
 L.featureGroup(markers);
 
+
 map.fitBounds(
+
 group.getBounds(),
+
 {
+
 padding:[30,30]
+
 }
+
 );
 
 }
 
 }
+
 
 
 /* =====================================================
@@ -1288,7 +2007,8 @@ padding:[30,30]
 
 function openMapAutomatically(){
 
-setTimeout(function(){
+setTimeout(
+function(){
 
 document.getElementById(
 "mapSection"
@@ -1301,15 +2021,21 @@ block:"start"
 });
 
 
-setTimeout(function(){
+setTimeout(
+function(){
 
 map.invalidateSize();
 
-},500);
+},
+500
+);
 
-},200);
+},
+200
+);
 
 }
+
 
 
 /* =====================================================
@@ -1323,10 +2049,15 @@ return L.divIcon({
 className:"",
 
 html:
+
 `
+
 <div class="pickup-marker">
+
 📍
+
 </div>
+
 `,
 
 iconSize:[35,35],
@@ -1336,6 +2067,7 @@ iconAnchor:[17,35]
 });
 
 }
+
 
 
 /* =====================================================
@@ -1349,10 +2081,15 @@ return L.divIcon({
 className:"",
 
 html:
+
 `
+
 <div class="drop-marker">
+
 🏁
+
 </div>
+
 `,
 
 iconSize:[35,35],
@@ -1364,9 +2101,9 @@ iconAnchor:[17,35]
 }
 
 
+
 /* =====================================================
    SEARCH LOCATION
-   OpenStreetMap Nominatim
 ===================================================== */
 
 async function searchLocation(query){
@@ -1385,16 +2122,31 @@ return [];
 try{
 
 let url =
-"https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=in&q=" +
+
+"https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=in&q="
+
++
+
 encodeURIComponent(query);
 
 
 let response =
-await fetch(url,{
+await fetch(
+
+url,
+
+{
+
 headers:{
-"Accept":"application/json"
+
+"Accept":
+"application/json"
+
 }
-});
+
+}
+
+);
 
 
 let data =
@@ -1402,6 +2154,7 @@ await response.json();
 
 
 return data;
+
 
 }catch(error){
 
@@ -1414,6 +2167,7 @@ return [];
 }
 
 }
+
 
 
 /* =====================================================
@@ -1431,12 +2185,14 @@ document.getElementById(
 containerId
 );
 
+
 container.innerHTML = "";
 
 
 if(data.length === 0){
 
 container.innerHTML =
+
 "<p>❌ Location नहीं मिली।</p>";
 
 return;
@@ -1444,15 +2200,21 @@ return;
 }
 
 
-data.forEach(function(item){
+data.forEach(
+function(item){
 
 let div =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 div.className =
 "search-result";
 
+
 div.innerHTML =
+
 "📍 " +
 item.display_name;
 
@@ -1468,11 +2230,14 @@ type
 };
 
 
-container.appendChild(div);
+container.appendChild(
+div
+);
 
 });
 
 }
+
 
 
 /* =====================================================
@@ -1499,16 +2264,23 @@ return;
 
 
 let data =
-await searchLocation(query);
+await searchLocation(
+query
+);
 
 
 showSearchResults(
+
 data,
+
 "pickupResults",
+
 "pickup"
+
 );
 
 }
+
 
 
 /* =====================================================
@@ -1535,23 +2307,33 @@ return;
 
 
 let data =
-await searchLocation(query);
+await searchLocation(
+query
+);
 
 
 showSearchResults(
+
 data,
+
 "dropResults",
+
 "drop"
+
 );
 
 }
 
 
+
 /* =====================================================
-   SELECT PICKUP / DROP
+   SELECT LOCATION
 ===================================================== */
 
-function selectLocation(item,type){
+function selectLocation(
+item,
+type
+){
 
 let lat =
 Number(item.lat);
@@ -1560,12 +2342,18 @@ let lng =
 Number(item.lon);
 
 
+
 if(type === "pickup"){
 
 pickupLocation = {
+
 lat:lat,
+
 lng:lng,
-name:item.display_name
+
+name:
+item.display_name
+
 };
 
 
@@ -1580,16 +2368,25 @@ pickupMarker
 
 pickupMarker =
 L.marker(
+
 [lat,lng],
+
 {
-icon:createPickupIcon()
+
+icon:
+createPickupIcon()
+
 }
+
 ).addTo(map);
 
 
 pickupMarker.bindPopup(
+
 "<b>📍 PICKUP</b><br>" +
+
 item.display_name
+
 ).openPopup();
 
 
@@ -1601,27 +2398,36 @@ item.display_name;
 
 document.getElementById(
 "pickupResults"
-).innerHTML = "";
+).innerHTML =
+"";
 
 
-/* AUTOMATIC MAP */
 openMapAutomatically();
 
 
 map.setView(
+
 [lat,lng],
+
 15
+
 );
 
 }
 
 
+
 if(type === "drop"){
 
 dropLocation = {
+
 lat:lat,
+
 lng:lng,
-name:item.display_name
+
+name:
+item.display_name
+
 };
 
 
@@ -1636,16 +2442,25 @@ dropMarker
 
 dropMarker =
 L.marker(
+
 [lat,lng],
+
 {
-icon:createDropIcon()
+
+icon:
+createDropIcon()
+
 }
+
 ).addTo(map);
 
 
 dropMarker.bindPopup(
+
 "<b>🏁 DROP</b><br>" +
+
 item.display_name
+
 ).openPopup();
 
 
@@ -1657,21 +2472,23 @@ item.display_name;
 
 document.getElementById(
 "dropResults"
-).innerHTML = "";
+).innerHTML =
+"";
 
 
 openMapAutomatically();
 
 
 map.setView(
+
 [lat,lng],
+
 15
+
 );
 
 }
 
-
-/* FIT ALL LOCATIONS */
 
 fitAllLocations();
 
@@ -1680,8 +2497,9 @@ updateRouteStatus();
 }
 
 
+
 /* =====================================================
-   FIT PICKUP + DROP + DRIVERS
+   FIT ALL LOCATIONS
 ===================================================== */
 
 function fitAllLocations(){
@@ -1689,7 +2507,8 @@ function fitAllLocations(){
 let points = [];
 
 
-drivers.forEach(function(d){
+drivers.forEach(
+function(d){
 
 let lat =
 Number(d.latitude);
@@ -1697,13 +2516,16 @@ Number(d.latitude);
 let lng =
 Number(d.longitude);
 
+
 if(
 !isNaN(lat) &&
 !isNaN(lng)
 ){
 
 points.push(
+
 [lat,lng]
+
 );
 
 }
@@ -1714,8 +2536,11 @@ points.push(
 if(pickupLocation){
 
 points.push([
+
 pickupLocation.lat,
+
 pickupLocation.lng
+
 ]);
 
 }
@@ -1724,8 +2549,11 @@ pickupLocation.lng
 if(dropLocation){
 
 points.push([
+
 dropLocation.lat,
+
 dropLocation.lng
+
 ]);
 
 }
@@ -1734,18 +2562,27 @@ dropLocation.lng
 if(points.length > 0){
 
 let bounds =
-L.latLngBounds(points);
+L.latLngBounds(
+points
+);
+
 
 map.fitBounds(
+
 bounds,
+
 {
+
 padding:[40,40]
+
 }
+
 );
 
 }
 
 }
+
 
 
 /* =====================================================
@@ -1766,13 +2603,15 @@ dropLocation
 ){
 
 status.innerHTML =
-"📍 Pickup + 🏁 Drop दोनों Map पर हैं। Route दिखाने के लिए Routing जोड़ सकते हैं।";
+
+"📍 Pickup + 🏁 Drop दोनों Map पर हैं।";
 
 }
 
 else if(pickupLocation){
 
 status.innerHTML =
+
 "📍 Pickup selected है। अब Drop Location चुनिए।";
 
 }
@@ -1780,6 +2619,7 @@ status.innerHTML =
 else if(dropLocation){
 
 status.innerHTML =
+
 "🏁 Drop selected है। अब Pickup Location चुनिए।";
 
 }
@@ -1787,6 +2627,7 @@ status.innerHTML =
 else{
 
 status.innerHTML =
+
 "Pickup और Drop select करने के बाद Map पर दिखाई देंगे।";
 
 }
@@ -1794,18 +2635,14 @@ status.innerHTML =
 }
 
 
+
 /* =====================================================
-   CLICK MAP TO SET PICKUP
+   MAP CLICK
 ===================================================== */
 
 map.on(
 "click",
 function(e){
-
-/*
-   Map पर खाली जगह tap करने पर
-   अभी सिर्फ location दिखाएँगे।
-*/
 
 let lat =
 e.latlng.lat.toFixed(7);
@@ -1815,20 +2652,102 @@ e.latlng.lng.toFixed(7);
 
 
 L.popup()
-.setLatLng(e.latlng)
-.setContent(
-"📍 Location<br>" +
-lat +
-", " +
-lng
+
+.setLatLng(
+e.latlng
 )
+
+.setContent(
+
+"📍 Location<br>" +
+
+lat +
+
+", " +
+
+lng
+
+)
+
 .openOn(map);
 
 });
 
 
+
 /* =====================================================
-   START
+   RESTORE SAVED DRIVER FORM
+===================================================== */
+
+restoreFormDraft();
+
+
+
+/* =====================================================
+   IF SAVED DRIVER EXISTS,
+   RESTORE ITS LAST LOCATION
+===================================================== */
+
+function restoreCurrentDriverLocation(){
+
+let id =
+document.getElementById(
+"driverId"
+).value.trim();
+
+
+if(!id){
+
+return;
+
+}
+
+
+let driver =
+drivers.find(
+d => d.id === id
+);
+
+
+if(!driver){
+
+return;
+
+}
+
+
+if(
+driver.latitude !== undefined &&
+driver.longitude !== undefined
+){
+
+currentLat =
+driver.latitude;
+
+currentLng =
+driver.longitude;
+
+
+document.getElementById(
+"location"
+).innerHTML =
+
+"Latitude: " +
+
+currentLat +
+
+"<br>Longitude: " +
+
+currentLng;
+
+}
+
+}
+
+
+
+/* =====================================================
+   START PAGE
 ===================================================== */
 
 showDrivers();
@@ -1837,19 +2756,25 @@ showMap();
 
 updateRouteStatus();
 
+restoreCurrentDriverLocation();
+
+
 
 /* =====================================================
-   LIVE MAP REFRESH
-   हर 2 सेकंड में map update
+   MAP REFRESH
 ===================================================== */
 
-setInterval(function(){
+setInterval(
+function(){
 
 showMap();
 
-},2000);
+},
+5000
+);
 
 </script>
 
 </body>
+
 </html>

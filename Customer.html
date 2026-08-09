@@ -8,7 +8,6 @@
 <title>SafetyCab Customer App</title>
 
 <style>
-
 *{
   box-sizing:border-box;
 }
@@ -214,19 +213,8 @@ button{
   font-size:13px;
   margin-top:10px;
   text-align:center;
-  color:#666;
-}
-
-.gps-online{
   color:#159447;
-  font-weight:bold;
 }
-
-.gps-offline{
-  color:#d62828;
-  font-weight:bold;
-}
-
 </style>
 </head>
 
@@ -234,52 +222,39 @@ button{
 
 <div class="app">
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+<!-- ================= HEADER ================= -->
 
 <div class="header">
-
   <h1>🚕 SafetyCab</h1>
-
-  <p id="appSubtitle">
-    Customer App
-  </p>
-
+  <p id="appSubtitle">Customer App</p>
 </div>
 
 
-<!-- =====================================================
-     LOGIN
-===================================================== -->
+<!-- ================= LOGIN ================= -->
 
 <div id="loginScreen">
 
   <div class="card">
 
-    <div class="login-logo">
-      🚕
-    </div>
+    <div class="login-logo">🚕</div>
 
-    <h2
-      id="loginTitle"
-      style="text-align:center;">
+    <h2 id="loginTitle" style="text-align:center;">
       Customer Login
     </h2>
 
     <label id="nameLabel">
-      नाम
+      Name
     </label>
 
     <input
       id="loginName"
       type="text"
-      placeholder="अपना नाम लिखें"
+      placeholder="Enter your name"
       autocomplete="name"
     >
 
     <label id="phoneLabel">
-      फोन नंबर
+      Phone Number
     </label>
 
     <input
@@ -287,7 +262,7 @@ button{
       type="tel"
       inputmode="numeric"
       maxlength="10"
-      placeholder="10 अंकों का मोबाइल नंबर"
+      placeholder="Enter 10 digit mobile number"
       autocomplete="tel"
     >
 
@@ -304,10 +279,8 @@ button{
       Firebase Database Connected
     </div>
 
-    <p
-      class="small"
-      id="loginNote">
-      OTP अभी आवश्यक नहीं है। आपका लॉगिन इस डिवाइस पर सेव रहेगा।
+    <p class="small" id="loginNote">
+      OTP is not required yet. Your login will remain saved on this device.
     </p>
 
   </div>
@@ -327,17 +300,9 @@ button{
         id="languageSelect"
         onchange="changeLanguage()">
 
-        <option value="hi">
-          हिन्दी
-        </option>
-
-        <option value="en">
-          English
-        </option>
-
-        <option value="ur">
-          اردو
-        </option>
+        <option value="hi">हिन्दी</option>
+        <option value="en">English</option>
+        <option value="ur">اردو</option>
 
       </select>
 
@@ -348,9 +313,7 @@ button{
 </div>
 
 
-<!-- =====================================================
-     CUSTOMER PANEL
-===================================================== -->
+<!-- ================= CUSTOMER PANEL ================= -->
 
 <div
   id="customerPanel"
@@ -368,23 +331,19 @@ button{
     <div class="welcome">
 
       <div>
-
         <b id="customerNameLabel">
-          नाम:
+          Name:
         </b>
 
         <span id="customerName"></span>
-
       </div>
 
       <div>
-
         <b id="customerPhoneLabel">
-          फोन नंबर:
+          Phone:
         </b>
 
         <span id="customerPhone"></span>
-
       </div>
 
     </div>
@@ -404,26 +363,16 @@ button{
       id="panelLanguage"
       onchange="changeLanguageFromPanel()">
 
-      <option value="hi">
-        हिन्दी
-      </option>
-
-      <option value="en">
-        English
-      </option>
-
-      <option value="ur">
-        اردو
-      </option>
+      <option value="hi">हिन्दी</option>
+      <option value="en">English</option>
+      <option value="ur">اردو</option>
 
     </select>
 
   </div>
 
 
-  <!-- ===================================================
-       BOOKING
-  =================================================== -->
+  <!-- ================= BOOKING ================= -->
 
   <div class="card">
 
@@ -445,7 +394,7 @@ button{
       class="btn-gray"
       onclick="useMyLocation()"
       id="locationBtn">
-      📍 मेरी Current Location
+      📍 My Current Location
     </button>
 
 
@@ -468,22 +417,12 @@ button{
       id="cabType"
       onchange="updateFare()">
 
-      <option value="Mini">
-        Mini
-      </option>
-
-      <option value="Sedan">
-        Sedan
-      </option>
-
-      <option value="SUV">
-        SUV
-      </option>
+      <option value="Mini">Mini</option>
+      <option value="Sedan">Sedan</option>
+      <option value="SUV">SUV</option>
 
     </select>
 
-
-    <!-- FARE -->
 
     <div class="fare">
 
@@ -496,11 +435,9 @@ button{
       </strong>
 
       <div class="small">
-
         <span id="fareDetails">
           Base + Distance + Time
         </span>
-
       </div>
 
     </div>
@@ -516,9 +453,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       BOOKING STATUS
-  =================================================== -->
+  <!-- ================= BOOKING STATUS ================= -->
 
   <div
     class="card hidden"
@@ -549,9 +484,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       DRIVER DETAILS
-  =================================================== -->
+  <!-- ================= DRIVER ================= -->
 
   <div
     class="card hidden"
@@ -564,7 +497,6 @@ button{
     <div class="welcome">
 
       <div class="info-row">
-
         <b id="driverNameLabel">
           Driver
         </b>
@@ -572,12 +504,9 @@ button{
         <span id="driverName">
           -
         </span>
-
       </div>
 
-
       <div class="info-row">
-
         <b id="driverPhoneLabel">
           Phone
         </b>
@@ -585,25 +514,19 @@ button{
         <span id="driverPhone">
           -
         </span>
-
       </div>
 
-
       <div class="info-row">
-
-        <b id="driverVehicleLabel">
+        <b>
           Vehicle
         </b>
 
         <span id="driverVehicle">
           -
         </span>
-
       </div>
 
-
       <div class="info-row">
-
         <b>
           Driver ID
         </b>
@@ -611,12 +534,9 @@ button{
         <span id="driverId">
           -
         </span>
-
       </div>
 
-
       <div class="info-row">
-
         <b>
           Rating
         </b>
@@ -624,7 +544,6 @@ button{
         <span id="driverRating">
           -
         </span>
-
       </div>
 
     </div>
@@ -648,9 +567,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       DRIVER LOCATION
-  =================================================== -->
+  <!-- ================= DRIVER GPS ================= -->
 
   <div class="card">
 
@@ -704,9 +621,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       TRIP
-  =================================================== -->
+  <!-- ================= TRIP ================= -->
 
   <div
     class="card hidden"
@@ -734,9 +649,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       BILL
-  =================================================== -->
+  <!-- ================= BILL ================= -->
 
   <div
     class="card hidden"
@@ -749,71 +662,44 @@ button{
     <div class="invoice">
 
       <div class="info-row">
-
-        <b>
-          Cab
-        </b>
-
+        <b>Cab</b>
         <span id="billCab">
           Mini
         </span>
-
       </div>
 
-
       <div class="info-row">
-
-        <b>
-          Base Fare
-        </b>
+        <b>Base Fare</b>
 
         <span>
-          ₹<span id="billBase">
-            80
-          </span>
+          ₹<span id="billBase">80</span>
         </span>
-
       </div>
 
-
       <div class="info-row">
-
-        <b>
-          Distance
-        </b>
+        <b>Distance</b>
 
         <span id="billDistance">
           0 KM
         </span>
-
       </div>
 
-
       <div class="info-row">
-
-        <b>
-          Time
-        </b>
+        <b>Time</b>
 
         <span id="billTime">
           0 Min
         </span>
-
       </div>
 
-
       <div class="info-row">
-
-        <b>
-          Total
-        </b>
+        <b>Total</b>
 
         <strong>
           ₹<span id="billTotal">
             80
           </span>
         </strong>
-
       </div>
 
     </div>
@@ -829,9 +715,7 @@ button{
   </div>
 
 
-  <!-- ===================================================
-       INVOICE
-  =================================================== -->
+  <!-- ================= INVOICE ================= -->
 
   <div
     class="card hidden"
@@ -850,92 +734,53 @@ button{
       </h3>
 
       <p>
-
-        <b>
-          Booking ID:
-        </b>
-
+        <b>Booking ID:</b>
         <span id="invoiceBookingId">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Customer:
-        </b>
-
+        <b>Customer:</b>
         <span id="invoiceCustomer">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Phone:
-        </b>
-
+        <b>Phone:</b>
         <span id="invoicePhone">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Pickup:
-        </b>
-
+        <b>Pickup:</b>
         <span id="invoicePickup">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Drop:
-        </b>
-
+        <b>Drop:</b>
         <span id="invoiceDrop">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Vehicle:
-        </b>
-
+        <b>Vehicle:</b>
         <span id="invoiceVehicle">
           -
         </span>
-
       </p>
-
 
       <hr>
 
-
       <h2>
-
         ₹<span id="invoiceTotal">
           0
         </span>
-
       </h2>
 
     </div>
@@ -944,17 +789,13 @@ button{
     <button
       class="btn-blue"
       onclick="window.print()">
-
       🖨️ Save / Print Invoice
-
     </button>
 
   </div>
 
 
-  <!-- ===================================================
-       RATING
-  =================================================== -->
+  <!-- ================= RATING ================= -->
 
   <div
     class="card hidden"
@@ -993,20 +834,15 @@ button{
       class="btn-green"
       onclick="submitRating()"
       id="ratingButton">
-
       Submit Rating
-
     </button>
-
 
     <div id="ratingMessage"></div>
 
   </div>
 
 
-  <!-- ===================================================
-       LOGOUT
-  =================================================== -->
+  <!-- ================= LOGOUT ================= -->
 
   <div class="card">
 
@@ -1014,9 +850,7 @@ button{
       class="btn-red"
       onclick="logoutCustomer()"
       id="logoutButton">
-
       🚪 Logout
-
     </button>
 
   </div>
@@ -1024,12 +858,8 @@ button{
 </div>
 
 
-<!-- FOOTER -->
-
 <div class="footer">
-
   SafetyCab Customer App © 2026
-
 </div>
 
 </div>
@@ -1044,8 +874,7 @@ button{
 import {
   initializeApp
 }
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
 import {
@@ -1055,19 +884,11 @@ import {
   getDoc,
   updateDoc,
   collection,
-  addDoc,
   getDocs,
-  query,
-  where,
   onSnapshot
 }
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-/* =====================================================
-   SAFETYCAB FIREBASE CONFIG
-===================================================== */
 
 const firebaseConfig = {
 
@@ -1092,25 +913,13 @@ const firebaseConfig = {
 };
 
 
-/* =====================================================
-   INITIALIZE FIREBASE
-===================================================== */
-
 const firebaseApp =
   initializeApp(firebaseConfig);
 
 
-/* =====================================================
-   FIRESTORE
-===================================================== */
-
 const db =
   getFirestore(firebaseApp);
 
-
-/* =====================================================
-   MAKE FIREBASE AVAILABLE
-===================================================== */
 
 window.firebaseDB =
   db;
@@ -1123,16 +932,10 @@ window.firebaseFunctions = {
   getDoc,
   updateDoc,
   collection,
-  addDoc,
   getDocs,
-  query,
-  where,
   onSnapshot
 
 };
-
-
-window.firebaseReady = true;
 
 
 console.log(
@@ -1148,16 +951,12 @@ console.log(
 
 <script>
 
-/* =====================================================
-   APP VERSION
-===================================================== */
-
 const APP_VERSION =
-  "2026.08.09.02";
+  "2026.08.09.01";
 
 
 /* =====================================================
-   FARE SETTINGS
+   FARES
 ===================================================== */
 
 const FARES = {
@@ -1183,53 +982,40 @@ const FARES = {
 };
 
 
-/* =====================================================
-   GLOBAL VARIABLES
-===================================================== */
+let currentCustomer = null;
 
-let currentCustomer =
-  null;
+let currentBooking = null;
 
-let currentBooking =
-  null;
+let currentDriver = null;
 
-let currentDriver =
-  null;
+let driverListener = null;
 
-let driverListener =
-  null;
+let bookingCancelled = false;
 
-let bookingCancelled =
-  false;
+let tripStartedAt = null;
 
-let tripStartedAt =
-  null;
 
 let currentLanguage =
   localStorage.getItem(
     "SafetyCab_Language"
-  ) || "hi";
+  ) || "en";
 
 
 /* =====================================================
-   LANGUAGE DATA
+   LANGUAGE
 ===================================================== */
 
 const LANG = {
 
 hi:{
 
-  appSubtitle:
-    "Customer App",
+  appSubtitle:"Customer App",
 
-  loginTitle:
-    "Customer Login",
+  loginTitle:"Customer Login",
 
-  nameLabel:
-    "नाम",
+  nameLabel:"नाम",
 
-  phoneLabel:
-    "फोन नंबर",
+  phoneLabel:"फोन नंबर",
 
   namePlaceholder:
     "अपना नाम लिखें",
@@ -1237,20 +1023,16 @@ hi:{
   phonePlaceholder:
     "10 अंकों का मोबाइल नंबर",
 
-  continueBtn:
-    "Continue",
+  continueBtn:"Continue",
 
   loginNote:
     "OTP अभी आवश्यक नहीं है। आपका लॉगिन इस डिवाइस पर सेव रहेगा।",
 
-  welcome:
-    "👋 Welcome",
+  welcome:"👋 Welcome",
 
-  customerName:
-    "नाम:",
+  customerName:"नाम:",
 
-  customerPhone:
-    "फोन नंबर:",
+  customerPhone:"फोन नंबर:",
 
   languageTitle:
     "🌐 Language Setting",
@@ -1365,8 +1147,7 @@ hi:{
 
 en:{
 
-  appSubtitle:
-    "Customer App",
+  appSubtitle:"Customer App",
 
   loginTitle:
     "Customer Login",
@@ -1658,7 +1439,7 @@ ur:{
 
 
 /* =====================================================
-   LANGUAGE CHANGE
+   LANGUAGE FUNCTIONS
 ===================================================== */
 
 function changeLanguage(){
@@ -1701,35 +1482,31 @@ function changeLanguageFromPanel(){
 }
 
 
-/* =====================================================
-   APPLY LANGUAGE
-===================================================== */
-
 function applyLanguage(){
 
   const t =
     LANG[currentLanguage] ||
-    LANG.hi;
+    LANG.en;
 
 
   document.documentElement.lang =
     currentLanguage;
 
 
-  const setText =
-    (id,text)=>{
+  function setText(
+    id,
+    text
+  ){
 
-      const el =
-        document.getElementById(id);
+    const el =
+      document.getElementById(id);
 
-      if(el){
+    if(el){
+      el.textContent =
+        text;
+    }
 
-        el.textContent =
-          text;
-
-      }
-
-    };
+  }
 
 
   setText(
@@ -1917,59 +1694,16 @@ function applyLanguage(){
     t.dropPlaceholder;
 
 
-  const ls =
-    document.getElementById(
-      "languageSelect"
-    );
+  document.getElementById(
+    "languageSelect"
+  ).value =
+    currentLanguage;
 
 
-  const ps =
-    document.getElementById(
-      "panelLanguage"
-    );
-
-
-  if(ls){
-
-    ls.value =
-      currentLanguage;
-
-  }
-
-
-  if(ps){
-
-    ps.value =
-      currentLanguage;
-
-  }
-
-}
-
-
-/* =====================================================
-   WAIT FOR FIREBASE
-===================================================== */
-
-async function waitForFirebase(){
-
-  let count = 0;
-
-  while(
-    !window.firebaseReady &&
-    count < 100
-  ){
-
-    await new Promise(
-      resolve =>
-        setTimeout(resolve,100)
-    );
-
-    count++;
-
-  }
-
-  return !!window.firebaseReady;
+  document.getElementById(
+    "panelLanguage"
+  ).value =
+    currentLanguage;
 
 }
 
@@ -1981,7 +1715,8 @@ async function waitForFirebase(){
 async function loginCustomer(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   const name =
@@ -2051,24 +1786,7 @@ async function loginCustomer(){
   showCustomerPanel();
 
 
-  /* Firebase */
-
   try{
-
-    const ready =
-      await waitForFirebase();
-
-
-    if(!ready){
-
-      console.warn(
-        "Firebase अभी तैयार नहीं है"
-      );
-
-      return;
-
-    }
-
 
     const {
       doc,
@@ -2104,9 +1822,7 @@ async function loginCustomer(){
       },
 
       {
-
         merge:true
-
       }
 
     );
@@ -2120,7 +1836,7 @@ async function loginCustomer(){
   }catch(error){
 
     console.error(
-      "Firebase customer error:",
+      "Customer Firebase error:",
       error
     );
 
@@ -2157,7 +1873,7 @@ function showLoginMessage(
 
 
 /* =====================================================
-   SHOW CUSTOMER PANEL
+   SHOW CUSTOMER
 ===================================================== */
 
 function showCustomerPanel(){
@@ -2181,9 +1897,7 @@ function showCustomerPanel(){
 
 
   if(!currentCustomer){
-
     return;
-
   }
 
 
@@ -2249,7 +1963,8 @@ function checkSavedLogin(){
 function logoutCustomer(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   if(
@@ -2257,9 +1972,7 @@ function logoutCustomer(){
       t.logoutConfirm
     )
   ){
-
     return;
-
   }
 
 
@@ -2278,14 +1991,11 @@ function logoutCustomer(){
   );
 
 
-  currentCustomer =
-    null;
+  currentCustomer = null;
 
-  currentBooking =
-    null;
+  currentBooking = null;
 
-  currentDriver =
-    null;
+  currentDriver = null;
 
 
   location.reload();
@@ -2300,12 +2010,11 @@ function logoutCustomer(){
 function useMyLocation(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
-  if(
-    !navigator.geolocation
-  ){
+  if(!navigator.geolocation){
 
     alert(
       t.locationError
@@ -2318,7 +2027,7 @@ function useMyLocation(){
 
   navigator.geolocation.getCurrentPosition(
 
-    position => {
+    function(position){
 
       const lat =
         position.coords.latitude;
@@ -2354,7 +2063,7 @@ function useMyLocation(){
     },
 
 
-    error => {
+    function(error){
 
       console.log(error);
 
@@ -2397,9 +2106,7 @@ function updateFare(){
 
 
   if(!fare){
-
     return;
-
   }
 
 
@@ -2413,7 +2120,13 @@ function updateFare(){
     "fareDetails"
   ).textContent =
 
-    `Base ₹${fare.base} + ₹${fare.perKm}/KM + ₹${fare.perMinute}/Min`;
+    "Base ₹" +
+    fare.base +
+    " + ₹" +
+    fare.perKm +
+    "/KM + ₹" +
+    fare.perMinute +
+    "/Min";
 
 }
 
@@ -2425,7 +2138,8 @@ function updateFare(){
 async function bookCab(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   if(!currentCustomer){
@@ -2491,54 +2205,67 @@ async function bookCab(){
   currentBooking = {
 
     bookingId:
+
       bookingId,
 
     customerName:
+
       currentCustomer.name,
 
     customerPhone:
+
       currentCustomer.phone,
 
     pickup:
+
       pickup,
 
     drop:
+
       drop,
 
     cabType:
+
       cabType,
 
     baseFare:
+
       fare.base,
 
     perKm:
+
       fare.perKm,
 
     perMinute:
+
       fare.perMinute,
 
     estimatedFare:
+
       fare.base,
 
     status:
+
       "searching",
 
     driverId:
-      "",
 
-    driverCode:
       "",
 
     driverDocId:
+
       "",
 
     driverName:
+
       "",
 
     driverPhone:
+
       "",
 
     createdAt:
+
       new Date()
 
   };
@@ -2566,24 +2293,12 @@ async function bookCab(){
   document.getElementById(
     "bookingIdText"
   ).textContent =
+
     "Booking ID: " +
     bookingId;
 
 
   try{
-
-    const ready =
-      await waitForFirebase();
-
-
-    if(!ready){
-
-      throw new Error(
-        "Firebase not ready"
-      );
-
-    }
-
 
     const {
       doc,
@@ -2643,13 +2358,12 @@ async function bookCab(){
 async function findOnlineDriver(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   if(!currentBooking){
-
     return;
-
   }
 
 
@@ -2677,37 +2391,20 @@ async function findOnlineDriver(){
       );
 
 
-    let found =
-      null;
+    let found = null;
 
 
     snapshot.forEach(
 
-      driverDoc => {
+      function(driverDoc){
 
         if(found){
-
           return;
-
         }
 
 
         const data =
           driverDoc.data();
-
-
-        /*
-        IMPORTANT:
-
-        driverDoc.id =
-        Firestore Document ID
-
-        Example:
-        Driver 001
-
-        यह driverid field से
-        अलग हो सकता है।
-        */
 
 
         const duty =
@@ -2748,6 +2445,9 @@ async function findOnlineDriver(){
 
           found = {
 
+            documentId:
+              driverDoc.id,
+
             id:
               driverDoc.id,
 
@@ -2772,13 +2472,6 @@ async function findOnlineDriver(){
       return;
 
     }
-
-
-    console.log(
-      "Online Driver Found:",
-      found.id,
-      found
-    );
 
 
     currentDriver =
@@ -2817,56 +2510,48 @@ async function assignDriver(
 ){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   if(!currentBooking){
-
     return;
-
   }
 
 
   /*
-  =====================================================
-  IMPORTANT FIX
+   IMPORTANT:
 
-  driver.id =
-  Firestore DOCUMENT ID
+   Firestore Document ID:
+   Driver 001
 
-  Example:
+   Field:
+   driverid = driver 001
 
-  Driver 001
+   दोनों अलग हो सकते हैं।
 
-  जबकि
-
-  driver.driverid =
-  "driver 001"
-
-  दोनों अलग हो सकते हैं।
-
-  GPS listener के लिए
-  Firestore Document ID इस्तेमाल होगा।
-  =====================================================
+   GPS listener हमेशा Document ID
+   से चलेगा।
   */
 
 
-  currentBooking.driverDocId =
+  const driverDocumentId =
+    driver.documentId ||
     driver.id;
+
+
+  const driverFieldId =
+    driver.driverid ||
+    driver.driverId ||
+    driverDocumentId;
 
 
   currentBooking.driverId =
-
-    driver.driverid ||
-    driver.driverId ||
-    driver.id;
+    driverFieldId;
 
 
-  currentBooking.driverCode =
-
-    driver.driverid ||
-    driver.driverId ||
-    driver.id;
+  currentBooking.driverDocId =
+    driverDocumentId;
 
 
   currentBooking.driverName =
@@ -2908,9 +2593,6 @@ async function assignDriver(
 
         driverId:
           currentBooking.driverId,
-
-        driverCode:
-          currentBooking.driverCode,
 
         driverDocId:
           currentBooking.driverDocId,
@@ -2957,22 +2639,13 @@ async function assignDriver(
 
 
   /*
-  =====================================================
-  REALTIME GPS LISTENER
-
-  यहाँ driver.id भेज रहे हैं।
-
-  driver.id =
-  Firestore Document ID
-
-  Example:
-  Driver 001
-  =====================================================
+   सबसे महत्वपूर्ण FIX:
+   यहाँ driver.driverid नहीं,
+   Firestore Document ID भेजना है।
   */
 
-
   startDriverListener(
-    driver.id
+    driverDocumentId
   );
 
 }
@@ -3017,6 +2690,7 @@ function showDriver(
 
     driver.driverid ||
     driver.driverId ||
+    driver.documentId ||
     driver.id ||
     "-";
 
@@ -3044,17 +2718,11 @@ function showDriver(
 ===================================================== */
 
 function startDriverListener(
-  driverDocId
+  driverDocumentId
 ){
 
-  if(!driverDocId){
-
-    console.error(
-      "Driver Document ID missing"
-    );
-
+  if(!driverDocumentId){
     return;
-
   }
 
 
@@ -3081,29 +2749,6 @@ function startDriverListener(
     }
 
 
-    console.log(
-      "Starting Driver GPS Listener:",
-      driverDocId
-    );
-
-
-    /*
-    IMPORTANT:
-
-    यहाँ Firestore Document ID
-    इस्तेमाल हो रहा है।
-
-    Example:
-
-    drivers
-      └── Driver 001
-
-    इसलिए:
-
-    doc(db,"drivers","Driver 001")
-    */
-
-
     driverListener =
 
       onSnapshot(
@@ -3111,18 +2756,18 @@ function startDriverListener(
         doc(
           db,
           "drivers",
-          driverDocId
+          driverDocumentId
         ),
 
-        snapshot => {
+
+        function(snapshot){
 
           if(
             !snapshot.exists()
           ){
 
-            console.warn(
-              "Driver document not found:",
-              driverDocId
+            console.log(
+              "Driver document not found"
             );
 
             return;
@@ -3137,17 +2782,14 @@ function startDriverListener(
           currentDriver = {
 
             id:
-              snapshot.id,
+              driverDocumentId,
+
+            documentId:
+              driverDocumentId,
 
             ...data
 
           };
-
-
-          console.log(
-            "Driver realtime update:",
-            currentDriver
-          );
 
 
           showDriver(
@@ -3156,13 +2798,13 @@ function startDriverListener(
 
 
           updateDriverGPS(
-            currentDriver
+            data
           );
 
         },
 
 
-        error => {
+        function(error){
 
           console.error(
             "Driver listener error:",
@@ -3186,7 +2828,7 @@ function startDriverListener(
 
 
 /* =====================================================
-   UPDATE DRIVER GPS
+   DRIVER GPS
 ===================================================== */
 
 function updateDriverGPS(
@@ -3205,17 +2847,6 @@ function updateDriverGPS(
     );
 
 
-  const gpsElement =
-    document.getElementById(
-      "gpsStatus"
-    );
-
-
-  /*
-  GPS coordinates
-  */
-
-
   if(
 
     Number.isFinite(lat) &&
@@ -3232,42 +2863,21 @@ function updateDriverGPS(
       lng.toFixed(6);
 
 
-    const gpsStatus =
+    document.getElementById(
+      "gpsStatus"
+    ).textContent =
+
       driver.gpsstatus ||
       driver.gpsStatus ||
       "Online";
-
-
-    gpsElement.textContent =
-      gpsStatus;
-
-
-    gpsElement.className =
-      "gps-online";
 
 
     document.getElementById(
       "lastUpdate"
     ).textContent =
 
-      new Date().toLocaleTimeString();
-
-  }else{
-
-    document.getElementById(
-      "driverCoordinates"
-    ).textContent =
-      "GPS location waiting...";
-
-
-    gpsElement.textContent =
-      driver.gpsstatus ||
-      driver.gpsStatus ||
-      "Waiting";
-
-
-    gpsElement.className =
-      "gps-offline";
+      new Date()
+        .toLocaleTimeString();
 
   }
 
@@ -3310,9 +2920,7 @@ function callDriver(){
 async function startTrip(){
 
   if(!currentBooking){
-
     return;
-
   }
 
 
@@ -3385,9 +2993,7 @@ async function startTrip(){
 async function completeTrip(){
 
   if(!currentBooking){
-
     return;
-
   }
 
 
@@ -3425,10 +3031,11 @@ async function completeTrip(){
 
 
   /*
-  अभी actual map distance
-  नहीं है इसलिए 0 KM।
-  */
+    अभी actual map distance
+    connect नहीं है।
 
+    इसलिए distance 0 KM है।
+  */
 
   const distance =
     0;
@@ -3562,9 +3169,7 @@ async function completeTrip(){
 function generateInvoice(){
 
   if(!currentBooking){
-
     return;
-
   }
 
 
@@ -3629,7 +3234,8 @@ function generateInvoice(){
 async function cancelBooking(){
 
   const t =
-    LANG[currentLanguage];
+    LANG[currentLanguage] ||
+    LANG.en;
 
 
   if(
@@ -3637,9 +3243,7 @@ async function cancelBooking(){
       t.confirmCancel
     )
   ){
-
     return;
-
   }
 
 
@@ -3648,9 +3252,7 @@ async function cancelBooking(){
 
 
   if(!currentBooking){
-
     return;
-
   }
 
 
@@ -3781,11 +3383,6 @@ async function submitRating(){
       window.firebaseDB;
 
 
-    /*
-    Booking में rating save
-    */
-
-
     await updateDoc(
 
       doc(
@@ -3817,12 +3414,17 @@ async function submitRating(){
 
 
     /*
-    Driver document में
-    lastRating save
+      Driver document में
+      lastRating save होगा।
     */
 
 
-    if(currentDriver.id){
+    const driverDocumentId =
+      currentDriver.documentId ||
+      currentDriver.id;
+
+
+    if(driverDocumentId){
 
       try{
 
@@ -3831,7 +3433,7 @@ async function submitRating(){
           doc(
             db,
             "drivers",
-            currentDriver.id
+            driverDocumentId
           ),
 
           {
@@ -3893,9 +3495,7 @@ function loadSavedLocation(){
 
 
     if(!savedLocation){
-
       return;
-
     }
 
 
@@ -3923,9 +3523,17 @@ function loadSavedLocation(){
         "pickup"
       ).value =
 
-        Number(loc.lat).toFixed(6) +
+        Number(
+          loc.lat
+        ).toFixed(6)
+
+        +
+
         ", " +
-        Number(loc.lng).toFixed(6);
+
+        Number(
+          loc.lng
+        ).toFixed(6);
 
     }
 
@@ -3949,7 +3557,7 @@ document.addEventListener(
 
   "DOMContentLoaded",
 
-  () => {
+  function(){
 
     applyLanguage();
 

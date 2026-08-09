@@ -1,242 +1,155 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SafetyCab Customer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SafetyCab Customer App</title>
 
 <style>
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
+    box-sizing:border-box;
 }
 
 body{
-  background:#f1f5f9;
-  color:#172033;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f2f5f9;
+    color:#222;
 }
 
 .header{
-  background:#111827;
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:23px;
-  font-weight:bold;
+    background:#1976d2;
+    color:white;
+    padding:20px;
+    text-align:center;
+    border-radius:0 0 20px 20px;
+}
+
+.header h1{
+    margin:0;
+    font-size:27px;
 }
 
 .container{
-  max-width:520px;
-  margin:auto;
-  padding:15px;
+    width:100%;
+    max-width:600px;
+    margin:auto;
+    padding:15px;
 }
 
 .card{
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 3px 14px rgba(0,0,0,.08);
+    background:white;
+    padding:18px;
+    margin-bottom:15px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
 }
 
-.title{
-  font-size:19px;
-  font-weight:bold;
-  margin-bottom:14px;
+.card h2{
+    margin-top:0;
 }
 
-input,select{
-  width:100%;
-  padding:14px;
-  margin:7px 0;
-  border:1px solid #d1d5db;
-  border-radius:11px;
-  font-size:15px;
+input,
+select{
+    width:100%;
+    padding:13px;
+    margin:7px 0;
+    border:1px solid #ccc;
+    border-radius:9px;
+    font-size:16px;
 }
 
 button{
-  width:100%;
-  padding:14px;
-  margin-top:9px;
-  border:0;
-  border-radius:11px;
-  background:#16a34a;
-  color:#fff;
-  font-size:16px;
-  font-weight:bold;
+    width:100%;
+    padding:14px;
+    margin-top:9px;
+    border:0;
+    border-radius:9px;
+    background:#1976d2;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
 }
 
-.blue{background:#2563eb}
-.red{background:#dc2626}
-.dark{background:#111827}
-.orange{background:#f59e0b}
-.gray{background:#475569}
-.hidden{display:none!important}
+.green{
+    background:#168a3a;
+}
 
-.welcome{
-  background:#111827;
-  color:#fff;
+.red{
+    background:#d32f2f;
+}
+
+.gray{
+    background:#555;
+}
+
+.orange{
+    background:#d66a00;
 }
 
 .info{
-  background:#f8fafc;
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
+    background:#eef5ff;
+    padding:13px;
+    border-radius:10px;
+    margin-top:10px;
 }
 
-.map{
-  height:300px;
-  border-radius:14px;
-  background:
-  linear-gradient(45deg,#e2e8f0 25%,transparent 25%),
-  linear-gradient(-45deg,#e2e8f0 25%,transparent 25%),
-  #f8fafc;
-  background-size:50px 50px;
-  position:relative;
-  overflow:hidden;
-  border:1px solid #cbd5e1;
+.status{
+    padding:13px;
+    background:#fff7d6;
+    border-radius:10px;
+    margin-top:10px;
+    font-weight:bold;
 }
 
-.road{
-  position:absolute;
-  width:130%;
-  height:48px;
-  background:#cbd5e1;
-  top:105px;
-  left:-30px;
-  transform:rotate(-12deg);
+.price{
+    color:#1976d2;
+    font-size:26px;
+    font-weight:bold;
+    margin-top:8px;
 }
 
-.car{
-  position:absolute;
-  top:105px;
-  left:55%;
-  font-size:36px;
-  transition:.8s;
-}
-
-.pin{
-  position:absolute;
-  bottom:35px;
-  left:20%;
-  font-size:33px;
-}
-
-.statusBox{
-  padding:13px;
-  border-radius:10px;
-  text-align:center;
-  font-weight:bold;
-}
-
-.online{
-  background:#ecfdf5;
-  color:#166534;
-}
-
-.waiting{
-  background:#fffbeb;
-  color:#92400e;
-}
-
-.cancelled{
-  background:#fef2f2;
-  color:#991b1b;
-}
-
-.fareBox{
-  background:#f0fdf4;
-  border:1px solid #bbf7d0;
-  border-radius:14px;
-  padding:15px;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #dcfce7;
-}
-
-.total{
-  font-size:22px;
-  font-weight:bold;
-  color:#15803d;
-  padding-top:12px;
-}
-
-.driver{
-  display:flex;
-  align-items:center;
-  gap:13px;
-}
-
-.driverIcon{
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  background:#e5e7eb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
-}
-
-.rating{
-  color:#f59e0b;
-  font-size:20px;
-}
-
-.invoice{
-  border:2px solid #111827;
-  border-radius:12px;
-  padding:18px;
-}
-
-.invoiceHeader{
-  text-align:center;
-  border-bottom:2px solid #111827;
-  padding-bottom:12px;
-  margin-bottom:12px;
-}
-
-.invoiceRow{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #eee;
-}
-
-.invoiceTotal{
-  display:flex;
-  justify-content:space-between;
-  font-size:22px;
-  font-weight:bold;
-  padding-top:15px;
+.hidden{
+    display:none !important;
 }
 
 .small{
-  color:#64748b;
-  font-size:12px;
+    color:#666;
+    font-size:13px;
 }
 
-.bottom{
-  text-align:center;
-  color:#64748b;
-  font-size:12px;
-  padding:20px;
+.map{
+    height:220px;
+    background:#e6e6e6;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
 }
 
-@media print{
-  .noPrint,
-  .header,
-  button{
-    display:none!important;
-  }
+.driverBox{
+    background:#f5faff;
+    border-left:5px solid #1976d2;
+    padding:13px;
+    border-radius:10px;
+}
+
+.successText{
+    color:#168a3a;
+    font-weight:bold;
+}
+
+.errorText{
+    color:#d32f2f;
+    font-weight:bold;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#777;
 }
 </style>
 </head>
@@ -244,986 +157,1746 @@ button{
 <body>
 
 <div class="header">
-  🚕 SafetyCab Customer
+
+    <h1>🚕 SafetyCab</h1>
+
+    <div>
+        Customer App
+    </div>
+
 </div>
+
 
 <div class="container">
 
-<!-- LOGIN -->
-<div id="loginPage" class="card">
 
-  <div class="title">Customer Login</div>
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-  <input id="customerName"
-         type="text"
-         placeholder="Customer Name">
+<div id="loginCard" class="card">
 
-  <input id="customerPhone"
-         type="tel"
-         maxlength="10"
-         placeholder="Mobile Number">
+    <h2>👤 Customer Login</h2>
 
-  <button onclick="loginCustomer()">
-    🚕 Continue
-  </button>
+    <input
+        id="customerName"
+        type="text"
+        placeholder="अपना नाम डालें"
+    >
 
-  <p class="small" style="text-align:center;margin-top:10px">
-    OTP अभी नहीं है
-  </p>
+    <input
+        id="customerPhone"
+        type="tel"
+        inputmode="numeric"
+        maxlength="10"
+        placeholder="10 अंकों का मोबाइल नंबर"
+    >
+
+    <button onclick="loginCustomer()">
+        Continue
+    </button>
+
+    <p class="small">
+        नाम और मोबाइल नंबर डालकर Login करें।
+    </p>
 
 </div>
 
 
-<!-- CUSTOMER PANEL -->
+
+<!-- =====================================================
+     CUSTOMER PANEL
+===================================================== -->
+
 <div id="customerPanel" class="hidden">
 
-<div class="card welcome">
 
-  <div class="title">
-    Hello, <span id="showName">Customer</span> 👋
-  </div>
+<!-- WELCOME -->
 
-  📱 <span id="showPhone"></span>
+<div class="card">
+
+    <h2>👋 Welcome</h2>
+
+    <div class="info">
+
+        <b>नाम:</b>
+        <span id="welcomeName"></span>
+
+        <br><br>
+
+        <b>फोन नंबर:</b>
+        <span id="welcomePhone"></span>
+
+    </div>
 
 </div>
+
 
 
 <!-- BOOKING -->
+
 <div class="card">
 
-  <div class="title">🚕 Book Your Cab</div>
+    <h2>🚕 Book Your Ride</h2>
 
-  <input id="pickup"
-         type="text"
-         placeholder="📍 Pickup Location">
+    <input
+        id="pickup"
+        type="text"
+        placeholder="📍 Pickup Location"
+    >
 
-  <input id="drop"
-         type="text"
-         placeholder="🏁 Drop Location">
+    <button
+        class="gray"
+        onclick="useMyLocation()">
 
-  <select id="cabType">
-    <option value="Mini">🚕 Mini</option>
-    <option value="Sedan">🚘 Sedan</option>
-    <option value="SUV">🚙 SUV</option>
-  </select>
+        📍 मेरी Current Location
 
-  <button class="blue"
-          onclick="useMyLocation()">
-    📍 Use My Current Location
-  </button>
+    </button>
 
-  <button onclick="bookCab()">
-    🚕 Book Now
-  </button>
+    <input
+        id="drop"
+        type="text"
+        placeholder="🏁 Drop Location"
+    >
+
+
+    <select
+        id="cabType"
+        onchange="updateFare()">
+
+        <option value="Mini">
+            Mini
+        </option>
+
+        <option value="Sedan">
+            Sedan
+        </option>
+
+        <option value="SUV">
+            SUV
+        </option>
+
+    </select>
+
+
+    <div class="info">
+
+        <b>Estimated Fare</b>
+
+        <div
+            id="fareAmount"
+            class="price">
+
+            ₹80
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="green"
+        onclick="bookCab()">
+
+        🚕 BOOK NOW
+
+    </button>
 
 </div>
 
 
-<!-- MAP -->
-<div id="mapCard" class="card">
 
-  <div class="title">🗺️ Live Trip Tracking</div>
+<!-- =====================================================
+     DRIVER MAP
+===================================================== -->
 
-  <div class="map">
-
-    <div class="road"></div>
-
-    <div id="carIcon" class="car">
-      🚕
-    </div>
-
-    <div class="pin">
-      📍
-    </div>
-
-  </div>
-
-  <div class="info">
-
-    <b>Driver GPS:</b>
-    <span id="gpsStatus">Waiting</span>
-
-    <br><br>
-
-    <b>Last Update:</b>
-    <span id="lastUpdate">--</span>
-
-  </div>
-
-</div>
-
-
-<!-- FARE -->
 <div class="card">
 
-  <div class="title">💰 Fare Details</div>
+    <h2>🗺️ Driver Location</h2>
 
-  <div class="fareBox">
+    <div class="map">
 
-    <div class="row">
-      <span>Cab</span>
-      <b id="fareCab">Mini</b>
+        🚕 Driver GPS
+
     </div>
 
-    <div class="row">
-      <span>Base Fare</span>
-      <b>₹<span id="baseFare">80</span></b>
-    </div>
+    <div class="status">
 
-    <div class="row">
-      <span>Per KM</span>
-      <b>₹<span id="perKmFare">16</span></b>
-    </div>
+        GPS Status:
+        <span id="driverGpsStatus">
+            Waiting
+        </span>
 
-    <div class="row">
-      <span>Per Minute</span>
-      <b>₹<span id="perMinuteFare">1</span></b>
-    </div>
+        <br><br>
 
-    <div class="row">
-      <span>Distance</span>
-      <b><span id="distance">0</span> KM</b>
-    </div>
+        Last Update:
+        <span id="lastUpdate">
+            -
+        </span>
 
-    <div class="row">
-      <span>Time</span>
-      <b><span id="tripMinutes">0</span> Min</b>
     </div>
-
-    <div class="row total">
-      <span>Estimated Total</span>
-      <span>₹<span id="estimatedTotal">80</span></span>
-    </div>
-
-  </div>
 
 </div>
 
 
-<!-- BOOKING STATUS -->
-<div id="bookingStatus" class="card hidden">
 
-  <div class="title">📋 Booking Status</div>
+<!-- =====================================================
+     BOOKING STATUS
+===================================================== -->
 
-  <div id="statusText"
-       class="statusBox waiting">
-    🟡 Driver खोजा जा रहा है...
-  </div>
+<div
+    id="bookingStatusCard"
+    class="card hidden">
 
-  <button onclick="showDriver()">
-    👨‍✈️ Check Driver
-  </button>
+    <h2>📋 Booking Status</h2>
 
-  <button id="cancelButton"
-          class="red"
-          onclick="cancelBooking()">
-    ❌ Cancel Booking
-  </button>
+    <div
+        id="bookingStatus"
+        class="status">
+
+        🟡 Driver खोजा जा रहा है...
+
+    </div>
+
+
+    <button
+        id="cancelButton"
+        class="red"
+        onclick="cancelBooking()">
+
+        ❌ Cancel Booking
+
+    </button>
 
 </div>
 
 
-<!-- DRIVER -->
-<div id="driverCard" class="card hidden">
 
-  <div class="title">👨‍✈️ Driver Details</div>
+<!-- =====================================================
+     DRIVER DETAILS
+===================================================== -->
 
-  <div class="driver">
+<div
+    id="driverCard"
+    class="card hidden">
 
-    <div class="driverIcon">👨‍✈️</div>
+    <h2>👨‍✈️ Driver Details</h2>
 
-    <div>
-      <b id="driverName">Mohd reyan</b><br>
 
-      <span style="color:#16a34a;font-weight:bold">
-        🟢 Online
-      </span>
+    <div class="driverBox">
 
-      <br>
+        <b>Driver ID:</b>
 
-      <span class="rating">★★★★★</span>
-      4.8
+        <span id="driverId">
+            -
+        </span>
+
+        <br><br>
+
+
+        <b>Driver Name:</b>
+
+        <span id="driverName">
+            -
+        </span>
+
+        <br><br>
+
+
+        <b>Phone Number:</b>
+
+        <span id="driverPhone">
+            -
+        </span>
+
+        <br><br>
+
+
+        <b>Vehicle Number:</b>
+
+        <span id="driverVehicle">
+            -
+        </span>
+
+        <br><br>
+
+
+        <b>Duty:</b>
+
+        <span id="driverDuty">
+            -
+        </span>
+
+        <br><br>
+
+
+        <b>GPS:</b>
+
+        <span id="driverGPS">
+            -
+        </span>
+
     </div>
 
-  </div>
 
-  <br>
+    <button
+        class="green"
+        onclick="callDriver()">
 
-  <p>
-    🚕 Vehicle:
-    <span id="driverVehicle">TS08UE0850</span>
-  </p>
+        📞 Call Driver
 
-  <p>
-    📱 Phone:
-    <span id="driverPhone">9398179229</span>
-  </p>
+    </button>
 
-  <button onclick="callDriver()">
-    📞 Call Driver
-  </button>
 
-  <button class="dark"
-          onclick="startTrip()">
-    ▶️ Start Trip
-  </button>
+    <button
+        onclick="startTrip()">
+
+        ▶️ Start Trip
+
+    </button>
 
 </div>
 
 
-<!-- TRIP -->
-<div id="tripCard" class="card hidden">
 
-  <div class="title">🛣️ Trip Status</div>
+<!-- =====================================================
+     TRIP
+===================================================== -->
 
-  <div id="tripStatus"
-       class="statusBox online">
-    🟢 Trip Started
-  </div>
+<div
+    id="tripCard"
+    class="card hidden">
 
-  <button class="orange"
-          onclick="completeTrip()">
-    ✅ Complete Trip
-  </button>
+    <h2>🚗 Trip</h2>
+
+    <div class="status">
+
+        🟢 Trip Started
+
+    </div>
+
+
+    <button
+        class="green"
+        onclick="completeTrip()">
+
+        ✅ Complete Trip
+
+    </button>
 
 </div>
 
 
-<!-- BILL -->
-<div id="billCard" class="card hidden">
 
-  <div class="title">💰 Final Bill</div>
+<!-- =====================================================
+     BILL
+===================================================== -->
 
-  <div class="fareBox">
+<div
+    id="billCard"
+    class="card hidden">
 
-    <div class="row">
-      <span>Cab</span>
-      <b id="billCab"></b>
+    <h2>💰 Final Bill</h2>
+
+
+    <div class="info">
+
+        <b>Final Fare:</b>
+
+        ₹<span id="finalFare">
+            0
+        </span>
+
     </div>
 
-    <div class="row">
-      <span>Distance</span>
-      <b><span id="billDistance"></span> KM</b>
-    </div>
 
-    <div class="row">
-      <span>Time</span>
-      <b><span id="billMinutes"></span> Min</b>
-    </div>
+    <button
+        onclick="generateInvoice()">
 
-    <div class="row">
-      <span>Base Fare</span>
-      <b>₹<span id="billBase"></span></b>
-    </div>
+        🧾 Generate Invoice
 
-    <div class="row">
-      <span>Distance Charge</span>
-      <b>₹<span id="billDistanceCharge"></span></b>
-    </div>
-
-    <div class="row">
-      <span>Time Charge</span>
-      <b>₹<span id="billTimeCharge"></span></b>
-    </div>
-
-    <div class="row total">
-      <span>Grand Total</span>
-      <span>₹<span id="billTotal"></span></span>
-    </div>
-
-  </div>
-
-  <button onclick="generateInvoice()">
-    🧾 Generate Invoice
-  </button>
+    </button>
 
 </div>
 
 
-<!-- INVOICE -->
-<div id="invoiceCard" class="card hidden">
 
-  <div class="invoice">
+<!-- =====================================================
+     INVOICE
+===================================================== -->
 
-    <div class="invoiceHeader">
-      <h2>🚕 SafetyCab</h2>
-      <p>Customer Invoice</p>
+<div
+    id="invoiceCard"
+    class="card hidden">
 
-      <p>
-        Invoice No:
-        <b id="invoiceNumber"></b>
-      </p>
+    <h2>🧾 Invoice</h2>
+
+
+    <div
+        id="invoiceDetails"
+        class="info">
+
     </div>
 
-    <div class="invoiceRow">
-      <span>Date</span>
-      <b id="invoiceDate"></b>
-    </div>
 
-    <div class="invoiceRow">
-      <span>Customer</span>
-      <b id="invoiceCustomer"></b>
-    </div>
+    <button
+        onclick="window.print()">
 
-    <div class="invoiceRow">
-      <span>Mobile</span>
-      <b id="invoiceMobile"></b>
-    </div>
+        🖨️ Save / Print Invoice
 
-    <div class="invoiceRow">
-      <span>Pickup</span>
-      <b id="invoicePickup"></b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Drop</span>
-      <b id="invoiceDrop"></b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Cab</span>
-      <b id="invoiceCab"></b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Distance</span>
-      <b><span id="invoiceDistance"></span> KM</b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Time</span>
-      <b><span id="invoiceMinutes"></span> Min</b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Base Fare</span>
-      <b>₹<span id="invoiceBase"></span></b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Distance Charge</span>
-      <b>₹<span id="invoiceDistanceCharge"></span></b>
-    </div>
-
-    <div class="invoiceRow">
-      <span>Time Charge</span>
-      <b>₹<span id="invoiceTimeCharge"></span></b>
-    </div>
-
-    <div class="invoiceTotal">
-      <span>Grand Total</span>
-      <span>₹<span id="invoiceTotal"></span></span>
-    </div>
-
-  </div>
-
-  <button class="blue noPrint"
-          onclick="window.print()">
-    📄 Save / Print Invoice
-  </button>
+    </button>
 
 </div>
 
 
-<!-- RATING -->
-<div id="ratingCard" class="card hidden">
 
-  <div class="title">⭐ Rate Your Driver</div>
+<!-- =====================================================
+     RATING
+===================================================== -->
 
-  <select id="rating">
-    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-    <option value="4">⭐⭐⭐⭐ Good</option>
-    <option value="3">⭐⭐⭐ Average</option>
-    <option value="2">⭐⭐ Poor</option>
-    <option value="1">⭐ Very Poor</option>
-  </select>
+<div
+    id="ratingCard"
+    class="card hidden">
 
-  <button onclick="submitRating()">
-    ⭐ Submit Rating
-  </button>
+    <h2>⭐ Driver Rating</h2>
+
+
+    <select id="rating">
+
+        <option value="5">
+            ⭐⭐⭐⭐⭐ 5
+        </option>
+
+        <option value="4">
+            ⭐⭐⭐⭐ 4
+        </option>
+
+        <option value="3">
+            ⭐⭐⭐ 3
+        </option>
+
+        <option value="2">
+            ⭐⭐ 2
+        </option>
+
+        <option value="1">
+            ⭐ 1
+        </option>
+
+    </select>
+
+
+    <button
+        onclick="submitRating()">
+
+        Submit Rating
+
+    </button>
 
 </div>
 
 
-<!-- LOGOUT -->
-<div class="card noPrint">
 
-  <button class="red"
-          onclick="logout()">
-    🚪 Logout
-  </button>
+<!-- =====================================================
+     LOGOUT
+===================================================== -->
 
-</div>
+<div class="card">
 
-</div>
+    <button
+        class="red"
+        onclick="logoutCustomer()">
 
-<div class="bottom">
-  SafetyCab Customer App<br>
-  © 2026 SafetyCab
-</div>
+        🚪 Logout
+
+    </button>
 
 </div>
 
 
-<script>
+</div>
 
-const fares = {
 
-  Mini:{
-    base:80,
-    perKm:16,
-    perMinute:1
-  },
+<footer>
 
-  Sedan:{
-    base:100,
-    perKm:21,
-    perMinute:1
-  },
+    SafetyCab Customer App © 2026
 
-  SUV:{
-    base:150,
-    perKm:26,
-    perMinute:1.50
-  }
+</footer>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where,
+    updateDoc,
+    doc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =====================================================
+   YOUR FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyCpKzlC8zDRXObOaqD3a5eyGtknGePl9Rc",
+
+    authDomain:
+    "safety-cab.firebaseapp.com",
+
+    projectId:
+    "safety-cab",
+
+    storageBucket:
+    "safety-cab.firebasestorage.app",
+
+    messagingSenderId:
+    "288347736605",
+
+    appId:
+    "1:288347736605:web:fb36e7a42e7bd58a3f14f4"
 
 };
 
-const APP_VERSION="2026.08.08.02";
 
-localStorage.setItem(
-  "SafetyCab_App_Version",
-  APP_VERSION
+/* =====================================================
+   INITIALIZE FIREBASE
+===================================================== */
+
+const app =
+initializeApp(firebaseConfig);
+
+
+const db =
+getFirestore(app);
+
+
+/* दूसरे JavaScript के लिए उपलब्ध करें */
+
+window.safetyCabDB = db;
+
+window.safetyCabCollection =
+collection;
+
+window.safetyCabAddDoc =
+addDoc;
+
+window.safetyCabGetDocs =
+getDocs;
+
+window.safetyCabQuery =
+query;
+
+window.safetyCabWhere =
+where;
+
+window.safetyCabUpdateDoc =
+updateDoc;
+
+window.safetyCabDoc =
+doc;
+
+window.safetyCabServerTimestamp =
+serverTimestamp;
+
+
+console.log(
+    "🔥 SafetyCab Firebase Connected"
 );
 
 
-/* LOGIN */
+/* Firebase तैयार होने के बाद */
+
+window.firebaseReady = true;
+
+
+/* अगर Customer पहले से Login है */
+
+if(
+    typeof restoreCustomerLogin ===
+    "function"
+){
+
+    restoreCustomerLogin();
+
+}
+
+</script>
+
+
+
+<!-- =====================================================
+     CUSTOMER JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   FARES
+===================================================== */
+
+const fares = {
+
+    Mini: {
+        base:80,
+        perKm:16,
+        perMinute:1
+    },
+
+    Sedan: {
+        base:100,
+        perKm:21,
+        perMinute:1
+    },
+
+    SUV: {
+        base:150,
+        perKm:26,
+        perMinute:1.5
+    }
+
+};
+
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
 
 function loginCustomer(){
 
-  const name =
-    document.getElementById("customerName")
-    .value.trim();
-
-  const phone =
-    document.getElementById("customerPhone")
-    .value.trim();
-
-  if(!name){
-    alert("Customer Name डालें");
-    return;
-  }
-
-  if(phone.length !== 10){
-    alert("सही 10 digit Mobile Number डालें");
-    return;
-  }
-
-  document.getElementById("showName")
-    .innerText = name;
-
-  document.getElementById("showPhone")
-    .innerText = phone;
-
-  document.getElementById("loginPage")
-    .classList.add("hidden");
-
-  document.getElementById("customerPanel")
-    .classList.remove("hidden");
-
-  updateFare();
-}
+    const name =
+    document
+    .getElementById("customerName")
+    .value
+    .trim();
 
 
-/* CUSTOMER GPS */
+    const phone =
+    document
+    .getElementById("customerPhone")
+    .value
+    .trim();
 
-function useMyLocation(){
 
-  if(!navigator.geolocation){
-    alert("GPS उपलब्ध नहीं है");
-    return;
-  }
+    if(name === ""){
 
-  navigator.geolocation.getCurrentPosition(
+        alert(
+            "कृपया अपना नाम डालें"
+        );
 
-    function(position){
+        return;
 
-      const lat =
-        position.coords.latitude.toFixed(6);
-
-      const lng =
-        position.coords.longitude.toFixed(6);
-
-      document.getElementById("pickup")
-        .value = lat + ", " + lng;
-
-    },
-
-    function(){
-      alert("GPS permission Allow करें");
-    },
-
-    {
-      enableHighAccuracy:true,
-      timeout:15000
     }
 
-  );
+
+    if(
+        !/^[0-9]{10}$/.test(phone)
+    ){
+
+        alert(
+            "कृपया 10 अंकों का मोबाइल नंबर डालें"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Login को फोन में Save करें
+       Refresh के बाद भी रहेगा
+    */
+
+    localStorage.setItem(
+        "SafetyCab_Customer_Login",
+        "true"
+    );
+
+
+    localStorage.setItem(
+        "SafetyCab_Customer_Name",
+        name
+    );
+
+
+    localStorage.setItem(
+        "SafetyCab_Customer_Phone",
+        phone
+    );
+
+
+    showCustomerPanel(
+        name,
+        phone
+    );
+
+
+    console.log(
+        "Customer Login Saved"
+    );
 
 }
 
 
-/* FARE */
 
-document.getElementById("cabType")
-.addEventListener(
-  "change",
-  updateFare
-);
+/* =====================================================
+   SHOW CUSTOMER PANEL
+===================================================== */
+
+function showCustomerPanel(
+    name,
+    phone
+){
+
+    document
+    .getElementById("loginCard")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("customerPanel")
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById("welcomeName")
+    .textContent =
+    name;
+
+
+    document
+    .getElementById("welcomePhone")
+    .textContent =
+    phone;
+
+
+    updateFare();
+
+}
+
+
+
+/* =====================================================
+   RESTORE LOGIN
+===================================================== */
+
+function restoreCustomerLogin(){
+
+    const login =
+    localStorage.getItem(
+        "SafetyCab_Customer_Login"
+    );
+
+
+    const name =
+    localStorage.getItem(
+        "SafetyCab_Customer_Name"
+    );
+
+
+    const phone =
+    localStorage.getItem(
+        "SafetyCab_Customer_Phone"
+    );
+
+
+    if(
+        login === "true" &&
+        name &&
+        phone
+    ){
+
+        showCustomerPanel(
+            name,
+            phone
+        );
+
+
+        console.log(
+            "✅ Login Refresh के बाद Restore हुआ"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logoutCustomer(){
+
+    const ok =
+    confirm(
+        "क्या आप Logout करना चाहते हैं?"
+    );
+
+
+    if(!ok){
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        "SafetyCab_Customer_Login"
+    );
+
+
+    localStorage.removeItem(
+        "SafetyCab_Customer_Name"
+    );
+
+
+    localStorage.removeItem(
+        "SafetyCab_Customer_Phone"
+    );
+
+
+    document
+    .getElementById("customerPanel")
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById("loginCard")
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById("customerName")
+    .value =
+    "";
+
+
+    document
+    .getElementById("customerPhone")
+    .value =
+    "";
+
+
+    alert(
+        "✅ Logout हो गया"
+    );
+
+}
+
+
+
+/* =====================================================
+   FARE UPDATE
+===================================================== */
 
 function updateFare(){
 
-  const cab =
-    document.getElementById("cabType")
+    const cabType =
+    document
+    .getElementById("cabType")
     .value;
 
-  const fare = fares[cab];
 
-  document.getElementById("fareCab")
-    .innerText = cab;
+    const fare =
+    fares[cabType];
 
-  document.getElementById("baseFare")
-    .innerText = fare.base;
 
-  document.getElementById("perKmFare")
-    .innerText = fare.perKm;
+    document
+    .getElementById("fareAmount")
+    .textContent =
+    "₹" + fare.base;
 
-  document.getElementById("perMinuteFare")
-    .innerText = fare.perMinute;
-
-  calculateFare();
 }
 
 
-function calculateFare(){
 
-  const cab =
-    document.getElementById("cabType")
-    .value;
+/* =====================================================
+   CURRENT LOCATION
+===================================================== */
 
-  const fare = fares[cab];
+function useMyLocation(){
 
-  const distance =
-    Number(
-      document.getElementById("distance")
-      .innerText
-    ) || 0;
+    if(
+        !navigator.geolocation
+    ){
 
-  const minutes =
-    Number(
-      document.getElementById("tripMinutes")
-      .innerText
-    ) || 0;
+        alert(
+            "इस फोन में GPS उपलब्ध नहीं है"
+        );
 
-  const total =
-    fare.base +
-    distance * fare.perKm +
-    minutes * fare.perMinute;
+        return;
 
-  document.getElementById("estimatedTotal")
-    .innerText = Math.round(total);
-}
-
-
-/* BOOKING */
-
-let bookingCancelled = false;
-
-function bookCab(){
-
-  const pickup =
-    document.getElementById("pickup")
-    .value.trim();
-
-  const drop =
-    document.getElementById("drop")
-    .value.trim();
-
-  if(!pickup || !drop){
-
-    alert(
-      "Pickup और Drop Location डालें"
-    );
-
-    return;
-  }
-
-  bookingCancelled = false;
-
-  document.getElementById("bookingStatus")
-    .classList.remove("hidden");
-
-  document.getElementById("statusText")
-    .className = "statusBox waiting";
-
-  document.getElementById("statusText")
-    .innerText =
-      "🟡 Driver खोजा जा रहा है...";
-
-  document.getElementById("cancelButton")
-    .classList.remove("hidden");
-
-  setTimeout(function(){
-
-    if(!bookingCancelled){
-
-      document.getElementById("statusText")
-        .className = "statusBox online";
-
-      document.getElementById("statusText")
-        .innerText =
-          "🟢 Driver मिल गया!";
     }
 
-  },2000);
 
-}
+    navigator
+    .geolocation
+    .getCurrentPosition(
 
+        function(position){
 
-/* CANCEL */
-
-function cancelBooking(){
-
-  if(!confirm(
-    "क्या आप Booking Cancel करना चाहते हैं?"
-  )){
-    return;
-  }
-
-  bookingCancelled = true;
-
-  document.getElementById("statusText")
-    .className = "statusBox cancelled";
-
-  document.getElementById("statusText")
-    .innerText =
-      "🔴 Booking Cancelled";
-
-  document.getElementById("cancelButton")
-    .classList.add("hidden");
-
-  document.getElementById("driverCard")
-    .classList.add("hidden");
-
-  document.getElementById("tripCard")
-    .classList.add("hidden");
-
-  alert(
-    "आपकी Booking Cancel हो गई है।"
-  );
-}
+            const lat =
+            position.coords.latitude;
 
 
-/* DRIVER DETAILS */
-
-function setDriverDetails(){
-
-  /*
-    अभी टेस्ट Driver
-  */
-
-  const driver = {
-    name:"Mohd reyan",
-    id:"SC-001",
-    vehicle:"TS08UE0850",
-    phone:"9398179229",
-    rating:"4.8"
-  };
-
-  document.getElementById("driverName")
-    .innerText = driver.name;
-
-  document.getElementById("driverVehicle")
-    .innerText = driver.vehicle;
-
-  document.getElementById("driverPhone")
-    .innerText = driver.phone;
-}
+            const lng =
+            position.coords.longitude;
 
 
-/* SHOW DRIVER */
+            document
+            .getElementById("pickup")
+            .value =
+            lat + ", " + lng;
 
-function showDriver(){
 
-  if(bookingCancelled){
+            alert(
+                "✅ Current Location मिल गई"
+            );
 
-    alert(
-      "Booking Cancel हो चुकी है"
+        },
+
+
+        function(){
+
+            alert(
+                "GPS Permission Allow करें"
+            );
+
+        },
+
+
+        {
+            enableHighAccuracy:true,
+            timeout:15000,
+            maximumAge:0
+        }
+
     );
 
-    return;
-  }
-
-  setDriverDetails();
-
-  document.getElementById("driverCard")
-    .classList.remove("hidden");
 }
 
 
-/* CALL DRIVER */
+
+/* =====================================================
+   BOOK CAB
+===================================================== */
+
+async function bookCab(){
+
+    const name =
+    localStorage.getItem(
+        "SafetyCab_Customer_Name"
+    );
+
+
+    const phone =
+    localStorage.getItem(
+        "SafetyCab_Customer_Phone"
+    );
+
+
+    const pickup =
+    document
+    .getElementById("pickup")
+    .value
+    .trim();
+
+
+    const drop =
+    document
+    .getElementById("drop")
+    .value
+    .trim();
+
+
+    const cabType =
+    document
+    .getElementById("cabType")
+    .value;
+
+
+    if(!name || !phone){
+
+        alert(
+            "पहले Login करें"
+        );
+
+        return;
+
+    }
+
+
+    if(!pickup){
+
+        alert(
+            "Pickup Location डालें"
+        );
+
+        return;
+
+    }
+
+
+    if(!drop){
+
+        alert(
+            "Drop Location डालें"
+        );
+
+        return;
+
+    }
+
+
+    const fare =
+    fares[cabType].base;
+
+
+    const bookingNumber =
+    "SC" + Date.now();
+
+
+    document
+    .getElementById(
+        "bookingStatusCard"
+    )
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById(
+        "bookingStatus"
+    )
+    .textContent =
+    "🟡 Driver खोजा जा रहा है...";
+
+
+    try{
+
+        const booking =
+        await window
+        .safetyCabAddDoc(
+
+            window
+            .safetyCabCollection(
+                window.safetyCabDB,
+                "bookings"
+            ),
+
+            {
+
+                bookingNumber:
+                bookingNumber,
+
+                customerName:
+                name,
+
+                customerPhone:
+                phone,
+
+                driverId:
+                "",
+
+                driverName:
+                "",
+
+                driverPhone:
+                "",
+
+                vehicleNumber:
+                "",
+
+                pickup:
+                pickup,
+
+                drop:
+                drop,
+
+                cabType:
+                cabType,
+
+                fare:
+                fare,
+
+                status:
+                "searching",
+
+                createdAt:
+                window
+                .safetyCabServerTimestamp()
+
+            }
+
+        );
+
+
+        localStorage.setItem(
+            "SafetyCab_Current_Booking",
+            booking.id
+        );
+
+
+        console.log(
+            "Booking Saved:",
+            booking.id
+        );
+
+
+        alert(
+            "✅ Booking Firebase में Save हो गई"
+        );
+
+
+        /*
+           Driver खोजने की शुरुआत
+        */
+
+        setTimeout(
+            findAvailableDriver,
+            1500
+        );
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "❌ Firebase में Booking Save नहीं हुई। Internet और Firebase Rules Check करें।"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   FIND AVAILABLE DRIVER
+===================================================== */
+
+async function findAvailableDriver(){
+
+    try{
+
+        const driversSnapshot =
+        await window
+        .safetyCabGetDocs(
+
+            window
+            .safetyCabCollection(
+                window.safetyCabDB,
+                "drivers"
+            )
+
+        );
+
+
+        let foundDriver = null;
+
+
+        driversSnapshot.forEach(
+            function(item){
+
+                const d =
+                item.data();
+
+
+                /*
+                   Duty ON और Online Driver
+                */
+
+                if(
+                    !foundDriver &&
+                    d.duty === true &&
+                    d.online === true
+                ){
+
+                    foundDriver = {
+
+                        firestoreId:
+                        item.id,
+
+                        ...d
+
+                    };
+
+                }
+
+            }
+        );
+
+
+        if(foundDriver){
+
+            showDriver(
+                foundDriver
+            );
+
+        }else{
+
+            /*
+               अगर अभी Driver नहीं मिला
+            */
+
+            document
+            .getElementById(
+                "bookingStatus"
+            )
+            .textContent =
+            "🟡 अभी कोई Duty ON Driver उपलब्ध नहीं है।";
+
+
+            document
+            .getElementById(
+                "cancelButton"
+            )
+            .classList
+            .remove("hidden");
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Driver Search Error:",
+            error
+        );
+
+
+        /*
+           Firebase में Driver नहीं पढ़ पाए
+        */
+
+        document
+        .getElementById(
+            "bookingStatus"
+        )
+        .textContent =
+        "🟡 Driver खोजा जा रहा है...";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SHOW DRIVER
+===================================================== */
+
+async function showDriver(driver){
+
+    document
+    .getElementById(
+        "bookingStatus"
+    )
+    .textContent =
+    "🟢 Driver मिल गया!";
+
+
+    document
+    .getElementById(
+        "cancelButton"
+    )
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById(
+        "driverCard"
+    )
+    .classList
+    .remove("hidden");
+
+
+    document
+    .getElementById(
+        "driverId"
+    )
+    .textContent =
+    driver.id || "-";
+
+
+    document
+    .getElementById(
+        "driverName"
+    )
+    .textContent =
+    driver.name || "-";
+
+
+    document
+    .getElementById(
+        "driverPhone"
+    )
+    .textContent =
+    driver.phone || "-";
+
+
+    document
+    .getElementById(
+        "driverVehicle"
+    )
+    .textContent =
+    driver.vehicle ||
+    driver.vehicleNumber ||
+    "-";
+
+
+    document
+    .getElementById(
+        "driverDuty"
+    )
+    .textContent =
+    driver.duty
+    ? "🟢 Duty ON"
+    : "🔴 Duty OFF";
+
+
+    document
+    .getElementById(
+        "driverGPS"
+    )
+    .textContent =
+    driver.online
+    ? "🟢 GPS ONLINE"
+    : "🔴 GPS OFFLINE";
+
+
+    /*
+       Booking में Driver की जानकारी Save
+    */
+
+    const bookingId =
+    localStorage.getItem(
+        "SafetyCab_Current_Booking"
+    );
+
+
+    if(bookingId){
+
+        try{
+
+            await window
+            .safetyCabUpdateDoc(
+
+                window
+                .safetyCabDoc(
+                    window.safetyCabDB,
+                    "bookings",
+                    bookingId
+                ),
+
+                {
+
+                    driverId:
+                    driver.id || "",
+
+                    driverName:
+                    driver.name || "",
+
+                    driverPhone:
+                    driver.phone || "",
+
+                    vehicleNumber:
+                    driver.vehicle ||
+                    driver.vehicleNumber ||
+                    "",
+
+                    status:
+                    "driver_assigned"
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(
+                "Booking Update Error:",
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+
+/* =====================================================
+   CALL DRIVER
+===================================================== */
 
 function callDriver(){
 
-  const phone =
-    document.getElementById("driverPhone")
-    .innerText;
+    const phone =
+    document
+    .getElementById(
+        "driverPhone"
+    )
+    .textContent
+    .trim();
 
-  window.location.href =
+
+    if(
+        !phone ||
+        phone === "-"
+    ){
+
+        alert(
+            "Driver का फोन नंबर उपलब्ध नहीं है"
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
     "tel:" + phone;
+
 }
 
 
-/* START TRIP */
+
+/* =====================================================
+   CANCEL BOOKING
+===================================================== */
+
+async function cancelBooking(){
+
+    const bookingId =
+    localStorage.getItem(
+        "SafetyCab_Current_Booking"
+    );
+
+
+    document
+    .getElementById(
+        "bookingStatus"
+    )
+    .textContent =
+    "🔴 Booking Cancelled";
+
+
+    document
+    .getElementById(
+        "cancelButton"
+    )
+    .classList
+    .add("hidden");
+
+
+    document
+    .getElementById(
+        "driverCard"
+    )
+    .classList
+    .add("hidden");
+
+
+    if(bookingId){
+
+        try{
+
+            await window
+            .safetyCabUpdateDoc(
+
+                window
+                .safetyCabDoc(
+                    window.safetyCabDB,
+                    "bookings",
+                    bookingId
+                ),
+
+                {
+
+                    status:
+                    "cancelled"
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+
+/* =====================================================
+   START TRIP
+===================================================== */
 
 function startTrip(){
 
-  if(bookingCancelled){
-    return;
-  }
+    document
+    .getElementById(
+        "tripCard"
+    )
+    .classList
+    .remove("hidden");
 
-  document.getElementById("tripCard")
-    .classList.remove("hidden");
 
-  document.getElementById("tripStatus")
-    .innerText =
-      "🟢 Trip Started";
+    document
+    .getElementById(
+        "bookingStatus"
+    )
+    .textContent =
+    "🟢 Trip Started";
 
-  document.getElementById("cancelButton")
-    .classList.add("hidden");
 
-  startDriverLocationListener();
+    document
+    .getElementById(
+        "driverGpsStatus"
+    )
+    .textContent =
+    "🟢 Online";
+
+
+    updateLastTime();
+
 }
 
 
-/* DRIVER GPS */
 
-function updateDriverLocation(lat,lng){
-
-  document.getElementById("gpsStatus")
-    .innerText =
-      "🟢 LIVE";
-
-  document.getElementById("lastUpdate")
-    .innerText =
-      new Date()
-      .toLocaleTimeString("en-IN");
-}
-
-
-function startDriverLocationListener(){
-
-  if(!navigator.geolocation){
-    return;
-  }
-
-  navigator.geolocation.watchPosition(
-
-    function(position){
-
-      const lat =
-        position.coords.latitude;
-
-      const lng =
-        position.coords.longitude;
-
-      updateDriverLocation(
-        lat,
-        lng
-      );
-
-    },
-
-    function(){
-
-      document.getElementById("gpsStatus")
-        .innerText =
-          "🔴 GPS OFFLINE";
-    },
-
-    {
-      enableHighAccuracy:true,
-      maximumAge:5000,
-      timeout:15000
-    }
-
-  );
-}
-
-
-/* COMPLETE TRIP */
+/* =====================================================
+   COMPLETE TRIP
+===================================================== */
 
 function completeTrip(){
 
-  if(bookingCancelled){
-    return;
-  }
+    const fare =
+    document
+    .getElementById(
+        "fareAmount"
+    )
+    .textContent
+    .replace("₹","");
 
-  const cab =
-    document.getElementById("cabType")
-    .value;
 
-  const fare = fares[cab];
+    document
+    .getElementById(
+        "finalFare"
+    )
+    .textContent =
+    fare;
 
-  const distance = 10;
-  const minutes = 10;
 
-  const distanceCharge =
-    distance * fare.perKm;
+    document
+    .getElementById(
+        "billCard"
+    )
+    .classList
+    .remove("hidden");
 
-  const timeCharge =
-    minutes * fare.perMinute;
 
-  const total =
-    fare.base +
-    distanceCharge +
-    timeCharge;
+    document
+    .getElementById(
+        "ratingCard"
+    )
+    .classList
+    .remove("hidden");
 
-  document.getElementById("billCard")
-    .classList.remove("hidden");
-
-  document.getElementById("billCab")
-    .innerText = cab;
-
-  document.getElementById("billDistance")
-    .innerText = distance;
-
-  document.getElementById("billMinutes")
-    .innerText = minutes;
-
-  document.getElementById("billBase")
-    .innerText = fare.base;
-
-  document.getElementById("billDistanceCharge")
-    .innerText =
-      distanceCharge.toFixed(2);
-
-  document.getElementById("billTimeCharge")
-    .innerText =
-      timeCharge.toFixed(2);
-
-  document.getElementById("billTotal")
-    .innerText =
-      total.toFixed(2);
-
-  document.getElementById("ratingCard")
-    .classList.remove("hidden");
 }
 
 
-/* INVOICE */
+
+/* =====================================================
+   INVOICE
+===================================================== */
 
 function generateInvoice(){
 
-  const cab =
-    document.getElementById("billCab")
-    .innerText;
+    const name =
+    localStorage.getItem(
+        "SafetyCab_Customer_Name"
+    );
 
-  const invoiceNo =
-    "SC-" + Date.now();
 
-  document.getElementById("invoiceNumber")
-    .innerText = invoiceNo;
+    const phone =
+    localStorage.getItem(
+        "SafetyCab_Customer_Phone"
+    );
 
-  document.getElementById("invoiceDate")
-    .innerText =
-      new Date()
-      .toLocaleString("en-IN");
 
-  document.getElementById("invoiceCustomer")
-    .innerText =
-      document.getElementById("showName")
-      .innerText;
+    const fare =
+    document
+    .getElementById(
+        "finalFare"
+    )
+    .textContent;
 
-  document.getElementById("invoiceMobile")
-    .innerText =
-      document.getElementById("showPhone")
-      .innerText;
 
-  document.getElementById("invoicePickup")
-    .innerText =
-      document.getElementById("pickup")
-      .value;
+    const pickup =
+    document
+    .getElementById(
+        "pickup"
+    )
+    .value;
 
-  document.getElementById("invoiceDrop")
-    .innerText =
-      document.getElementById("drop")
-      .value;
 
-  document.getElementById("invoiceCab")
-    .innerText = cab;
+    const drop =
+    document
+    .getElementById(
+        "drop"
+    )
+    .value;
 
-  document.getElementById("invoiceDistance")
-    .innerText =
-      document.getElementById("billDistance")
-      .innerText;
 
-  document.getElementById("invoiceMinutes")
-    .innerText =
-      document.getElementById("billMinutes")
-      .innerText;
+    document
+    .getElementById(
+        "invoiceDetails"
+    )
+    .innerHTML = `
 
-  document.getElementById("invoiceBase")
-    .innerText =
-      document.getElementById("billBase")
-      .innerText;
+        <b>🚕 SafetyCab Invoice</b>
 
-  document.getElementById("invoiceDistanceCharge")
-    .innerText =
-      document.getElementById("billDistanceCharge")
-      .innerText;
+        <br><br>
 
-  document.getElementById("invoiceTimeCharge")
-    .innerText =
-      document.getElementById("billTimeCharge")
-      .innerText;
+        <b>Customer:</b>
+        ${name}
 
-  document.getElementById("invoiceTotal")
-    .innerText =
-      document.getElementById("billTotal")
-      .innerText;
+        <br><br>
 
-  document.getElementById("invoiceCard")
-    .classList.remove("hidden");
+        <b>Phone:</b>
+        ${phone}
 
-  document.getElementById("invoiceCard")
-    .scrollIntoView({
-      behavior:"smooth"
-    });
+        <br><br>
+
+        <b>Pickup:</b>
+        ${pickup}
+
+        <br><br>
+
+        <b>Drop:</b>
+        ${drop}
+
+        <br><br>
+
+        <b>Final Fare:</b>
+        ₹${fare}
+
+        <br><br>
+
+        धन्यवाद! SafetyCab इस्तेमाल करने के लिए धन्यवाद। 🚕
+    `;
+
+
+    document
+    .getElementById(
+        "invoiceCard"
+    )
+    .classList
+    .remove("hidden");
+
 }
 
 
-/* RATING */
+
+/* =====================================================
+   RATING
+===================================================== */
 
 function submitRating(){
 
-  const rating =
-    document.getElementById("rating")
+    const rating =
+    document
+    .getElementById(
+        "rating"
+    )
     .value;
 
-  alert(
-    "धन्यवाद! Driver को " +
-    rating +
-    " Star Rating दी गई।"
-  );
+
+    alert(
+        "धन्यवाद! आपने " +
+        rating +
+        " Star Rating दी ⭐"
+    );
+
 }
 
 
-/* LOGOUT */
 
-function logout(){
-  location.reload();
+/* =====================================================
+   GPS TIME
+===================================================== */
+
+function updateLastTime(){
+
+    document
+    .getElementById(
+        "lastUpdate"
+    )
+    .textContent =
+    new Date()
+    .toLocaleString();
+
 }
+
+
+
+/* =====================================================
+   PAGE START
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        updateFare();
+
+        restoreCustomerLogin();
+
+    }
+);
 
 </script>
 

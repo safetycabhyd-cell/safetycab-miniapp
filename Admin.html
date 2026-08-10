@@ -1,2389 +1,1756 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover">
+      content="width=device-width, initial-scale=1.0">
 
 <meta name="theme-color" content="#009b3a">
 
 <title>SafetyCab Admin Panel</title>
 
 <style>
-
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f2f5f3;
-color:#202522;
-padding-bottom:85px;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f6f8;
+  color:#222;
 }
 
-button,input,select{
-font:inherit;
+header{
+  background:#009b3a;
+  color:white;
+  padding:18px 16px;
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
 
-button{
-cursor:pointer;
-}
-
-.wrap{
-width:100%;
-max-width:650px;
-margin:auto;
-}
-
-.top{
-background:#009b3a;
-color:#fff;
-padding:20px 18px 25px;
-border-radius:0 0 28px 28px;
-}
-
-.toprow{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
+.header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
 
 .logo{
-font-size:23px;
-font-weight:bold;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.subtitle{
+  font-size:13px;
+  opacity:.9;
+  margin-top:4px;
 }
 
 .status{
-background:#ffffff22;
-padding:9px 13px;
-border-radius:20px;
-font-size:13px;
+  background:white;
+  color:#777;
+  border-radius:20px;
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:bold;
+  white-space:nowrap;
 }
 
-.sub{
-margin-top:12px;
-font-size:14px;
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
 }
 
-.card{
-background:#fff;
-margin:14px;
-padding:18px;
-border-radius:18px;
-box-shadow:0 3px 14px #0000000d;
+.dashboard-title{
+  font-size:25px;
+  font-weight:bold;
+  margin-bottom:5px;
 }
 
-h2,h3{
-margin-top:0;
+.dashboard-subtitle{
+  color:#666;
+  margin-bottom:18px;
 }
 
-.statGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:20px;
 }
 
-.stat{
-background:#f4fff7;
-border:1px solid #d5efdf;
-border-radius:15px;
-padding:16px;
+.stat-card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.statTitle{
-font-size:13px;
-color:#68716b;
+.stat-title{
+  color:#777;
+  font-size:13px;
+  margin-bottom:8px;
 }
 
-.statValue{
-font-size:27px;
-font-weight:bold;
-color:#00883a;
-margin-top:5px;
+.stat-number{
+  font-size:28px;
+  font-weight:bold;
 }
 
-.item{
-border:1px solid #e1e6e3;
-border-radius:15px;
-padding:14px;
-margin-top:12px;
-background:#fff;
+.toolbar{
+  background:white;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.item.active{
-border:2px solid #009b3a;
-background:#f3fff7;
+.toolbar-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.itemTitle{
-font-size:17px;
-font-weight:bold;
-margin-bottom:8px;
+input,select,button{
+  font-family:inherit;
 }
 
-.line{
-font-size:13px;
-line-height:1.65;
-color:#555e59;
-}
-
-.badge{
-display:inline-block;
-padding:6px 10px;
-border-radius:18px;
-font-size:12px;
-font-weight:bold;
-background:#eee;
-margin-bottom:8px;
-}
-
-.greenBadge{
-background:#e2f8eb;
-color:#00883a;
-}
-
-.redBadge{
-background:#ffe6e8;
-color:#d00d20;
-}
-
-.orangeBadge{
-background:#fff0d9;
-color:#a85d00;
-}
-
-.blueBadge{
-background:#e3f0ff;
-color:#1768ad;
-}
-
-.btn{
-width:100%;
-border:0;
-border-radius:11px;
-padding:13px;
-margin-top:10px;
-font-weight:bold;
-color:#fff;
-}
-
-.green{
-background:#009b3a;
-}
-
-.red{
-background:#e7192d;
-}
-
-.blue{
-background:#1976d2;
-}
-
-.gray{
-background:#555;
-}
-
-input{
-width:100%;
-padding:13px;
-border:1px solid #d6ddd8;
-border-radius:10px;
-margin:6px 0 12px;
-}
-
-label{
-font-weight:bold;
-font-size:14px;
+input,select{
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:9px;
+  font-size:14px;
+  background:white;
 }
 
 .search{
-margin-bottom:5px;
+  flex:1;
+  min-width:220px;
 }
 
-.empty{
-text-align:center;
-padding:28px 10px;
-color:#68716b;
-}
-
-.nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-height:76px;
-background:#fff;
-border-top:1px solid #ddd;
-display:flex;
-z-index:100;
-}
-
-.nav button{
-width:25%;
-border:0;
-background:#fff;
-color:#68716b;
-font-size:11px;
-}
-
-.nav button.active{
-color:#009b3a;
-font-weight:bold;
-}
-
-.page{
-display:none;
-}
-
-.page.active{
-display:block;
-}
-
-.toast{
-position:fixed;
-z-index:999;
-left:50%;
-bottom:92px;
-transform:translate(-50%,20px);
-background:#222;
-color:#fff;
-padding:12px 16px;
-border-radius:10px;
-opacity:0;
-transition:.2s;
-max-width:90%;
-text-align:center;
-}
-
-.toast.show{
-opacity:1;
-transform:translate(-50%,0);
-}
-
-.loginPage{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:18px;
-}
-
-.loginCard{
-width:100%;
-max-width:480px;
-}
-
-.adminIcon{
-font-size:60px;
-text-align:center;
-}
-
-.small{
-font-size:12px;
-color:#68716b;
+button{
+  border:0;
+  border-radius:9px;
+  padding:12px 16px;
+  font-size:14px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .refresh{
-float:right;
-border:0;
-background:#e9f7ee;
-color:#00883a;
-padding:7px 10px;
-border-radius:9px;
+  background:#009b3a;
+  color:white;
 }
 
-.mapLink{
-display:inline-block;
-margin-top:8px;
-text-decoration:none;
-font-weight:bold;
-color:#1976d2;
+.export{
+  background:#222;
+  color:white;
 }
 
-hr{
-border:0;
-border-top:1px solid #e8ece9;
-margin:14px 0;
+.section{
+  background:white;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  overflow:hidden;
 }
 
-.detailGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
+.section-header{
+  padding:16px;
+  border-bottom:1px solid #eee;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.section-title{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.count{
+  background:#eaf7ef;
+  color:#009b3a;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th{
+  background:#f8f9fa;
+  text-align:left;
+  padding:13px;
+  font-size:13px;
+  color:#555;
+  border-bottom:1px solid #eee;
+}
+
+td{
+  padding:13px;
+  border-bottom:1px solid #eee;
+  font-size:13px;
+  vertical-align:middle;
+}
+
+tr:hover{
+  background:#fafafa;
+}
+
+.booking-id{
+  font-weight:bold;
+  color:#009b3a;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+}
+
+.pending{
+  background:#fff4d6;
+  color:#9a6900;
+}
+
+.accepted{
+  background:#e2f7e9;
+  color:#08752c;
+}
+
+.cancelled{
+  background:#ffe5e5;
+  color:#b00000;
+}
+
+.completed{
+  background:#e5eefc;
+  color:#245ca8;
+}
+
+.unknown{
+  background:#eee;
+  color:#666;
+}
+
+.view-btn{
+  background:#009b3a;
+  color:white;
+  padding:8px 11px;
+  font-size:12px;
+}
+
+.empty{
+  text-align:center;
+  padding:45px 20px;
+  color:#777;
+}
+
+.loading{
+  text-align:center;
+  padding:35px;
+  color:#777;
+}
+
+.error{
+  background:#ffe7e7;
+  color:#a00000;
+  padding:14px;
+  margin-bottom:15px;
+  border-radius:10px;
+  display:none;
+}
+
+footer{
+  text-align:center;
+  padding:25px 10px;
+  color:#777;
+  font-size:12px;
+}
+
+/* Modal */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:100;
+  padding:15px;
+  overflow:auto;
+}
+
+.modal-box{
+  background:white;
+  max-width:650px;
+  margin:40px auto;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.modal-header{
+  background:#009b3a;
+  color:white;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.close{
+  background:rgba(255,255,255,.2);
+  color:white;
+  padding:8px 12px;
+}
+
+.modal-body{
+  padding:18px;
 }
 
 .detail{
-background:#f6f8f7;
-padding:10px;
-border-radius:10px;
-font-size:12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
-.detail b{
-display:block;
-margin-top:3px;
-font-size:14px;
+.detail-item{
+  background:#f7f8f9;
+  padding:12px;
+  border-radius:9px;
 }
 
-.logout{
-margin-top:20px;
+.detail-label{
+  color:#777;
+  font-size:11px;
+  margin-bottom:5px;
 }
 
-@media(max-width:380px){
-
-.statGrid{
-grid-template-columns:1fr;
+.detail-value{
+  font-size:14px;
+  font-weight:bold;
+  word-break:break-word;
 }
 
-.detailGrid{
-grid-template-columns:1fr;
+.raw{
+  margin-top:15px;
 }
 
+.raw pre{
+  background:#111;
+  color:#eee;
+  padding:12px;
+  border-radius:9px;
+  overflow:auto;
+  font-size:11px;
 }
 
+@media(max-width:800px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:500px){
+  .container{
+    padding:10px;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+
+  .stat-card{
+    padding:13px;
+  }
+
+  .stat-number{
+    font-size:23px;
+  }
+
+  .detail{
+    grid-template-columns:1fr;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+}
 </style>
-
 </head>
 
 <body>
 
+<header>
+  <div class="header-row">
 
-<!-- ================= ADMIN LOGIN ================= -->
+    <div>
+      <div class="logo">🚕 SafetyCab Admin</div>
+      <div class="subtitle">
+        SafetyCab Management Dashboard
+      </div>
+    </div>
 
-<div id="loginPage" class="loginPage">
+    <div id="firebaseStatus" class="status">
+      🟡 Connecting...
+    </div>
 
-<div class="card loginCard">
-
-<div class="adminIcon">
-🛡️
-</div>
-
-<h2 style="text-align:center">
-SafetyCab Admin
-</h2>
-
-<p style="text-align:center;color:#68716b">
-Admin Panel Login
-</p>
-
-<label>Admin Name</label>
-
-<input
-id="adminName"
-placeholder="Admin Name"
-value="Admin"
->
-
-<label>Admin PIN</label>
-
-<input
-id="adminPin"
-type="password"
-inputmode="numeric"
-maxlength="6"
-placeholder="Admin PIN"
->
-
-<button
-class="btn green"
-onclick="adminLogin()"
->
-🔐 LOGIN
-</button>
-
-<div
-class="small"
-style="text-align:center;margin-top:12px"
->
-Demo PIN: 123456
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ================= APP ================= -->
-
-<div id="appPage" style="display:none">
-
-
-<header class="top">
-
-<div class="wrap">
-
-<div class="toprow">
-
-<div class="logo">
-🚕 SafetyCab
-</div>
-
-<div class="status">
-🟢 Admin Online
-</div>
-
-</div>
-
-<div class="sub">
-Admin Control Panel
-</div>
-
-</div>
-
+  </div>
 </header>
 
 
-<main class="wrap">
+<div class="container">
+
+  <h1 class="dashboard-title">
+    Admin Dashboard
+  </h1>
+
+  <div class="dashboard-subtitle">
+    Customer bookings और SafetyCab data यहाँ दिखाई देगा।
+  </div>
+
+
+  <!-- ERROR -->
+  <div id="errorBox" class="error"></div>
+
+
+  <!-- STATISTICS -->
+  <div class="stats">
+
+    <div class="stat-card">
+      <div class="stat-title">
+        Total Bookings
+      </div>
+      <div id="totalBookings" class="stat-number">
+        0
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-title">
+        Pending
+      </div>
+      <div id="pendingBookings" class="stat-number">
+        0
+      </div>
+    </div>
 
+    <div class="stat-card">
+      <div class="stat-title">
+        Accepted
+      </div>
+      <div id="acceptedBookings" class="stat-number">
+        0
+      </div>
+    </div>
 
-<!-- ================= DASHBOARD ================= -->
+    <div class="stat-card">
+      <div class="stat-title">
+        Completed
+      </div>
+      <div id="completedBookings" class="stat-number">
+        0
+      </div>
+    </div>
 
-<section
-id="dashboardPage"
-class="page active"
->
+  </div>
 
-<div class="card">
 
-<h3>
-📊 Dashboard
-</h3>
+  <!-- TOOLBAR -->
+  <div class="toolbar">
 
-<div class="statGrid">
+    <div class="toolbar-row">
 
-<div class="stat">
+      <input
+        id="searchInput"
+        class="search"
+        type="search"
+        placeholder="Booking ID, Customer, Mobile, Pickup या Drop खोजें..."
+      >
 
-<div class="statTitle">
-👨‍✈️ Total Drivers
-</div>
+      <select id="statusFilter">
+        <option value="all">
+          सभी Status
+        </option>
+        <option value="pending">
+          Pending
+        </option>
+        <option value="accepted">
+          Accepted
+        </option>
+        <option value="cancelled">
+          Cancelled
+        </option>
+        <option value="completed">
+          Completed
+        </option>
+      </select>
 
-<div
-id="totalDrivers"
-class="statValue"
->
-0
-</div>
+      <button
+        class="refresh"
+        onclick="loadBookings()">
+        🔄 Refresh
+      </button>
 
-</div>
+      <button
+        class="export"
+        onclick="exportCSV()">
+        📥 CSV
+      </button>
 
+    </div>
 
-<div class="stat">
+  </div>
 
-<div class="statTitle">
-🟢 Online Drivers
-</div>
 
-<div
-id="onlineDrivers"
-class="statValue"
->
-0
-</div>
+  <!-- BOOKINGS -->
+  <div class="section">
 
-</div>
+    <div class="section-header">
 
+      <div class="section-title">
+        🚕 Live Bookings
+      </div>
 
-<div class="stat">
+      <div id="bookingCount" class="count">
+        0 Bookings
+      </div>
 
-<div class="statTitle">
-🔔 Active Bookings
-</div>
+    </div>
 
-<div
-id="activeBookings"
-class="statValue"
->
-0
-</div>
 
-</div>
+    <div id="loadingBox" class="loading">
+      Firebase से bookings लोड हो रही हैं...
+    </div>
 
 
-<div class="stat">
+    <div class="table-wrap">
 
-<div class="statTitle">
-✅ Completed Rides
-</div>
+      <table id="bookingTable" style="display:none;">
 
-<div
-id="completedRides"
-class="statValue"
->
-0
-</div>
+        <thead>
 
-</div>
+          <tr>
 
-</div>
+            <th>Booking ID</th>
 
-</div>
+            <th>Customer</th>
 
+            <th>Mobile</th>
 
-<!-- LIVE BOOKINGS -->
+            <th>Cab</th>
 
-<div class="card">
+            <th>Pickup</th>
 
-<h3>
-🔔 Current Bookings
+            <th>Drop</th>
 
-<button
-class="refresh"
-onclick="loadAllData()"
->
-↻
-</button>
+            <th>Fare</th>
 
-</h3>
+            <th>Status</th>
 
-<div id="dashboardBookings">
+            <th>Action</th>
 
-<div class="empty">
-Loading...
-</div>
+          </tr>
 
-</div>
+        </thead>
 
-</div>
+        <tbody id="bookingBody">
+        </tbody>
 
+      </table>
 
-<!-- ONLINE DRIVERS -->
+    </div>
 
-<div class="card">
 
-<h3>
-🟢 Online Drivers
-</h3>
+    <div id="emptyBox" class="empty" style="display:none;">
 
-<div id="dashboardDrivers">
+      <div style="font-size:40px;">
+        🚕
+      </div>
 
-<div class="empty">
-Loading...
-</div>
+      <div style="margin-top:10px;">
+        अभी कोई booking नहीं मिली।
+      </div>
 
-</div>
+    </div>
 
-</div>
-
-</section>
-
-
-<!-- ================= DRIVERS ================= -->
-
-<section
-id="driversPage"
-class="page"
->
-
-<div class="card">
-
-<h3>
-👨‍✈️ Drivers
-</h3>
-
-<input
-id="driverSearch"
-class="search"
-placeholder="🔎 Driver Name / ID / Vehicle"
-oninput="renderDrivers()"
->
-
-<div id="driversList">
-
-<div class="empty">
-Loading...
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= BOOKINGS ================= -->
-
-<section
-id="bookingsPage"
-class="page"
->
-
-<div class="card">
-
-<h3>
-🔔 All Bookings
-</h3>
-
-<input
-id="bookingSearch"
-class="search"
-placeholder="🔎 Customer / Phone / Pickup / Drop"
-oninput="renderBookings()"
->
-
-<div id="bookingsList">
-
-<div class="empty">
-Loading...
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= RIDES ================= -->
-
-<section
-id="ridesPage"
-class="page"
->
-
-<div class="card">
-
-<h3>
-📋 Completed Rides
-</h3>
-
-<input
-id="rideSearch"
-class="search"
-placeholder="🔎 Customer / Driver"
-oninput="renderCompletedRides()"
->
-
-<div id="ridesList">
-
-<div class="empty">
-Loading...
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= PROFILE / SETTINGS ================= -->
-
-<section
-id="profilePage"
-class="page"
->
-
-<div class="card">
-
-<h3>
-⚙️ Admin Settings
-</h3>
-
-<div class="item">
-
-<div class="itemTitle">
-🛡️ Admin Account
-</div>
-
-<div class="line">
-Admin Name:
-<b id="adminDisplayName">
-Admin
-</b>
-</div>
-
-<hr>
-
-<div class="line">
-Firebase:
-<b style="color:#00883a">
-🟢 Connected
-</b>
-</div>
+  </div>
 
 </div>
 
 
-<button
-class="btn red logout"
-onclick="adminLogout()"
->
-🚪 LOGOUT
-</button>
-
-</div>
-
-</section>
+<footer>
+  SafetyCab Admin Panel © 2026
+</footer>
 
 
-</main>
+<!-- DETAILS MODAL -->
 
+<div id="detailsModal" class="modal">
 
-<!-- ================= NAV ================= -->
+  <div class="modal-box">
 
-<nav class="nav">
+    <div class="modal-header">
 
-<button
-id="dashboardNav"
-class="active"
-onclick="openPage('dashboard')"
->
-📊<br>
-Dashboard
-</button>
+      <strong>
+        Booking Details
+      </strong>
 
-<button
-id="driversNav"
-onclick="openPage('drivers')"
->
-👨‍✈️<br>
-Drivers
-</button>
+      <button
+        class="close"
+        onclick="closeModal()">
+        ✕
+      </button>
 
-<button
-id="bookingsNav"
-onclick="openPage('bookings')"
->
-🔔<br>
-Bookings
-</button>
+    </div>
 
-<button
-id="ridesNav"
-onclick="openPage('rides')"
->
-📋<br>
-Rides
-</button>
+    <div class="modal-body">
 
-</nav>
+      <div id="detailsGrid" class="detail">
+      </div>
+
+      <div class="raw">
+
+        <strong>
+          Firebase Data
+        </strong>
+
+        <pre id="rawData"></pre>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
 
 
-<div id="toast" class="toast"></div>
-
-
-<!-- ================= FIREBASE ================= -->
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
 
 <script type="module">
 
 import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
-getFirestore,
-collection,
-onSnapshot
+  getFirestore,
+  collection,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =====================================================
+   SAFETYCAB FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCpKzlC8zDRXObOaqD3a5eyGtknGePl9Rc",
+
+  authDomain:
+    "safety-cab.firebaseapp.com",
+
+  projectId:
+    "safety-cab",
+
+  storageBucket:
+    "safety-cab.firebasestorage.app",
+
+  messagingSenderId:
+    "288347736605",
+
+  appId:
+    "1:288347736605:web:fb36e7a42e7bd58a3f14f4"
+};
+
+
+/* =====================================================
+   INITIALIZE FIREBASE
+===================================================== */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
+
+let allBookings = [];
+
+let unsubscribeBookings = null;
+
+
+/* =====================================================
+   FIREBASE STATUS
+===================================================== */
+
+function setFirebaseStatus(text, color){
+
+  const box =
+    document.getElementById("firebaseStatus");
+
+  box.innerHTML = text;
+
+  box.style.color = color;
 }
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-const firebaseConfig={
+/* =====================================================
+   ERROR
+===================================================== */
 
-apiKey:
-"AIzaSyCpKzlC8zDRXObOaqD3a5eyGtknGePl9Rc",
+function showError(message){
 
-authDomain:
-"safety-cab.firebaseapp.com",
+  const box =
+    document.getElementById("errorBox");
 
-projectId:
-"safety-cab",
+  box.innerHTML =
+    "⚠️ " + message;
 
-storageBucket:
-"safety-cab.firebasestorage.app",
+  box.style.display = "block";
+}
 
-messagingSenderId:
-"288347736605",
 
-appId:
-"1:288347736605:web:fb36e7a42e7bd58a3f14f4"
+/* =====================================================
+   HIDE ERROR
+===================================================== */
+
+function hideError(){
+
+  const box =
+    document.getElementById("errorBox");
+
+  box.style.display = "none";
+}
+
+
+/* =====================================================
+   FORMAT VALUE
+===================================================== */
+
+function valueOf(data, keys){
+
+  for(const key of keys){
+
+    if(
+      data[key] !== undefined &&
+      data[key] !== null &&
+      data[key] !== ""
+    ){
+
+      return data[key];
+
+    }
+
+  }
+
+  return "-";
+}
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(value){
+
+  if(!value){
+    return "-";
+  }
+
+  try{
+
+    if(
+      typeof value === "object" &&
+      value.seconds
+    ){
+
+      const date =
+        new Date(value.seconds * 1000);
+
+      return date.toLocaleString("en-IN");
+
+    }
+
+    if(
+      typeof value === "object" &&
+      typeof value.toDate === "function"
+    ){
+
+      return value.toDate()
+        .toLocaleString("en-IN");
+
+    }
+
+    const date = new Date(value);
+
+    if(!isNaN(date.getTime())){
+
+      return date.toLocaleString("en-IN");
+
+    }
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+  return String(value);
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function getStatus(data){
+
+  let status =
+    valueOf(
+      data,
+      [
+        "status",
+        "bookingStatus",
+        "rideStatus"
+      ]
+    );
+
+  if(status === "-"){
+    return "pending";
+  }
+
+  return String(status).toLowerCase();
+
+}
+
+
+/* =====================================================
+   STATUS BADGE
+===================================================== */
+
+function statusBadge(status){
+
+  let className = "unknown";
+
+  let text = status;
+
+  if(
+    status.includes("pending") ||
+    status.includes("search")
+  ){
+
+    className = "pending";
+    text = "Pending";
+
+  }
+
+  else if(
+    status.includes("accept") ||
+    status.includes("driver")
+  ){
+
+    className = "accepted";
+    text = "Accepted";
+
+  }
+
+  else if(
+    status.includes("cancel")
+  ){
+
+    className = "cancelled";
+    text = "Cancelled";
+
+  }
+
+  else if(
+    status.includes("complete") ||
+    status.includes("finish")
+  ){
+
+    className = "completed";
+    text = "Completed";
+
+  }
+
+  return `
+    <span class="badge ${className}">
+      ${escapeHtml(text)}
+    </span>
+  `;
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+  if(value === null || value === undefined){
+    return "";
+  }
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================================
+   LOAD BOOKINGS
+===================================================== */
+
+window.loadBookings = async function(){
+
+  hideError();
+
+  document.getElementById("loadingBox")
+    .style.display = "block";
+
+  try{
+
+    const snapshot =
+      await getDocs(
+        collection(db,"bookings")
+      );
+
+    allBookings = [];
+
+    snapshot.forEach(doc => {
+
+      allBookings.push({
+
+        id: doc.id,
+
+        data: doc.data()
+
+      });
+
+    });
+
+    renderBookings();
+
+    setFirebaseStatus(
+      "🟢 Firebase Connected",
+      "green"
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    showError(
+      "Firebase/Firestore से data पढ़ने में समस्या: "
+      + error.message
+    );
+
+    setFirebaseStatus(
+      "🔴 Firebase Error",
+      "red"
+    );
+
+    document.getElementById("loadingBox")
+      .style.display = "none";
+
+  }
 
 };
 
 
-const app=
-initializeApp(firebaseConfig);
+/* =====================================================
+   REAL-TIME LISTENER
+===================================================== */
 
+function startLiveBookings(){
 
-const db=
-getFirestore(app);
+  try{
 
+    if(unsubscribeBookings){
+      unsubscribeBookings();
+    }
 
-window.adminDB=db;
+    unsubscribeBookings =
+      onSnapshot(
 
-window.adminFirebaseFns={
-collection,
-onSnapshot
-};
+        collection(db,"bookings"),
 
+        snapshot => {
 
-console.log(
-"SafetyCab Admin Firebase Connected"
-);
+          allBookings = [];
 
+          snapshot.forEach(doc => {
 
-/* DRIVERS */
+            allBookings.push({
 
-onSnapshot(
+              id: doc.id,
 
-collection(db,"drivers"),
+              data: doc.data()
 
-function(snapshot){
+            });
 
-window.adminDrivers=[];
+          });
 
-snapshot.forEach(function(doc){
+          renderBookings();
 
-window.adminDrivers.push({
+          setFirebaseStatus(
+            "🟢 Live Connected",
+            "green"
+          );
 
-id:doc.id,
-...doc.data()
+        },
 
-});
+        error => {
 
-});
+          console.error(
+            "Realtime error:",
+            error
+          );
 
+          showError(
+            "Live Firebase connection error: "
+            + error.message
+          );
 
-renderDrivers();
+          setFirebaseStatus(
+            "🔴 Connection Error",
+            "red"
+          );
 
-renderDashboard();
+        }
 
-},
+      );
 
-function(error){
+  }
 
-console.error(error);
+  catch(error){
 
-toast(
-"Drivers Firebase Error"
-);
+    console.error(error);
 
-}
-
-);
-
-
-/* BOOKINGS */
-
-onSnapshot(
-
-collection(db,"bookings"),
-
-function(snapshot){
-
-window.adminBookings=[];
-
-snapshot.forEach(function(doc){
-
-window.adminBookings.push({
-
-id:doc.id,
-...doc.data()
-
-});
-
-});
-
-
-renderBookings();
-
-renderCompletedRides();
-
-renderDashboard();
-
-},
-
-function(error){
-
-console.error(error);
-
-toast(
-"Bookings Firebase Error"
-);
+  }
 
 }
 
-);
 
-</script>
-
-
-<!-- ================= MAIN JAVASCRIPT ================= -->
-
-<script>
-
-
-/* DATA */
-
-window.adminDrivers=[];
-
-window.adminBookings=[];
-
-
-/* ================= TOAST ================= */
-
-function toast(message){
-
-const t=
-document.getElementById("toast");
-
-t.textContent=message;
-
-t.classList.add("show");
-
-clearTimeout(window.toastTimer);
-
-window.toastTimer=
-setTimeout(function(){
-
-t.classList.remove("show");
-
-},3000);
-
-}
-
-
-/* ================= LOGIN ================= */
-
-function adminLogin(){
-
-const name=
-document.getElementById("adminName")
-.value
-.trim();
-
-const pin=
-document.getElementById("adminPin")
-.value
-.trim();
-
-
-if(!name){
-
-toast("Admin Name डालें");
-
-return;
-
-}
-
-
-if(pin!=="123456"){
-
-toast("❌ गलत Admin PIN");
-
-return;
-
-}
-
-
-localStorage.setItem(
-"SafetyCab_Admin_Login",
-"yes"
-);
-
-localStorage.setItem(
-"SafetyCab_Admin_Name",
-name
-);
-
-
-showAdmin();
-
-
-toast(
-"✅ Admin Login Successful"
-);
-
-}
-
-
-/* ================= SHOW ADMIN ================= */
-
-function showAdmin(){
-
-document.getElementById(
-"loginPage"
-).style.display="none";
-
-
-document.getElementById(
-"appPage"
-).style.display="block";
-
-
-const name=
-localStorage.getItem(
-"SafetyCab_Admin_Name"
-)||"Admin";
-
-
-document.getElementById(
-"adminDisplayName"
-).textContent=name;
-
-
-renderDashboard();
-
-}
-
-
-/* ================= LOGOUT ================= */
-
-function adminLogout(){
-
-localStorage.removeItem(
-"SafetyCab_Admin_Login"
-);
-
-localStorage.removeItem(
-"SafetyCab_Admin_Name"
-);
-
-location.reload();
-
-}
-
-
-/* ================= PAGE NAVIGATION ================= */
-
-function openPage(page){
-
-const pages=[
-"dashboard",
-"drivers",
-"bookings",
-"rides",
-"profile"
-];
-
-
-pages.forEach(function(p){
-
-const el=
-document.getElementById(
-p+"Page"
-);
-
-if(el){
-
-el.classList.remove("active");
-
-}
-
-});
-
-
-const navs=[
-"dashboardNav",
-"driversNav",
-"bookingsNav",
-"ridesNav"
-];
-
-
-navs.forEach(function(id){
-
-const el=
-document.getElementById(id);
-
-if(el){
-
-el.classList.remove("active");
-
-}
-
-});
-
-
-const pageEl=
-document.getElementById(
-page+"Page"
-);
-
-if(pageEl){
-
-pageEl.classList.add("active");
-
-}
-
-
-const navEl=
-document.getElementById(
-page+"Nav"
-);
-
-if(navEl){
-
-navEl.classList.add("active");
-
-}
-
-
-if(page==="dashboard"){
-
-renderDashboard();
-
-}
-
-if(page==="drivers"){
-
-renderDrivers();
-
-}
-
-if(page==="bookings"){
-
-renderBookings();
-
-}
-
-if(page==="rides"){
-
-renderCompletedRides();
-
-}
-
-window.scrollTo(0,0);
-
-}
-
-
-/* ================= DATE ================= */
-
-function dateTime(value){
-
-if(!value){
-
-return "-";
-
-}
-
-
-try{
-
-let date;
-
-
-/*
-Firebase Timestamp
-*/
-
-if(
-value &&
-typeof value.toDate==="function"
-){
-
-date=value.toDate();
-
-}
-
-
-/*
-Firebase timestamp object
-*/
-
-else if(
-value &&
-typeof value.seconds==="number"
-){
-
-date=
-new Date(
-value.seconds*1000
-);
-
-}
-
-
-/*
-JS Date
-*/
-
-else if(
-value instanceof Date
-){
-
-date=value;
-
-}
-
-
-/*
-String / number
-*/
-
-else{
-
-date=new Date(value);
-
-}
-
-
-if(
-!date ||
-isNaN(date.getTime())
-){
-
-return "-";
-
-}
-
-
-return date.toLocaleDateString(
-"en-IN",
-{
-day:"2-digit",
-month:"2-digit",
-year:"numeric"
-}
-)
-+
-" • "
-+
-date.toLocaleTimeString(
-"en-IN",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
-);
-
-}catch(e){
-
-return "-";
-
-}
-
-}
-
-
-/* ================= ESCAPE ================= */
-
-function escapeHTML(value){
-
-return String(value ?? "")
-.replace(
-/[&<>"']/g,
-function(c){
-
-return {
-
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-
-}[c];
-
-}
-);
-
-}
-
-
-/* ================= BOOKING DATE ================= */
-
-function bookingDate(b){
-
-return (
-b.createdAt ||
-b.bookedAt ||
-b.bookingTime ||
-b.timestamp ||
-null
-);
-
-}
-
-
-/* ================= DRIVER ================= */
-
-function renderDrivers(){
-
-const box=
-document.getElementById(
-"driversList"
-);
-
-if(!box)return;
-
-
-let rows=
-window.adminDrivers||[];
-
-
-const search=
-(
-document.getElementById(
-"driverSearch"
-)?.value||""
-)
-.toLowerCase()
-.trim();
-
-
-if(search){
-
-rows=rows.filter(function(d){
-
-return (
-
-String(d.name||"")
-.toLowerCase()
-.includes(search)
-
-||
-
-String(d.driverid||"")
-.toLowerCase()
-.includes(search)
-
-||
-
-String(d.vehicle||"")
-.toLowerCase()
-.includes(search)
-
-);
-
-});
-
-}
-
-
-if(!rows.length){
-
-box.innerHTML=
-'<div class="empty">'+
-'कोई Driver नहीं मिला।'+
-'</div>';
-
-return;
-
-}
-
-
-rows.sort(function(a,b){
-
-return String(a.name||"")
-.localeCompare(
-String(b.name||"")
-);
-
-});
-
-
-box.innerHTML="";
-
-
-rows.forEach(function(d){
-
-const online=
-d.dutystatus==="on" ||
-d.gpsstatus==="online";
-
-
-const item=
-document.createElement("div");
-
-item.className=
-"item"+
-(
-online
-?" active"
-:""
-);
-
-
-let gpsText="-";
-
-
-if(
-Number.isFinite(
-Number(d.latitude)
-)
-&&
-Number.isFinite(
-Number(d.longitude)
-)
-){
-
-gpsText=
-Number(d.latitude).toFixed(6)
-+
-", "
-+
-Number(d.longitude).toFixed(6);
-
-}
-
-
-item.innerHTML=
-
-'<div class="itemTitle">'+
-
-'👨‍✈️ '+
-escapeHTML(d.name||"-")+
-
-'</div>'+
-
-'<span class="badge '+
-(
-online
-?"greenBadge"
-:"redBadge"
-)+
-'">'+
-
-(
-online
-?"🟢 ONLINE"
-:"🔴 OFFLINE"
-)+
-
-'</span>'+
-
-'<div class="detailGrid">'+
-
-'<div class="detail">'+
-'Driver ID'+
-'<b>'+
-escapeHTML(d.driverid||d.id||"-")+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'Vehicle'+
-'<b>'+
-escapeHTML(d.vehicle||"-")+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'Phone'+
-'<b>'+
-escapeHTML(d.phone||"-")+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'GPS'+
-'<b>'+
-escapeHTML(d.gpsstatus||"-")+
-'</b>'+
-'</div>'+
-
-'</div>'+
-
-'<div class="line" style="margin-top:10px">'+
-
-'📍 Location: '+
-escapeHTML(gpsText)+
-
-'</div>'+
-
-'<div class="line">'+
-
-'🕐 Last Update: '+
-dateTime(d.updatedAt)+
-
-'</div>';
-
-
-if(
-Number.isFinite(Number(d.latitude))
-&&
-Number.isFinite(Number(d.longitude))
-){
-
-item.innerHTML+=
-
-'<a class="mapLink" target="_blank" href="'+
-'https://www.google.com/maps/search/?api=1&query='+
-encodeURIComponent(
-d.latitude+","+d.longitude
-)+
-'">'+
-'🗺️ Open Driver Location'+
-'</a>';
-
-}
-
-
-box.appendChild(item);
-
-});
-
-}
-
-
-/* ================= BOOKING ================= */
-
-function bookingStatusClass(status){
-
-if(
-status==="completed"
-){
-
-return "greenBadge";
-
-}
-
-if(
-status==="searching"
-){
-
-return "orangeBadge";
-
-}
-
-if(
-status==="driver_accepted" ||
-status==="trip_started"
-){
-
-return "blueBadge";
-
-}
-
-if(
-String(status||"")
-.includes("cancel")
-||
-status==="rejected"
-){
-
-return "redBadge";
-
-}
-
-return "";
-
-}
-
-
-function bookingStatusText(status){
-
-const map={
-
-searching:"🔔 SEARCHING",
-
-driver_accepted:"✅ DRIVER ACCEPTED",
-
-trip_started:"🟢 TRIP STARTED",
-
-completed:"✅ COMPLETED",
-
-rejected:"❌ REJECTED",
-
-cancelled_by_driver:"❌ CANCELLED BY DRIVER",
-
-cancelled:"❌ CANCELLED"
-
-};
-
-return map[status] ||
-String(status||"UNKNOWN").toUpperCase();
-
-}
-
-
-/* ================= ALL BOOKINGS ================= */
+/* =====================================================
+   RENDER BOOKINGS
+===================================================== */
 
 function renderBookings(){
 
-const box=
-document.getElementById(
-"bookingsList"
-);
+  const search =
+    document.getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
 
-if(!box)return;
-
-
-let rows=
-window.adminBookings||[];
-
-
-const search=
-(
-document.getElementById(
-"bookingSearch"
-)?.value||""
-)
-.toLowerCase()
-.trim();
+  const filter =
+    document.getElementById("statusFilter")
+      .value;
 
 
-if(search){
+  let filtered =
+    allBookings.filter(item => {
 
-rows=rows.filter(function(b){
+      const data = item.data;
 
-return (
+      const status =
+        getStatus(data);
 
-String(b.customerName||"")
-.toLowerCase()
-.includes(search)
 
-||
+      if(
+        filter !== "all" &&
+        !status.includes(filter)
+      ){
 
-String(b.customerPhone||"")
-.toLowerCase()
-.includes(search)
+        return false;
 
-||
+      }
 
-String(b.pickup||"")
-.toLowerCase()
-.includes(search)
 
-||
+      if(search){
 
-String(b.drop||"")
-.toLowerCase()
-.includes(search)
+        const text =
+          JSON.stringify(data)
+            .toLowerCase()
+          + " "
+          + item.id.toLowerCase();
 
-);
+        if(!text.includes(search)){
 
-});
+          return false;
+
+        }
+
+      }
+
+      return true;
+
+    });
+
+
+  /* newest first */
+
+  filtered.sort((a,b) => {
+
+    const aDate =
+      a.data.createdAt?.seconds ||
+      0;
+
+    const bDate =
+      b.data.createdAt?.seconds ||
+      0;
+
+    return bDate - aDate;
+
+  });
+
+
+  updateStats();
+
+
+  const body =
+    document.getElementById("bookingBody");
+
+  body.innerHTML = "";
+
+
+  document.getElementById("loadingBox")
+    .style.display = "none";
+
+
+  document.getElementById("bookingCount")
+    .innerText =
+      filtered.length + " Bookings";
+
+
+  if(filtered.length === 0){
+
+    document.getElementById("bookingTable")
+      .style.display = "none";
+
+    document.getElementById("emptyBox")
+      .style.display = "block";
+
+    return;
+
+  }
+
+
+  document.getElementById("emptyBox")
+    .style.display = "none";
+
+  document.getElementById("bookingTable")
+    .style.display = "table";
+
+
+  filtered.forEach((item,index) => {
+
+    const data = item.data;
+
+    const bookingId =
+      valueOf(
+        data,
+        [
+          "bookingId",
+          "id"
+        ]
+      ) !== "-"
+      ?
+      valueOf(
+        data,
+        [
+          "bookingId",
+          "id"
+        ]
+      )
+      :
+      item.id;
+
+
+    const customer =
+      valueOf(
+        data,
+        [
+          "customerName",
+          "name",
+          "customer"
+        ]
+      );
+
+
+    const mobile =
+      valueOf(
+        data,
+        [
+          "customerMobile",
+          "mobile",
+          "phone"
+        ]
+      );
+
+
+    const cab =
+      valueOf(
+        data,
+        [
+          "cabType",
+          "vehicleType",
+          "cab"
+        ]
+      );
+
+
+    const pickup =
+      valueOf(
+        data,
+        [
+          "pickup",
+          "pickupLocation",
+          "pickupAddress"
+        ]
+      );
+
+
+    const drop =
+      valueOf(
+        data,
+        [
+          "drop",
+          "dropLocation",
+          "dropAddress"
+        ]
+      );
+
+
+    const fare =
+      valueOf(
+        data,
+        [
+          "estimatedTotal",
+          "totalFare",
+          "fare",
+          "baseFare"
+        ]
+      );
+
+
+    const status =
+      getStatus(data);
+
+
+    const tr =
+      document.createElement("tr");
+
+
+    tr.innerHTML = `
+
+      <td>
+        <div class="booking-id">
+          ${escapeHtml(bookingId)}
+        </div>
+      </td>
+
+      <td>
+        ${escapeHtml(customer)}
+      </td>
+
+      <td>
+        ${escapeHtml(mobile)}
+      </td>
+
+      <td>
+        ${escapeHtml(cab)}
+      </td>
+
+      <td>
+        ${escapeHtml(pickup)}
+      </td>
+
+      <td>
+        ${escapeHtml(drop)}
+      </td>
+
+      <td>
+        ₹${escapeHtml(fare)}
+      </td>
+
+      <td>
+        ${statusBadge(status)}
+      </td>
+
+      <td>
+
+        <button
+          class="view-btn"
+          onclick="viewBooking(${index}, '${item.id}')">
+
+          👁 View
+
+        </button>
+
+      </td>
+
+    `;
+
+
+    body.appendChild(tr);
+
+  });
 
 }
 
 
-rows.sort(function(a,b){
+/* =====================================================
+   UPDATE STATISTICS
+===================================================== */
 
-const aa=
-getTimestamp(
-bookingDate(a)
-);
+function updateStats(){
 
-const bb=
-getTimestamp(
-bookingDate(b)
-);
+  let pending = 0;
 
-return bb-aa;
+  let accepted = 0;
 
-});
+  let completed = 0;
 
 
-if(!rows.length){
+  allBookings.forEach(item => {
 
-box.innerHTML=
-'<div class="empty">'+
-'अभी कोई Booking नहीं है।'+
-'</div>';
-
-return;
-
-}
+    const status =
+      getStatus(item.data);
 
 
-box.innerHTML="";
+    if(
+      status.includes("pending") ||
+      status.includes("search")
+    ){
+
+      pending++;
+
+    }
 
 
-rows.forEach(function(b){
+    if(
+      status.includes("accept") ||
+      status.includes("driver")
+    ){
 
-const item=
-createBookingItem(b);
+      accepted++;
 
-box.appendChild(item);
-
-});
-
-}
+    }
 
 
-/* ================= BOOKING ITEM ================= */
+    if(
+      status.includes("complete") ||
+      status.includes("finish")
+    ){
 
-function createBookingItem(b){
+      completed++;
 
-const item=
-document.createElement("div");
+    }
 
-const status=
-b.status||"unknown";
-
-
-item.className=
-"item"+
-(
-status==="searching" ||
-status==="driver_accepted" ||
-status==="trip_started"
-?" active"
-:""
-);
+  });
 
 
-let date=
-bookingDate(b);
+  document.getElementById("totalBookings")
+    .innerText =
+      allBookings.length;
 
 
-item.innerHTML=
-
-'<div class="itemTitle">'+
-
-'🔔 Booking '+
-escapeHTML(
-b.bookingId ||
-b.id ||
-"-"
-)+
-
-'</div>'+
-
-'<span class="badge '+
-bookingStatusClass(status)+
-'">'+
-
-bookingStatusText(status)+
-
-'</span>'+
-
-'<div class="detailGrid">'+
-
-'<div class="detail">'+
-'👤 Customer'+
-'<b>'+
-escapeHTML(
-b.customerName||"-"
-)+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'📞 Customer Phone'+
-'<b>'+
-escapeHTML(
-b.customerPhone||"-"
-)+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'🚕 Vehicle'+
-'<b>'+
-escapeHTML(
-b.cabType||"-"
-)+
-'</b>'+
-'</div>'+
-
-'<div class="detail">'+
-'👨‍✈️ Driver'+
-'<b>'+
-escapeHTML(
-b.driverName||b.driverId||"-"
-)+
-'</b>'+
-'</div>'+
-
-'</div>'+
-
-'<div class="line" style="margin-top:10px">'+
-
-'📍 Pickup: '+
-escapeHTML(
-b.pickup||"-"
-)+
-
-'</div>'+
-
-'<div class="line">'+
-
-'🏁 Drop: '+
-escapeHTML(
-b.drop||"-"
-)+
-
-'</div>'+
-
-'<div class="line">'+
-
-'📅 Booking Date & Time: '+
-dateTime(date)+
-
-'</div>';
+  document.getElementById("pendingBookings")
+    .innerText =
+      pending;
 
 
-if(b.acceptedAt){
+  document.getElementById("acceptedBookings")
+    .innerText =
+      accepted;
 
-item.innerHTML+=
 
-'<div class="line">'+
-'✅ Accepted: '+
-dateTime(b.acceptedAt)+
-'</div>';
+  document.getElementById("completedBookings")
+    .innerText =
+      completed;
 
 }
 
 
-if(b.tripStartedAt){
+/* =====================================================
+   VIEW BOOKING
+===================================================== */
 
-item.innerHTML+=
+window.viewBooking = function(index,id){
 
-'<div class="line">'+
-'🟢 Trip Started: '+
-dateTime(b.tripStartedAt)+
-'</div>';
+  const item =
+    allBookings.find(
+      x => x.id === id
+    );
 
-}
 
+  if(!item){
+    return;
+  }
 
-if(b.completedAt){
 
-item.innerHTML+=
+  const data = item.data;
 
-'<div class="line">'+
-'🏁 Completed: '+
-dateTime(b.completedAt)+
-'</div>';
 
-}
+  const grid =
+    document.getElementById("detailsGrid");
 
 
-if(b.cancelledAt){
+  grid.innerHTML = "";
 
-item.innerHTML+=
 
-'<div class="line">'+
-'❌ Cancelled: '+
-dateTime(b.cancelledAt)+
-'</div>';
+  Object.keys(data).forEach(key => {
 
-}
+    let value = data[key];
 
 
-if(
-b.finalFare!==undefined
-){
+    if(
+      key.toLowerCase().includes("at") ||
+      key.toLowerCase().includes("date") ||
+      key === "createdAt" ||
+      key === "updatedAt"
+    ){
 
-item.innerHTML+=
+      value =
+        formatDate(value);
 
-'<div class="line">'+
+    }
 
-'💰 Final Fare: '+
-'<b>₹'+
-Number(b.finalFare||0)
-.toFixed(2)+
-'</b>'+
+    else if(
+      typeof value === "object"
+    ){
 
-'</div>';
+      try{
 
-}
+        value =
+          JSON.stringify(value);
 
+      }catch(e){
 
-if(
-b.latitude!==undefined &&
-b.longitude!==undefined
-){
+        value = String(value);
 
-item.innerHTML+=
+      }
 
-'<a class="mapLink" target="_blank" href="'+
-'https://www.google.com/maps/search/?api=1&query='+
-encodeURIComponent(
-b.latitude+","+b.longitude
-)+
-'">'+
-'🗺️ Open Location'+
-'</a>';
+    }
 
-}
 
+    const div =
+      document.createElement("div");
 
-return item;
+    div.className =
+      "detail-item";
 
-}
 
+    div.innerHTML = `
 
-/* ================= COMPLETED RIDES ================= */
+      <div class="detail-label">
+        ${escapeHtml(key)}
+      </div>
 
-function renderCompletedRides(){
+      <div class="detail-value">
+        ${escapeHtml(value)}
+      </div>
 
-const box=
-document.getElementById(
-"ridesList"
-);
+    `;
 
-if(!box)return;
 
+    grid.appendChild(div);
 
-let rows=
-(window.adminBookings||[])
-.filter(function(b){
+  });
 
-return b.status==="completed";
 
-});
+  document.getElementById("rawData")
+    .innerText =
+      JSON.stringify(
+        {
+          documentId:item.id,
+          ...data
+        },
+        null,
+        2
+      );
 
 
-const search=
-(
-document.getElementById(
-"rideSearch"
-)?.value||""
-)
-.toLowerCase()
-.trim();
+  document.getElementById("detailsModal")
+    .style.display = "block";
 
+};
 
-if(search){
 
-rows=rows.filter(function(b){
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
 
-return (
+window.closeModal = function(){
 
-String(b.customerName||"")
-.toLowerCase()
-.includes(search)
+  document.getElementById("detailsModal")
+    .style.display = "none";
 
-||
+};
 
-String(b.driverName||"")
-.toLowerCase()
-.includes(search)
 
-||
+/* =====================================================
+   CSV EXPORT
+===================================================== */
 
-String(b.driverId||"")
-.toLowerCase()
-.includes(search)
+window.exportCSV = function(){
 
-);
+  if(allBookings.length === 0){
 
-});
+    alert(
+      "Export करने के लिए कोई booking नहीं है।"
+    );
 
-}
+    return;
 
+  }
 
-rows.sort(function(a,b){
 
-return getTimestamp(b.completedAt)
--
-getTimestamp(a.completedAt);
+  const rows = [];
 
-});
 
+  rows.push([
+    "Booking ID",
+    "Customer",
+    "Mobile",
+    "Cab",
+    "Pickup",
+    "Drop",
+    "Fare",
+    "Status",
+    "Created At"
+  ]);
 
-if(!rows.length){
 
-box.innerHTML=
-'<div class="empty">'+
-'अभी कोई completed ride नहीं है।'+
-'</div>';
+  allBookings.forEach(item => {
 
-return;
+    const data = item.data;
 
-}
 
+    rows.push([
 
-box.innerHTML="";
+      valueOf(
+        data,
+        ["bookingId"]
+      ) !== "-"
+      ?
+      valueOf(
+        data,
+        ["bookingId"]
+      )
+      :
+      item.id,
 
 
-rows.forEach(function(b){
+      valueOf(
+        data,
+        [
+          "customerName",
+          "name"
+        ]
+      ),
 
-const item=
-document.createElement("div");
 
-item.className="item";
+      valueOf(
+        data,
+        [
+          "customerMobile",
+          "mobile",
+          "phone"
+        ]
+      ),
 
 
-item.innerHTML=
+      valueOf(
+        data,
+        [
+          "cabType",
+          "vehicleType"
+        ]
+      ),
 
-'<div class="itemTitle">'+
-'✅ Completed Ride'+
-'</div>'+
 
-'<div class="detailGrid">'+
+      valueOf(
+        data,
+        [
+          "pickup",
+          "pickupLocation"
+        ]
+      ),
 
-'<div class="detail">'+
-'Customer'+
-'<b>'+
-escapeHTML(
-b.customerName||"-"
-)+
-'</b>'+
-'</div>'+
 
-'<div class="detail">'+
-'Driver'+
-'<b>'+
-escapeHTML(
-b.driverName||b.driverId||"-"
-)+
-'</b>'+
-'</div>'+
+      valueOf(
+        data,
+        [
+          "drop",
+          "dropLocation"
+        ]
+      ),
 
-'<div class="detail">'+
-'Distance'+
-'<b>'+
-Number(b.distanceKm||0)
-.toFixed(2)+
-' KM'+
-'</b>'+
-'</div>'+
 
-'<div class="detail">'+
-'Time'+
-'<b>'+
-Number(b.tripMinutes||0)+
-' Min'+
-'</b>'+
-'</div>'+
+      valueOf(
+        data,
+        [
+          "estimatedTotal",
+          "totalFare",
+          "fare"
+        ]
+      ),
 
-'<div class="detail">'+
-'Fare'+
-'<b>₹'+
-Number(b.finalFare||0)
-.toFixed(2)+
-'</b>'+
-'</div>'+
 
-'<div class="detail">'+
-'Completed'+
-'<b>'+
-dateTime(b.completedAt)+
-'</b>'+
-'</div>'+
+      getStatus(data),
 
-'</div>'+
 
-'<div class="line" style="margin-top:10px">'+
-'📍 Pickup: '+
-escapeHTML(b.pickup||"-")+
-'</div>'+
+      formatDate(
+        data.createdAt
+      )
 
-'<div class="line">'+
-'🏁 Drop: '+
-escapeHTML(b.drop||"-")+
-'</div>'+
+    ]);
 
-'<div class="line">'+
-'📅 Booking Time: '+
-dateTime(
-bookingDate(b)
-)+
-'</div>';
+  });
 
 
-box.appendChild(item);
+  const csv =
+    rows.map(row =>
 
-});
+      row.map(value => {
 
-}
+        const text =
+          String(value ?? "");
 
+        return '"' +
+          text.replaceAll('"','""') +
+          '"';
 
-/* ================= DASHBOARD ================= */
+      }).join(",")
 
-function renderDashboard(){
+    ).join("\n");
 
-const drivers=
-window.adminDrivers||[];
 
-const bookings=
-window.adminBookings||[];
+  const blob =
+    new Blob(
+      [csv],
+      {
+        type:"text/csv;charset=utf-8;"
+      }
+    );
 
 
-document.getElementById(
-"totalDrivers"
-).textContent=
-drivers.length;
+  const url =
+    URL.createObjectURL(blob);
 
 
-document.getElementById(
-"onlineDrivers"
-).textContent=
-drivers.filter(function(d){
+  const a =
+    document.createElement("a");
 
-return d.dutystatus==="on" ||
-d.gpsstatus==="online";
 
-}).length;
+  a.href = url;
 
+  a.download =
+    "SafetyCab_Bookings.csv";
 
-document.getElementById(
-"activeBookings"
-).textContent=
-bookings.filter(function(b){
 
-return (
-b.status==="searching" ||
-b.status==="driver_accepted" ||
-b.status==="trip_started"
-);
+  a.click();
 
-}).length;
 
+  URL.revokeObjectURL(url);
 
-document.getElementById(
-"completedRides"
-).textContent=
-bookings.filter(function(b){
+};
 
-return b.status==="completed";
 
-}).length;
+/* =====================================================
+   SEARCH
+===================================================== */
 
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    renderBookings
+  );
 
-/* DASHBOARD BOOKINGS */
 
-const bookingBox=
-document.getElementById(
-"dashboardBookings"
-);
+/* =====================================================
+   FILTER
+===================================================== */
 
+document
+  .getElementById("statusFilter")
+  .addEventListener(
+    "change",
+    renderBookings
+  );
 
-if(!bookingBox)return;
 
+/* =====================================================
+   CLOSE MODAL WHEN OUTSIDE CLICK
+===================================================== */
 
-const active=
-bookings
-.filter(function(b){
+document
+  .getElementById("detailsModal")
+  .addEventListener(
+    "click",
+    function(event){
 
-return (
-b.status==="searching" ||
-b.status==="driver_accepted" ||
-b.status==="trip_started"
-);
+      if(event.target === this){
 
-})
-.sort(function(a,b){
+        closeModal();
 
-return getTimestamp(
-bookingDate(b)
-)
--
-getTimestamp(
-bookingDate(a)
-);
+      }
 
-});
+    }
+  );
 
 
-if(!active.length){
+/* =====================================================
+   START
+===================================================== */
 
-bookingBox.innerHTML=
-'<div class="empty">'+
-'अभी कोई Active Booking नहीं है।'+
-'</div>';
-
-}else{
-
-bookingBox.innerHTML="";
-
-active.slice(0,5).forEach(function(b){
-
-bookingBox.appendChild(
-createBookingItem(b)
-);
-
-});
-
-}
-
-
-/* ONLINE DRIVERS */
-
-const driverBox=
-document.getElementById(
-"dashboardDrivers"
-);
-
-
-const online=
-drivers.filter(function(d){
-
-return d.dutystatus==="on" ||
-d.gpsstatus==="online";
-
-});
-
-
-if(!online.length){
-
-driverBox.innerHTML=
-'<div class="empty">'+
-'अभी कोई Driver Online नहीं है।'+
-'</div>';
-
-}else{
-
-driverBox.innerHTML="";
-
-online.forEach(function(d){
-
-const item=
-document.createElement("div");
-
-item.className="item active";
-
-
-item.innerHTML=
-
-'<div class="itemTitle">'+
-'🟢 '+
-escapeHTML(d.name||"-")+
-'</div>'+
-
-'<div class="line">'+
-'ID: '+
-escapeHTML(d.driverid||d.id||"-")+
-'</div>'+
-
-'<div class="line">'+
-'🚕 Vehicle: '+
-escapeHTML(d.vehicle||"-")+
-'</div>'+
-
-'<div class="line">'+
-'📍 GPS: '+
-escapeHTML(
-d.latitude!==undefined
-?
-Number(d.latitude).toFixed(6)+
-", "+
-Number(d.longitude).toFixed(6)
-:
-"-"
-)+
-'</div>'+
-
-'<div class="line">'+
-'🕐 Update: '+
-dateTime(d.updatedAt)+
-'</div>';
-
-
-if(
-Number.isFinite(Number(d.latitude))
-&&
-Number.isFinite(Number(d.longitude))
-){
-
-item.innerHTML+=
-
-'<a class="mapLink" target="_blank" href="'+
-'https://www.google.com/maps/search/?api=1&query='+
-encodeURIComponent(
-d.latitude+","+d.longitude
-)+
-'">'+
-'🗺️ Open Live Location'+
-'</a>';
-
-}
-
-
-driverBox.appendChild(item);
-
-});
-
-}
-
-}
-
-
-/* ================= TIMESTAMP ================= */
-
-function getTimestamp(value){
-
-if(!value){
-
-return 0;
-
-}
-
-
-try{
-
-if(
-typeof value.toDate==="function"
-){
-
-return value.toDate().getTime();
-
-}
-
-
-if(
-typeof value.seconds==="number"
-){
-
-return value.seconds*1000;
-
-}
-
-
-const d=
-new Date(value);
-
-if(!isNaN(d.getTime())){
-
-return d.getTime();
-
-}
-
-}catch(e){}
-
-
-return 0;
-
-}
-
-
-/* ================= REFRESH ================= */
-
-function loadAllData(){
-
-renderDashboard();
-
-renderDrivers();
-
-renderBookings();
-
-renderCompletedRides();
-
-toast(
-"🔄 Data refreshed"
-);
-
-}
-
-
-/* ================= START ================= */
-
-window.addEventListener(
-"load",
-function(){
-
-const logged=
-localStorage.getItem(
-"SafetyCab_Admin_Login"
+setFirebaseStatus(
+  "🟡 Connecting...",
+  "#777"
 );
 
 
-if(logged==="yes"){
+loadBookings();
 
-showAdmin();
-
-}
-
-});
-
+startLiveBookings();
 
 </script>
 

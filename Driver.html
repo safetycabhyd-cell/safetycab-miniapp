@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -214,15 +215,12 @@ label{
  background:#555;
 }
 
+.dark{
+ background:#222;
+}
+
 .navbtn{
- width:100%;
- border:0;
- border-radius:12px;
- padding:13px;
- margin-top:9px;
- font-weight:bold;
- color:#fff;
- font-size:14px;
+ background:#673ab7;
 }
 
 .ride{
@@ -241,11 +239,11 @@ label{
 @keyframes bookingPulse{
 
 0%{
- box-shadow:0 0 0 0 #009b3a44;
+ box-shadow:0 0 0 0 #009b3a55;
 }
 
 70%{
- box-shadow:0 0 0 8px #009b3a00;
+ box-shadow:0 0 0 10px #009b3a00;
 }
 
 100%{
@@ -346,13 +344,36 @@ label{
  margin-top:10px;
 }
 
+.navHint{
+ background:#eef6ff;
+ border:1px solid #c9def7;
+ border-radius:12px;
+ padding:11px;
+ font-size:13px;
+ color:#315d87;
+ margin-top:12px;
+}
+
+.activeBox{
+ background:#e5f8ec;
+ border:1px solid #b8e7c8;
+ border-radius:12px;
+ padding:11px;
+ margin-bottom:10px;
+ font-weight:bold;
+ color:#168a3a;
+}
+
 </style>
+
 </head>
 
 <body>
 
 
-<!-- ================= LOGIN ================= -->
+<!-- =====================================================
+ LOGIN
+===================================================== -->
 
 <div id="loginPage" class="login">
 
@@ -366,14 +387,18 @@ label{
 Driver Login
 </h2>
 
-<label>Driver Name</label>
+<label>
+Driver Name
+</label>
 
 <input
 id="loginName"
-placeholder="Enter driver name"
+placeholder="अपना नाम लिखें"
 >
 
-<label>Mobile Number</label>
+<label>
+Mobile Number
+</label>
 
 <input
 id="loginPhone"
@@ -383,21 +408,27 @@ inputmode="numeric"
 placeholder="10 digit mobile number"
 >
 
-<label>Driver ID</label>
+<label>
+Driver ID
+</label>
 
 <input
 id="loginId"
 placeholder="SC-001"
 >
 
-<label>Vehicle Number</label>
+<label>
+Vehicle Number
+</label>
 
 <input
 id="loginVehicle"
 placeholder="TS-00-XX-0000"
 >
 
-<label>Aadhaar Number</label>
+<label>
+Aadhaar Number
+</label>
 
 <input
 id="loginAadhaar"
@@ -424,8 +455,9 @@ Firebase Connected
 </div>
 
 
-
-<!-- ================= APP ================= -->
+<!-- =====================================================
+ APP
+===================================================== -->
 
 <div id="appPage" class="hidden">
 
@@ -457,11 +489,14 @@ Driver Panel
 <main class="wrap">
 
 
-<!-- ================= HOME ================= -->
+<!-- =====================================================
+ HOME
+===================================================== -->
 
 <section id="homePage">
 
-<!-- DRIVER -->
+
+<!-- DRIVER CARD -->
 
 <div class="card">
 
@@ -535,7 +570,9 @@ class="gpsbox"
 
 
 
-<!-- ================= GPS ================= -->
+<!-- =====================================================
+ GPS
+===================================================== -->
 
 <div class="card">
 
@@ -574,7 +611,9 @@ onclick="toggleGPS()"
 
 
 
-<!-- ================= BOOKING ================= -->
+<!-- =====================================================
+ BOOKING
+===================================================== -->
 
 <div class="card">
 
@@ -596,7 +635,9 @@ onclick="toggleGPS()"
 
 
 
-<!-- ================= RIDES ================= -->
+<!-- =====================================================
+ RIDES
+===================================================== -->
 
 <section
 id="ridesPage"
@@ -623,7 +664,9 @@ class="hidden"
 
 
 
-<!-- ================= PROFILE ================= -->
+<!-- =====================================================
+ PROFILE
+===================================================== -->
 
 <section
 id="profilePage"
@@ -636,19 +679,34 @@ class="hidden"
 👤 Driver Profile
 </h3>
 
-<label>Driver Name</label>
+<label>
+Driver Name
+</label>
+
 <input id="profileName">
 
-<label>Driver Phone</label>
+<label>
+Driver Phone
+</label>
+
 <input id="profilePhone">
 
-<label>Driver ID</label>
+<label>
+Driver ID
+</label>
+
 <input id="profileId">
 
-<label>Vehicle Number</label>
+<label>
+Vehicle Number
+</label>
+
 <input id="profileVehicle">
 
-<label>Aadhaar Number</label>
+<label>
+Aadhaar Number
+</label>
+
 <input id="profileAadhaar">
 
 <button
@@ -667,7 +725,9 @@ onclick="saveProfile()"
 
 
 
-<!-- ================= NAV ================= -->
+<!-- =====================================================
+ NAVIGATION BAR
+===================================================== -->
 
 <nav class="nav">
 
@@ -704,10 +764,13 @@ Profile
 </div>
 
 
-
 <div id="toast" class="toast"></div>
 
 
+
+<!-- =====================================================
+ LEAFLET
+===================================================== -->
 
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -716,29 +779,29 @@ crossorigin=""
 
 
 
-<!-- ================= FIREBASE ================= -->
+<!-- =====================================================
+ FIREBASE
+===================================================== -->
 
 <script type="module">
 
 import {
-initializeApp
+ initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
 import {
-getFirestore,
-doc,
-setDoc,
-getDoc,
-updateDoc,
-collection,
-query,
-where,
-onSnapshot,
-orderBy,
-limit
+ getFirestore,
+ doc,
+ setDoc,
+ getDoc,
+ updateDoc,
+ collection,
+ query,
+ where,
+ onSnapshot
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -768,7 +831,9 @@ appId:
 
 
 const app=
-initializeApp(firebaseConfig);
+initializeApp(
+firebaseConfig
+);
 
 
 const db=
@@ -787,20 +852,22 @@ updateDoc,
 collection,
 query,
 where,
-onSnapshot,
-orderBy,
-limit
+onSnapshot
 
 };
 
 
-console.log("SafetyCab Firebase Connected");
+console.log(
+"SafetyCab Firebase Connected"
+);
 
 </script>
 
 
 
-<!-- ================= MAIN JAVASCRIPT ================= -->
+<!-- =====================================================
+ MAIN JAVASCRIPT
+===================================================== -->
 
 <script>
 
@@ -810,7 +877,13 @@ let duty=false;
 
 let watchId=null;
 
-let bookingListeners=[];
+
+/* अब दो listener होंगे */
+
+let searchingListener=null;
+
+let activeBookingListener=null;
+
 
 let currentBooking=null;
 
@@ -824,17 +897,21 @@ let liveMap=null;
 
 let driverMarker=null;
 
-let audioContext=null;
 
-
-/* ================= ELEMENT ================= */
+/* =====================================================
+ ELEMENT
+===================================================== */
 
 function $(id){
- return document.getElementById(id);
+
+return document.getElementById(id);
+
 }
 
 
-/* ================= TOAST ================= */
+/* =====================================================
+ TOAST
+===================================================== */
 
 function toast(msg){
 
@@ -842,44 +919,69 @@ $("toast").textContent=msg;
 
 $("toast").classList.add("show");
 
-clearTimeout(window.toastTimer);
+clearTimeout(
+window.toastTimer
+);
 
-window.toastTimer=setTimeout(function(){
+window.toastTimer=setTimeout(
+function(){
 
 $("toast").classList.remove("show");
 
-},2500);
+},
+2800
+);
 
 }
 
 
-/* ================= STRONG BOOKING SOUND ================= */
+/* =====================================================
+ STRONG BOOKING SOUND
+===================================================== */
 
-function strongBeep(){
+let audioContext=null;
+
+
+function bookingSound(){
 
 try{
 
 audioContext=
 audioContext ||
-new(
+new (
 window.AudioContext ||
 window.webkitAudioContext
 )();
 
-if(audioContext.state==="suspended"){
- audioContext.resume();
+
+if(
+audioContext.state==="suspended"
+){
+
+audioContext.resume();
+
 }
 
-const now=audioContext.currentTime;
 
-const tones=[
-[1000,0],
-[1300,.22],
-[1000,.44],
-[1500,.66]
+let now=
+audioContext.currentTime;
+
+
+/*
+ तेज़ 5-beep alert
+*/
+
+let frequencies=[
+1000,
+1300,
+1000,
+1500,
+1100
 ];
 
-tones.forEach(function(item){
+
+frequencies.forEach(
+function(freq,index){
 
 let osc=
 audioContext.createOscillator();
@@ -887,62 +989,158 @@ audioContext.createOscillator();
 let gain=
 audioContext.createGain();
 
+
+let start=
+now+(index*0.22);
+
+
 osc.type="square";
 
-osc.frequency.value=item[0];
+osc.frequency.value=freq;
 
-let start=now+item[1];
 
 gain.gain.setValueAtTime(
 0.0001,
 start
 );
 
+
 gain.gain.exponentialRampToValueAtTime(
 0.65,
-start+0.03
+start+0.025
+);
+
+
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+start+0.17
+);
+
+
+osc.connect(gain);
+
+gain.connect(
+audioContext.destination
+);
+
+
+osc.start(start);
+
+osc.stop(start+0.18);
+
+}
+
+);
+
+}catch(e){
+
+console.log(
+"Sound error:",
+e
+);
+
+}
+
+}
+
+
+/* =====================================================
+ EXTRA BEEP
+===================================================== */
+
+function extraBookingBeep(){
+
+try{
+
+if(
+audioContext &&
+audioContext.state==="suspended"
+){
+
+audioContext.resume();
+
+}
+
+
+if(!audioContext){
+
+return;
+
+}
+
+
+let now=
+audioContext.currentTime;
+
+
+let osc=
+audioContext.createOscillator();
+
+let gain=
+audioContext.createGain();
+
+
+osc.type="square";
+
+osc.frequency.value=1600;
+
+
+gain.gain.setValueAtTime(
+0.0001,
+now
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.7,
+now+0.03
 );
 
 gain.gain.exponentialRampToValueAtTime(
 0.0001,
-start+0.18
+now+0.28
 );
+
 
 osc.connect(gain);
 
-gain.connect(audioContext.destination);
+gain.connect(
+audioContext.destination
+);
 
-osc.start(start);
 
-osc.stop(start+0.20);
+osc.start(now);
 
-});
+osc.stop(now+0.30);
 
 }catch(e){
 
-console.log("Sound:",e);
+console.log(e);
 
 }
 
 }
 
 
-/* ================= ACCEPT SOUND ================= */
+/* =====================================================
+ VIBRATION
+===================================================== */
 
-function acceptSound(){
-
-strongBeep();
+function bookingVibrate(){
 
 try{
 
-if(navigator.vibrate){
+if(
+navigator.vibrate
+){
 
 navigator.vibrate([
-250,
-100,
-250,
-100,
-700
+500,
+180,
+500,
+180,
+700,
+180,
+900
 ]);
 
 }
@@ -952,59 +1150,118 @@ navigator.vibrate([
 }
 
 
-/* ================= LOGIN ================= */
+/* =====================================================
+ NOTIFICATION PERMISSION
+===================================================== */
+
+async function requestNotificationPermission(){
+
+try{
+
+if(
+!("Notification" in window)
+){
+
+return;
+
+}
+
+
+if(
+Notification.permission==="default"
+){
+
+await Notification.requestPermission();
+
+}
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
+
+
+/* =====================================================
+ LOGIN
+===================================================== */
 
 async function driverLogin(){
 
-let name=$("loginName").value.trim();
+let name=
+$("loginName").value.trim();
 
-let phone=$("loginPhone").value.trim();
+let phone=
+$("loginPhone").value.trim();
 
-let id=$("loginId").value.trim();
+let id=
+$("loginId").value.trim();
 
-let vehicle=$("loginVehicle").value.trim();
+let vehicle=
+$("loginVehicle").value.trim();
 
-let aadhaar=$("loginAadhaar").value.trim();
+let aadhaar=
+$("loginAadhaar").value.trim();
 
 
-if(name.length<2){
+if(
+name.length<2
+){
 
-toast("Enter driver name");
+toast(
+"Driver Name डालें"
+);
 
 return;
 
 }
 
-if(!/^[0-9]{10}$/.test(phone)){
 
-toast("Enter correct 10 digit mobile number");
+if(
+!/^[0-9]{10}$/.test(phone)
+){
+
+toast(
+"सही 10 digit mobile number डालें"
+);
 
 return;
 
 }
+
 
 if(!id){
 
-toast("Enter Driver ID");
+toast(
+"Driver ID डालें"
+);
 
 return;
 
 }
+
 
 if(!vehicle){
 
-toast("Enter Vehicle Number");
+toast(
+"Vehicle Number डालें"
+);
 
 return;
 
 }
+
 
 if(
 aadhaar &&
 !/^[0-9]{12}$/.test(aadhaar)
 ){
 
-toast("Aadhaar must be 12 digits");
+toast(
+"Aadhaar 12 digit होना चाहिए"
+);
 
 return;
 
@@ -1012,11 +1269,17 @@ return;
 
 
 driver={
+
 name:name,
+
 phone:phone,
+
 driverid:id,
+
 vehicle:vehicle,
+
 aadhaar:aadhaar
+
 };
 
 
@@ -1028,7 +1291,11 @@ JSON.stringify(driver)
 
 try{
 
-let {doc,setDoc}=window.firebaseFns;
+let {
+doc,
+setDoc
+}=window.firebaseFns;
+
 
 await setDoc(
 
@@ -1041,19 +1308,30 @@ id
 {
 
 name:name,
+
 phone:phone,
+
 driverid:id,
+
 vehicle:vehicle,
+
 aadhaar:aadhaar,
+
 dutystatus:"off",
+
 gpsstatus:"offline",
+
 latitude:null,
+
 longitude:null,
+
 updatedAt:new Date()
 
 },
 
-{merge:true}
+{
+merge:true
+}
 
 );
 
@@ -1066,73 +1344,97 @@ console.error(e);
 
 showApp();
 
-toast("✅ Driver Login Successful");
+toast(
+"✅ Driver Login Successful"
+);
 
 }
 
 
-/* ================= SHOW APP ================= */
+/* =====================================================
+ SHOW APP
+===================================================== */
 
 function showApp(){
 
-$("loginPage").classList.add("hidden");
+$("loginPage")
+.classList
+.add("hidden");
 
-$("appPage").classList.remove("hidden");
+
+$("appPage")
+.classList
+.remove("hidden");
+
 
 loadDriverUI();
 
 restoreDuty();
 
-startBookingListener();
-
-loadDriverHistory();
-
-setTimeout(function(){
-
-initDriverMap();
-
-},300);
+startBookingListeners();
 
 }
 
 
-/* ================= LOAD DRIVER UI ================= */
+/* =====================================================
+ LOAD DRIVER
+===================================================== */
 
 function loadDriverUI(){
 
-if(!driver)return;
+if(!driver){
 
-$("driverName").textContent=driver.name;
-
-$("driverId").textContent=driver.driverid;
-
-$("vehicle").textContent=driver.vehicle;
-
-$("profileName").value=driver.name;
-
-$("profilePhone").value=driver.phone;
-
-$("profileId").value=driver.driverid;
-
-$("profileVehicle").value=driver.vehicle;
-
-$("profileAadhaar").value=driver.aadhaar||"";
+return;
 
 }
 
 
-/* ================= CHECK DRIVER ================= */
+$("driverName").textContent=
+driver.name;
+
+$("driverId").textContent=
+driver.driverid;
+
+$("vehicle").textContent=
+driver.vehicle;
+
+
+$("profileName").value=
+driver.name;
+
+$("profilePhone").value=
+driver.phone;
+
+$("profileId").value=
+driver.driverid;
+
+$("profileVehicle").value=
+driver.vehicle;
+
+$("profileAadhaar").value=
+driver.aadhaar||"";
+
+}
+
+
+/* =====================================================
+ CHECK DRIVER
+===================================================== */
 
 function checkDriver(){
 
 try{
 
 let saved=
-localStorage.getItem("SafetyCab_Driver");
+localStorage.getItem(
+"SafetyCab_Driver"
+);
+
 
 if(saved){
 
-driver=JSON.parse(saved);
+driver=
+JSON.parse(saved);
 
 showApp();
 
@@ -1147,14 +1449,23 @@ console.error(e);
 }
 
 
-/* ================= DUTY RESTORE ================= */
+/* =====================================================
+ DUTY RESTORE
+===================================================== */
 
 async function restoreDuty(){
 
-if(!driver)return;
+if(!driver){
+
+return;
+
+}
+
 
 let savedDuty=
-localStorage.getItem("SafetyCab_Duty");
+localStorage.getItem(
+"SafetyCab_Duty"
+);
 
 
 if(savedDuty==="on"){
@@ -1163,13 +1474,19 @@ duty=true;
 
 updateDutyUI();
 
-setTimeout(function(){
+
+setTimeout(
+function(){
 
 if(duty){
+
 startGPS();
+
 }
 
-},800);
+},
+800
+);
 
 return;
 
@@ -1178,9 +1495,14 @@ return;
 
 try{
 
-let {doc,getDoc}=window.firebaseFns;
+let {
+doc,
+getDoc
+}=window.firebaseFns;
 
-let snap=await getDoc(
+
+let snap=
+await getDoc(
 
 doc(
 window.firebaseDB,
@@ -1191,11 +1513,16 @@ driver.driverid
 );
 
 
-if(snap.exists()){
+if(
+snap.exists()
+){
 
 let data=snap.data();
 
-if(data.dutystatus==="on"){
+
+if(
+data.dutystatus==="on"
+){
 
 duty=true;
 
@@ -1206,13 +1533,19 @@ localStorage.setItem(
 
 updateDutyUI();
 
-setTimeout(function(){
+
+setTimeout(
+function(){
 
 if(duty){
+
 startGPS();
+
 }
 
-},800);
+},
+800
+);
 
 }
 
@@ -1220,24 +1553,35 @@ startGPS();
 
 }catch(e){
 
-console.error(e);
+console.error(
+"Duty restore:",
+e
+);
 
 }
 
 }
 
 
-/* ================= DUTY UI ================= */
+/* =====================================================
+ DUTY UI
+===================================================== */
 
 function updateDutyUI(){
 
 $("dutySwitch")
-.classList.toggle("on",duty);
+.classList
+.toggle(
+"on",
+duty
+);
+
 
 $("dutyText").textContent=
 duty
 ?"🟢 Duty ON"
 :"🔴 Duty OFF";
+
 
 $("headerStatus").textContent=
 duty
@@ -1247,25 +1591,65 @@ duty
 }
 
 
-/* ================= DUTY ================= */
+/* =====================================================
+ DUTY
+===================================================== */
 
 async function toggleDuty(){
 
-if(!driver)return;
+if(!driver){
+
+return;
+
+}
+
 
 duty=!duty;
 
+
 localStorage.setItem(
 "SafetyCab_Duty",
-duty?"on":"off"
+duty
+?"on"
+:"off"
 );
+
 
 updateDutyUI();
 
 
 if(duty){
 
-toast("🟢 Driver Online");
+toast(
+"🟢 Driver Online"
+);
+
+
+/*
+ User interaction के समय sound/notification permission
+*/
+
+try{
+
+audioContext=
+audioContext ||
+new (
+window.AudioContext ||
+window.webkitAudioContext
+)();
+
+if(
+audioContext.state==="suspended"
+){
+
+await audioContext.resume();
+
+}
+
+}catch(e){}
+
+
+requestNotificationPermission();
 
 startGPS();
 
@@ -1273,14 +1657,20 @@ startGPS();
 
 stopGPS();
 
-toast("🔴 Driver Offline");
+toast(
+"🔴 Driver Offline"
+);
 
 }
 
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
+
 
 await updateDoc(
 
@@ -1292,9 +1682,15 @@ driver.driverid
 
 {
 
-dutystatus:duty?"on":"off",
+dutystatus:
+duty
+?"on"
+:"off",
 
-gpsstatus:duty?"online":"offline",
+gpsstatus:
+duty
+?"online"
+:"offline",
 
 updatedAt:new Date()
 
@@ -1311,11 +1707,15 @@ console.error(e);
 }
 
 
-/* ================= GPS ================= */
+/* =====================================================
+ GPS TOGGLE
+===================================================== */
 
 function toggleGPS(){
 
-if(watchId===null){
+if(
+watchId===null
+){
 
 startGPS();
 
@@ -1328,19 +1728,28 @@ stopGPS();
 }
 
 
-/* ================= START GPS ================= */
+/* =====================================================
+ START GPS
+===================================================== */
 
 function startGPS(){
 
-if(!navigator.geolocation){
+if(
+!navigator.geolocation
+){
 
-toast("Location is not available in this browser");
+toast(
+"इस Browser में GPS उपलब्ध नहीं है"
+);
 
 return;
 
 }
 
-if(watchId!==null){
+
+if(
+watchId!==null
+){
 
 return;
 
@@ -1349,6 +1758,7 @@ return;
 
 $("gpsStatus").textContent=
 "🟡 GPS Updating...";
+
 
 $("gpsButton").textContent=
 "⛔ STOP LIVE GPS";
@@ -1359,9 +1769,11 @@ navigator.geolocation.watchPosition(
 
 async function(pos){
 
-let lat=pos.coords.latitude;
+let lat=
+pos.coords.latitude;
 
-let lng=pos.coords.longitude;
+let lng=
+pos.coords.longitude;
 
 
 $("latitude").textContent=
@@ -1370,21 +1782,31 @@ lat.toFixed(6);
 $("longitude").textContent=
 lng.toFixed(6);
 
+
 $("lastUpdate").textContent=
-new Date().toLocaleTimeString();
+new Date()
+.toLocaleTimeString();
+
 
 $("gpsStatus").textContent=
 "🟢 GPS ONLINE";
 
 
-updateDriverMap(lat,lng);
+updateDriverMap(
+lat,
+lng
+);
 
 
 if(driver){
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
+
 
 await updateDoc(
 
@@ -1397,9 +1819,16 @@ driver.driverid
 {
 
 latitude:lat,
+
 longitude:lng,
+
 gpsstatus:"online",
-dutystatus:duty?"on":"off",
+
+dutystatus:
+duty
+?"on"
+:"off",
+
 updatedAt:new Date()
 
 }
@@ -1408,7 +1837,10 @@ updatedAt:new Date()
 
 }catch(e){
 
-console.error(e);
+console.error(
+"GPS Firebase:",
+e
+);
 
 }
 
@@ -1416,10 +1848,12 @@ console.error(e);
 
 },
 
+
 function(error){
 
 $("gpsStatus").textContent=
 "🔴 GPS OFFLINE";
+
 
 $("gpsButton").textContent=
 "📍 START LIVE GPS";
@@ -1428,23 +1862,26 @@ $("gpsButton").textContent=
 if(error.code===1){
 
 toast(
-"Please allow location permission in your browser."
+"📍 Location permission allow करें"
 );
 
 }else{
 
 toast(
-"Unable to get GPS location."
+"GPS Location नहीं मिल रही"
 );
 
 }
 
 },
 
+
 {
 
 enableHighAccuracy:true,
+
 timeout:15000,
+
 maximumAge:3000
 
 }
@@ -1454,7 +1891,9 @@ maximumAge:3000
 }
 
 
-/* ================= STOP GPS ================= */
+/* =====================================================
+ STOP GPS
+===================================================== */
 
 function stopGPS(){
 
@@ -1469,10 +1908,13 @@ watchId
 
 }
 
+
 watchId=null;
+
 
 $("gpsStatus").textContent=
 "🔴 GPS OFFLINE";
+
 
 $("gpsButton").textContent=
 "📍 START LIVE GPS";
@@ -1482,7 +1924,11 @@ if(driver){
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
+
 
 updateDoc(
 
@@ -1495,7 +1941,12 @@ driver.driverid
 {
 
 gpsstatus:"offline",
-dutystatus:duty?"on":"off",
+
+dutystatus:
+duty
+?"on"
+:"off",
+
 updatedAt:new Date()
 
 }
@@ -1509,20 +1960,32 @@ updatedAt:new Date()
 }
 
 
-/* ================= MAP ================= */
+/* =====================================================
+ MAP INIT
+===================================================== */
 
 function initDriverMap(){
 
-if(typeof L==="undefined"){
+if(
+typeof L==="undefined"
+){
+
 return;
+
 }
+
 
 if(liveMap){
+
 return;
+
 }
 
+
 liveMap=
-L.map("driverMap")
+L.map(
+"driverMap"
+)
 .setView(
 [17.3850,78.4867],
 13
@@ -1542,43 +2005,69 @@ attribution:
 
 }
 
-).addTo(liveMap);
+)
+.addTo(
+liveMap
+);
 
 }
 
 
-/* ================= UPDATE MAP ================= */
+/* =====================================================
+ UPDATE DRIVER MAP
+===================================================== */
 
-function updateDriverMap(lat,lng){
+function updateDriverMap(
+lat,
+lng
+){
 
 if(
 !Number.isFinite(lat) ||
 !Number.isFinite(lng)
 ){
+
 return;
+
 }
+
 
 initDriverMap();
 
+
 if(!liveMap){
+
 return;
+
 }
 
-let position=[lat,lng];
+
+let position=[
+lat,
+lng
+];
 
 
 if(!driverMarker){
 
-let icon=L.divIcon({
+let icon=
+L.divIcon({
 
-className:"safetycab-driver-car",
+className:
+"safetycab-driver-car",
 
 html:
 '<div style="font-size:36px">🚕</div>',
 
-iconSize:[40,40],
+iconSize:[
+40,
+40
+],
 
-iconAnchor:[20,20]
+iconAnchor:[
+20,
+20
+]
 
 });
 
@@ -1586,40 +2075,62 @@ iconAnchor:[20,20]
 driverMarker=
 L.marker(
 position,
-{icon:icon}
+{
+icon:icon
+}
 )
-.addTo(liveMap);
+.addTo(
+liveMap
+);
+
 
 driverMarker.bindPopup(
-"🚕 Your Live GPS"
+"🚕 आपका Live GPS"
 );
 
 }else{
 
-driverMarker.setLatLng(position);
+driverMarker.setLatLng(
+position
+);
 
 }
 
 
-liveMap.setView(position,16);
+liveMap.setView(
+position,
+16
+);
 
 
-setTimeout(function(){
+setTimeout(
+function(){
 
 liveMap.invalidateSize();
 
-},200);
+},
+200
+);
 
 }
 
 
 /* =====================================================
-   BOOKING LISTENER
-   IMPORTANT:
-   SEARCHING + DRIVER ACCEPTED + TRIP STARTED
-===================================================== */
+ BOOKING LISTENERS
+=====================================================
 
-function startBookingListener(){
+IMPORTANT:
+
+Listener 1:
+नई searching booking
+
+Listener 2:
+हमारे Driver की accepted/trip_started booking
+
+इससे Refresh के बाद accepted booking वापस आएगी।
+*/
+
+function startBookingListeners(){
 
 if(
 !driver ||
@@ -1631,15 +2142,24 @@ return;
 }
 
 
-bookingListeners.forEach(function(unsub){
+/* पुराने listeners बंद */
 
-try{
-unsub();
-}catch(e){}
+if(searchingListener){
 
-});
+searchingListener();
 
-bookingListeners=[];
+searchingListener=null;
+
+}
+
+
+if(activeBookingListener){
+
+activeBookingListener();
+
+activeBookingListener=null;
+
+}
 
 
 let {
@@ -1650,7 +2170,9 @@ onSnapshot
 }=window.firebaseFns;
 
 
-/* -------- NEW SEARCHING BOOKINGS -------- */
+/* =====================================================
+ LISTENER 1 - NEW SEARCHING BOOKING
+===================================================== */
 
 let searchingQuery=
 query(
@@ -1669,26 +2191,24 @@ where(
 );
 
 
-let searchingListener=
+searchingListener=
 onSnapshot(
 
 searchingQuery,
 
 function(snapshot){
 
-snapshot.forEach(function(d){
-
-let data=d.data();
-
-let booking={
-docId:d.id,
-...data
-};
-
+/*
+ अगर पहले से accepted/trip booking है,
+ तो नई searching booking को ऊपर नहीं दिखाएँ।
+*/
 
 if(
 currentBooking &&
-currentBooking.docId===d.id
+(
+currentBooking.status==="driver_accepted" ||
+currentBooking.status==="trip_started"
+)
 ){
 
 return;
@@ -1696,35 +2216,83 @@ return;
 }
 
 
+let found=null;
+
+
+snapshot.forEach(
+function(d){
+
+if(found){
+
+return;
+
+}
+
+
+let data=d.data();
+
+
+found={
+
+docId:d.id,
+
+...data
+
+};
+
+});
+
+
+if(found){
+
+let bookingKey=
+found.docId ||
+found.bookingId;
+
+
 if(
-!currentBooking &&
-duty
+lastBookingAlert!==bookingKey
 ){
 
-currentBooking=booking;
+lastBookingAlert=
+bookingKey;
 
-let bookingKey=d.id;
 
-
-if(lastBookingAlert!==bookingKey){
-
-lastBookingAlert=bookingKey;
-
-strongBeep();
+bookingSound();
 
 bookingVibrate();
 
-toast("🔔 NEW BOOKING");
+toast(
+"🔔 नई Booking मिली!"
+);
 
-showBookingNotification(booking);
+
+showBookingNotification(
+found
+);
 
 }
 
-showNewBooking(booking);
+
+showNewBooking(
+found
+);
+
+}else{
+
+if(
+!currentBooking
+){
+
+$("rideBox").innerHTML=
+
+'<div class="empty">'+
+'अभी कोई नई Booking नहीं है।'+
+'</div>';
 
 }
 
-});
+}
 
 },
 
@@ -1735,15 +2303,18 @@ console.error(
 error
 );
 
+toast(
+"Booking connection error"
+);
+
 }
 
 );
 
 
-bookingListeners.push(searchingListener);
-
-
-/* -------- DRIVER'S OWN ACTIVE BOOKING -------- */
+/* =====================================================
+ LISTENER 2 - DRIVER ACTIVE BOOKING
+===================================================== */
 
 let activeQuery=
 query(
@@ -1757,71 +2328,135 @@ where(
 "driverId",
 "==",
 driver.driverid
+),
+
+where(
+"status",
+"in",
+[
+"driver_accepted",
+"trip_started"
+]
 )
 
 );
 
 
-let activeListener=
+activeBookingListener=
 onSnapshot(
 
 activeQuery,
 
 function(snapshot){
 
-let active=null;
+let found=null;
 
 
-snapshot.forEach(function(d){
+snapshot.forEach(
+function(d){
+
+if(found){
+
+return;
+
+}
+
 
 let data=d.data();
 
-if(
 
-data.status==="driver_accepted" ||
-data.status==="trip_started"
+found={
 
-){
-
-active={
 docId:d.id,
-...data
-};
 
-}
+...data
+
+};
 
 });
 
 
-if(active){
+if(found){
 
-currentBooking=active;
+/*
+ Refresh के बाद यही Booking वापस मिलेगी।
+*/
 
-if(active.status==="driver_accepted"){
+currentBooking=found;
 
-tripStarted=false;
+localStorage.setItem(
+"SafetyCab_ActiveBooking",
+found.docId
+);
 
-showAcceptedBooking();
 
-}else if(
-active.status==="trip_started"
+if(
+found.status==="trip_started"
 ){
 
 tripStarted=true;
 
-showTripRunning();
+if(
+found.tripStartedAt &&
+found.tripStartedAt.toMillis
+){
+
+tripStartTime=
+found.tripStartedAt.toMillis();
+
+}else{
+
+tripStartTime=
+Date.now();
+
+}
+
+
+showRunningBooking();
+
+}else{
+
+tripStarted=false;
+
+tripStartTime=null;
+
+showAcceptedBooking();
 
 }
 
 }else{
 
+/*
+ कोई active booking नहीं।
+*/
+
 if(
-!currentBooking ||
-currentBooking.status==="completed" ||
-currentBooking.status==="cancelled_by_driver"
+currentBooking &&
+(
+currentBooking.status==="driver_accepted" ||
+currentBooking.status==="trip_started"
+)
 ){
 
+/*
+ Firestore में active booking खत्म हो गई है।
+*/
+
 currentBooking=null;
+
+tripStarted=false;
+
+tripStartTime=null;
+
+localStorage.removeItem(
+"SafetyCab_ActiveBooking"
+);
+
+$("rideBox").innerHTML=
+
+'<div class="empty">'+
+'अभी कोई नई Booking नहीं है।'+
+'</div>';
 
 }
 
@@ -1840,21 +2475,25 @@ error
 
 );
 
-
-bookingListeners.push(activeListener);
-
 }
 
 
-/* ================= NOTIFICATION ================= */
+/* =====================================================
+ NOTIFICATION
+===================================================== */
 
 async function showBookingNotification(b){
 
 try{
 
-if(!("Notification" in window)){
+if(
+!("Notification" in window)
+){
+
 return;
+
 }
+
 
 if(
 Notification.permission==="default"
@@ -1864,24 +2503,29 @@ await Notification.requestPermission();
 
 }
 
+
 if(
 Notification.permission==="granted"
 ){
 
 new Notification(
 
-"🚕 SafetyCab - New Booking",
+"🚕 SafetyCab - नई Booking",
 
 {
 
 body:
+
 "Customer: "+
 (b.customerName||"-")+
+
 "\nPickup: "+
 (b.pickup||"-"),
 
 tag:
-"safetycab-booking"
+"safetycab-booking-"+(
+b.docId||b.bookingId||Date.now()
+)
 
 }
 
@@ -1891,14 +2535,19 @@ tag:
 
 }catch(e){
 
-console.log(e);
+console.log(
+"Notification:",
+e
+);
 
 }
 
 }
 
 
-/* ================= SHOW NEW BOOKING ================= */
+/* =====================================================
+ SHOW NEW BOOKING
+===================================================== */
 
 function showNewBooking(b){
 
@@ -1909,42 +2558,58 @@ $("rideBox").innerHTML=
 
 '<div class="ride newbooking">'+
 
-'<span class="badge">🔔 NEW BOOKING</span>'+
+'<span class="badge">'+
+'🔔 NEW BOOKING'+
+'</span>'+
 
 '<div class="place">'+
 '👤 Customer: '+
-escapeHTML(b.customerName||"-")+
+escapeHTML(
+b.customerName||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '📞 Phone: '+
-escapeHTML(b.customerPhone||"-")+
+escapeHTML(
+b.customerPhone||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '📍 Pickup: '+
-escapeHTML(b.pickup||"-")+
+escapeHTML(
+b.pickup||"-"
+)+
 '</div>'+
 
-'<div style="text-align:center;font-size:22px">↓</div>'+
+'<div style="text-align:center;font-size:22px">'+
+'↓'+
+'</div>'+
 
 '<div class="place">'+
 '🏁 Drop: '+
-escapeHTML(b.drop||"-")+
+escapeHTML(
+b.drop||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '🚕 Vehicle: '+
-escapeHTML(b.cabType||"-")+
+escapeHTML(
+b.cabType||"-"
+)+
 '</div>'+
 
 '<div class="two">'+
 
-'<button class="btn green" onclick="acceptBooking()">'+
+'<button class="btn green" '+
+'onclick="acceptBooking()">'+
 '✅ ACCEPT'+
 '</button>'+
 
-'<button class="btn red" onclick="rejectBooking()">'+
+'<button class="btn red" '+
+'onclick="rejectBooking()">'+
 '❌ REJECT'+
 '</button>'+
 
@@ -1955,13 +2620,17 @@ escapeHTML(b.cabType||"-")+
 }
 
 
-/* ================= ACCEPT ================= */
+/* =====================================================
+ ACCEPT
+===================================================== */
 
 async function acceptBooking(){
 
 if(!currentBooking){
 
-toast("No booking available");
+toast(
+"कोई Booking नहीं है"
+);
 
 return;
 
@@ -1970,16 +2639,13 @@ return;
 
 if(!duty){
 
-toast("Please turn Duty ON first");
+toast(
+"पहले Duty ON करें"
+);
 
 return;
 
 }
-
-
-/* Sound is triggered directly by the ACCEPT tap */
-
-acceptSound();
 
 
 let bookingDocId=
@@ -1989,7 +2655,9 @@ currentBooking.bookingId;
 
 if(!bookingDocId){
 
-toast("Booking ID not found");
+toast(
+"Booking ID नहीं मिली"
+);
 
 return;
 
@@ -1998,7 +2666,10 @@ return;
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
 
 
 await updateDoc(
@@ -2011,39 +2682,56 @@ bookingDocId
 
 {
 
-status:"driver_accepted",
+status:
+"driver_accepted",
 
-driverId:driver.driverid,
+driverId:
+driver.driverid,
 
-driverDocId:driver.driverid,
+driverDocId:
+driver.driverid,
 
-driverName:driver.name,
+driverName:
+driver.name,
 
-driverPhone:driver.phone,
+driverPhone:
+driver.phone,
 
-driverVehicle:driver.vehicle,
+driverVehicle:
+driver.vehicle,
 
-acceptedAt:new Date()
+acceptedAt:
+new Date()
 
 }
 
 );
 
 
-currentBooking.status="driver_accepted";
+currentBooking.status=
+"driver_accepted";
 
-currentBooking.driverId=driver.driverid;
+currentBooking.driverId=
+driver.driverid;
 
-currentBooking.driverName=driver.name;
 
-currentBooking.driverPhone=driver.phone;
-
-currentBooking.driverVehicle=driver.vehicle;
+localStorage.setItem(
+"SafetyCab_ActiveBooking",
+bookingDocId
+);
 
 
 showAcceptedBooking();
 
-toast("✅ Booking Accepted");
+
+/*
+ Accept के बाद sound नहीं बजाएँगे।
+*/
+
+toast(
+"✅ Booking Accepted"
+);
+
 
 }catch(e){
 
@@ -2052,61 +2740,98 @@ console.error(
 e
 );
 
-toast("❌ Booking Accept failed");
+toast(
+"❌ Booking Accept नहीं हुई"
+);
 
 }
 
 }
 
 
-/* ================= ACCEPTED ================= */
+/* =====================================================
+ ACCEPTED BOOKING UI
+===================================================== */
 
 function showAcceptedBooking(){
 
+if(!currentBooking){
+
+return;
+
+}
+
+
 let b=currentBooking;
+
+
+tripStarted=false;
 
 
 $("rideBox").innerHTML=
 
 '<div class="ride">'+
 
-'<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
+'<div class="activeBox">'+
+'✅ BOOKING ACCEPTED'+
+'</div>'+
+
+'<span class="badge" '+
+'style="background:#e5f8ec;color:#168a3a">'+
 '✅ ACCEPTED'+
 '</span>'+
 
 '<div class="place">'+
 '👤 Customer: '+
-escapeHTML(b.customerName||"-")+
+escapeHTML(
+b.customerName||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '📞 '+
-escapeHTML(b.customerPhone||"-")+
+escapeHTML(
+b.customerPhone||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '📍 Pickup: '+
-escapeHTML(b.pickup||"-")+
+escapeHTML(
+b.pickup||"-"
+)+
 '</div>'+
 
 '<div class="place">'+
 '🏁 Drop: '+
-escapeHTML(b.drop||"-")+
+escapeHTML(
+b.drop||"-"
+)+
 '</div>'+
 
-'<button class="navbtn blue" onclick="navigateToPickup()">'+
-'🧭 NAVIGATE TO PICKUP'+
+'<div class="place">'+
+'🚕 Vehicle: '+
+escapeHTML(
+b.cabType||"-"
+)+
+'</div>'+
+
+'<button class="btn navbtn" '+
+'onclick="openNavigation()">'+
+'🧭 NAVIGATION TO PICKUP'+
 '</button>'+
 
-'<button class="navbtn orange" onclick="navigateToDrop()">'+
-'🧭 NAVIGATE TO DROP'+
-'</button>'+
+'<div class="navHint">'+
+'🗺️ Navigation अलग tab में खुलेगा। SafetyCab App इस tab में खुला रहेगा।'+
+'</div>'+
 
-'<button class="btn blue" onclick="startTrip()">'+
+'<button class="btn blue" '+
+'onclick="startTrip()">'+
 '▶️ START TRIP'+
 '</button>'+
 
-'<button class="btn red" onclick="cancelAcceptedRide()">'+
+'<button class="btn red" '+
+'onclick="cancelAcceptedRide()">'+
 '❌ CANCEL RIDE'+
 '</button>'+
 
@@ -2115,178 +2840,250 @@ escapeHTML(b.drop||"-")+
 }
 
 
-/* ================= NAVIGATION ================= */
+/* =====================================================
+ RUNNING TRIP UI
+===================================================== */
 
-function getNavigationTarget(value){
-
-if(!value){
-
-toast("Location is not available");
-
-return null;
-
-}
-
-return String(value).trim();
-
-}
-
-
-/* -------- PICKUP -------- */
-
-function navigateToPickup(){
+function showRunningBooking(){
 
 if(!currentBooking){
-
-toast("No active booking");
 
 return;
 
 }
 
-let target=
-getNavigationTarget(
-currentBooking.pickup
+
+let b=currentBooking;
+
+
+tripStarted=true;
+
+
+$("rideBox").innerHTML=
+
+'<div class="ride">'+
+
+'<div class="activeBox" '+
+'style="color:#1976d2;background:#eaf3ff;border-color:#c9def7">'+
+'🟢 TRIP RUNNING'+
+'</div>'+
+
+'<span class="badge" '+
+'style="background:#e5f8ec;color:#168a3a">'+
+'🟢 TRIP RUNNING'+
+'</span>'+
+
+'<div class="place">'+
+'👤 Customer: '+
+escapeHTML(
+b.customerName||"-"
+)+
+'</div>'+
+
+'<div class="place">'+
+'📞 '+
+escapeHTML(
+b.customerPhone||"-"
+)+
+'</div>'+
+
+'<div class="place">'+
+'📍 Pickup: '+
+escapeHTML(
+b.pickup||"-"
+)+
+'</div>'+
+
+'<div class="place">'+
+'🏁 Drop: '+
+escapeHTML(
+b.drop||"-"
+)+
+'</div>'+
+
+'<button class="btn navbtn" '+
+'onclick="openDropNavigation()">'+
+'🧭 NAVIGATION TO DROP'+
+'</button>'+
+
+'<button class="btn green" '+
+'onclick="completeTrip()">'+
+'🏁 COMPLETE TRIP'+
+'</button>'+
+
+'<button class="btn red" '+
+'onclick="cancelAcceptedRide()">'+
+'❌ CANCEL RIDE'+
+'</button>'+
+
+'</div>';
+
+}
+
+
+/* =====================================================
+ NAVIGATION TO PICKUP
+===================================================== */
+
+function openNavigation(){
+
+if(!currentBooking){
+
+toast(
+"Booking उपलब्ध नहीं है"
 );
 
-if(!target)return;
+return;
+
+}
 
 
-toast("Opening Google Maps...");
+let destination=
+currentBooking.pickup||"";
 
+
+if(!destination){
+
+toast(
+"Pickup Location नहीं मिली"
+);
+
+return;
+
+}
+
+
+openGoogleNavigation(
+destination
+);
+
+}
+
+
+/* =====================================================
+ NAVIGATION TO DROP
+===================================================== */
+
+function openDropNavigation(){
+
+if(!currentBooking){
+
+toast(
+"Booking उपलब्ध नहीं है"
+);
+
+return;
+
+}
+
+
+let destination=
+currentBooking.drop||"";
+
+
+if(!destination){
+
+toast(
+"Drop Location नहीं मिली"
+);
+
+return;
+
+}
+
+
+openGoogleNavigation(
+destination
+);
+
+}
+
+
+/* =====================================================
+ GOOGLE NAVIGATION
+===================================================== */
+
+function openGoogleNavigation(destination){
+
+let cleanDestination=
+String(destination)
+.trim();
+
+
+/*
+ Google Maps Directions URL
+
+इसमें Current Location से destination तक
+driving route खुलेगा।
+*/
 
 let url=
 "https://www.google.com/maps/dir/?api=1"+
 "&destination="+
-encodeURIComponent(target)+
+encodeURIComponent(
+cleanDestination
+)+
 "&travelmode=driving";
 
 
 /*
- Save state before leaving the app.
+ सबसे पहले नया tab खोलेंगे।
+SafetyCab App पुरानी tab में रहेगा।
 */
 
-saveActiveBookingState();
+let newTab=
+window.open(
+url,
+"_blank",
+"noopener,noreferrer"
+);
 
+
+if(
+newTab
+){
+
+toast(
+"🧭 Navigation नई tab में खुल गई"
+);
+
+}else{
+
+/*
+ अगर browser popup block करे,
+तो user को बताकर link उसी window में खोलेंगे।
+*/
+
+toast(
+"🧭 Navigation खोल रहा है..."
+);
+
+
+setTimeout(
+function(){
 
 window.location.href=url;
+
+},
+500
+);
+
+}
 
 }
 
 
-/* -------- DROP -------- */
+/* =====================================================
+ REJECT
+===================================================== */
 
-function navigateToDrop(){
+async function rejectBooking(){
 
 if(!currentBooking){
-
-toast("No active booking");
 
 return;
 
 }
-
-let target=
-getNavigationTarget(
-currentBooking.drop
-);
-
-if(!target)return;
-
-
-toast("Opening Google Maps...");
-
-
-let url=
-"https://www.google.com/maps/dir/?api=1"+
-"&destination="+
-encodeURIComponent(target)+
-"&travelmode=driving";
-
-
-saveActiveBookingState();
-
-
-window.location.href=url;
-
-}
-
-
-/* ================= SAVE ACTIVE STATE ================= */
-
-function saveActiveBookingState(){
-
-if(!currentBooking)return;
-
-
-try{
-
-localStorage.setItem(
-"SafetyCab_ActiveBooking",
-JSON.stringify(currentBooking)
-);
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-
-/* ================= RESTORE LOCAL BOOKING ================= */
-
-function restoreLocalBooking(){
-
-try{
-
-let saved=
-localStorage.getItem(
-"SafetyCab_ActiveBooking"
-);
-
-if(!saved)return;
-
-let booking=
-JSON.parse(saved);
-
-if(
-booking &&
-(
-booking.status==="driver_accepted" ||
-booking.status==="trip_started"
-)
-){
-
-currentBooking=booking;
-
-if(booking.status==="driver_accepted"){
-
-showAcceptedBooking();
-
-}else{
-
-showTripRunning();
-
-}
-
-}
-
-}catch(e){
-
-console.error(e);
-
-}
-
-}
-
-
-/* ================= REJECT ================= */
-
-async function rejectBooking(){
-
-if(!currentBooking)return;
 
 
 let bookingDocId=
@@ -2296,7 +3093,9 @@ currentBooking.bookingId;
 
 if(!bookingDocId){
 
-toast("Booking ID not found");
+toast(
+"Booking ID नहीं मिली"
+);
 
 return;
 
@@ -2305,7 +3104,10 @@ return;
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
 
 
 await updateDoc(
@@ -2318,11 +3120,14 @@ bookingDocId
 
 {
 
-status:"rejected",
+status:
+"rejected",
 
-rejectedBy:driver.driverid,
+rejectedBy:
+driver.driverid,
 
-rejectedAt:new Date()
+rejectedAt:
+new Date()
 
 }
 
@@ -2330,10 +3135,6 @@ rejectedAt:new Date()
 
 
 currentBooking=null;
-
-localStorage.removeItem(
-"SafetyCab_ActiveBooking"
-);
 
 
 $("rideBox").innerHTML=
@@ -2343,37 +3144,46 @@ $("rideBox").innerHTML=
 '</div>';
 
 
-toast("❌ Booking Rejected");
+toast(
+"❌ Booking Rejected"
+);
+
 
 }catch(e){
 
 console.error(e);
 
-toast("Booking Reject failed");
+toast(
+"Booking Reject नहीं हुई"
+);
 
 }
 
 }
 
 
-/* ================= START TRIP ================= */
+/* =====================================================
+ START TRIP
+===================================================== */
 
 async function startTrip(){
 
 if(!currentBooking){
-
-toast("No active booking");
 
 return;
 
 }
 
 
-/*
- Strong confirmation beep when driver presses START TRIP.
-*/
+if(!duty){
 
-acceptSound();
+toast(
+"पहले Duty ON रखें"
+);
+
+return;
+
+}
 
 
 let bookingDocId=
@@ -2381,9 +3191,29 @@ currentBooking.docId ||
 currentBooking.bookingId;
 
 
+if(!bookingDocId){
+
+toast(
+"Booking ID नहीं मिली"
+);
+
+return;
+
+}
+
+
+tripStarted=true;
+
+tripStartTime=
+Date.now();
+
+
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
 
 
 await updateDoc(
@@ -2396,90 +3226,59 @@ bookingDocId
 
 {
 
-status:"trip_started",
+status:
+"trip_started",
 
-tripStartedAt:new Date(),
+tripStartedAt:
+new Date(),
 
-driverId:driver.driverid,
+driverId:
+driver.driverid,
 
-driverDocId:driver.driverid
+driverDocId:
+driver.driverid
 
 }
 
 );
 
 
-currentBooking.status="trip_started";
-
-tripStarted=true;
-
-tripStartTime=
-Date.now();
+currentBooking.status=
+"trip_started";
 
 
-saveActiveBookingState();
+localStorage.setItem(
+"SafetyCab_ActiveBooking",
+bookingDocId
+);
 
-showTripRunning();
 
-toast("🟢 Trip Started");
+showRunningBooking();
+
+
+toast(
+"🟢 Trip Started"
+);
+
 
 }catch(e){
 
 console.error(e);
 
-toast("Trip Start failed");
+tripStarted=false;
+
+toast(
+"Trip Start नहीं हुआ"
+);
 
 }
 
 }
 
 
-/* ================= TRIP RUNNING ================= */
-
-function showTripRunning(){
-
-if(!currentBooking)return;
-
-let b=currentBooking;
-
-
-$("rideBox").innerHTML=
-
-'<div class="ride">'+
-
-'<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
-'🟢 TRIP RUNNING'+
-'</span>'+
-
-'<div class="place">'+
-'👤 Customer: '+
-escapeHTML(b.customerName||"-")+
-'</div>'+
-
-'<div class="place">'+
-'📍 Pickup: '+
-escapeHTML(b.pickup||"-")+
-'</div>'+
-
-'<div class="place">'+
-'🏁 Drop: '+
-escapeHTML(b.drop||"-")+
-'</div>'+
-
-'<button class="navbtn orange" onclick="navigateToDrop()">'+
-'🧭 NAVIGATE TO DROP'+
-'</button>'+
-
-'<button class="btn green" onclick="completeTrip()">'+
-'🏁 COMPLETE TRIP'+
-'</button>'+
-
-'</div>';
-
-}
-
-
-/* ================= COMPLETE ================= */
+/* =====================================================
+ COMPLETE TRIP
+===================================================== */
 
 async function completeTrip(){
 
@@ -2500,7 +3299,10 @@ minutes=Math.max(
 1,
 
 Math.round(
-(Date.now()-tripStartTime)/60000
+
+(Date.now()-tripStartTime)
+/60000
+
 )
 
 );
@@ -2509,21 +3311,35 @@ Math.round(
 
 
 let fareBase=
-Number(currentBooking.baseFare||80);
+Number(
+currentBooking.baseFare||80
+);
+
 
 let perMinute=
-Number(currentBooking.perMinute||1);
+Number(
+currentBooking.perMinute||1
+);
+
 
 let distance=
-Number(currentBooking.distanceKm||0);
+Number(
+currentBooking.distanceKm||0
+);
+
 
 let perKm=
-Number(currentBooking.perKm||16);
+Number(
+currentBooking.perKm||16
+);
 
 
 let total=
+
 fareBase+
+
 (distance*perKm)+
+
 (minutes*perMinute);
 
 
@@ -2534,7 +3350,10 @@ currentBooking.bookingId;
 
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
 
 
 await updateDoc(
@@ -2547,15 +3366,20 @@ bookingDocId
 
 {
 
-status:"completed",
+status:
+"completed",
 
-finalFare:total,
+finalFare:
+total,
 
-tripMinutes:minutes,
+tripMinutes:
+minutes,
 
-distanceKm:distance,
+distanceKm:
+distance,
 
-completedAt:new Date()
+completedAt:
+new Date()
 
 }
 
@@ -2587,31 +3411,41 @@ tripStarted=false;
 
 tripStartTime=null;
 
+
 localStorage.removeItem(
 "SafetyCab_ActiveBooking"
 );
+
 
 }catch(e){
 
 console.error(e);
 
-toast("Trip Complete failed");
+toast(
+"Trip Complete नहीं हुआ"
+);
 
 }
 
 }
 
 
-/* ================= CANCEL ================= */
+/* =====================================================
+ CANCEL ACCEPTED RIDE
+===================================================== */
 
 async function cancelAcceptedRide(){
 
-if(!currentBooking)return;
+if(!currentBooking){
+
+return;
+
+}
 
 
 if(
 !confirm(
-"Are you sure you want to cancel this ride?"
+"क्या आप यह ride cancel करना चाहते हैं?"
 )
 ){
 
@@ -2625,9 +3459,19 @@ currentBooking.docId ||
 currentBooking.bookingId;
 
 
+if(!bookingDocId){
+
+return;
+
+}
+
+
 try{
 
-let {doc,updateDoc}=window.firebaseFns;
+let {
+doc,
+updateDoc
+}=window.firebaseFns;
 
 
 await updateDoc(
@@ -2640,9 +3484,14 @@ bookingDocId
 
 {
 
-status:"cancelled_by_driver",
+status:
+"cancelled_by_driver",
 
-cancelledAt:new Date()
+cancelledAt:
+new Date(),
+
+cancelledBy:
+driver.driverid
 
 }
 
@@ -2652,6 +3501,9 @@ cancelledAt:new Date()
 currentBooking=null;
 
 tripStarted=false;
+
+tripStartTime=null;
+
 
 localStorage.removeItem(
 "SafetyCab_ActiveBooking"
@@ -2665,20 +3517,27 @@ $("rideBox").innerHTML=
 '</div>';
 
 
-toast("Ride Cancelled");
+toast(
+"Ride Cancelled"
+);
+
 
 }catch(e){
 
 console.error(e);
 
-toast("Ride Cancel failed");
+toast(
+"Ride Cancel नहीं हुई"
+);
 
 }
 
 }
 
 
-/* ================= HISTORY ================= */
+/* =====================================================
+ HISTORY
+===================================================== */
 
 function addHistory(
 booking,
@@ -2686,13 +3545,15 @@ total,
 minutes
 ){
 
-let history=$("history");
+let history=
+$("history");
 
 
-if(history.querySelector(".empty")){
+if(
+history.querySelector(".empty")
+){
 
 history.innerHTML="";
-
 }
 
 
@@ -2709,17 +3570,30 @@ item.innerHTML=
 
 "<div class='muted'>"+
 "Customer: "+
-escapeHTML(booking.customerName||"-")+
+escapeHTML(
+booking.customerName||"-"
+)+
+"</div>"+
+
+"<div class='muted'>"+
+"📞 "+
+escapeHTML(
+booking.customerPhone||"-"
+)+
 "</div>"+
 
 "<div class='muted'>"+
 "📍 "+
-escapeHTML(booking.pickup||"-")+
+escapeHTML(
+booking.pickup||"-"
+)+
 "</div>"+
 
 "<div class='muted'>"+
 "🏁 "+
-escapeHTML(booking.drop||"-")+
+escapeHTML(
+booking.drop||"-"
+)+
 "</div>"+
 
 "<div class='muted'>"+
@@ -2731,190 +3605,114 @@ minutes+
 "</div>";
 
 
-history.prepend(item);
-
-}
-
-
-/* ================= FIREBASE HISTORY ================= */
-
-async function loadDriverHistory(){
-
-if(!driver)return;
-
-
-try{
-
-let {
-collection,
-query,
-where,
-onSnapshot
-}=window.firebaseFns;
-
-
-let q=
-query(
-
-collection(
-window.firebaseDB,
-"bookings"
-),
-
-where(
-"driverId",
-"==",
-driver.driverid
-)
-
+history.prepend(
+item
 );
 
-
-onSnapshot(
-
-q,
-
-function(snapshot){
-
-let history=$("history");
-
-history.innerHTML="";
-
-
-let rides=[];
-
-
-snapshot.forEach(function(d){
-
-let b=d.data();
-
-
-if(b.status==="completed"){
-
-rides.push({
-id:d.id,
-...b
-});
-
 }
 
-});
+
+/* =====================================================
+ PROFILE
+===================================================== */
+
+async function saveProfile(){
+
+let newName=
+$("profileName").value.trim();
+
+let newPhone=
+$("profilePhone").value.trim();
+
+let newId=
+$("profileId").value.trim();
+
+let newVehicle=
+$("profileVehicle").value.trim();
+
+let newAadhaar=
+$("profileAadhaar").value.trim();
 
 
-if(!rides.length){
+if(
+newName.length<2
+){
 
-history.innerHTML=
-'<div class="empty">'+
-'अभी कोई completed ride नहीं है।'+
-'</div>';
+toast(
+"Driver Name सही डालें"
+);
 
 return;
 
 }
 
 
-rides.sort(function(a,b){
+if(
+!/^[0-9]{10}$/.test(newPhone)
+){
 
-let aTime=
-a.completedAt?.seconds||
-0;
-
-let bTime=
-b.completedAt?.seconds||
-0;
-
-return bTime-aTime;
-
-});
-
-
-rides.forEach(function(b){
-
-let total=
-Number(b.finalFare||0);
-
-let minutes=
-Number(b.tripMinutes||0);
-
-
-let item=
-document.createElement("div");
-
-item.className="ride";
-
-
-item.innerHTML=
-
-"<b>✅ Completed Ride</b>"+
-
-"<div class='muted'>"+
-"Customer: "+
-escapeHTML(b.customerName||"-")+
-"</div>"+
-
-"<div class='muted'>"+
-"📍 "+
-escapeHTML(b.pickup||"-")+
-"</div>"+
-
-"<div class='muted'>"+
-"🏁 "+
-escapeHTML(b.drop||"-")+
-"</div>"+
-
-"<div class='muted'>"+
-"💰 ₹"+
-total.toFixed(2)+
-" · "+
-minutes+
-" Min"+
-"</div>";
-
-
-history.appendChild(item);
-
-});
-
-},
-
-function(error){
-
-console.error(
-"History:",
-error
+toast(
+"10 digit mobile number डालें"
 );
 
+return;
+
 }
 
+
+if(!newId){
+
+toast(
+"Driver ID डालें"
 );
 
-}catch(e){
-
-console.error(e);
-
-}
+return;
 
 }
 
 
-/* ================= PROFILE ================= */
+if(!newVehicle){
 
-async function saveProfile(){
+toast(
+"Vehicle Number डालें"
+);
 
-driver.name=
-$("profileName").value.trim();
+return;
 
-driver.phone=
-$("profilePhone").value.trim();
+}
 
-driver.driverid=
-$("profileId").value.trim();
 
-driver.vehicle=
-$("profileVehicle").value.trim();
+if(
+newAadhaar &&
+!/^[0-9]{12}$/.test(newAadhaar)
+){
 
-driver.aadhaar=
-$("profileAadhaar").value.trim();
+toast(
+"Aadhaar 12 digit होना चाहिए"
+);
+
+return;
+
+}
+
+
+let oldDriverId=
+driver.driverid;
+
+
+driver={
+
+name:newName,
+
+phone:newPhone,
+
+driverid:newId,
+
+vehicle:newVehicle,
+
+aadhaar:newAadhaar
+
+};
 
 
 localStorage.setItem(
@@ -2925,7 +3723,10 @@ JSON.stringify(driver)
 
 try{
 
-let {doc,setDoc}=window.firebaseFns;
+let {
+doc,
+setDoc
+}=window.firebaseFns;
 
 
 await setDoc(
@@ -2939,84 +3740,137 @@ driver.driverid
 {
 
 name:driver.name,
+
 phone:driver.phone,
+
 driverid:driver.driverid,
+
 vehicle:driver.vehicle,
+
 aadhaar:driver.aadhaar
 
 },
 
-{merge:true}
+{
+merge:true
+}
 
 );
 
 
 loadDriverUI();
 
-toast("✅ Profile Saved");
+
+toast(
+"✅ Profile Saved"
+);
+
+
+if(
+oldDriverId!==driver.driverid
+){
+
+toast(
+"Profile Saved. App Refresh करें।"
+);
+
+}
 
 }catch(e){
 
 console.error(e);
 
-toast("Profile Save failed");
+toast(
+"Profile Save नहीं हुआ"
+);
 
 }
 
 }
 
 
-/* ================= NAVIGATION ================= */
+/* =====================================================
+ NAVIGATION PAGE
+===================================================== */
 
 function openPage(page){
 
-$("homePage").classList.add("hidden");
+$("homePage")
+.classList
+.add("hidden");
 
-$("ridesPage").classList.add("hidden");
+$("ridesPage")
+.classList
+.add("hidden");
 
-$("profilePage").classList.add("hidden");
+$("profilePage")
+.classList
+.add("hidden");
 
 
-$("homeNav").classList.remove("active");
+$("homeNav")
+.classList
+.remove("active");
 
-$("ridesNav").classList.remove("active");
+$("ridesNav")
+.classList
+.remove("active");
 
-$("profileNav").classList.remove("active");
+$("profileNav")
+.classList
+.remove("active");
 
 
 if(page==="home"){
 
-$("homePage").classList.remove("hidden");
+$("homePage")
+.classList
+.remove("hidden");
 
-$("homeNav").classList.add("active");
+$("homeNav")
+.classList
+.add("active");
 
 }
 
 
 if(page==="rides"){
 
-$("ridesPage").classList.remove("hidden");
+$("ridesPage")
+.classList
+.remove("hidden");
 
-$("ridesNav").classList.add("active");
+$("ridesNav")
+.classList
+.add("active");
 
 }
 
 
 if(page==="profile"){
 
-$("profilePage").classList.remove("hidden");
+$("profilePage")
+.classList
+.remove("hidden");
 
-$("profileNav").classList.add("active");
+$("profileNav")
+.classList
+.add("active");
 
 }
 
 
-window.scrollTo(0,0);
+window.scrollTo(
+0,
+0
+);
 
 }
 
 
-/* ================= ESCAPE ================= */
+/* =====================================================
+ ESCAPE HTML
+===================================================== */
 
 function escapeHTML(value){
 
@@ -3041,62 +3895,45 @@ return {
 }
 
 
-/* ================= START ================= */
+/* =====================================================
+ START APP
+===================================================== */
 
 window.addEventListener(
 "load",
+function(){
+
+setTimeout(
 function(){
 
 initDriverMap();
 
 checkDriver();
 
-setTimeout(function(){
-
-restoreLocalBooking();
-
-},1000);
-
-}
+},
+300
 );
+
+});
 
 
 /*
- Important:
- Navigation से वापस आने पर page reload हो सकता है,
- लेकिन booking Firebase + localStorage से restore होगी.
+ Refresh पर GPS/Booking को जानबूझकर clear नहीं किया जाता।
+
+Firebase listener Refresh के बाद active booking
+दोबारा load करेगा।
 */
 
-document.addEventListener(
-"visibilitychange",
+
+window.addEventListener(
+"beforeunload",
 function(){
 
-if(!document.hidden){
+/*
+ कुछ भी clear नहीं करेंगे।
+*/
 
-setTimeout(function(){
-
-if(currentBooking){
-
-if(currentBooking.status==="driver_accepted"){
-
-showAcceptedBooking();
-
-}
-
-if(currentBooking.status==="trip_started"){
-
-showTripRunning();
-
-}
-
-}
-
-},500);
-
-}
-
-}
-);
+});
 
 </script>
 

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -20,360 +19,367 @@ crossorigin=""
 <style>
 
 *{
- box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
- margin:0;
- background:#f2f5f3;
- color:#202522;
- font-family:Arial,sans-serif;
- padding-bottom:85px;
+margin:0;
+background:#f2f5f3;
+color:#202522;
+font-family:Arial,sans-serif;
+padding-bottom:85px;
 }
 
 button,input{
- font:inherit;
+font:inherit;
 }
 
 button{
- cursor:pointer;
+cursor:pointer;
 }
 
 .wrap{
- max-width:560px;
- margin:auto;
+max-width:560px;
+margin:auto;
 }
 
 .top{
- background:#009b3a;
- color:#fff;
- padding:20px 18px 25px;
- border-radius:0 0 28px 28px;
+background:#009b3a;
+color:#fff;
+padding:20px 18px 25px;
+border-radius:0 0 28px 28px;
 }
 
 .toprow{
- display:flex;
- justify-content:space-between;
- align-items:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 .logo{
- font-size:24px;
- font-weight:bold;
+font-size:24px;
+font-weight:bold;
 }
 
 .status{
- background:#ffffff22;
- border-radius:22px;
- padding:9px 13px;
- font-size:13px;
+background:#ffffff22;
+border-radius:22px;
+padding:9px 13px;
+font-size:13px;
 }
 
 .sub{
- margin-top:15px;
- font-size:14px;
+margin-top:15px;
+font-size:14px;
 }
 
 .card{
- background:#fff;
- margin:14px;
- border-radius:18px;
- padding:18px;
- box-shadow:0 3px 14px #0000000d;
+background:#fff;
+margin:14px;
+border-radius:18px;
+padding:18px;
+box-shadow:0 3px 14px #0000000d;
 }
 
 .driver{
- display:flex;
- align-items:center;
- gap:13px;
+display:flex;
+align-items:center;
+gap:13px;
 }
 
 .avatar{
- width:58px;
- height:58px;
- border-radius:50%;
- background:#dff6e7;
- display:grid;
- place-items:center;
- font-size:29px;
+width:58px;
+height:58px;
+border-radius:50%;
+background:#dff6e7;
+display:grid;
+place-items:center;
+font-size:29px;
 }
 
 .name{
- font-size:21px;
- font-weight:bold;
+font-size:21px;
+font-weight:bold;
 }
 
 .muted{
- font-size:13px;
- color:#68716b;
- margin-top:5px;
+font-size:13px;
+color:#68716b;
+margin-top:5px;
 }
 
 input{
- width:100%;
- padding:13px;
- border:1px solid #d8ded9;
- border-radius:10px;
- margin:6px 0 12px;
+width:100%;
+padding:13px;
+border:1px solid #d8ded9;
+border-radius:10px;
+margin:6px 0 12px;
 }
 
 label{
- font-weight:bold;
+font-weight:bold;
 }
 
 .dutybox{
- margin-top:17px;
- border:1px solid #e0e5e2;
- border-radius:15px;
- padding:13px;
+margin-top:17px;
+border:1px solid #e0e5e2;
+border-radius:15px;
+padding:13px;
 }
 
 .row{
- display:flex;
- align-items:center;
- justify-content:space-between;
+display:flex;
+align-items:center;
+justify-content:space-between;
 }
 
 .switch{
- width:64px;
- height:38px;
- border:0;
- border-radius:25px;
- background:#c9ccca;
- padding:4px;
+width:64px;
+height:38px;
+border:0;
+border-radius:25px;
+background:#c9ccca;
+padding:4px;
 }
 
 .switch span{
- display:block;
- width:30px;
- height:30px;
- border-radius:50%;
- background:#fff;
- transition:.2s;
+display:block;
+width:30px;
+height:30px;
+border-radius:50%;
+background:#fff;
+transition:.2s;
 }
 
 .switch.on{
- background:#009b3a;
+background:#009b3a;
 }
 
 .switch.on span{
- transform:translateX(26px);
+transform:translateX(26px);
 }
 
 .gpsbox{
- margin-top:14px;
- padding:13px;
- border-radius:13px;
- background:#e5f8ec;
- color:#00883a;
- font-weight:bold;
+margin-top:14px;
+padding:13px;
+border-radius:13px;
+background:#e5f8ec;
+color:#00883a;
+font-weight:bold;
 }
 
 #driverMap{
- width:100%;
- height:240px;
- border-radius:15px;
- overflow:hidden;
- margin-top:14px;
+width:100%;
+height:240px;
+border-radius:15px;
+overflow:hidden;
+margin-top:14px;
 }
 
 .coords{
- margin-top:10px;
- font-size:13px;
- line-height:1.5;
- color:#68716b;
+margin-top:10px;
+font-size:13px;
+line-height:1.5;
+color:#68716b;
 }
 
 .btn{
- width:100%;
- border:0;
- border-radius:12px;
- padding:14px;
- margin-top:11px;
- font-weight:bold;
- color:#fff;
- font-size:15px;
+width:100%;
+border:0;
+border-radius:12px;
+padding:14px;
+margin-top:11px;
+font-weight:bold;
+color:#fff;
+font-size:15px;
 }
 
 .green{
- background:#009b3a;
+background:#009b3a;
 }
 
 .red{
- background:#ed1025;
+background:#ed1025;
 }
 
 .orange{
- background:#d66a00;
+background:#d66a00;
 }
 
 .blue{
- background:#1976d2;
+background:#1976d2;
+}
+
+.purple{
+background:#673ab7;
 }
 
 .gray{
- background:#555;
-}
-
-.dark{
- background:#222;
-}
-
-.navbtn{
- background:#673ab7;
+background:#555;
 }
 
 .ride{
- border:2px solid #edf0ee;
- border-radius:15px;
- padding:14px;
- margin-top:12px;
+border:2px solid #edf0ee;
+border-radius:15px;
+padding:14px;
+margin-top:12px;
 }
 
 .newbooking{
- border:2px solid #009b3a;
- background:#f1fff5;
- animation:bookingPulse 1.5s infinite;
+border:2px solid #009b3a;
+background:#f1fff5;
+animation:bookingPulse 1.5s infinite;
 }
 
 @keyframes bookingPulse{
 
 0%{
- box-shadow:0 0 0 0 #009b3a55;
+box-shadow:0 0 0 0 #009b3a44;
 }
 
 70%{
- box-shadow:0 0 0 10px #009b3a00;
+box-shadow:0 0 0 8px #009b3a00;
 }
 
 100%{
- box-shadow:0 0 0 0 #009b3a00;
+box-shadow:0 0 0 0 #009b3a00;
 }
 
 }
 
 .badge{
- display:inline-block;
- background:#fff2cf;
- color:#9b6c00;
- border-radius:18px;
- padding:6px 10px;
- font-size:12px;
- font-weight:bold;
+display:inline-block;
+background:#fff2cf;
+color:#9b6c00;
+border-radius:18px;
+padding:6px 10px;
+font-size:12px;
+font-weight:bold;
 }
 
 .place{
- font-weight:bold;
- margin:14px 0;
- font-size:16px;
+font-weight:bold;
+margin:12px 0;
+font-size:15px;
 }
 
 .two{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
 }
 
 .hidden{
- display:none!important;
+display:none!important;
 }
 
 .empty{
- text-align:center;
- color:#68716b;
- padding:25px 10px;
+text-align:center;
+color:#68716b;
+padding:25px 10px;
 }
 
 .nav{
- position:fixed;
- bottom:0;
- left:0;
- right:0;
- height:76px;
- background:#fff;
- border-top:1px solid #ddd;
- display:flex;
- z-index:99;
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:76px;
+background:#fff;
+border-top:1px solid #ddd;
+display:flex;
+z-index:99;
 }
 
 .nav button{
- width:33.33%;
- border:0;
- background:#fff;
- color:#68716b;
- font-size:12px;
+width:33.33%;
+border:0;
+background:#fff;
+color:#68716b;
+font-size:12px;
 }
 
 .nav button.active{
- color:#009b3a;
- font-weight:bold;
+color:#009b3a;
+font-weight:bold;
 }
 
 .login{
- min-height:100vh;
- display:flex;
- align-items:center;
- justify-content:center;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .toast{
- position:fixed;
- z-index:200;
- left:50%;
- bottom:92px;
- transform:translate(-50%,20px);
- background:#222;
- color:#fff;
- padding:12px 16px;
- border-radius:10px;
- opacity:0;
- transition:.2s;
- max-width:90%;
- text-align:center;
+position:fixed;
+z-index:200;
+left:50%;
+bottom:92px;
+transform:translate(-50%,20px);
+background:#222;
+color:#fff;
+padding:12px 16px;
+border-radius:10px;
+opacity:0;
+transition:.2s;
+max-width:90%;
+text-align:center;
 }
 
 .toast.show{
- opacity:1;
- transform:translate(-50%,0);
+opacity:1;
+transform:translate(-50%,0);
 }
 
 .firebase{
- text-align:center;
- color:#159447;
- font-size:13px;
- margin-top:10px;
+text-align:center;
+color:#159447;
+font-size:13px;
+margin-top:10px;
+}
+
+.fare{
+background:#f7fff9;
+border:1px solid #d8f0df;
+border-radius:14px;
+padding:14px;
+margin-top:12px;
+}
+
+.fareRow{
+display:flex;
+justify-content:space-between;
+padding:7px 0;
+border-bottom:1px solid #e7eee9;
+}
+
+.fareRow:last-child{
+border-bottom:0;
+}
+
+.total{
+font-size:22px;
+font-weight:bold;
+color:#009b3a;
 }
 
 .navHint{
- background:#eef6ff;
- border:1px solid #c9def7;
- border-radius:12px;
- padding:11px;
- font-size:13px;
- color:#315d87;
- margin-top:12px;
-}
-
-.activeBox{
- background:#e5f8ec;
- border:1px solid #b8e7c8;
- border-radius:12px;
- padding:11px;
- margin-bottom:10px;
- font-weight:bold;
- color:#168a3a;
+background:#eef5ff;
+color:#315b91;
+padding:10px;
+border-radius:10px;
+font-size:12px;
+margin-top:10px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 
-<!-- =====================================================
- LOGIN
-===================================================== -->
+<!-- ================= LOGIN ================= -->
 
 <div id="loginPage" class="login">
 
@@ -387,18 +393,14 @@ label{
 Driver Login
 </h2>
 
-<label>
-Driver Name
-</label>
+<label>Driver Name</label>
 
 <input
 id="loginName"
-placeholder="अपना नाम लिखें"
+placeholder="Enter driver name"
 >
 
-<label>
-Mobile Number
-</label>
+<label>Mobile Number</label>
 
 <input
 id="loginPhone"
@@ -408,27 +410,21 @@ inputmode="numeric"
 placeholder="10 digit mobile number"
 >
 
-<label>
-Driver ID
-</label>
+<label>Driver ID</label>
 
 <input
 id="loginId"
 placeholder="SC-001"
 >
 
-<label>
-Vehicle Number
-</label>
+<label>Vehicle Number</label>
 
 <input
 id="loginVehicle"
 placeholder="TS-00-XX-0000"
 >
 
-<label>
-Aadhaar Number
-</label>
+<label>Aadhaar Number</label>
 
 <input
 id="loginAadhaar"
@@ -455,9 +451,7 @@ Firebase Connected
 </div>
 
 
-<!-- =====================================================
- APP
-===================================================== -->
+<!-- ================= APP ================= -->
 
 <div id="appPage" class="hidden">
 
@@ -489,14 +483,12 @@ Driver Panel
 <main class="wrap">
 
 
-<!-- =====================================================
- HOME
-===================================================== -->
+<!-- ================= HOME ================= -->
 
 <section id="homePage">
 
 
-<!-- DRIVER CARD -->
+<!-- DRIVER -->
 
 <div class="card">
 
@@ -535,10 +527,7 @@ ID:
 
 <b>Duty Status</b>
 
-<div
-id="dutyText"
-class="muted"
->
+<div id="dutyText" class="muted">
 🔴 Duty OFF
 </div>
 
@@ -569,10 +558,7 @@ class="gpsbox"
 </div>
 
 
-
-<!-- =====================================================
- GPS
-===================================================== -->
+<!-- ================= GPS ================= -->
 
 <div class="card">
 
@@ -610,10 +596,7 @@ onclick="toggleGPS()"
 </div>
 
 
-
-<!-- =====================================================
- BOOKING
-===================================================== -->
+<!-- ================= BOOKING ================= -->
 
 <div class="card">
 
@@ -624,7 +607,7 @@ onclick="toggleGPS()"
 <div id="rideBox">
 
 <div class="empty">
-अभी कोई नई Booking नहीं है।
+No active booking.
 </div>
 
 </div>
@@ -634,15 +617,9 @@ onclick="toggleGPS()"
 </section>
 
 
+<!-- ================= RIDES ================= -->
 
-<!-- =====================================================
- RIDES
-===================================================== -->
-
-<section
-id="ridesPage"
-class="hidden"
->
+<section id="ridesPage" class="hidden">
 
 <div class="card">
 
@@ -653,7 +630,7 @@ class="hidden"
 <div id="history">
 
 <div class="empty">
-अभी कोई completed ride नहीं है।
+No completed rides yet.
 </div>
 
 </div>
@@ -663,15 +640,9 @@ class="hidden"
 </section>
 
 
+<!-- ================= PROFILE ================= -->
 
-<!-- =====================================================
- PROFILE
-===================================================== -->
-
-<section
-id="profilePage"
-class="hidden"
->
+<section id="profilePage" class="hidden">
 
 <div class="card">
 
@@ -679,33 +650,23 @@ class="hidden"
 👤 Driver Profile
 </h3>
 
-<label>
-Driver Name
-</label>
+<label>Driver Name</label>
 
 <input id="profileName">
 
-<label>
-Driver Phone
-</label>
+<label>Driver Phone</label>
 
 <input id="profilePhone">
 
-<label>
-Driver ID
-</label>
+<label>Driver ID</label>
 
 <input id="profileId">
 
-<label>
-Vehicle Number
-</label>
+<label>Vehicle Number</label>
 
 <input id="profileVehicle">
 
-<label>
-Aadhaar Number
-</label>
+<label>Aadhaar Number</label>
 
 <input id="profileAadhaar">
 
@@ -724,10 +685,7 @@ onclick="saveProfile()"
 </main>
 
 
-
-<!-- =====================================================
- NAVIGATION BAR
-===================================================== -->
+<!-- ================= NAV ================= -->
 
 <nav class="nav">
 
@@ -767,10 +725,7 @@ Profile
 <div id="toast" class="toast"></div>
 
 
-
-<!-- =====================================================
- LEAFLET
-===================================================== -->
+<!-- ================= LEAFLET ================= -->
 
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -778,30 +733,27 @@ crossorigin=""
 ></script>
 
 
-
-<!-- =====================================================
- FIREBASE
-===================================================== -->
+<!-- ================= FIREBASE ================= -->
 
 <script type="module">
 
 import {
- initializeApp
+initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
 import {
- getFirestore,
- doc,
- setDoc,
- getDoc,
- updateDoc,
- collection,
- query,
- where,
- onSnapshot
+getFirestore,
+doc,
+setDoc,
+getDoc,
+updateDoc,
+collection,
+query,
+where,
+onSnapshot
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -831,9 +783,7 @@ appId:
 
 
 const app=
-initializeApp(
-firebaseConfig
-);
+initializeApp(firebaseConfig);
 
 
 const db=
@@ -856,7 +806,6 @@ onSnapshot
 
 };
 
-
 console.log(
 "SafetyCab Firebase Connected"
 );
@@ -864,10 +813,7 @@ console.log(
 </script>
 
 
-
-<!-- =====================================================
- MAIN JAVASCRIPT
-===================================================== -->
+<!-- ================= MAIN JAVASCRIPT ================= -->
 
 <script>
 
@@ -877,13 +823,7 @@ let duty=false;
 
 let watchId=null;
 
-
-/* अब दो listener होंगे */
-
-let searchingListener=null;
-
-let activeBookingListener=null;
-
+let bookingListeners=[];
 
 let currentBooking=null;
 
@@ -891,16 +831,49 @@ let tripStarted=false;
 
 let tripStartTime=null;
 
+let tripDistanceKm=0;
+
+let lastTripPoint=null;
+
 let lastBookingAlert="";
 
 let liveMap=null;
 
 let driverMarker=null;
 
+let currentLat=null;
 
-/* =====================================================
- ELEMENT
-===================================================== */
+let currentLng=null;
+
+let historyLoaded=false;
+
+
+/* ================= FARES ================= */
+
+const fares={
+
+Mini:{
+base:80,
+perKm:16,
+perMinute:1
+},
+
+Sedan:{
+base:100,
+perKm:21,
+perMinute:1
+},
+
+SUV:{
+base:150,
+perKm:26,
+perMinute:1.5
+}
+
+};
+
+
+/* ================= ELEMENT ================= */
 
 function $(id){
 
@@ -909,9 +882,7 @@ return document.getElementById(id);
 }
 
 
-/* =====================================================
- TOAST
-===================================================== */
+/* ================= TOAST ================= */
 
 function toast(msg){
 
@@ -919,25 +890,18 @@ $("toast").textContent=msg;
 
 $("toast").classList.add("show");
 
-clearTimeout(
-window.toastTimer
-);
+clearTimeout(window.toastTimer);
 
-window.toastTimer=setTimeout(
-function(){
+window.toastTimer=setTimeout(function(){
 
 $("toast").classList.remove("show");
 
-},
-2800
-);
+},3000);
 
 }
 
 
-/* =====================================================
- STRONG BOOKING SOUND
-===================================================== */
+/* ================= STRONG BOOKING SOUND ================= */
 
 let audioContext=null;
 
@@ -954,34 +918,27 @@ window.webkitAudioContext
 )();
 
 
-if(
-audioContext.state==="suspended"
-){
+if(audioContext.state==="suspended"){
 
 audioContext.resume();
 
 }
 
 
-let now=
+let start=
 audioContext.currentTime;
 
 
-/*
- तेज़ 5-beep alert
-*/
-
 let frequencies=[
-1000,
-1300,
-1000,
-1500,
-1100
+880,
+1046,
+880,
+1174,
+1046
 ];
 
 
-frequencies.forEach(
-function(freq,index){
+frequencies.forEach(function(freq,i){
 
 let osc=
 audioContext.createOscillator();
@@ -990,30 +947,28 @@ let gain=
 audioContext.createGain();
 
 
-let start=
-now+(index*0.22);
-
-
-osc.type="square";
+osc.type="sine";
 
 osc.frequency.value=freq;
 
 
+let t=
+start+(i*0.18);
+
+
 gain.gain.setValueAtTime(
 0.0001,
-start
+t
 );
-
 
 gain.gain.exponentialRampToValueAtTime(
-0.65,
-start+0.025
+0.8,
+t+0.03
 );
-
 
 gain.gain.exponentialRampToValueAtTime(
 0.0001,
-start+0.17
+t+0.15
 );
 
 
@@ -1024,93 +979,11 @@ audioContext.destination
 );
 
 
-osc.start(start);
+osc.start(t);
 
-osc.stop(start+0.18);
+osc.stop(t+0.17);
 
-}
-
-);
-
-}catch(e){
-
-console.log(
-"Sound error:",
-e
-);
-
-}
-
-}
-
-
-/* =====================================================
- EXTRA BEEP
-===================================================== */
-
-function extraBookingBeep(){
-
-try{
-
-if(
-audioContext &&
-audioContext.state==="suspended"
-){
-
-audioContext.resume();
-
-}
-
-
-if(!audioContext){
-
-return;
-
-}
-
-
-let now=
-audioContext.currentTime;
-
-
-let osc=
-audioContext.createOscillator();
-
-let gain=
-audioContext.createGain();
-
-
-osc.type="square";
-
-osc.frequency.value=1600;
-
-
-gain.gain.setValueAtTime(
-0.0001,
-now
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.7,
-now+0.03
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.0001,
-now+0.28
-);
-
-
-osc.connect(gain);
-
-gain.connect(
-audioContext.destination
-);
-
-
-osc.start(now);
-
-osc.stop(now+0.30);
+});
 
 }catch(e){
 
@@ -1121,26 +994,20 @@ console.log(e);
 }
 
 
-/* =====================================================
- VIBRATION
-===================================================== */
+/* ================= VIBRATION ================= */
 
 function bookingVibrate(){
 
 try{
 
-if(
-navigator.vibrate
-){
+if(navigator.vibrate){
 
 navigator.vibrate([
-500,
-180,
-500,
-180,
-700,
-180,
-900
+400,
+120,
+400,
+120,
+700
 ]);
 
 }
@@ -1150,43 +1017,7 @@ navigator.vibrate([
 }
 
 
-/* =====================================================
- NOTIFICATION PERMISSION
-===================================================== */
-
-async function requestNotificationPermission(){
-
-try{
-
-if(
-!("Notification" in window)
-){
-
-return;
-
-}
-
-
-if(
-Notification.permission==="default"
-){
-
-await Notification.requestPermission();
-
-}
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-
-/* =====================================================
- LOGIN
-===================================================== */
+/* ================= LOGIN ================= */
 
 async function driverLogin(){
 
@@ -1206,26 +1037,18 @@ let aadhaar=
 $("loginAadhaar").value.trim();
 
 
-if(
-name.length<2
-){
+if(name.length<2){
 
-toast(
-"Driver Name डालें"
-);
+toast("Enter driver name");
 
 return;
 
 }
 
 
-if(
-!/^[0-9]{10}$/.test(phone)
-){
+if(!/^[0-9]{10}$/.test(phone)){
 
-toast(
-"सही 10 digit mobile number डालें"
-);
+toast("Enter valid 10 digit mobile number");
 
 return;
 
@@ -1234,9 +1057,7 @@ return;
 
 if(!id){
 
-toast(
-"Driver ID डालें"
-);
+toast("Enter Driver ID");
 
 return;
 
@@ -1245,9 +1066,7 @@ return;
 
 if(!vehicle){
 
-toast(
-"Vehicle Number डालें"
-);
+toast("Enter Vehicle Number");
 
 return;
 
@@ -1259,9 +1078,7 @@ aadhaar &&
 !/^[0-9]{12}$/.test(aadhaar)
 ){
 
-toast(
-"Aadhaar 12 digit होना चाहिए"
-);
+toast("Aadhaar must be 12 digits");
 
 return;
 
@@ -1308,23 +1125,14 @@ id
 {
 
 name:name,
-
 phone:phone,
-
 driverid:id,
-
 vehicle:vehicle,
-
 aadhaar:aadhaar,
-
 dutystatus:"off",
-
 gpsstatus:"offline",
-
 latitude:null,
-
 longitude:null,
-
 updatedAt:new Date()
 
 },
@@ -1345,27 +1153,19 @@ console.error(e);
 showApp();
 
 toast(
-"✅ Driver Login Successful"
+"Driver Login Successful"
 );
 
 }
 
 
-/* =====================================================
- SHOW APP
-===================================================== */
+/* ================= SHOW APP ================= */
 
 function showApp(){
 
-$("loginPage")
-.classList
-.add("hidden");
+$("loginPage").classList.add("hidden");
 
-
-$("appPage")
-.classList
-.remove("hidden");
-
+$("appPage").classList.remove("hidden");
 
 loadDriverUI();
 
@@ -1373,20 +1173,16 @@ restoreDuty();
 
 startBookingListeners();
 
+loadCompletedHistory();
+
 }
 
 
-/* =====================================================
- LOAD DRIVER
-===================================================== */
+/* ================= LOAD DRIVER ================= */
 
 function loadDriverUI(){
 
-if(!driver){
-
-return;
-
-}
+if(!driver)return;
 
 
 $("driverName").textContent=
@@ -1417,9 +1213,7 @@ driver.aadhaar||"";
 }
 
 
-/* =====================================================
- CHECK DRIVER
-===================================================== */
+/* ================= CHECK DRIVER ================= */
 
 function checkDriver(){
 
@@ -1449,17 +1243,11 @@ console.error(e);
 }
 
 
-/* =====================================================
- DUTY RESTORE
-===================================================== */
+/* ================= RESTORE DUTY ================= */
 
 async function restoreDuty(){
 
-if(!driver){
-
-return;
-
-}
+if(!driver)return;
 
 
 let savedDuty=
@@ -1474,9 +1262,7 @@ duty=true;
 
 updateDutyUI();
 
-
-setTimeout(
-function(){
+setTimeout(function(){
 
 if(duty){
 
@@ -1484,9 +1270,7 @@ startGPS();
 
 }
 
-},
-800
-);
+},800);
 
 return;
 
@@ -1513,16 +1297,12 @@ driver.driverid
 );
 
 
-if(
-snap.exists()
-){
+if(snap.exists()){
 
 let data=snap.data();
 
 
-if(
-data.dutystatus==="on"
-){
+if(data.dutystatus==="on"){
 
 duty=true;
 
@@ -1534,8 +1314,7 @@ localStorage.setItem(
 updateDutyUI();
 
 
-setTimeout(
-function(){
+setTimeout(function(){
 
 if(duty){
 
@@ -1543,9 +1322,7 @@ startGPS();
 
 }
 
-},
-800
-);
+},800);
 
 }
 
@@ -1553,19 +1330,14 @@ startGPS();
 
 }catch(e){
 
-console.error(
-"Duty restore:",
-e
-);
+console.error(e);
 
 }
 
 }
 
 
-/* =====================================================
- DUTY UI
-===================================================== */
+/* ================= DUTY UI ================= */
 
 function updateDutyUI(){
 
@@ -1591,17 +1363,11 @@ duty
 }
 
 
-/* =====================================================
- DUTY
-===================================================== */
+/* ================= DUTY ================= */
 
 async function toggleDuty(){
 
-if(!driver){
-
-return;
-
-}
+if(!driver)return;
 
 
 duty=!duty;
@@ -1609,9 +1375,7 @@ duty=!duty;
 
 localStorage.setItem(
 "SafetyCab_Duty",
-duty
-?"on"
-:"off"
+duty?"on":"off"
 );
 
 
@@ -1620,36 +1384,7 @@ updateDutyUI();
 
 if(duty){
 
-toast(
-"🟢 Driver Online"
-);
-
-
-/*
- User interaction के समय sound/notification permission
-*/
-
-try{
-
-audioContext=
-audioContext ||
-new (
-window.AudioContext ||
-window.webkitAudioContext
-)();
-
-if(
-audioContext.state==="suspended"
-){
-
-await audioContext.resume();
-
-}
-
-}catch(e){}
-
-
-requestNotificationPermission();
+toast("🟢 Driver Online");
 
 startGPS();
 
@@ -1657,9 +1392,7 @@ startGPS();
 
 stopGPS();
 
-toast(
-"🔴 Driver Offline"
-);
+toast("🔴 Driver Offline");
 
 }
 
@@ -1683,14 +1416,10 @@ driver.driverid
 {
 
 dutystatus:
-duty
-?"on"
-:"off",
+duty?"on":"off",
 
 gpsstatus:
-duty
-?"online"
-:"offline",
+duty?"online":"offline",
 
 updatedAt:new Date()
 
@@ -1707,15 +1436,11 @@ console.error(e);
 }
 
 
-/* =====================================================
- GPS TOGGLE
-===================================================== */
+/* ================= GPS TOGGLE ================= */
 
 function toggleGPS(){
 
-if(
-watchId===null
-){
+if(watchId===null){
 
 startGPS();
 
@@ -1728,18 +1453,14 @@ stopGPS();
 }
 
 
-/* =====================================================
- START GPS
-===================================================== */
+/* ================= START GPS ================= */
 
 function startGPS(){
 
-if(
-!navigator.geolocation
-){
+if(!navigator.geolocation){
 
 toast(
-"इस Browser में GPS उपलब्ध नहीं है"
+"Location is not available in this browser"
 );
 
 return;
@@ -1747,9 +1468,7 @@ return;
 }
 
 
-if(
-watchId!==null
-){
+if(watchId!==null){
 
 return;
 
@@ -1776,6 +1495,11 @@ let lng=
 pos.coords.longitude;
 
 
+currentLat=lat;
+
+currentLng=lng;
+
+
 $("latitude").textContent=
 lat.toFixed(6);
 
@@ -1784,8 +1508,7 @@ lng.toFixed(6);
 
 
 $("lastUpdate").textContent=
-new Date()
-.toLocaleTimeString();
+new Date().toLocaleTimeString();
 
 
 $("gpsStatus").textContent=
@@ -1797,6 +1520,44 @@ lat,
 lng
 );
 
+
+/* ===== TRIP DISTANCE ===== */
+
+if(tripStarted){
+
+if(lastTripPoint){
+
+let d=
+distanceBetween(
+lastTripPoint.lat,
+lastTripPoint.lng,
+lat,
+lng
+);
+
+
+/*
+Ignore impossible GPS jumps.
+*/
+
+if(d>0 && d<2){
+
+tripDistanceKm+=d;
+
+}
+
+}
+
+
+lastTripPoint={
+lat:lat,
+lng:lng
+};
+
+}
+
+
+/* ===== FIREBASE DRIVER GPS ===== */
 
 if(driver){
 
@@ -1825,9 +1586,7 @@ longitude:lng,
 gpsstatus:"online",
 
 dutystatus:
-duty
-?"on"
-:"off",
+duty?"on":"off",
 
 updatedAt:new Date()
 
@@ -1854,7 +1613,6 @@ function(error){
 $("gpsStatus").textContent=
 "🔴 GPS OFFLINE";
 
-
 $("gpsButton").textContent=
 "📍 START LIVE GPS";
 
@@ -1862,13 +1620,13 @@ $("gpsButton").textContent=
 if(error.code===1){
 
 toast(
-"📍 Location permission allow करें"
+"Location permission is required. Please tap Allow."
 );
 
 }else{
 
 toast(
-"GPS Location नहीं मिल रही"
+"Unable to get your location."
 );
 
 }
@@ -1880,9 +1638,9 @@ toast(
 
 enableHighAccuracy:true,
 
-timeout:15000,
+timeout:20000,
 
-maximumAge:3000
+maximumAge:5000
 
 }
 
@@ -1891,9 +1649,7 @@ maximumAge:3000
 }
 
 
-/* =====================================================
- STOP GPS
-===================================================== */
+/* ================= STOP GPS ================= */
 
 function stopGPS(){
 
@@ -1943,9 +1699,7 @@ driver.driverid
 gpsstatus:"offline",
 
 dutystatus:
-duty
-?"on"
-:"off",
+duty?"on":"off",
 
 updatedAt:new Date()
 
@@ -1960,15 +1714,11 @@ updatedAt:new Date()
 }
 
 
-/* =====================================================
- MAP INIT
-===================================================== */
+/* ================= MAP ================= */
 
 function initDriverMap(){
 
-if(
-typeof L==="undefined"
-){
+if(typeof L==="undefined"){
 
 return;
 
@@ -2005,17 +1755,12 @@ attribution:
 
 }
 
-)
-.addTo(
-liveMap
-);
+).addTo(liveMap);
 
 }
 
 
-/* =====================================================
- UPDATE DRIVER MAP
-===================================================== */
+/* ================= UPDATE MAP ================= */
 
 function updateDriverMap(
 lat,
@@ -2085,7 +1830,7 @@ liveMap
 
 
 driverMarker.bindPopup(
-"🚕 आपका Live GPS"
+"🚕 Your Live GPS"
 );
 
 }else{
@@ -2103,32 +1848,62 @@ position,
 );
 
 
-setTimeout(
-function(){
+setTimeout(function(){
 
 liveMap.invalidateSize();
 
-},
-200
+},200);
+
+}
+
+
+/* ================= DISTANCE ================= */
+
+function distanceBetween(
+lat1,
+lng1,
+lat2,
+lng2
+){
+
+const R=6371;
+
+const dLat=
+(lat2-lat1)*
+Math.PI/180;
+
+const dLng=
+(lng2-lng1)*
+Math.PI/180;
+
+
+const a=
+Math.sin(dLat/2)*
+Math.sin(dLat/2)+
+
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
+
+Math.sin(dLng/2)*
+Math.sin(dLng/2);
+
+
+const c=
+2*
+Math.atan2(
+Math.sqrt(a),
+Math.sqrt(1-a)
 );
+
+
+return R*c;
 
 }
 
 
 /* =====================================================
- BOOKING LISTENERS
-=====================================================
-
-IMPORTANT:
-
-Listener 1:
-नई searching booking
-
-Listener 2:
-हमारे Driver की accepted/trip_started booking
-
-इससे Refresh के बाद accepted booking वापस आएगी।
-*/
+BOOKING LISTENERS
+===================================================== */
 
 function startBookingListeners(){
 
@@ -2142,24 +1917,7 @@ return;
 }
 
 
-/* पुराने listeners बंद */
-
-if(searchingListener){
-
-searchingListener();
-
-searchingListener=null;
-
-}
-
-
-if(activeBookingListener){
-
-activeBookingListener();
-
-activeBookingListener=null;
-
-}
+stopBookingListeners();
 
 
 let {
@@ -2170,9 +1928,7 @@ onSnapshot
 }=window.firebaseFns;
 
 
-/* =====================================================
- LISTENER 1 - NEW SEARCHING BOOKING
-===================================================== */
+/* ===== NEW SEARCHING BOOKINGS ===== */
 
 let searchingQuery=
 query(
@@ -2191,106 +1947,57 @@ where(
 );
 
 
-searchingListener=
+let searchingListener=
 onSnapshot(
 
 searchingQuery,
 
 function(snapshot){
 
-/*
- अगर पहले से accepted/trip booking है,
- तो नई searching booking को ऊपर नहीं दिखाएँ।
-*/
-
-if(
-currentBooking &&
-(
-currentBooking.status==="driver_accepted" ||
-currentBooking.status==="trip_started"
-)
-){
-
-return;
-
-}
-
-
 let found=null;
 
 
-snapshot.forEach(
-function(d){
+snapshot.forEach(function(d){
 
-if(found){
-
-return;
-
-}
+if(found)return;
 
 
 let data=d.data();
 
 
 found={
-
 docId:d.id,
-
 ...data
-
 };
 
 });
 
 
-if(found){
+if(found && !currentBooking){
 
-let bookingKey=
+let key=
 found.docId ||
 found.bookingId;
 
 
-if(
-lastBookingAlert!==bookingKey
-){
+if(lastBookingAlert!==key){
 
-lastBookingAlert=
-bookingKey;
-
+lastBookingAlert=key;
 
 bookingSound();
 
 bookingVibrate();
 
 toast(
-"🔔 नई Booking मिली!"
+"🔔 New Booking"
 );
 
-
-showBookingNotification(
-found
-);
+showBookingNotification(found);
 
 }
 
 
-showNewBooking(
-found
-);
-
-}else{
-
-if(
-!currentBooking
-){
-
-$("rideBox").innerHTML=
-
-'<div class="empty">'+
-'अभी कोई नई Booking नहीं है।'+
-'</div>';
-
-}
+showNewBooking(found);
 
 }
 
@@ -2303,18 +2010,17 @@ console.error(
 error
 );
 
-toast(
-"Booking connection error"
-);
-
 }
 
 );
 
 
-/* =====================================================
- LISTENER 2 - DRIVER ACTIVE BOOKING
-===================================================== */
+bookingListeners.push(
+searchingListener
+);
+
+
+/* ===== ACTIVE BOOKING RESTORE ===== */
 
 let activeQuery=
 query(
@@ -2342,123 +2048,41 @@ where(
 );
 
 
-activeBookingListener=
+let activeListener=
 onSnapshot(
 
 activeQuery,
 
 function(snapshot){
 
-let found=null;
+let active=null;
 
 
-snapshot.forEach(
-function(d){
+snapshot.forEach(function(d){
 
-if(found){
-
-return;
-
-}
+if(active)return;
 
 
-let data=d.data();
-
-
-found={
-
+active={
 docId:d.id,
-
-...data
-
+...d.data()
 };
 
 });
 
 
-if(found){
+if(active){
 
-/*
- Refresh के बाद यही Booking वापस मिलेगी।
-*/
-
-currentBooking=found;
-
-localStorage.setItem(
-"SafetyCab_ActiveBooking",
-found.docId
-);
-
-
-if(
-found.status==="trip_started"
-){
-
-tripStarted=true;
-
-if(
-found.tripStartedAt &&
-found.tripStartedAt.toMillis
-){
-
-tripStartTime=
-found.tripStartedAt.toMillis();
-
-}else{
-
-tripStartTime=
-Date.now();
+restoreActiveBooking(active);
 
 }
 
-
-showRunningBooking();
-
-}else{
-
-tripStarted=false;
-
-tripStartTime=null;
-
-showAcceptedBooking();
-
-}
-
-}else{
-
-/*
- कोई active booking नहीं।
-*/
-
-if(
-currentBooking &&
-(
-currentBooking.status==="driver_accepted" ||
-currentBooking.status==="trip_started"
-)
+else if(
+!currentBooking
 ){
-
-/*
- Firestore में active booking खत्म हो गई है।
-*/
-
-currentBooking=null;
-
-tripStarted=false;
-
-tripStartTime=null;
-
-localStorage.removeItem(
-"SafetyCab_ActiveBooking"
-);
 
 $("rideBox").innerHTML=
-
-'<div class="empty">'+
-'अभी कोई नई Booking नहीं है।'+
-'</div>';
-
-}
+'<div class="empty">No active booking.</div>';
 
 }
 
@@ -2475,20 +2099,82 @@ error
 
 );
 
+
+bookingListeners.push(
+activeListener
+);
+
 }
 
 
-/* =====================================================
- NOTIFICATION
-===================================================== */
+/* ================= STOP LISTENERS ================= */
+
+function stopBookingListeners(){
+
+bookingListeners.forEach(function(unsubscribe){
+
+try{
+
+unsubscribe();
+
+}catch(e){}
+
+});
+
+
+bookingListeners=[];
+
+}
+
+
+/* ================= RESTORE ACTIVE BOOKING ================= */
+
+function restoreActiveBooking(b){
+
+currentBooking=b;
+
+
+if(b.status==="trip_started"){
+
+tripStarted=true;
+
+
+if(
+b.tripStartedAt &&
+b.tripStartedAt.toMillis
+){
+
+tripStartTime=
+b.tripStartedAt.toMillis();
+
+}else{
+
+tripStartTime=
+Date.now();
+
+}
+
+
+showTripRunning();
+
+}else{
+
+tripStarted=false;
+
+showAcceptedBooking();
+
+}
+
+}
+
+
+/* ================= NOTIFICATION ================= */
 
 async function showBookingNotification(b){
 
 try{
 
-if(
-!("Notification" in window)
-){
+if(!("Notification" in window)){
 
 return;
 
@@ -2510,22 +2196,18 @@ Notification.permission==="granted"
 
 new Notification(
 
-"🚕 SafetyCab - नई Booking",
+"🚕 SafetyCab - New Booking",
 
 {
 
 body:
-
 "Customer: "+
 (b.customerName||"-")+
-
 "\nPickup: "+
 (b.pickup||"-"),
 
 tag:
-"safetycab-booking-"+(
-b.docId||b.bookingId||Date.now()
-)
+"safetycab-booking"
 
 }
 
@@ -2535,19 +2217,14 @@ b.docId||b.bookingId||Date.now()
 
 }catch(e){
 
-console.log(
-"Notification:",
-e
-);
+console.log(e);
 
 }
 
 }
 
 
-/* =====================================================
- SHOW NEW BOOKING
-===================================================== */
+/* ================= SHOW NEW BOOKING ================= */
 
 function showNewBooking(b){
 
@@ -2558,58 +2235,40 @@ $("rideBox").innerHTML=
 
 '<div class="ride newbooking">'+
 
-'<span class="badge">'+
-'🔔 NEW BOOKING'+
-'</span>'+
+'<span class="badge">🔔 NEW BOOKING</span>'+
 
 '<div class="place">'+
 '👤 Customer: '+
-escapeHTML(
-b.customerName||"-"
-)+
+escapeHTML(b.customerName||"-")+
 '</div>'+
 
 '<div class="place">'+
 '📞 Phone: '+
-escapeHTML(
-b.customerPhone||"-"
-)+
+escapeHTML(b.customerPhone||"-")+
 '</div>'+
 
 '<div class="place">'+
 '📍 Pickup: '+
-escapeHTML(
-b.pickup||"-"
-)+
-'</div>'+
-
-'<div style="text-align:center;font-size:22px">'+
-'↓'+
+escapeHTML(b.pickup||"-")+
 '</div>'+
 
 '<div class="place">'+
 '🏁 Drop: '+
-escapeHTML(
-b.drop||"-"
-)+
+escapeHTML(b.drop||"-")+
 '</div>'+
 
 '<div class="place">'+
 '🚕 Vehicle: '+
-escapeHTML(
-b.cabType||"-"
-)+
+escapeHTML(b.cabType||"-")+
 '</div>'+
 
 '<div class="two">'+
 
-'<button class="btn green" '+
-'onclick="acceptBooking()">'+
+'<button class="btn green" onclick="acceptBooking()">'+
 '✅ ACCEPT'+
 '</button>'+
 
-'<button class="btn red" '+
-'onclick="rejectBooking()">'+
+'<button class="btn red" onclick="rejectBooking()">'+
 '❌ REJECT'+
 '</button>'+
 
@@ -2620,17 +2279,13 @@ b.cabType||"-"
 }
 
 
-/* =====================================================
- ACCEPT
-===================================================== */
+/* ================= ACCEPT ================= */
 
 async function acceptBooking(){
 
 if(!currentBooking){
 
-toast(
-"कोई Booking नहीं है"
-);
+toast("No booking available");
 
 return;
 
@@ -2639,13 +2294,18 @@ return;
 
 if(!duty){
 
-toast(
-"पहले Duty ON करें"
-);
+toast("Please turn Duty ON first");
 
 return;
 
 }
+
+
+/* Strong sound on button press */
+
+bookingSound();
+
+bookingVibrate();
 
 
 let bookingDocId=
@@ -2655,9 +2315,7 @@ currentBooking.bookingId;
 
 if(!bookingDocId){
 
-toast(
-"Booking ID नहीं मिली"
-);
+toast("Booking ID not found");
 
 return;
 
@@ -2682,26 +2340,19 @@ bookingDocId
 
 {
 
-status:
-"driver_accepted",
+status:"driver_accepted",
 
-driverId:
-driver.driverid,
+driverId:driver.driverid,
 
-driverDocId:
-driver.driverid,
+driverDocId:driver.driverid,
 
-driverName:
-driver.name,
+driverName:driver.name,
 
-driverPhone:
-driver.phone,
+driverPhone:driver.phone,
 
-driverVehicle:
-driver.vehicle,
+driverVehicle:driver.vehicle,
 
-acceptedAt:
-new Date()
+acceptedAt:new Date()
 
 }
 
@@ -2710,9 +2361,6 @@ new Date()
 
 currentBooking.status=
 "driver_accepted";
-
-currentBooking.driverId=
-driver.driverid;
 
 
 localStorage.setItem(
@@ -2724,10 +2372,6 @@ bookingDocId
 showAcceptedBooking();
 
 
-/*
- Accept के बाद sound नहीं बजाएँगे।
-*/
-
 toast(
 "✅ Booking Accepted"
 );
@@ -2735,13 +2379,10 @@ toast(
 
 }catch(e){
 
-console.error(
-"Accept error:",
-e
-);
+console.error(e);
 
 toast(
-"❌ Booking Accept नहीं हुई"
+"❌ Booking could not be accepted"
 );
 
 }
@@ -2749,89 +2390,62 @@ toast(
 }
 
 
-/* =====================================================
- ACCEPTED BOOKING UI
-===================================================== */
+/* ================= ACCEPTED BOOKING ================= */
 
 function showAcceptedBooking(){
 
-if(!currentBooking){
-
-return;
-
-}
+if(!currentBooking)return;
 
 
 let b=currentBooking;
-
-
-tripStarted=false;
 
 
 $("rideBox").innerHTML=
 
 '<div class="ride">'+
 
-'<div class="activeBox">'+
+'<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
 '✅ BOOKING ACCEPTED'+
-'</div>'+
-
-'<span class="badge" '+
-'style="background:#e5f8ec;color:#168a3a">'+
-'✅ ACCEPTED'+
 '</span>'+
 
 '<div class="place">'+
 '👤 Customer: '+
-escapeHTML(
-b.customerName||"-"
-)+
+escapeHTML(b.customerName||"-")+
 '</div>'+
 
 '<div class="place">'+
 '📞 '+
-escapeHTML(
-b.customerPhone||"-"
-)+
+escapeHTML(b.customerPhone||"-")+
 '</div>'+
 
 '<div class="place">'+
 '📍 Pickup: '+
-escapeHTML(
-b.pickup||"-"
-)+
+escapeHTML(b.pickup||"-")+
 '</div>'+
 
 '<div class="place">'+
 '🏁 Drop: '+
-escapeHTML(
-b.drop||"-"
-)+
+escapeHTML(b.drop||"-")+
 '</div>'+
 
 '<div class="place">'+
 '🚕 Vehicle: '+
-escapeHTML(
-b.cabType||"-"
-)+
+escapeHTML(b.cabType||"-")+
 '</div>'+
 
-'<button class="btn navbtn" '+
-'onclick="openNavigation()">'+
+'<button class="btn purple" onclick="navigateToPickup()">'+
 '🧭 NAVIGATION TO PICKUP'+
 '</button>'+
 
 '<div class="navHint">'+
-'🗺️ Navigation अलग tab में खुलेगा। SafetyCab App इस tab में खुला रहेगा।'+
+'After reaching the pickup, press Android Back to return to SafetyCab, then press START TRIP.'+
 '</div>'+
 
-'<button class="btn blue" '+
-'onclick="startTrip()">'+
+'<button class="btn blue" onclick="startTrip()">'+
 '▶️ START TRIP'+
 '</button>'+
 
-'<button class="btn red" '+
-'onclick="cancelAcceptedRide()">'+
+'<button class="btn red" onclick="cancelAcceptedRide()">'+
 '❌ CANCEL RIDE'+
 '</button>'+
 
@@ -2840,98 +2454,13 @@ b.cabType||"-"
 }
 
 
-/* =====================================================
- RUNNING TRIP UI
-===================================================== */
+/* ================= NAVIGATION ================= */
 
-function showRunningBooking(){
+function navigateToPickup(){
 
 if(!currentBooking){
 
-return;
-
-}
-
-
-let b=currentBooking;
-
-
-tripStarted=true;
-
-
-$("rideBox").innerHTML=
-
-'<div class="ride">'+
-
-'<div class="activeBox" '+
-'style="color:#1976d2;background:#eaf3ff;border-color:#c9def7">'+
-'🟢 TRIP RUNNING'+
-'</div>'+
-
-'<span class="badge" '+
-'style="background:#e5f8ec;color:#168a3a">'+
-'🟢 TRIP RUNNING'+
-'</span>'+
-
-'<div class="place">'+
-'👤 Customer: '+
-escapeHTML(
-b.customerName||"-"
-)+
-'</div>'+
-
-'<div class="place">'+
-'📞 '+
-escapeHTML(
-b.customerPhone||"-"
-)+
-'</div>'+
-
-'<div class="place">'+
-'📍 Pickup: '+
-escapeHTML(
-b.pickup||"-"
-)+
-'</div>'+
-
-'<div class="place">'+
-'🏁 Drop: '+
-escapeHTML(
-b.drop||"-"
-)+
-'</div>'+
-
-'<button class="btn navbtn" '+
-'onclick="openDropNavigation()">'+
-'🧭 NAVIGATION TO DROP'+
-'</button>'+
-
-'<button class="btn green" '+
-'onclick="completeTrip()">'+
-'🏁 COMPLETE TRIP'+
-'</button>'+
-
-'<button class="btn red" '+
-'onclick="cancelAcceptedRide()">'+
-'❌ CANCEL RIDE'+
-'</button>'+
-
-'</div>';
-
-}
-
-
-/* =====================================================
- NAVIGATION TO PICKUP
-===================================================== */
-
-function openNavigation(){
-
-if(!currentBooking){
-
-toast(
-"Booking उपलब्ध नहीं है"
-);
+toast("No active booking");
 
 return;
 
@@ -2939,143 +2468,124 @@ return;
 
 
 let destination=
-currentBooking.pickup||"";
+parseCoordinates(
+currentBooking.pickup
+);
 
 
-if(!destination){
+if(
+!destination
+){
 
 toast(
-"Pickup Location नहीं मिली"
+"Pickup coordinates not available"
 );
 
 return;
 
 }
-
-
-openGoogleNavigation(
-destination
-);
-
-}
-
-
-/* =====================================================
- NAVIGATION TO DROP
-===================================================== */
-
-function openDropNavigation(){
-
-if(!currentBooking){
-
-toast(
-"Booking उपलब्ध नहीं है"
-);
-
-return;
-
-}
-
-
-let destination=
-currentBooking.drop||"";
-
-
-if(!destination){
-
-toast(
-"Drop Location नहीं मिली"
-);
-
-return;
-
-}
-
-
-openGoogleNavigation(
-destination
-);
-
-}
-
-
-/* =====================================================
- GOOGLE NAVIGATION
-===================================================== */
-
-function openGoogleNavigation(destination){
-
-let cleanDestination=
-String(destination)
-.trim();
 
 
 /*
- Google Maps Directions URL
-
-इसमें Current Location से destination तक
-driving route खुलेगा।
+Use current driver GPS as origin.
+This avoids asking SafetyCab for GPS again.
 */
+
+let origin="";
+
+
+if(
+Number.isFinite(currentLat) &&
+Number.isFinite(currentLng)
+){
+
+origin=
+currentLat+
+","+
+currentLng;
+
+}
+
 
 let url=
 "https://www.google.com/maps/dir/?api=1"+
 "&destination="+
 encodeURIComponent(
-cleanDestination
+destination.lat+","+destination.lng
 )+
 "&travelmode=driving";
 
 
-/*
- सबसे पहले नया tab खोलेंगे।
-SafetyCab App पुरानी tab में रहेगा।
-*/
+if(origin){
 
-let newTab=
-window.open(
-url,
-"_blank",
-"noopener,noreferrer"
+url+=
+"&origin="+
+encodeURIComponent(origin);
+
+}
+
+
+sessionStorage.setItem(
+"SafetyCab_ReturnFromMaps",
+"1"
 );
 
-
-if(
-newTab
-){
-
-toast(
-"🧭 Navigation नई tab में खुल गई"
-);
-
-}else{
-
-/*
- अगर browser popup block करे,
-तो user को बताकर link उसी window में खोलेंगे।
-*/
-
-toast(
-"🧭 Navigation खोल रहा है..."
-);
-
-
-setTimeout(
-function(){
 
 window.location.href=url;
 
-},
-500
+}
+
+
+/* ================= PARSE COORDINATES ================= */
+
+function parseCoordinates(value){
+
+if(!value)return null;
+
+
+let text=
+String(value).trim();
+
+
+let match=
+text.match(
+/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/
 );
 
-}
+
+if(!match){
+
+return null;
 
 }
 
 
-/* =====================================================
- REJECT
-===================================================== */
+let lat=
+Number(match[1]);
+
+let lng=
+Number(match[2]);
+
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+){
+
+return null;
+
+}
+
+
+return {
+lat:lat,
+lng:lng
+};
+
+}
+
+
+/* ================= REJECT ================= */
 
 async function rejectBooking(){
 
@@ -3091,17 +2601,6 @@ currentBooking.docId ||
 currentBooking.bookingId;
 
 
-if(!bookingDocId){
-
-toast(
-"Booking ID नहीं मिली"
-);
-
-return;
-
-}
-
-
 try{
 
 let {
@@ -3120,14 +2619,11 @@ bookingDocId
 
 {
 
-status:
-"rejected",
+status:"rejected",
 
-rejectedBy:
-driver.driverid,
+rejectedBy:driver.driverid,
 
-rejectedAt:
-new Date()
+rejectedAt:new Date()
 
 }
 
@@ -3138,10 +2634,7 @@ currentBooking=null;
 
 
 $("rideBox").innerHTML=
-
-'<div class="empty">'+
-'❌ Booking Rejected'+
-'</div>';
+'<div class="empty">Booking Rejected</div>';
 
 
 toast(
@@ -3154,7 +2647,7 @@ toast(
 console.error(e);
 
 toast(
-"Booking Reject नहीं हुई"
+"Booking could not be rejected"
 );
 
 }
@@ -3162,24 +2655,13 @@ toast(
 }
 
 
-/* =====================================================
- START TRIP
-===================================================== */
+/* ================= START TRIP ================= */
 
 async function startTrip(){
 
 if(!currentBooking){
 
-return;
-
-}
-
-
-if(!duty){
-
-toast(
-"पहले Duty ON रखें"
-);
+toast("No active booking");
 
 return;
 
@@ -3191,21 +2673,33 @@ currentBooking.docId ||
 currentBooking.bookingId;
 
 
-if(!bookingDocId){
-
-toast(
-"Booking ID नहीं मिली"
-);
-
-return;
-
-}
-
-
 tripStarted=true;
 
 tripStartTime=
 Date.now();
+
+tripDistanceKm=0;
+
+
+/*
+Start distance from current GPS.
+*/
+
+if(
+Number.isFinite(currentLat) &&
+Number.isFinite(currentLng)
+){
+
+lastTripPoint={
+lat:currentLat,
+lng:currentLng
+};
+
+}else{
+
+lastTripPoint=null;
+
+}
 
 
 try{
@@ -3226,17 +2720,13 @@ bookingDocId
 
 {
 
-status:
-"trip_started",
+status:"trip_started",
 
-tripStartedAt:
-new Date(),
+tripStartedAt:new Date(),
 
-driverId:
-driver.driverid,
+driverId:driver.driverid,
 
-driverDocId:
-driver.driverid
+driverDocId:driver.driverid
 
 }
 
@@ -3253,7 +2743,7 @@ bookingDocId
 );
 
 
-showRunningBooking();
+showTripRunning();
 
 
 toast(
@@ -3268,7 +2758,7 @@ console.error(e);
 tripStarted=false;
 
 toast(
-"Trip Start नहीं हुआ"
+"Trip could not be started"
 );
 
 }
@@ -3276,13 +2766,66 @@ toast(
 }
 
 
-/* =====================================================
- COMPLETE TRIP
-===================================================== */
+/* ================= TRIP RUNNING ================= */
+
+function showTripRunning(){
+
+if(!currentBooking)return;
+
+
+let b=currentBooking;
+
+
+$("rideBox").innerHTML=
+
+'<div class="ride">'+
+
+'<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
+'🟢 TRIP RUNNING'+
+'</span>'+
+
+'<div class="place">'+
+'👤 Customer: '+
+escapeHTML(b.customerName||"-")+
+'</div>'+
+
+'<div class="place">'+
+'📍 Pickup: '+
+escapeHTML(b.pickup||"-")+
+'</div>'+
+
+'<div class="place">'+
+'🏁 Drop: '+
+escapeHTML(b.drop||"-")+
+'</div>'+
+
+'<div class="fare">'+
+
+'<div class="fareRow">'+
+'<span>Distance</span>'+
+'<b>'+
+tripDistanceKm.toFixed(2)+
+' km</b>'+
+'</div>'+
+
+'</div>'+
+
+'<button class="btn green" onclick="completeTrip()">'+
+'🏁 COMPLETE TRIP'+
+'</button>'+
+
+'</div>';
+
+}
+
+
+/* ================= COMPLETE TRIP ================= */
 
 async function completeTrip(){
 
 if(!currentBooking){
+
+toast("No active booking");
 
 return;
 
@@ -3299,48 +2842,54 @@ minutes=Math.max(
 1,
 
 Math.round(
-
-(Date.now()-tripStartTime)
-/60000
-
+(Date.now()-tripStartTime)/60000
 )
 
 );
 
+
 }
 
 
-let fareBase=
-Number(
-currentBooking.baseFare||80
-);
+/*
+Use cab type pricing.
+*/
+
+let cabType=
+currentBooking.cabType ||
+"Mini";
 
 
-let perMinute=
-Number(
-currentBooking.perMinute||1
-);
+let fare=
+fares[cabType] ||
+fares.Mini;
 
 
 let distance=
-Number(
-currentBooking.distanceKm||0
-);
+Number(tripDistanceKm||0);
 
+
+let baseFare=
+Number(fare.base);
 
 let perKm=
-Number(
-currentBooking.perKm||16
-);
+Number(fare.perKm);
+
+let perMinute=
+Number(fare.perMinute);
 
 
 let total=
 
-fareBase+
+baseFare+
 
 (distance*perKm)+
 
 (minutes*perMinute);
+
+
+total=
+Math.round(total*100)/100;
 
 
 let bookingDocId=
@@ -3366,42 +2915,48 @@ bookingDocId
 
 {
 
-status:
-"completed",
+status:"completed",
 
-finalFare:
-total,
+finalFare:total,
 
-tripMinutes:
-minutes,
+fareBase:baseFare,
 
-distanceKm:
-distance,
+farePerKm:perKm,
 
-completedAt:
-new Date()
+farePerMinute:perMinute,
+
+distanceKm:distance,
+
+tripMinutes:minutes,
+
+completedAt:new Date()
 
 }
 
 );
 
 
-addHistory(
+/*
+Show final bill before clearing booking.
+*/
+
+showFinalFare(
 currentBooking,
 total,
-minutes
+distance,
+minutes,
+baseFare,
+perKm,
+perMinute
 );
 
 
-$("rideBox").innerHTML=
+/*
+Clear active state only after successful completion.
+*/
 
-'<div class="empty">'+
-'🏁 Trip Completed'+
-'</div>';
-
-
-toast(
-"🏁 Trip Completed Successfully"
+localStorage.removeItem(
+"SafetyCab_ActiveBooking"
 );
 
 
@@ -3411,10 +2966,17 @@ tripStarted=false;
 
 tripStartTime=null;
 
+tripDistanceKm=0;
 
-localStorage.removeItem(
-"SafetyCab_ActiveBooking"
+lastTripPoint=null;
+
+
+toast(
+"🏁 Trip Completed Successfully"
 );
+
+
+loadCompletedHistory();
 
 
 }catch(e){
@@ -3422,7 +2984,7 @@ localStorage.removeItem(
 console.error(e);
 
 toast(
-"Trip Complete नहीं हुआ"
+"Trip could not be completed"
 );
 
 }
@@ -3430,9 +2992,87 @@ toast(
 }
 
 
-/* =====================================================
- CANCEL ACCEPTED RIDE
-===================================================== */
+/* ================= FINAL FARE ================= */
+
+function showFinalFare(
+booking,
+total,
+distance,
+minutes,
+baseFare,
+perKm,
+perMinute
+){
+
+$("rideBox").innerHTML=
+
+'<div class="ride">'+
+
+'<span class="badge" style="background:#e5f8ec;color:#168a3a">'+
+'🏁 TRIP COMPLETED'+
+'</span>'+
+
+'<div class="place">'+
+'👤 Customer: '+
+escapeHTML(booking.customerName||"-")+
+'</div>'+
+
+'<div class="fare">'+
+
+'<div class="fareRow">'+
+'<span>Base Fare</span>'+
+'<b>₹'+
+baseFare.toFixed(2)+
+'</b>'+
+'</div>'+
+
+'<div class="fareRow">'+
+'<span>Distance</span>'+
+'<b>'+
+distance.toFixed(2)+
+' km</b>'+
+'</div>'+
+
+'<div class="fareRow">'+
+'<span>Per KM</span>'+
+'<b>₹'+
+perKm.toFixed(2)+
+'</b>'+
+'</div>'+
+
+'<div class="fareRow">'+
+'<span>Trip Time</span>'+
+'<b>'+
+minutes+
+' min</b>'+
+'</div>'+
+
+'<div class="fareRow">'+
+'<span>Per Minute</span>'+
+'<b>₹'+
+perMinute.toFixed(2)+
+'</b>'+
+'</div>'+
+
+'<div class="fareRow">'+
+'<span>Total Fare</span>'+
+'<b class="total">₹'+
+total.toFixed(2)+
+'</b>'+
+'</div>'+
+
+'</div>'+
+
+'<button class="btn green" onclick="openPage(\'rides\')">'+
+'📋 VIEW RIDE HISTORY'+
+'</button>'+
+
+'</div>';
+
+}
+
+
+/* ================= CANCEL ================= */
 
 async function cancelAcceptedRide(){
 
@@ -3445,7 +3085,7 @@ return;
 
 if(
 !confirm(
-"क्या आप यह ride cancel करना चाहते हैं?"
+"Are you sure you want to cancel this ride?"
 )
 ){
 
@@ -3457,13 +3097,6 @@ return;
 let bookingDocId=
 currentBooking.docId ||
 currentBooking.bookingId;
-
-
-if(!bookingDocId){
-
-return;
-
-}
 
 
 try{
@@ -3484,14 +3117,9 @@ bookingDocId
 
 {
 
-status:
-"cancelled_by_driver",
+status:"cancelled_by_driver",
 
-cancelledAt:
-new Date(),
-
-cancelledBy:
-driver.driverid
+cancelledAt:new Date()
 
 }
 
@@ -3500,21 +3128,13 @@ driver.driverid
 
 currentBooking=null;
 
-tripStarted=false;
-
-tripStartTime=null;
-
-
 localStorage.removeItem(
 "SafetyCab_ActiveBooking"
 );
 
 
 $("rideBox").innerHTML=
-
-'<div class="empty">'+
-'❌ Ride Cancelled'+
-'</div>';
+'<div class="empty">Ride Cancelled</div>';
 
 
 toast(
@@ -3527,7 +3147,7 @@ toast(
 console.error(e);
 
 toast(
-"Ride Cancel नहीं हुई"
+"Ride could not be cancelled"
 );
 
 }
@@ -3535,33 +3155,183 @@ toast(
 }
 
 
-/* =====================================================
- HISTORY
-===================================================== */
+/* ================= FIREBASE HISTORY ================= */
 
-function addHistory(
-booking,
-total,
-minutes
+async function loadCompletedHistory(){
+
+if(!driver || !window.firebaseDB){
+
+return;
+
+}
+
+
+try{
+
+let {
+collection,
+query,
+where,
+onSnapshot
+}=window.firebaseFns;
+
+
+let q=
+query(
+
+collection(
+window.firebaseDB,
+"bookings"
+),
+
+where(
+"driverId",
+"==",
+driver.driverid
+)
+
+);
+
+
+onSnapshot(
+
+q,
+
+function(snapshot){
+
+let rides=[];
+
+
+snapshot.forEach(function(d){
+
+let data=d.data();
+
+
+if(
+data.status==="completed"
 ){
+
+rides.push({
+
+id:d.id,
+...data
+
+});
+
+}
+
+});
+
+
+rides.sort(function(a,b){
+
+let aTime=
+getTimeValue(a.completedAt);
+
+let bTime=
+getTimeValue(b.completedAt);
+
+return bTime-aTime;
+
+});
+
+
+renderHistory(rides);
+
+},
+
+function(error){
+
+console.error(
+"History:",
+error
+);
+
+}
+
+);
+
+}catch(e){
+
+console.error(e);
+
+}
+
+}
+
+
+/* ================= TIME VALUE ================= */
+
+function getTimeValue(value){
+
+if(!value){
+
+return 0;
+
+}
+
+
+if(
+typeof value.toMillis==="function"
+){
+
+return value.toMillis();
+
+}
+
+
+if(
+value.seconds
+){
+
+return value.seconds*1000;
+
+}
+
+
+return 0;
+
+}
+
+
+/* ================= RENDER HISTORY ================= */
+
+function renderHistory(rides){
 
 let history=
 $("history");
 
 
-if(
-history.querySelector(".empty")
-){
+if(!rides.length){
 
-history.innerHTML="";
+history.innerHTML=
+'<div class="empty">No completed rides yet.</div>';
+
+return;
+
 }
 
+
+history.innerHTML="";
+
+
+rides.forEach(function(booking){
 
 let item=
 document.createElement("div");
 
 
 item.className="ride";
+
+
+let total=
+Number(booking.finalFare||0);
+
+let distance=
+Number(booking.distanceKm||0);
+
+let minutes=
+Number(booking.tripMinutes||0);
 
 
 item.innerHTML=
@@ -3576,45 +3346,52 @@ booking.customerName||"-"
 "</div>"+
 
 "<div class='muted'>"+
-"📞 "+
-escapeHTML(
-booking.customerPhone||"-"
-)+
-"</div>"+
-
-"<div class='muted'>"+
-"📍 "+
+"📍 Pickup: "+
 escapeHTML(
 booking.pickup||"-"
 )+
 "</div>"+
 
 "<div class='muted'>"+
-"🏁 "+
+"🏁 Drop: "+
 escapeHTML(
 booking.drop||"-"
 )+
 "</div>"+
 
 "<div class='muted'>"+
-"💰 ₹"+
-total.toFixed(2)+
-" · "+
+"🚕 Vehicle: "+
+escapeHTML(
+booking.cabType||"-"
+)+
+"</div>"+
+
+"<div class='muted'>"+
+"📏 Distance: "+
+distance.toFixed(2)+
+" km"+
+"</div>"+
+
+"<div class='muted'>"+
+"⏱ Time: "+
 minutes+
-" Min"+
+" min"+
+"</div>"+
+
+"<div class='total' style='margin-top:8px'>"+
+"₹"+
+total.toFixed(2)+
 "</div>";
 
 
-history.prepend(
-item
-);
+history.appendChild(item);
+
+});
 
 }
 
 
-/* =====================================================
- PROFILE
-===================================================== */
+/* ================= PROFILE ================= */
 
 async function saveProfile(){
 
@@ -3634,26 +3411,18 @@ let newAadhaar=
 $("profileAadhaar").value.trim();
 
 
-if(
-newName.length<2
-){
+if(!newName){
 
-toast(
-"Driver Name सही डालें"
-);
+toast("Enter driver name");
 
 return;
 
 }
 
 
-if(
-!/^[0-9]{10}$/.test(newPhone)
-){
+if(!/^[0-9]{10}$/.test(newPhone)){
 
-toast(
-"10 digit mobile number डालें"
-);
+toast("Enter valid phone number");
 
 return;
 
@@ -3662,9 +3431,7 @@ return;
 
 if(!newId){
 
-toast(
-"Driver ID डालें"
-);
+toast("Enter Driver ID");
 
 return;
 
@@ -3673,46 +3440,22 @@ return;
 
 if(!newVehicle){
 
-toast(
-"Vehicle Number डालें"
-);
+toast("Enter vehicle number");
 
 return;
 
 }
 
 
-if(
-newAadhaar &&
-!/^[0-9]{12}$/.test(newAadhaar)
-){
+driver.name=newName;
 
-toast(
-"Aadhaar 12 digit होना चाहिए"
-);
+driver.phone=newPhone;
 
-return;
+driver.driverid=newId;
 
-}
+driver.vehicle=newVehicle;
 
-
-let oldDriverId=
-driver.driverid;
-
-
-driver={
-
-name:newName,
-
-phone:newPhone,
-
-driverid:newId,
-
-vehicle:newVehicle,
-
-aadhaar:newAadhaar
-
-};
+driver.aadhaar=newAadhaar;
 
 
 localStorage.setItem(
@@ -3760,28 +3503,17 @@ merge:true
 
 loadDriverUI();
 
-
 toast(
 "✅ Profile Saved"
 );
 
-
-if(
-oldDriverId!==driver.driverid
-){
-
-toast(
-"Profile Saved. App Refresh करें।"
-);
-
-}
 
 }catch(e){
 
 console.error(e);
 
 toast(
-"Profile Save नहीं हुआ"
+"Profile could not be saved"
 );
 
 }
@@ -3789,88 +3521,57 @@ toast(
 }
 
 
-/* =====================================================
- NAVIGATION PAGE
-===================================================== */
+/* ================= NAVIGATION ================= */
 
 function openPage(page){
 
-$("homePage")
-.classList
-.add("hidden");
+$("homePage").classList.add("hidden");
 
-$("ridesPage")
-.classList
-.add("hidden");
+$("ridesPage").classList.add("hidden");
 
-$("profilePage")
-.classList
-.add("hidden");
+$("profilePage").classList.add("hidden");
 
 
-$("homeNav")
-.classList
-.remove("active");
+$("homeNav").classList.remove("active");
 
-$("ridesNav")
-.classList
-.remove("active");
+$("ridesNav").classList.remove("active");
 
-$("profileNav")
-.classList
-.remove("active");
+$("profileNav").classList.remove("active");
 
 
 if(page==="home"){
 
-$("homePage")
-.classList
-.remove("hidden");
+$("homePage").classList.remove("hidden");
 
-$("homeNav")
-.classList
-.add("active");
+$("homeNav").classList.add("active");
 
 }
 
 
 if(page==="rides"){
 
-$("ridesPage")
-.classList
-.remove("hidden");
+$("ridesPage").classList.remove("hidden");
 
-$("ridesNav")
-.classList
-.add("active");
+$("ridesNav").classList.add("active");
 
 }
 
 
 if(page==="profile"){
 
-$("profilePage")
-.classList
-.remove("hidden");
+$("profilePage").classList.remove("hidden");
 
-$("profileNav")
-.classList
-.add("active");
+$("profileNav").classList.add("active");
 
 }
 
 
-window.scrollTo(
-0,
-0
-);
+window.scrollTo(0,0);
 
 }
 
 
-/* =====================================================
- ESCAPE HTML
-===================================================== */
+/* ================= ESCAPE ================= */
 
 function escapeHTML(value){
 
@@ -3895,43 +3596,59 @@ return {
 }
 
 
-/* =====================================================
- START APP
-===================================================== */
+/* ================= PAGE RETURN ================= */
+
+window.addEventListener(
+"pageshow",
+function(){
+
+/*
+When returning from Google Maps,
+the active Firestore booking is already
+listened to. Just make sure the app
+shows the correct booking.
+*/
+
+if(
+driver &&
+currentBooking
+){
+
+if(currentBooking.status==="trip_started"){
+
+showTripRunning();
+
+}else{
+
+showAcceptedBooking();
+
+}
+
+}
+
+});
+
+
+/* ================= START ================= */
 
 window.addEventListener(
 "load",
-function(){
-
-setTimeout(
 function(){
 
 initDriverMap();
 
 checkDriver();
 
-},
-300
-);
-
 });
 
 
 /*
- Refresh पर GPS/Booking को जानबूझकर clear नहीं किया जाता।
-
-Firebase listener Refresh के बाद active booking
-दोबारा load करेगा।
+Do not stop GPS on page unload.
 */
-
 
 window.addEventListener(
 "beforeunload",
 function(){
-
-/*
- कुछ भी clear नहीं करेंगे।
-*/
 
 });
 

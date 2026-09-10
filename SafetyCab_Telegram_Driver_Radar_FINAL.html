@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Safety Cab - Driver Radar</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+button,input{font:inherit}
+.header{height:62px;background:#0878c9;color:white;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:1000}
+.logo{width:40px;height:40px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:22px}
+.title{font-weight:800;font-size:20px}.sub{font-size:11px;opacity:.9}
+#map{height:calc(100vh - 190px);min-height:390px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;z-index:1100;display:grid;grid-template-columns:repeat(4,1fr);height:70px}
+.navbtn{border:0;background:#fff;color:#64748b;font-size:11px;font-weight:700}.navbtn b{display:block;font-size:22px;margin-bottom:2px}.navbtn.active{color:#0878c9}
+.page{display:none;height:calc(100vh - 62px);overflow:auto;padding-bottom:82px}.page.active{display:block}
+.card{background:#fff;margin:12px;border-radius:14px;padding:14px;box-shadow:0 2px 10px #00000012}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 12px}
+.stat{background:#fff;border-radius:12px;padding:10px;text-align:center;box-shadow:0 2px 8px #00000010}
+.stat strong{display:block;font-size:20px}.green{color:#0a9b45}.red{color:#df2e3d}.gray{color:#64748b}.blue{color:#0878c9}
+.search{width:100%;border:1px solid #d7dee8;border-radius:10px;padding:11px;margin:8px 0}
+.filters{display:flex;gap:6px;overflow:auto;padding-bottom:5px}.filter{border:1px solid #ccd6e2;background:#fff;border-radius:20px;padding:7px 11px;white-space:nowrap}.filter.on{background:#0878c9;color:#fff}
+.driver{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #edf0f4}.driver:last-child{border:0}
+.avatar{width:40px;height:40px;border-radius:50%;background:#e8f3ff;display:grid;place-items:center;font-size:21px}
+.driverinfo{flex:1}.driverinfo strong{display:block}.small{font-size:11px;color:#667085;margin-top:3px}
+.badge{padding:4px 7px;border-radius:12px;font-size:10px;font-weight:700}.bgreen{background:#dcfce7;color:#15803d}.bred{background:#fee2e2;color:#b91c1c}.byellow{background:#fef3c7;color:#92400e}
+.action{border:0;border-radius:10px;padding:9px 12px;font-weight:700;background:#0878c9;color:#fff}.secondary{background:#e9f4ff;color:#0878c9}.danger{background:#fee2e2;color:#b91c1c}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf0f4}.row:last-child{border:0}
+.toggle{width:48px;height:26px;border-radius:20px;background:#cbd5e1;padding:3px;border:0}.toggle i{display:block;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}.toggle.on{background:#16a34a}.toggle.on i{transform:translateX(22px)}
+.leaflet-popup-content{margin:12px;font-size:13px}.popup-title{font-weight:800;font-size:16px}.carpin{font-size:25px;text-shadow:0 1px 2px #555}
+.empty{text-align:center;color:#667085;padding:30px}
+#notice{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#172033;color:#fff;padding:9px 14px;border-radius:20px;font-size:12px;z-index:2000;display:none}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:3000;align-items:flex-end}.modal.show{display:flex}
+.sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;padding:18px;max-height:82vh;overflow:auto}
+.close{float:right;border:0;background:#eef2f7;border-radius:50%;width:32px;height:32px}
+.mypos{background:#16a34a!important;color:white!important}
+</style>
+</head>
+<body>
+<div id="notice"></div>
+
+<header class="header">
+  <div class="logo">🚕</div>
+  <div><div class="title">Safety Cab</div><div class="sub">Driver Radar • Telegram Mini App</div></div>
+</header>
+
+<section id="home" class="page active">
+  <div class="stats">
+    <div class="stat"><strong id="total">0</strong><span>Total</span></div>
+    <div class="stat green"><strong id="online">0</strong><span>Online</span></div>
+    <div class="stat blue"><strong id="duty">0</strong><span>Duty ON</span></div>
+  </div>
+  <div id="map"></div>
+</section>
+
+<section id="drivers" class="page">
+  <div class="card">
+    <h3 style="margin-top:0">🚕 Driver Radar</h3>
+    <input id="search" class="search" placeholder="Search Driver / ID / Vehicle">
+    <div class="filters">
+      <button class="filter on" data-filter="all">All</button>
+      <button class="filter" data-filter="online">Online</button>
+      <button class="filter" data-filter="duty">Duty ON</button>
+      <button class="filter" data-filter="offduty">Duty OFF</button>
+    </div>
+    <div id="driverList"></div>
+  </div>
+</section>
+
+<section id="profile" class="page">
+  <div class="card">
+    <h3 style="margin-top:0">👤 My Profile</h3>
+    <div class="row"><span>Name</span><strong id="tgName">Telegram User</strong></div>
+    <div class="row"><span>Telegram ID</span><strong id="tgId">-</strong></div>
+    <div class="row"><span>Location</span><span id="locStatus" class="gray">Not shared</span></div>
+    <button class="action" style="width:100%;margin-top:12px" onclick="shareMyLocation()">📍 Share My Location</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">🚦 My Status</h3>
+    <div class="row"><span>Duty Status</span><button id="dutyToggle" class="toggle" onclick="toggleDuty()"><i></i></button></div>
+    <div class="row"><span>Auto GPS Update</span><button id="gpsToggle" class="toggle on" onclick="toggleAutoGPS()"><i></i></button></div>
+  </div>
+</section>
+
+<section id="settings" class="page">
+  <div class="card">
+    <h3 style="margin-top:0">⚙️ Settings</h3>
+    <div class="row"><span>Language</span><strong>Hindi / English</strong></div>
+    <div class="row"><span>Map</span><strong>OpenStreetMap</strong></div>
+    <div class="row"><span>GPS Update</span><strong>Every 15 sec</strong></div>
+    <div class="row"><span>Version</span><strong>Safety Cab Radar 1.0</strong></div>
+  </div>
+  <div class="card">
+    <button class="action secondary" style="width:100%;margin-bottom:8px" onclick="showNotice('Help & Support coming next.')">❓ Help & Support</button>
+    <button class="action danger" style="width:100%" onclick="showNotice('Telegram Mini App can be closed from Telegram.')">🚪 Close Mini App</button>
+  </div>
+</section>
+
+<nav class="bottom">
+  <button class="navbtn active" data-page="home"><b>🗺️</b>Map</button>
+  <button class="navbtn" data-page="drivers"><b>🚕</b>Drivers</button>
+  <button class="navbtn" data-page="profile"><b>👤</b>Profile</button>
+  <button class="navbtn" data-page="settings"><b>⚙️</b>Settings</button>
+</nav>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="sheet">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg){ tg.ready(); tg.expand(); }
+
+const demoDrivers = [
+ {id:"001",name:"Jaweed",phone:"9398179229",vehicle:"TS08UE0850",lat:17.42536,lng:78.48694,online:true,duty:true,rating:4.8},
+ {id:"002",name:"Ramesh",phone:"9000000002",vehicle:"TS09AB1234",lat:17.4321,lng:78.4712,online:true,duty:true,rating:4.5},
+ {id:"003",name:"Imran",phone:"9000000003",vehicle:"AP28CD5678",lat:17.4148,lng:78.4982,online:true,duty:false,rating:4.2},
+ {id:"004",name:"Suresh",phone:"9000000004",vehicle:"TS07EF9012",lat:17.4470,lng:78.4740,online:false,duty:false,rating:4.7},
+ {id:"005",name:"Karthik",phone:"9000000005",vehicle:"TS10GH3456",lat:17.4015,lng:78.4620,online:true,duty:false,rating:4.4}
+];
+
+let drivers = JSON.parse(localStorage.getItem("safetycab_drivers") || "null") || demoDrivers;
+let activeFilter="all", map, markers={}, watchId=null, autoGPS=true, myDuty=false;
+
+function save(){localStorage.setItem("safetycab_drivers",JSON.stringify(drivers))}
+function showNotice(t){const n=document.getElementById("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",2500)}
+function page(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
+ if(id==="home" && map) setTimeout(()=>map.invalidateSize(),100);
+}
+document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
+
+function initMap(){
+ map=L.map("map").setView([17.42536,78.48694],12);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+ renderMarkers();
+}
+function markerIcon(d){
+ let c=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";
+ return L.divIcon({className:"",html:`<div class="carpin">${c}🚕</div>`,iconSize:[38,38],iconAnchor:[19,19]});
+}
+function renderMarkers(){
+ Object.values(markers).forEach(m=>map.removeLayer(m)); markers={};
+ drivers.forEach(d=>{
+   const m=L.marker([d.lat,d.lng],{icon:markerIcon(d)}).addTo(map);
+   m.bindPopup(`<div class="popup-title">🚕 ${d.name}</div><div>Driver ID: ${d.id}</div><div>Vehicle: ${d.vehicle}</div><div>Status: <b class="${d.online?'green':'red'}">${d.online?'Online':'Offline'}</b></div><div>Duty: <b>${d.duty?'ON':'OFF'}</b></div><div>⭐ ${d.rating}</div><button class="action" onclick="openDriver('${d.id}')">View Details</button>`);
+   markers[d.id]=m;
+ });
+}
+function updateStats(){
+ document.getElementById("total").textContent=drivers.length;
+ document.getElementById("online").textContent=drivers.filter(d=>d.online).length;
+ document.getElementById("duty").textContent=drivers.filter(d=>d.duty).length;
+}
+function distanceKm(a,b,c,d){
+ const R=6371, p=Math.PI/180, x=(c-a)*p, y=(d-b)*p;
+ const q=Math.sin(x/2)**2+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)**2;
+ return R*2*Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
+}
+function renderList(){
+ const q=document.getElementById("search").value.toLowerCase();
+ let arr=drivers.filter(d=>(d.name+d.id+d.vehicle).toLowerCase().includes(q));
+ if(activeFilter==="online")arr=arr.filter(d=>d.online);
+ if(activeFilter==="duty")arr=arr.filter(d=>d.duty);
+ if(activeFilter==="offduty")arr=arr.filter(d=>!d.duty);
+ const box=document.getElementById("driverList");
+ if(!arr.length){box.innerHTML='<div class="empty">No driver found</div>';return}
+ box.innerHTML=arr.map(d=>`<div class="driver" onclick="focusDriver('${d.id}')">
+ <div class="avatar">🚕</div><div class="driverinfo"><strong>${d.id} • ${d.name}</strong><div class="small">${d.vehicle} • ⭐ ${d.rating}</div></div>
+ <span class="badge ${d.online?(d.duty?'bgreen':'byellow'):'bred'}">${d.online?(d.duty?'DUTY ON':'DUTY OFF'):'OFFLINE'}</span></div>`).join("");
+}
+document.getElementById("search").oninput=renderList;
+document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("on"));b.classList.add("on");activeFilter=b.dataset.filter;renderList()});
+
+function focusDriver(id){
+ page("home"); const d=drivers.find(x=>x.id===id); if(!d)return;
+ map.setView([d.lat,d.lng],15); markers[id].openPopup();
+}
+function openDriver(id){
+ const d=drivers.find(x=>x.id===id); if(!d)return;
+ document.getElementById("modalBody").innerHTML=`
+ <h2 style="margin:0 0 14px">🚕 ${d.name}</h2>
+ <div class="row"><span>Driver ID</span><strong>${d.id}</strong></div>
+ <div class="row"><span>Phone</span><strong>${d.phone}</strong></div>
+ <div class="row"><span>Vehicle</span><strong>${d.vehicle}</strong></div>
+ <div class="row"><span>GPS Status</span><strong class="${d.online?'green':'red'}">${d.online?'🟢 Online':'🔴 Offline'}</strong></div>
+ <div class="row"><span>Duty Status</span><strong>${d.duty?'🟢 Duty ON':'⚪ Duty OFF'}</strong></div>
+ <div class="row"><span>Rating</span><strong>⭐ ${d.rating}</strong></div>
+ <div class="row"><span>Location</span><strong>${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}</strong></div>
+ <div style="display:flex;gap:8px;margin-top:14px"><button class="action" onclick="callDriver('${d.phone}')">📞 Call</button><button class="action secondary" onclick="focusDriver('${d.id}');closeModal()">🗺️ View Map</button></div>`;
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function callDriver(phone){window.location.href="tel:"+phone}
+
+function toggleDuty(){
+ myDuty=!myDuty;
+ document.getElementById("dutyToggle").classList.toggle("on",myDuty);
+ const me=drivers[0];
+ me.duty=myDuty; me.online=true; save(); updateStats(); renderMarkers(); renderList();
+ showNotice(myDuty?"Duty ON":"Duty OFF");
+}
+function toggleAutoGPS(){
+ autoGPS=!autoGPS;
+ document.getElementById("gpsToggle").classList.toggle("on",autoGPS);
+ if(autoGPS) startGPS(); else stopGPS();
+}
+function shareMyLocation(){
+ if(!navigator.geolocation){showNotice("GPS is not supported on this device.");return}
+ navigator.geolocation.getCurrentPosition(pos=>{
+   updateMyLocation(pos);
+   document.getElementById("locStatus").textContent="Location shared";
+   document.getElementById("locStatus").className="green";
+   showNotice("Current location updated.");
+ },()=>showNotice("Location permission allow करें."),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+}
+function updateMyLocation(pos){
+ const me=drivers[0];
+ me.lat=pos.coords.latitude; me.lng=pos.coords.longitude; me.online=true; save();
+ updateStats(); renderMarkers();
+ if(map)map.setView([me.lat,me.lng],15);
+}
+function startGPS(){
+ if(!navigator.geolocation)return;
+ if(watchId!==null)return;
+ watchId=navigator.geolocation.watchPosition(updateMyLocation,()=>{},{
+   enableHighAccuracy:true,maximumAge:5000,timeout:15000
+ });
+}
+function stopGPS(){
+ if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}
+}
+function setupTelegramUser(){
+ if(!tg)return;
+ const u=tg.initDataUnsafe?.user;
+ if(u){
+   document.getElementById("tgName").textContent=[u.first_name,u.last_name].filter(Boolean).join(" ")||"Telegram User";
+   document.getElementById("tgId").textContent=u.id||"-";
+ }
+}
+updateStats(); renderList(); initMap(); setupTelegramUser(); startGPS();
+</script>
+</body>
+</html>

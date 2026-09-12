@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1">
 
 <title>Safety Cab - Admin Panel FINAL</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
 
 <style>
 
-*{box-sizing:border-box}
+*{
+box-sizing:border-box
+}
 
 body{
 margin:0;
@@ -23,7 +32,14 @@ background:#f4f7fb;
 color:#263238
 }
 
-button,input,select{font:inherit}
+button,
+input,
+select{
+font:inherit
+}
+
+
+/* ================= LOGIN ================= */
 
 #loginScreen{
 position:fixed;
@@ -116,6 +132,9 @@ color:#d93636;
 min-height:18px
 }
 
+
+/* ================= ADMIN ================= */
+
 #adminApp{
 display:none
 }
@@ -164,6 +183,9 @@ padding:7px 10px;
 font-size:11px
 }
 
+
+/* ================= STATS ================= */
+
 .stats{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -185,14 +207,28 @@ font-size:24px;
 display:block
 }
 
-.blue{color:#087fc3}
-.green{color:#159447}
-.red{color:#d93636}
+.blue{
+color:#087fc3
+}
+
+.green{
+color:#159447
+}
+
+.red{
+color:#d93636
+}
+
+
+/* ================= MAP ================= */
 
 #map{
 height:calc(100vh - 260px);
 min-height:390px
 }
+
+
+/* ================= PANEL ================= */
 
 .panel{
 background:#fff;
@@ -226,6 +262,9 @@ white-space:nowrap
 background:#087fc3;
 color:#fff
 }
+
+
+/* ================= LIST ================= */
 
 .list{
 padding:8px;
@@ -267,6 +306,9 @@ background:#eee;
 color:#666
 }
 
+
+/* ================= BUTTONS ================= */
+
 .actions{
 display:flex;
 gap:5px;
@@ -285,6 +327,13 @@ color:#fff
 .redbtn{
 background:#d93636
 }
+
+.gray{
+background:#667
+}
+
+
+/* ================= BOTTOM ================= */
 
 .bottom{
 position:fixed;
@@ -314,6 +363,9 @@ font-size:21px
 .navbtn.active{
 color:#087fc3
 }
+
+
+/* ================= MODAL ================= */
 
 .modal{
 display:none;
@@ -375,25 +427,65 @@ width:34px;
 height:34px
 }
 
+
+/* ================= MESSAGE ================= */
+
+.firebaseStatus{
+margin:8px;
+padding:9px;
+border-radius:8px;
+font-size:12px;
+display:none
+}
+
+.firebaseStatus.show{
+display:block
+}
+
+.statusOk{
+background:#dff6e7;
+color:#087b35
+}
+
+.statusError{
+background:#fde2e2;
+color:#a40000
+}
+
+.statusInfo{
+background:#e4f1fb;
+color:#075a8c
+}
+
+
 @media(min-width:800px){
+
 .bottom{
 left:20%;
 right:20%
 }
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<!-- ================= LOGIN ================= -->
+
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
 
 <div id="loginScreen">
 
 <div class="loginBox">
 
-<div class="loginLogo">🚕</div>
+<div class="loginLogo">
+🚕
+</div>
 
 <div class="loginTitle">
 Safety Cab Admin
@@ -403,9 +495,12 @@ Safety Cab Admin
 Secure Admin Login
 </div>
 
+
 <div class="loginField">
 
-<label>Admin Email</label>
+<label>
+Admin Email
+</label>
 
 <input
 id="loginEmail"
@@ -415,9 +510,12 @@ autocomplete="username">
 
 </div>
 
+
 <div class="loginField">
 
-<label>Password</label>
+<label>
+Password
+</label>
 
 <input
 id="loginPassword"
@@ -427,9 +525,15 @@ autocomplete="current-password">
 
 </div>
 
-<button id="loginBtn" onclick="adminLogin()">
+
+<button
+id="loginBtn"
+onclick="adminLogin()">
+
 🔐 Login
+
 </button>
+
 
 <div id="loginMsg"></div>
 
@@ -438,13 +542,20 @@ autocomplete="current-password">
 </div>
 
 
-<!-- ================= ADMIN APP ================= -->
+
+<!-- =====================================================
+     ADMIN APP
+===================================================== -->
 
 <div id="adminApp">
 
+
 <header class="header">
 
-<div class="logo">🚕</div>
+<div class="logo">
+🚕
+</div>
+
 
 <div>
 
@@ -458,10 +569,15 @@ Admin Panel • Driver Radar • Control Center
 
 </div>
 
+
 <div class="adminBar">
 
-<button class="logoutBtn" onclick="adminLogout()">
+<button
+class="logoutBtn"
+onclick="adminLogout()">
+
 Logout
+
 </button>
 
 </div>
@@ -469,12 +585,20 @@ Logout
 </header>
 
 
+
+<!-- ================= STATS ================= -->
+
 <section class="stats">
+
 
 <div class="stat">
 
-<b id="total" class="blue">
+<b
+id="total"
+class="blue">
+
 0
+
 </b>
 
 Total Drivers
@@ -484,8 +608,12 @@ Total Drivers
 
 <div class="stat">
 
-<b id="online" class="green">
+<b
+id="online"
+class="green">
+
 0
+
 </b>
 
 Online
@@ -495,73 +623,122 @@ Online
 
 <div class="stat">
 
-<b id="duty" class="blue">
+<b
+id="duty"
+class="blue">
+
 0
+
 </b>
 
 Duty ON
 
 </div>
 
+
 </section>
 
+
+
+<!-- ================= STATUS ================= -->
+
+<div
+id="firebaseStatus"
+class="firebaseStatus">
+</div>
+
+
+
+<!-- ================= MAP ================= -->
 
 <div id="map"></div>
 
 
+
+<!-- ================= SEARCH / FILTER ================= -->
+
 <section class="panel">
+
 
 <input
 id="search"
 class="search"
 placeholder="🔎 Search Driver / ID / Vehicle / Phone">
 
+
 <div class="filters">
+
 
 <button
 class="active"
 onclick="setFilter('all',this)">
+
 All
+
 </button>
+
 
 <button
 onclick="setFilter('online',this)">
+
 🟢 Online
+
 </button>
+
 
 <button
 onclick="setFilter('offline',this)">
+
 🔴 Offline
+
 </button>
+
 
 <button
 onclick="setFilter('duty',this)">
+
 🟢 Duty ON
+
 </button>
+
 
 <button
 onclick="setFilter('offduty',this)">
+
 ⚪ Duty OFF
+
 </button>
+
 
 </div>
 
 </section>
 
 
+
+<!-- ================= DRIVER LIST ================= -->
+
 <section
 id="driverList"
 class="list">
+
 </section>
 
 
+
+<!-- ================= BOTTOM NAV ================= -->
+
 <div class="bottom">
+
 
 <button
 class="navbtn active"
 onclick="topMap()">
 
-<b>🗺️</b>
+<b>
+🗺️
+</b>
+
 Map
 
 </button>
@@ -571,7 +748,10 @@ Map
 class="navbtn"
 onclick="scrollList()">
 
-<b>🚕</b>
+<b>
+🚕
+</b>
+
 Drivers
 
 </button>
@@ -581,7 +761,10 @@ Drivers
 class="navbtn"
 onclick="editDriver(null)">
 
-<b>➕</b>
+<b>
+➕
+</b>
+
 Add Driver
 
 </button>
@@ -591,29 +774,46 @@ Add Driver
 class="navbtn"
 onclick="settings()">
 
-<b>⚙️</b>
+<b>
+⚙️
+</b>
+
 Settings
 
 </button>
 
+
 </div>
 
 
-<div id="modal" class="modal">
+
+<!-- ================= MODAL ================= -->
+
+<div
+id="modal"
+class="modal">
 
 <div
 class="sheet"
 id="sheet">
-</div>
 
 </div>
 
 </div>
 
 
-<!-- Leaflet JS MUST LOAD BEFORE ADMIN JAVASCRIPT -->
+</div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<!-- =====================================================
+     LEAFLET
+===================================================== -->
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 
 <script>
@@ -648,11 +848,110 @@ appId:
 };
 
 
+/* =====================================================
+   FIREBASE INITIALIZE
+===================================================== */
+
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
+const auth =
+firebase.auth();
 
-const db = firebase.firestore();
+const db =
+firebase.firestore();
+
+
+/* =====================================================
+   FIRESTORE DRIVER COLLECTION
+===================================================== */
+
+const DRIVER_COLLECTION =
+"drivers";
+
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let drivers = [];
+
+let filter = "all";
+
+let markers = {};
+
+let driversUnsubscribe = null;
+
+let appStarted = false;
+
+
+/* =====================================================
+   DOM HELPERS
+===================================================== */
+
+const loginScreen =
+document.getElementById("loginScreen");
+
+const adminApp =
+document.getElementById("adminApp");
+
+const loginEmail =
+document.getElementById("loginEmail");
+
+const loginPassword =
+document.getElementById("loginPassword");
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const loginMsg =
+document.getElementById("loginMsg");
+
+const driverList =
+document.getElementById("driverList");
+
+const search =
+document.getElementById("search");
+
+const modal =
+document.getElementById("modal");
+
+const sheet =
+document.getElementById("sheet");
+
+const total =
+document.getElementById("total");
+
+const online =
+document.getElementById("online");
+
+const duty =
+document.getElementById("duty");
+
+const firebaseStatus =
+document.getElementById("firebaseStatus");
+
+
+/* =====================================================
+   STATUS MESSAGE
+===================================================== */
+
+function showStatus(message,type){
+
+firebaseStatus.textContent =
+message;
+
+firebaseStatus.className =
+"firebaseStatus show " + type;
+
+}
+
+
+function hideStatus(){
+
+firebaseStatus.className =
+"firebaseStatus";
+
+}
 
 
 /* =====================================================
@@ -662,23 +961,17 @@ const db = firebase.firestore();
 async function adminLogin(){
 
 const email =
-document.getElementById("loginEmail").value.trim();
+loginEmail.value.trim();
 
 const password =
-document.getElementById("loginPassword").value;
+loginPassword.value;
 
-const msg =
-document.getElementById("loginMsg");
-
-const btn =
-document.getElementById("loginBtn");
-
-msg.textContent="";
+loginMsg.textContent = "";
 
 
 if(!email || !password){
 
-msg.textContent =
+loginMsg.textContent =
 "Email and Password required.";
 
 return;
@@ -686,9 +979,10 @@ return;
 }
 
 
-btn.disabled=true;
+loginBtn.disabled = true;
 
-btn.textContent="Logging in...";
+loginBtn.textContent =
+"Logging in...";
 
 
 try{
@@ -718,30 +1012,38 @@ adminDoc.data().role !== "admin"
 
 await auth.signOut();
 
-msg.textContent =
+loginMsg.textContent =
 "Access denied. Admin account required.";
 
-btn.disabled=false;
+loginBtn.disabled = false;
 
-btn.textContent="🔐 Login";
+loginBtn.textContent =
+"🔐 Login";
 
 return;
 
 }
 
 
-showAdmin();
+/*
+ Firebase Auth state listener
+ will open the Admin Panel.
+*/
 
-}catch(error){
+loginMsg.textContent = "";
+
+}
+catch(error){
 
 console.error(error);
 
-msg.textContent =
-"Login failed: "+error.message;
+loginMsg.textContent =
+"Login failed: " + error.message;
 
-btn.disabled=false;
+loginBtn.disabled = false;
 
-btn.textContent="🔐 Login";
+loginBtn.textContent =
+"🔐 Login";
 
 }
 
@@ -754,13 +1056,17 @@ btn.textContent="🔐 Login";
 
 function showAdmin(){
 
-document
-.getElementById("loginScreen")
-.style.display="none";
+loginScreen.style.display =
+"none";
 
-document
-.getElementById("adminApp")
-.style.display="block";
+adminApp.style.display =
+"block";
+
+
+loginBtn.disabled = false;
+
+loginBtn.textContent =
+"🔐 Login";
 
 
 setTimeout(function(){
@@ -770,7 +1076,13 @@ map.invalidateSize();
 },300);
 
 
-render();
+if(!appStarted){
+
+appStarted = true;
+
+startDriversListener();
+
+}
 
 }
 
@@ -781,23 +1093,34 @@ render();
 
 async function adminLogout(){
 
+if(driversUnsubscribe){
+
+driversUnsubscribe();
+
+driversUnsubscribe = null;
+
+}
+
+
+appStarted = false;
+
+drivers = [];
+
+
+clearMarkers();
+
 await auth.signOut();
 
-document
-.getElementById("adminApp")
-.style.display="none";
 
-document
-.getElementById("loginScreen")
-.style.display="flex";
+adminApp.style.display =
+"none";
 
-document
-.getElementById("loginPassword")
-.value="";
+loginScreen.style.display =
+"flex";
 
-document
-.getElementById("loginMsg")
-.textContent="";
+loginPassword.value = "";
+
+loginMsg.textContent = "";
 
 }
 
@@ -806,17 +1129,18 @@ document
    AUTH STATE CHECK
 ===================================================== */
 
-auth.onAuthStateChanged(async function(user){
+auth.onAuthStateChanged(
+async function(user){
 
 if(!user){
 
-document
-.getElementById("loginScreen")
-.style.display="flex";
+adminApp.style.display =
+"none";
 
-document
-.getElementById("adminApp")
-.style.display="none";
+loginScreen.style.display =
+"flex";
+
+appStarted = false;
 
 return;
 
@@ -839,124 +1163,33 @@ adminDoc.data().role === "admin"
 
 showAdmin();
 
-}else{
+}
+else{
 
 await auth.signOut();
 
+loginMsg.textContent =
+"Access denied. Admin account required.";
+
 }
 
-}catch(error){
+}
+catch(error){
 
 console.error(
 "Admin authorization error:",
 error
 );
 
+loginMsg.textContent =
+"Authorization error: " +
+error.message;
+
 await auth.signOut();
 
 }
 
 });
-
-
-/* =====================================================
-   EXISTING DRIVER DATA
-===================================================== */
-
-const KEY =
-"safetycab_admin_final_v1";
-
-
-let drivers =
-JSON.parse(
-localStorage.getItem(KEY) || "null"
-) || [
-
-{
-id:"001",
-name:"Jaweed",
-phone:"9398179229",
-vehicle:"TS08UE0850",
-lat:17.42536,
-lng:78.48694,
-online:true,
-duty:true,
-rating:5,
-last:"Just now"
-},
-
-{
-id:"002",
-name:"Driver 2",
-phone:"9000000002",
-vehicle:"TS09AB1002",
-lat:17.431,
-lng:78.492,
-online:true,
-duty:true,
-rating:4.5,
-last:"2 min ago"
-},
-
-{
-id:"003",
-name:"Driver 3",
-phone:"9000000003",
-vehicle:"TS10CD1003",
-lat:17.418,
-lng:78.48,
-online:true,
-duty:false,
-rating:4,
-last:"4 min ago"
-},
-
-{
-id:"004",
-name:"Driver 4",
-phone:"9000000004",
-vehicle:"TS11EF1004",
-lat:17.438,
-lng:78.5,
-online:true,
-duty:false,
-rating:0,
-last:"8 min ago"
-},
-
-{
-id:"005",
-name:"Driver 5",
-phone:"9000000005",
-vehicle:"TS12GH1005",
-lat:17.405,
-lng:78.47,
-online:false,
-duty:false,
-rating:0,
-last:"1 hr ago"
-}
-
-];
-
-
-let filter="all";
-
-let markers={};
-
-
-/* =====================================================
-   SAVE LOCAL DEMO DATA
-===================================================== */
-
-function save(){
-
-localStorage.setItem(
-KEY,
-JSON.stringify(drivers)
-);
-
-}
 
 
 /* =====================================================
@@ -975,7 +1208,8 @@ L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
 maxZoom:19,
-attribution:"© OpenStreetMap contributors"
+attribution:
+"© OpenStreetMap contributors"
 }
 ).addTo(map);
 
@@ -989,7 +1223,6 @@ function esc(x){
 return String(x ?? "")
 .replace(
 /[&<>"']/g,
-
 function(m){
 
 return {
@@ -1002,9 +1235,54 @@ return {
 
 }[m];
 
+});
+
 }
 
-);
+
+/* =====================================================
+   FIRESTORE TIMESTAMP
+===================================================== */
+
+function timestampText(value){
+
+if(!value){
+
+return "Not updated";
+
+}
+
+
+try{
+
+if(
+value.toDate &&
+typeof value.toDate === "function"
+){
+
+const d =
+value.toDate();
+
+return d.toLocaleString();
+
+}
+
+
+if(value instanceof Date){
+
+return value.toLocaleString();
+
+}
+
+
+return String(value);
+
+}
+catch(error){
+
+return "Not updated";
+
+}
 
 }
 
@@ -1034,9 +1312,131 @@ justify-content:center;
 font-size:19px
 ">🚕</div>`,
 
-iconSize:[38,38],
+iconSize:
+[38,38],
 
-iconAnchor:[19,19]
+iconAnchor:
+[19,19]
+
+});
+
+}
+
+
+/* =====================================================
+   CLEAR MAP MARKERS
+===================================================== */
+
+function clearMarkers(){
+
+Object
+.values(markers)
+.forEach(function(marker){
+
+map.removeLayer(marker);
+
+});
+
+
+markers = {};
+
+}
+
+
+/* =====================================================
+   FIRESTORE DRIVER LISTENER
+===================================================== */
+
+function startDriversListener(){
+
+if(driversUnsubscribe){
+
+driversUnsubscribe();
+
+driversUnsubscribe = null;
+
+}
+
+
+showStatus(
+"Connecting to Firebase Drivers...",
+"statusInfo"
+);
+
+
+driversUnsubscribe =
+db
+.collection(DRIVER_COLLECTION)
+.onSnapshot(
+function(snapshot){
+
+drivers =
+snapshot.docs.map(
+function(doc){
+
+const data =
+doc.data();
+
+return {
+
+id:
+data.id || doc.id,
+
+name:
+data.name || "",
+
+phone:
+data.phone || "",
+
+vehicle:
+data.vehicle || "",
+
+lat:
+Number(data.lat),
+
+lng:
+Number(data.lng),
+
+online:
+data.online === true,
+
+duty:
+data.duty === true,
+
+rating:
+Number(data.rating || 0),
+
+last:
+data.last ||
+timestampText(data.updatedAt)
+
+};
+
+}
+);
+
+
+hideStatus();
+
+render();
+
+},
+function(error){
+
+console.error(
+"Firestore listener error:",
+error
+);
+
+showStatus(
+"Firebase Drivers error: " +
+error.message,
+"statusError"
+);
+
+drivers = [];
+
+render();
 
 });
 
@@ -1049,35 +1449,43 @@ iconAnchor:[19,19]
 
 function render(){
 
-Object
-.values(markers)
-.forEach(function(m){
-
-map.removeLayer(m);
-
-});
+clearMarkers();
 
 
-markers={};
+/* ================= MAP ================= */
+
+drivers.forEach(
+function(d){
+
+if(
+!Number.isFinite(d.lat) ||
+!Number.isFinite(d.lng)
+){
+
+return;
+
+}
 
 
-drivers.forEach(function(d){
-
-const m =
+const marker =
 L.marker(
 [d.lat,d.lng],
-{icon:ico(d)}
+{
+icon:ico(d)
+}
 )
 .addTo(map);
 
 
-m.bindTooltip(
-d.name,
-{direction:"top"}
+marker.bindTooltip(
+d.name || d.id,
+{
+direction:"top"
+}
 );
 
 
-m.on(
+marker.on(
 "click",
 function(){
 
@@ -1087,56 +1495,64 @@ details(d.id);
 );
 
 
-markers[d.id]=m;
+markers[d.id] =
+marker;
 
 });
 
 
+/* ================= SEARCH ================= */
+
 const q =
-document
-.getElementById("search")
-.value
+search.value
 .toLowerCase()
 .trim();
 
 
+/* ================= FILTER ================= */
+
 const arr =
-drivers.filter(function(d){
+drivers.filter(
+function(d){
 
 const t =
 (
-d.id+" "+
-d.name+" "+
-d.vehicle+" "+
-d.phone
+(d.id || "") +
+" " +
+(d.name || "") +
+" " +
+(d.vehicle || "") +
+" " +
+(d.phone || "")
 )
 .toLowerCase();
 
 
 const qok =
-!q || t.includes(q);
+!q ||
+t.includes(q);
 
 
 const fok =
-filter==="all" ||
+filter === "all" ||
 
 (
-filter==="online" &&
+filter === "online" &&
 d.online
 ) ||
 
 (
-filter==="offline" &&
+filter === "offline" &&
 !d.online
 ) ||
 
 (
-filter==="duty" &&
+filter === "duty" &&
 d.duty
 ) ||
 
 (
-filter==="offduty" &&
+filter === "offduty" &&
 !d.duty
 );
 
@@ -1146,11 +1562,12 @@ return qok && fok;
 });
 
 
-document
-.getElementById("driverList")
-.innerHTML =
+/* ================= DRIVER LIST ================= */
 
-arr.map(function(d){
+driverList.innerHTML =
+
+arr.map(
+function(d){
 
 return `
 
@@ -1160,9 +1577,12 @@ return `
 
 🚕 ${esc(d.name)}
 
-<span class="badge ${d.online ? "on" : "off"}">
+<span
+class="badge ${d.online ? "on" : "off"}">
 
-${d.online ? "GPS ONLINE" : "OFFLINE"}
+${d.online
+? "GPS ONLINE"
+: "OFFLINE"}
 
 </span>
 
@@ -1187,11 +1607,15 @@ ${esc(d.vehicle)}
 
 •
 
-${d.duty ? "🟢 Duty ON" : "⚪ Duty OFF"}
+${d.duty
+? "🟢 Duty ON"
+: "⚪ Duty OFF"}
 
 •
 
-⭐ ${d.rating || "Not Rated"}
+⭐ ${d.rating
+? d.rating
+: "Not Rated"}
 
 </div>
 
@@ -1199,7 +1623,7 @@ ${d.duty ? "🟢 Duty ON" : "⚪ Duty OFF"}
 <div class="small">
 
 Last update:
-${esc(d.last)}
+${esc(d.last || "Not updated")}
 
 </div>
 
@@ -1238,32 +1662,38 @@ Delete
 
 `;
 
-}).join("")
+}
+)
+.join("")
 
 ||
 
-'<div class="card">No drivers found.</div>';
+'<div class="card">No drivers found in Firebase.</div>';
 
 
-document
-.getElementById("total")
-.textContent =
+/* ================= STATS ================= */
+
+total.textContent =
 drivers.length;
 
 
-document
-.getElementById("online")
-.textContent =
+online.textContent =
 drivers.filter(
-function(d){return d.online;}
+function(d){
+
+return d.online;
+
+}
 ).length;
 
 
-document
-.getElementById("duty")
-.textContent =
+duty.textContent =
 drivers.filter(
-function(d){return d.duty;}
+function(d){
+
+return d.duty;
+
+}
 ).length;
 
 }
@@ -1273,24 +1703,19 @@ function(d){return d.duty;}
    MODAL
 ===================================================== */
 
-function openModal(x){
+function openModal(content){
 
-document
-.getElementById("sheet")
-.innerHTML=x;
+sheet.innerHTML =
+content;
 
-document
-.getElementById("modal")
-.classList.add("show");
+modal.classList.add("show");
 
 }
 
 
 function closeModal(){
 
-document
-.getElementById("modal")
-.classList.remove("show");
+modal.classList.remove("show");
 
 }
 
@@ -1304,18 +1729,31 @@ function details(id){
 const d =
 drivers.find(
 function(x){
-return x.id===id;
+
+return x.id === id;
+
 }
 );
 
 
-if(!d)return;
+if(!d){
 
+return;
+
+}
+
+
+if(
+Number.isFinite(d.lat) &&
+Number.isFinite(d.lng)
+){
 
 map.setView(
 [d.lat,d.lng],
 16
 );
+
+}
 
 
 openModal(`
@@ -1323,7 +1761,9 @@ openModal(`
 <button
 class="close"
 onclick="closeModal()">
+
 ✕
+
 </button>
 
 
@@ -1352,13 +1792,17 @@ ${esc(d.vehicle)}
 
 <p>
 <b>GPS:</b>
-${d.online ? "🟢 ONLINE" : "🔴 OFFLINE"}
+${d.online
+? "🟢 ONLINE"
+: "🔴 OFFLINE"}
 </p>
 
 
 <p>
 <b>Duty:</b>
-${d.duty ? "🟢 ON" : "⚪ OFF"}
+${d.duty
+? "🟢 ON"
+: "⚪ OFF"}
 </p>
 
 
@@ -1370,18 +1814,27 @@ ${d.duty ? "🟢 ON" : "⚪ OFF"}
 
 <p>
 <b>Location:</b>
-${Number(d.lat).toFixed(6)},
-${Number(d.lng).toFixed(6)}
+${
+Number.isFinite(d.lat)
+? Number(d.lat).toFixed(6)
+: "N/A"
+},
+${
+Number.isFinite(d.lng)
+? Number(d.lng).toFixed(6)
+: "N/A"
+}
 </p>
 
 
 <p>
 <b>Last update:</b>
-${esc(d.last)}
+${esc(d.last || "Not updated")}
 </p>
 
 
 <div class="actions">
+
 
 <button
 class="btn"
@@ -1410,6 +1863,7 @@ onclick="editDriver('${esc(d.id)}')">
 
 </button>
 
+
 </div>
 
 `);
@@ -1429,12 +1883,18 @@ closeModal();
 const d =
 drivers.find(
 function(x){
-return x.id===id;
+
+return x.id === id;
+
 }
 );
 
 
-if(d){
+if(
+d &&
+Number.isFinite(d.lat) &&
+Number.isFinite(d.lng)
+){
 
 map.setView(
 [d.lat,d.lng],
@@ -1453,17 +1913,18 @@ map.setView(
 function editDriver(id){
 
 const d =
-id ?
-
+id
+?
 drivers.find(
 function(x){
-return x.id===id;
+
+return x.id === id;
+
 }
 )
-
 :
-
 {
+
 id:"",
 name:"",
 phone:"",
@@ -1473,7 +1934,19 @@ lng:78.48694,
 online:false,
 duty:false,
 rating:0
+
 };
+
+
+if(id && !d){
+
+alert(
+"Driver not found."
+);
+
+return;
+
+}
 
 
 openModal(`
@@ -1481,13 +1954,19 @@ openModal(`
 <button
 class="close"
 onclick="closeModal()">
+
 ✕
+
 </button>
 
 
 <h2>
 
-${id ? "✏️ Edit Driver" : "➕ Add Driver"}
+${
+id
+? "✏️ Edit Driver"
+: "➕ Add Driver"
+}
 
 </h2>
 
@@ -1583,7 +2062,8 @@ value="${d.lng}">
 GPS Status
 </label>
 
-<select id="f_online">
+<select
+id="f_online">
 
 <option
 value="1"
@@ -1592,6 +2072,7 @@ ${d.online ? "selected" : ""}>
 Online
 
 </option>
+
 
 <option
 value="0"
@@ -1612,7 +2093,8 @@ Offline
 Duty Status
 </label>
 
-<select id="f_duty">
+<select
+id="f_duty">
 
 <option
 value="1"
@@ -1621,6 +2103,7 @@ ${d.duty ? "selected" : ""}>
 Duty ON
 
 </option>
+
 
 <option
 value="0"
@@ -1669,63 +2152,80 @@ onclick="saveDriver('${id || ""}')">
 
 
 /* =====================================================
-   SAVE DRIVER
+   SAVE DRIVER TO FIRESTORE
 ===================================================== */
 
-function saveDriver(old){
+async function saveDriver(oldId){
 
-const o={
+const id =
+document
+.getElementById("f_id")
+.value
+.trim();
 
-id:
-document.getElementById("f_id")
-.value.trim(),
 
-name:
-document.getElementById("f_name")
-.value.trim(),
+const name =
+document
+.getElementById("f_name")
+.value
+.trim();
 
-phone:
-document.getElementById("f_phone")
-.value.trim(),
 
-vehicle:
-document.getElementById("f_vehicle")
-.value.trim(),
+const phone =
+document
+.getElementById("f_phone")
+.value
+.trim();
 
-lat:
+
+const vehicle =
+document
+.getElementById("f_vehicle")
+.value
+.trim();
+
+
+const lat =
 parseFloat(
-document.getElementById("f_lat").value
-),
+document
+.getElementById("f_lat")
+.value
+);
 
-lng:
+
+const lng =
 parseFloat(
-document.getElementById("f_lng").value
-),
+document
+.getElementById("f_lng")
+.value
+);
 
-online:
-document.getElementById("f_online")
-.value==="1",
 
-duty:
-document.getElementById("f_duty")
-.value==="1",
+const online =
+document
+.getElementById("f_online")
+.value === "1";
 
-rating:
+
+const duty =
+document
+.getElementById("f_duty")
+.value === "1";
+
+
+const rating =
 parseFloat(
-document.getElementById("f_rating").value
-) || 0,
-
-last:
-"Just updated"
-
-};
+document
+.getElementById("f_rating")
+.value
+) || 0;
 
 
 if(
-!o.id ||
-!o.name ||
-!Number.isFinite(o.lat) ||
-!Number.isFinite(o.lng)
+!id ||
+!name ||
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
 ){
 
 alert(
@@ -1737,34 +2237,13 @@ return;
 }
 
 
-if(old){
-
-const i =
-drivers.findIndex(
-function(x){
-return x.id===old;
-}
-);
-
-
-if(i>=0){
-
-drivers[i]=o;
-
-}
-
-}else{
-
 if(
-drivers.some(
-function(x){
-return x.id===o.id;
-}
-)
+rating < 0 ||
+rating > 5
 ){
 
 alert(
-"Driver ID already exists."
+"Rating must be between 0 and 5."
 );
 
 return;
@@ -1772,50 +2251,287 @@ return;
 }
 
 
-drivers.push(o);
+try{
+
+/* ================= EDIT ================= */
+
+if(oldId){
+
+const oldRef =
+db
+.collection(DRIVER_COLLECTION)
+.doc(oldId);
+
+
+const oldDoc =
+await oldRef.get();
+
+
+if(!oldDoc.exists){
+
+alert(
+"Old driver record not found in Firebase."
+);
+
+return;
 
 }
 
 
-save();
+/*
+ If Driver ID is changed during edit,
+ move data to the new document ID.
+*/
+
+if(id !== oldId){
+
+const newRef =
+db
+.collection(DRIVER_COLLECTION)
+.doc(id);
+
+
+const newDoc =
+await newRef.get();
+
+
+if(newDoc.exists){
+
+alert(
+"New Driver ID already exists."
+);
+
+return;
+
+}
+
+
+await newRef.set({
+
+id:id,
+
+name:name,
+
+phone:phone,
+
+vehicle:vehicle,
+
+lat:lat,
+
+lng:lng,
+
+online:online,
+
+duty:duty,
+
+rating:rating,
+
+last:"Just updated",
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+
+await oldRef.delete();
+
+}
+else{
+
+await oldRef.set({
+
+id:id,
+
+name:name,
+
+phone:phone,
+
+vehicle:vehicle,
+
+lat:lat,
+
+lng:lng,
+
+online:online,
+
+duty:duty,
+
+rating:rating,
+
+last:"Just updated",
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{
+merge:true
+});
+
+}
+
+}
+/* ================= ADD ================= */
+
+else{
+
+const newRef =
+db
+.collection(DRIVER_COLLECTION)
+.doc(id);
+
+
+const existing =
+await newRef.get();
+
+
+if(existing.exists){
+
+alert(
+"Driver ID already exists in Firebase."
+);
+
+return;
+
+}
+
+
+await newRef.set({
+
+id:id,
+
+name:name,
+
+phone:phone,
+
+vehicle:vehicle,
+
+lat:lat,
+
+lng:lng,
+
+online:online,
+
+duty:duty,
+
+rating:rating,
+
+last:"Just updated",
+
+createdAt:
+firebase.firestore.FieldValue.serverTimestamp(),
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+}
+
 
 closeModal();
 
-render();
+
+showStatus(
+"Driver saved successfully in Firebase.",
+"statusOk"
+);
+
+
+setTimeout(
+hideStatus,
+2500
+);
+
+
+}
+catch(error){
+
+console.error(
+"Save driver error:",
+error
+);
+
+
+alert(
+"Firebase save failed: " +
+error.message
+);
+
+}
 
 }
 
 
 /* =====================================================
-   DELETE DRIVER
+   DELETE DRIVER FROM FIRESTORE
 ===================================================== */
 
-function delDriver(id){
+async function delDriver(id){
 
 const d =
 drivers.find(
 function(x){
-return x.id===id;
+
+return x.id === id;
+
 }
 );
+
+
+if(!d){
+
+return;
+
+}
 
 
 if(
-d &&
-confirm("Delete "+d.name+"?")
+!confirm(
+"Delete " +
+d.name +
+"?"
+)
 ){
 
-drivers =
-drivers.filter(
-function(x){
-return x.id!==id;
+return;
+
 }
+
+
+try{
+
+await db
+.collection(DRIVER_COLLECTION)
+.doc(id)
+.delete();
+
+
+showStatus(
+"Driver deleted successfully from Firebase.",
+"statusOk"
 );
 
 
-save();
+setTimeout(
+hideStatus,
+2500
+);
 
-render();
+
+}
+catch(error){
+
+console.error(
+"Delete driver error:",
+error
+);
+
+
+alert(
+"Firebase delete failed: " +
+error.message
+);
 
 }
 
@@ -1828,19 +2544,25 @@ render();
 
 function setFilter(f,el){
 
-filter=f;
+filter = f;
 
 
 document
 .querySelectorAll(".filters button")
 .forEach(
-function(b){
-b.classList.remove("active");
-}
+function(button){
+
+button.classList.remove(
+"active"
 );
 
+});
 
-el.classList.add("active");
+
+el.classList.add(
+"active"
+);
+
 
 render();
 
@@ -1851,28 +2573,31 @@ render();
    SEARCH
 ===================================================== */
 
-document
-.getElementById("search")
-.addEventListener(
+search.addEventListener(
 "input",
-render
-);
+function(){
+
+render();
+
+});
 
 
 /* =====================================================
-   NAVIGATION
+   SCROLL DRIVER LIST
 ===================================================== */
 
 function scrollList(){
 
-document
-.getElementById("driverList")
-.scrollIntoView({
+driverList.scrollIntoView({
 behavior:"smooth"
 });
 
 }
 
+
+/* =====================================================
+   TOP MAP
+===================================================== */
 
 function topMap(){
 
@@ -1880,14 +2605,6 @@ window.scrollTo({
 top:0,
 behavior:"smooth"
 });
-
-
-setTimeout(
-function(){
-map.invalidateSize();
-},
-300
-);
 
 }
 
@@ -1903,7 +2620,9 @@ openModal(`
 <button
 class="close"
 onclick="closeModal()">
+
 ✕
+
 </button>
 
 
@@ -1919,21 +2638,33 @@ Safety Cab Driver Radar
 
 
 <p>
+<b>Firebase Project:</b>
+Safety Cab Radar
+</p>
+
+
+<p>
+<b>Driver Storage:</b>
+Firebase Firestore
+</p>
+
+
+<p>
+<b>Driver Collection:</b>
+drivers
+</p>
+
+
+<p>
 <b>Version:</b>
-Firebase Admin Login v1.0
+Firebase Driver Database v1.0
 </p>
 
 
 <p>
-<b>Admin:</b>
-Firebase Email/Password Authentication
+Driver records are now stored in Firebase Firestore.
 </p>
 
-
-<p>
-<b>Database:</b>
-Firebase Firestore + Realtime Database
-</p>
 
 `);
 
@@ -1941,16 +2672,16 @@ Firebase Firestore + Realtime Database
 
 
 /* =====================================================
-   CLOSE MODAL BY BACKGROUND
+   CLOSE MODAL WHEN BACKGROUND IS CLICKED
 ===================================================== */
 
-document
-.getElementById("modal")
-.addEventListener(
+modal.addEventListener(
 "click",
-function(e){
+function(event){
 
-if(e.target.id==="modal"){
+if(
+event.target.id === "modal"
+){
 
 closeModal();
 
@@ -1958,6 +2689,19 @@ closeModal();
 
 });
 
+
+/* =====================================================
+   INITIAL MAP SIZE
+===================================================== */
+
+setTimeout(
+function(){
+
+map.invalidateSize();
+
+},
+500
+);
 
 </script>
 

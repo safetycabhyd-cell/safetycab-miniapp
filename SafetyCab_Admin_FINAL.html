@@ -862,11 +862,14 @@ firebase.firestore();
 
 
 /* =====================================================
-   FIRESTORE DRIVER COLLECTION
+   FIRESTORE COLLECTIONS
 ===================================================== */
 
 const DRIVER_COLLECTION =
 "drivers";
+
+const PUBLIC_DRIVER_COLLECTION =
+"publicDrivers";
 
 
 /* =====================================================
@@ -1025,11 +1028,6 @@ return;
 }
 
 
-/*
- Firebase Auth state listener
- will open the Admin Panel.
-*/
-
 loginMsg.textContent = "";
 
 }
@@ -1108,6 +1106,7 @@ drivers = [];
 
 
 clearMarkers();
+
 
 await auth.signOut();
 
@@ -1344,6 +1343,103 @@ markers = {};
 
 
 /* =====================================================
+   BUILD PUBLIC DRIVER DATA
+===================================================== */
+
+function buildPublicDriver(d){
+
+return {
+
+id:
+d.id || "",
+
+name:
+d.name || "",
+
+vehicle:
+d.vehicle || "",
+
+lat:
+Number(d.lat),
+
+lng:
+Number(d.lng),
+
+online:
+d.online === true,
+
+duty:
+d.duty === true,
+
+rating:
+Number(d.rating || 0),
+
+/*
+ Telegram ID is used only for Driver Radar
+ to identify the logged-in Telegram driver.
+
+ Phone is deliberately NOT included.
+*/
+
+telegramId:
+d.telegramId
+?
+String(d.telegramId)
+:
+"",
+
+last:
+d.last || "Not updated",
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+};
+
+}
+
+
+/* =====================================================
+   SYNC ONE DRIVER TO PUBLIC DRIVERS
+===================================================== */
+
+async function syncPublicDriver(d){
+
+const publicRef =
+db
+.collection(PUBLIC_DRIVER_COLLECTION)
+.doc(d.id);
+
+
+const publicData =
+buildPublicDriver(d);
+
+
+await publicRef.set(
+publicData,
+{
+merge:true
+}
+);
+
+}
+
+
+/* =====================================================
+   DELETE PUBLIC DRIVER
+===================================================== */
+
+async function deletePublicDriver(id){
+
+await db
+.collection(PUBLIC_DRIVER_COLLECTION)
+.doc(id)
+.delete();
+
+}
+
+
+/* =====================================================
    FIRESTORE DRIVER LISTENER
 ===================================================== */
 
@@ -1390,6 +1486,13 @@ data.phone || "",
 
 vehicle:
 data.vehicle || "",
+
+telegramId:
+data.telegramId
+?
+String(data.telegramId)
+:
+"",
 
 lat:
 Number(data.lat),
@@ -1622,6 +1725,16 @@ ${d.duty
 
 <div class="small">
 
+Telegram ID:
+${d.telegramId
+? esc(d.telegramId)
+: "Not linked"}
+
+</div>
+
+
+<div class="small">
+
 Last update:
 ${esc(d.last || "Not updated")}
 
@@ -1791,6 +1904,14 @@ ${esc(d.vehicle)}
 
 
 <p>
+<b>Telegram ID:</b>
+${d.telegramId
+? esc(d.telegramId)
+: "Not linked"}
+</p>
+
+
+<p>
 <b>GPS:</b>
 ${d.online
 ? "🟢 ONLINE"
@@ -1929,6 +2050,7 @@ id:"",
 name:"",
 phone:"",
 vehicle:"",
+telegramId:"",
 lat:17.42536,
 lng:78.48694,
 online:false,
@@ -2022,6 +2144,21 @@ Vehicle Number
 <input
 id="f_vehicle"
 value="${esc(d.vehicle)}">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Telegram ID
+</label>
+
+<input
+id="f_telegramId"
+inputmode="numeric"
+placeholder="Example: 123456789"
+value="${esc(d.telegramId)}">
 
 </div>
 
@@ -2138,6 +2275,16 @@ value="${d.rating || 0}">
 </div>
 
 
+<div
+class="small"
+style="margin-bottom:12px">
+
+Telegram ID से यह Driver Radar account
+इस Driver ID से link होगा।
+
+</div>
+
+
 <button
 class="btn"
 onclick="saveDriver('${id || ""}')">
@@ -2152,7 +2299,7 @@ onclick="saveDriver('${id || ""}')">
 
 
 /* =====================================================
-   SAVE DRIVER TO FIRESTORE
+   SAVE DRIVER
 ===================================================== */
 
 async function saveDriver(oldId){
@@ -2181,6 +2328,13 @@ document
 const vehicle =
 document
 .getElementById("f_vehicle")
+.value
+.trim();
+
+
+const telegramId =
+document
+.getElementById("f_telegramId")
 .value
 .trim();
 
@@ -2253,7 +2407,40 @@ return;
 
 try{
 
-/* ================= EDIT ================= */
+const driverData = {
+
+id:id,
+
+name:name,
+
+phone:phone,
+
+vehicle:vehicle,
+
+telegramId:
+telegramId || "",
+
+lat:lat,
+
+lng:lng,
+
+online:online,
+
+duty:duty,
+
+rating:rating,
+
+last:"Just updated",
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+};
+
+
+/* =====================================================
+   EDIT
+===================================================== */
 
 if(oldId){
 
@@ -2279,8 +2466,7 @@ return;
 
 
 /*
- If Driver ID is changed during edit,
- move data to the new document ID.
+ Driver ID changed.
 */
 
 if(id !== oldId){
@@ -2306,72 +2492,76 @@ return;
 }
 
 
+/* Save private driver record */
+
 await newRef.set({
 
-id:id,
+...driverData,
 
-name:name,
-
-phone:phone,
-
-vehicle:vehicle,
-
-lat:lat,
-
-lng:lng,
-
-online:online,
-
-duty:duty,
-
-rating:rating,
-
-last:"Just updated",
-
-updatedAt:
+createdAt:
 firebase.firestore.FieldValue.serverTimestamp()
 
 });
 
+
+/* Create public radar record */
+
+await db
+.collection(PUBLIC_DRIVER_COLLECTION)
+.doc(id)
+.set(
+buildPublicDriver({
+...driverData
+})
+);
+
+
+/* Remove old public record */
+
+try{
+
+await deletePublicDriver(oldId);
+
+}catch(e){
+
+console.log(
+"Old public record not found."
+);
+
+}
+
+
+/* Delete old private record */
 
 await oldRef.delete();
 
 }
 else{
 
-await oldRef.set({
+/* Update private record */
 
-id:id,
-
-name:name,
-
-phone:phone,
-
-vehicle:vehicle,
-
-lat:lat,
-
-lng:lng,
-
-online:online,
-
-duty:duty,
-
-rating:rating,
-
-last:"Just updated",
-
-updatedAt:
-firebase.firestore.FieldValue.serverTimestamp()
-
-},{
+await oldRef.set(
+driverData,
+{
 merge:true
+}
+);
+
+
+/* Update public radar record */
+
+await syncPublicDriver({
+...driverData
 });
 
 }
 
 }
-/* ================= ADD ================= */
+
+
+/* =====================================================
+   ADD
+===================================================== */
 
 else{
 
@@ -2396,27 +2586,11 @@ return;
 }
 
 
+/* Save private driver */
+
 await newRef.set({
 
-id:id,
-
-name:name,
-
-phone:phone,
-
-vehicle:vehicle,
-
-lat:lat,
-
-lng:lng,
-
-online:online,
-
-duty:duty,
-
-rating:rating,
-
-last:"Just updated",
+...driverData,
 
 createdAt:
 firebase.firestore.FieldValue.serverTimestamp(),
@@ -2426,6 +2600,13 @@ firebase.firestore.FieldValue.serverTimestamp()
 
 });
 
+
+/* Save public radar driver */
+
+await syncPublicDriver({
+...driverData
+});
+
 }
 
 
@@ -2433,14 +2614,14 @@ closeModal();
 
 
 showStatus(
-"Driver saved successfully in Firebase.",
+"Driver saved successfully. Radar data synced.",
 "statusOk"
 );
 
 
 setTimeout(
 hideStatus,
-2500
+3000
 );
 
 
@@ -2464,7 +2645,7 @@ error.message
 
 
 /* =====================================================
-   DELETE DRIVER FROM FIRESTORE
+   DELETE DRIVER
 ===================================================== */
 
 async function delDriver(id){
@@ -2501,10 +2682,27 @@ return;
 
 try{
 
+/* Delete private record */
+
 await db
 .collection(DRIVER_COLLECTION)
 .doc(id)
 .delete();
+
+
+/* Delete public radar record */
+
+try{
+
+await deletePublicDriver(id);
+
+}catch(publicError){
+
+console.log(
+"Public driver record already missing."
+);
+
+}
 
 
 showStatus(
@@ -2644,25 +2842,38 @@ Safety Cab Radar
 
 
 <p>
-<b>Driver Storage:</b>
+<b>Private Driver Storage:</b>
 Firebase Firestore
 </p>
 
 
 <p>
-<b>Driver Collection:</b>
+<b>Private Collection:</b>
 drivers
 </p>
 
 
 <p>
-<b>Version:</b>
-Firebase Driver Database v1.0
+<b>Radar Collection:</b>
+publicDrivers
 </p>
 
 
 <p>
-Driver records are now stored in Firebase Firestore.
+<b>Phone Protection:</b>
+Phone is NOT copied to publicDrivers
+</p>
+
+
+<p>
+<b>Telegram Link:</b>
+Telegram ID links Driver Radar to Driver ID
+</p>
+
+
+<p>
+<b>Version:</b>
+Safety Cab Firebase Driver Database v2.0
 </p>
 
 

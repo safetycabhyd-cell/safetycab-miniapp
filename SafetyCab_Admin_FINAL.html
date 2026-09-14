@@ -13,11 +13,8 @@ content="width=device-width,initial-scale=1,maximum-scale=1">
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-
 
 <style>
 
@@ -37,9 +34,6 @@ input,
 select{
 font:inherit
 }
-
-
-/* ================= LOGIN ================= */
 
 #loginScreen{
 position:fixed;
@@ -132,9 +126,6 @@ color:#d93636;
 min-height:18px
 }
 
-
-/* ================= ADMIN ================= */
-
 #adminApp{
 display:none
 }
@@ -183,9 +174,6 @@ padding:7px 10px;
 font-size:11px
 }
 
-
-/* ================= STATS ================= */
-
 .stats{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -219,16 +207,10 @@ color:#159447
 color:#d93636
 }
 
-
-/* ================= MAP ================= */
-
 #map{
 height:calc(100vh - 260px);
 min-height:390px
 }
-
-
-/* ================= PANEL ================= */
 
 .panel{
 background:#fff;
@@ -262,9 +244,6 @@ white-space:nowrap
 background:#087fc3;
 color:#fff
 }
-
-
-/* ================= LIST ================= */
 
 .list{
 padding:8px;
@@ -306,9 +285,6 @@ background:#eee;
 color:#666
 }
 
-
-/* ================= BUTTONS ================= */
-
 .actions{
 display:flex;
 gap:5px;
@@ -331,9 +307,6 @@ background:#d93636
 .gray{
 background:#667
 }
-
-
-/* ================= BOTTOM ================= */
 
 .bottom{
 position:fixed;
@@ -363,9 +336,6 @@ font-size:21px
 .navbtn.active{
 color:#087fc3
 }
-
-
-/* ================= MODAL ================= */
 
 .modal{
 display:none;
@@ -427,9 +397,6 @@ width:34px;
 height:34px
 }
 
-
-/* ================= MESSAGE ================= */
-
 .firebaseStatus{
 margin:8px;
 padding:9px;
@@ -457,6 +424,18 @@ background:#e4f1fb;
 color:#075a8c
 }
 
+.locationBox{
+background:#eaf6ff;
+border-radius:10px;
+padding:10px;
+margin:10px 0;
+font-size:13px;
+line-height:1.5
+}
+
+.locationLoading{
+color:#087fc3
+}
 
 @media(min-width:800px){
 
@@ -471,13 +450,7 @@ right:20%
 
 </head>
 
-
 <body>
-
-
-<!-- =====================================================
-     LOGIN SCREEN
-===================================================== -->
 
 <div id="loginScreen">
 
@@ -495,7 +468,6 @@ Safety Cab Admin
 Secure Admin Login
 </div>
 
-
 <div class="loginField">
 
 <label>
@@ -509,7 +481,6 @@ placeholder="Enter admin email"
 autocomplete="username">
 
 </div>
-
 
 <div class="loginField">
 
@@ -525,7 +496,6 @@ autocomplete="current-password">
 
 </div>
 
-
 <button
 id="loginBtn"
 onclick="adminLogin()">
@@ -534,28 +504,19 @@ onclick="adminLogin()">
 
 </button>
 
-
 <div id="loginMsg"></div>
 
 </div>
 
 </div>
 
-
-
-<!-- =====================================================
-     ADMIN APP
-===================================================== -->
-
 <div id="adminApp">
-
 
 <header class="header">
 
 <div class="logo">
 🚕
 </div>
-
 
 <div>
 
@@ -568,7 +529,6 @@ Admin Panel • Driver Radar • Control Center
 </div>
 
 </div>
-
 
 <div class="adminBar">
 
@@ -584,12 +544,7 @@ Logout
 
 </header>
 
-
-
-<!-- ================= STATS ================= -->
-
 <section class="stats">
-
 
 <div class="stat">
 
@@ -605,7 +560,6 @@ Total Drivers
 
 </div>
 
-
 <div class="stat">
 
 <b
@@ -619,7 +573,6 @@ class="green">
 Online
 
 </div>
-
 
 <div class="stat">
 
@@ -635,39 +588,23 @@ Duty ON
 
 </div>
 
-
 </section>
-
-
-
-<!-- ================= STATUS ================= -->
 
 <div
 id="firebaseStatus"
 class="firebaseStatus">
 </div>
 
-
-
-<!-- ================= MAP ================= -->
-
 <div id="map"></div>
 
-
-
-<!-- ================= SEARCH / FILTER ================= -->
-
 <section class="panel">
-
 
 <input
 id="search"
 class="search"
 placeholder="🔎 Search Driver / ID / Vehicle / Phone">
 
-
 <div class="filters">
-
 
 <button
 class="active"
@@ -677,14 +614,12 @@ All
 
 </button>
 
-
 <button
 onclick="setFilter('online',this)">
 
 🟢 Online
 
 </button>
-
 
 <button
 onclick="setFilter('offline',this)">
@@ -693,14 +628,12 @@ onclick="setFilter('offline',this)">
 
 </button>
 
-
 <button
 onclick="setFilter('duty',this)">
 
 🟢 Duty ON
 
 </button>
-
 
 <button
 onclick="setFilter('offduty',this)">
@@ -709,14 +642,9 @@ onclick="setFilter('offduty',this)">
 
 </button>
 
-
 </div>
 
 </section>
-
-
-
-<!-- ================= DRIVER LIST ================= -->
 
 <section
 id="driverList"
@@ -724,12 +652,7 @@ class="list">
 
 </section>
 
-
-
-<!-- ================= BOTTOM NAV ================= -->
-
 <div class="bottom">
-
 
 <button
 class="navbtn active"
@@ -743,7 +666,6 @@ Map
 
 </button>
 
-
 <button
 class="navbtn"
 onclick="scrollList()">
@@ -755,7 +677,6 @@ onclick="scrollList()">
 Drivers
 
 </button>
-
 
 <button
 class="navbtn"
@@ -769,7 +690,6 @@ Add Driver
 
 </button>
 
-
 <button
 class="navbtn"
 onclick="settings()">
@@ -782,12 +702,7 @@ Settings
 
 </button>
 
-
 </div>
-
-
-
-<!-- ================= MODAL ================= -->
 
 <div
 id="modal"
@@ -801,26 +716,13 @@ id="sheet">
 
 </div>
 
-
 </div>
-
-
-
-<!-- =====================================================
-     LEAFLET
-===================================================== -->
 
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
-
-
 <script>
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
 
 const firebaseConfig = {
 
@@ -847,11 +749,6 @@ appId:
 
 };
 
-
-/* =====================================================
-   FIREBASE INITIALIZE
-===================================================== */
-
 firebase.initializeApp(firebaseConfig);
 
 const auth =
@@ -860,36 +757,20 @@ firebase.auth();
 const db =
 firebase.firestore();
 
-
-/* =====================================================
-   FIRESTORE COLLECTIONS
-===================================================== */
-
 const DRIVER_COLLECTION =
 "drivers";
 
 const PUBLIC_DRIVER_COLLECTION =
 "publicDrivers";
 
-
-/* =====================================================
-   GLOBAL VARIABLES
-===================================================== */
-
 let drivers = [];
-
 let filter = "all";
-
 let markers = {};
-
 let driversUnsubscribe = null;
-
 let appStarted = false;
 
-
-/* =====================================================
-   DOM HELPERS
-===================================================== */
+/* Address cache prevents repeated reverse-geocoding */
+const addressCache = {};
 
 const loginScreen =
 document.getElementById("loginScreen");
@@ -933,11 +814,6 @@ document.getElementById("duty");
 const firebaseStatus =
 document.getElementById("firebaseStatus");
 
-
-/* =====================================================
-   STATUS MESSAGE
-===================================================== */
-
 function showStatus(message,type){
 
 firebaseStatus.textContent =
@@ -948,18 +824,12 @@ firebaseStatus.className =
 
 }
 
-
 function hideStatus(){
 
 firebaseStatus.className =
 "firebaseStatus";
 
 }
-
-
-/* =====================================================
-   ADMIN LOGIN
-===================================================== */
 
 async function adminLogin(){
 
@@ -971,7 +841,6 @@ loginPassword.value;
 
 loginMsg.textContent = "";
 
-
 if(!email || !password){
 
 loginMsg.textContent =
@@ -981,12 +850,8 @@ return;
 
 }
 
-
 loginBtn.disabled = true;
-
-loginBtn.textContent =
-"Logging in...";
-
+loginBtn.textContent = "Logging in...";
 
 try{
 
@@ -996,17 +861,14 @@ email,
 password
 );
 
-
 const uid =
 result.user.uid;
-
 
 const adminDoc =
 await db
 .collection("admins")
 .doc(uid)
 .get();
-
 
 if(
 !adminDoc.exists ||
@@ -1019,14 +881,11 @@ loginMsg.textContent =
 "Access denied. Admin account required.";
 
 loginBtn.disabled = false;
-
-loginBtn.textContent =
-"🔐 Login";
+loginBtn.textContent = "🔐 Login";
 
 return;
 
 }
-
 
 loginMsg.textContent = "";
 
@@ -1039,18 +898,11 @@ loginMsg.textContent =
 "Login failed: " + error.message;
 
 loginBtn.disabled = false;
-
-loginBtn.textContent =
-"🔐 Login";
+loginBtn.textContent = "🔐 Login";
 
 }
 
 }
-
-
-/* =====================================================
-   SHOW ADMIN
-===================================================== */
 
 function showAdmin(){
 
@@ -1060,19 +912,14 @@ loginScreen.style.display =
 adminApp.style.display =
 "block";
 
-
 loginBtn.disabled = false;
-
-loginBtn.textContent =
-"🔐 Login";
-
+loginBtn.textContent = "🔐 Login";
 
 setTimeout(function(){
 
 map.invalidateSize();
 
 },300);
-
 
 if(!appStarted){
 
@@ -1084,11 +931,6 @@ startDriversListener();
 
 }
 
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
 async function adminLogout(){
 
 if(driversUnsubscribe){
@@ -1099,17 +941,12 @@ driversUnsubscribe = null;
 
 }
 
-
 appStarted = false;
-
 drivers = [];
-
 
 clearMarkers();
 
-
 await auth.signOut();
-
 
 adminApp.style.display =
 "none";
@@ -1118,15 +955,9 @@ loginScreen.style.display =
 "flex";
 
 loginPassword.value = "";
-
 loginMsg.textContent = "";
 
 }
-
-
-/* =====================================================
-   AUTH STATE CHECK
-===================================================== */
 
 auth.onAuthStateChanged(
 async function(user){
@@ -1145,7 +976,6 @@ return;
 
 }
 
-
 try{
 
 const adminDoc =
@@ -1153,7 +983,6 @@ await db
 .collection("admins")
 .doc(user.uid)
 .get();
-
 
 if(
 adminDoc.exists &&
@@ -1190,18 +1019,12 @@ await auth.signOut();
 
 });
 
-
-/* =====================================================
-   MAP
-===================================================== */
-
 const map =
 L.map("map")
 .setView(
 [17.42536,78.48694],
 13
 );
-
 
 L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -1211,11 +1034,6 @@ attribution:
 "© OpenStreetMap contributors"
 }
 ).addTo(map);
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
 
 function esc(x){
 
@@ -1238,11 +1056,6 @@ return {
 
 }
 
-
-/* =====================================================
-   FIRESTORE TIMESTAMP
-===================================================== */
-
 function timestampText(value){
 
 if(!value){
@@ -1251,7 +1064,6 @@ return "Not updated";
 
 }
 
-
 try{
 
 if(
@@ -1259,20 +1071,15 @@ value.toDate &&
 typeof value.toDate === "function"
 ){
 
-const d =
-value.toDate();
-
-return d.toLocaleString();
+return value.toDate().toLocaleString();
 
 }
-
 
 if(value instanceof Date){
 
 return value.toLocaleString();
 
 }
-
 
 return String(value);
 
@@ -1284,11 +1091,6 @@ return "Not updated";
 }
 
 }
-
-
-/* =====================================================
-   DRIVER MAP ICON
-===================================================== */
 
 function ico(d){
 
@@ -1311,20 +1113,12 @@ justify-content:center;
 font-size:19px
 ">🚕</div>`,
 
-iconSize:
-[38,38],
-
-iconAnchor:
-[19,19]
+iconSize:[38,38],
+iconAnchor:[19,19]
 
 });
 
 }
-
-
-/* =====================================================
-   CLEAR MAP MARKERS
-===================================================== */
 
 function clearMarkers(){
 
@@ -1336,15 +1130,9 @@ map.removeLayer(marker);
 
 });
 
-
 markers = {};
 
 }
-
-
-/* =====================================================
-   BUILD PUBLIC DRIVER DATA
-===================================================== */
 
 function buildPublicDriver(d){
 
@@ -1374,13 +1162,6 @@ d.duty === true,
 rating:
 Number(d.rating || 0),
 
-/*
- Telegram ID is used only for Driver Radar
- to identify the logged-in Telegram driver.
-
- Phone is deliberately NOT included.
-*/
-
 telegramId:
 d.telegramId
 ?
@@ -1398,11 +1179,6 @@ firebase.firestore.FieldValue.serverTimestamp()
 
 }
 
-
-/* =====================================================
-   SYNC ONE DRIVER TO PUBLIC DRIVERS
-===================================================== */
-
 async function syncPublicDriver(d){
 
 const publicRef =
@@ -1410,10 +1186,8 @@ db
 .collection(PUBLIC_DRIVER_COLLECTION)
 .doc(d.id);
 
-
 const publicData =
 buildPublicDriver(d);
-
 
 await publicRef.set(
 publicData,
@@ -1424,11 +1198,6 @@ merge:true
 
 }
 
-
-/* =====================================================
-   DELETE PUBLIC DRIVER
-===================================================== */
-
 async function deletePublicDriver(id){
 
 await db
@@ -1437,11 +1206,6 @@ await db
 .delete();
 
 }
-
-
-/* =====================================================
-   FIRESTORE DRIVER LISTENER
-===================================================== */
 
 function startDriversListener(){
 
@@ -1453,12 +1217,10 @@ driversUnsubscribe = null;
 
 }
 
-
 showStatus(
 "Connecting to Firebase Drivers...",
 "statusInfo"
 );
-
 
 driversUnsubscribe =
 db
@@ -1518,7 +1280,6 @@ timestampText(data.updatedAt)
 }
 );
 
-
 hideStatus();
 
 render();
@@ -1545,17 +1306,9 @@ render();
 
 }
 
-
-/* =====================================================
-   RENDER
-===================================================== */
-
 function render(){
 
 clearMarkers();
-
-
-/* ================= MAP ================= */
 
 drivers.forEach(
 function(d){
@@ -1569,7 +1322,6 @@ return;
 
 }
 
-
 const marker =
 L.marker(
 [d.lat,d.lng],
@@ -1579,14 +1331,12 @@ icon:ico(d)
 )
 .addTo(map);
 
-
 marker.bindTooltip(
 d.name || d.id,
 {
 direction:"top"
 }
 );
-
 
 marker.on(
 "click",
@@ -1597,22 +1347,15 @@ details(d.id);
 }
 );
 
-
 markers[d.id] =
 marker;
 
 });
 
-
-/* ================= SEARCH ================= */
-
 const q =
 search.value
 .toLowerCase()
 .trim();
-
-
-/* ================= FILTER ================= */
 
 const arr =
 drivers.filter(
@@ -1630,11 +1373,9 @@ const t =
 )
 .toLowerCase();
 
-
 const qok =
 !q ||
 t.includes(q);
-
 
 const fok =
 filter === "all" ||
@@ -1659,13 +1400,9 @@ filter === "offduty" &&
 !d.duty
 );
 
-
 return qok && fok;
 
 });
-
-
-/* ================= DRIVER LIST ================= */
 
 driverList.innerHTML =
 
@@ -1691,7 +1428,6 @@ ${d.online
 
 </div>
 
-
 <div class="small">
 
 ID:
@@ -1702,7 +1438,6 @@ ${esc(d.id)}
 ${esc(d.vehicle)}
 
 </div>
-
 
 <div class="small">
 
@@ -1722,7 +1457,6 @@ ${d.duty
 
 </div>
 
-
 <div class="small">
 
 Telegram ID:
@@ -1732,14 +1466,12 @@ ${d.telegramId
 
 </div>
 
-
 <div class="small">
 
 Last update:
 ${esc(d.last || "Not updated")}
 
 </div>
-
 
 <div class="actions">
 
@@ -1751,7 +1483,6 @@ View
 
 </button>
 
-
 <button
 class="btn"
 onclick="editDriver('${esc(d.id)}')">
@@ -1759,7 +1490,6 @@ onclick="editDriver('${esc(d.id)}')">
 Edit
 
 </button>
-
 
 <button
 class="btn redbtn"
@@ -1783,12 +1513,8 @@ Delete
 
 '<div class="card">No drivers found in Firebase.</div>';
 
-
-/* ================= STATS ================= */
-
 total.textContent =
 drivers.length;
-
 
 online.textContent =
 drivers.filter(
@@ -1798,7 +1524,6 @@ return d.online;
 
 }
 ).length;
-
 
 duty.textContent =
 drivers.filter(
@@ -1811,11 +1536,6 @@ return d.duty;
 
 }
 
-
-/* =====================================================
-   MODAL
-===================================================== */
-
 function openModal(content){
 
 sheet.innerHTML =
@@ -1825,19 +1545,120 @@ modal.classList.add("show");
 
 }
 
-
 function closeModal(){
 
 modal.classList.remove("show");
 
 }
 
+/* =====================================================
+   NEW: REVERSE GEOCODING
+   GPS COORDINATES -> PRESENT LOCATION ADDRESS
+===================================================== */
+
+async function getPresentAddress(lat,lng){
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+){
+
+return "Location not available";
+
+}
+
+const key =
+lat.toFixed(6) +
+"," +
+lng.toFixed(6);
+
+if(addressCache[key]){
+
+return addressCache[key];
+
+}
+
+try{
+
+const url =
+"https://nominatim.openstreetmap.org/reverse" +
+"?format=jsonv2" +
+"&lat=" + encodeURIComponent(lat) +
+"&lon=" + encodeURIComponent(lng) +
+"&zoom=18" +
+"&addressdetails=1";
+
+const response =
+await fetch(url,{
+headers:{
+"Accept":"application/json"
+}
+});
+
+if(!response.ok){
+
+throw new Error(
+"Address service unavailable"
+);
+
+}
+
+const data =
+await response.json();
+
+let address =
+data.display_name || "";
+
+if(!address){
+
+const a =
+data.address || {};
+
+address =
+[
+a.road,
+a.suburb,
+a.neighbourhood,
+a.city_district,
+a.city,
+a.state
+]
+.filter(Boolean)
+.join(", ");
+
+}
+
+if(!address){
+
+address =
+"Address not found";
+
+}
+
+addressCache[key] =
+address;
+
+return address;
+
+}
+catch(error){
+
+console.error(
+"Reverse geocoding error:",
+error
+);
+
+return "Address unavailable";
+
+}
+
+}
 
 /* =====================================================
    DRIVER DETAILS
 ===================================================== */
 
-function details(id){
+async function details(id){
 
 const d =
 drivers.find(
@@ -1848,13 +1669,11 @@ return x.id === id;
 }
 );
 
-
 if(!d){
 
 return;
 
 }
-
 
 if(
 Number.isFinite(d.lat) &&
@@ -1868,7 +1687,6 @@ map.setView(
 
 }
 
-
 openModal(`
 
 <button
@@ -1879,29 +1697,24 @@ onclick="closeModal()">
 
 </button>
 
-
 <h2>
 🚕 ${esc(d.name)}
 </h2>
-
 
 <p>
 <b>Driver ID:</b>
 ${esc(d.id)}
 </p>
 
-
 <p>
 <b>Phone:</b>
 ${esc(d.phone)}
 </p>
 
-
 <p>
 <b>Vehicle:</b>
 ${esc(d.vehicle)}
 </p>
-
 
 <p>
 <b>Telegram ID:</b>
@@ -1910,14 +1723,12 @@ ${d.telegramId
 : "Not linked"}
 </p>
 
-
 <p>
 <b>GPS:</b>
 ${d.online
 ? "🟢 ONLINE"
 : "🔴 OFFLINE"}
 </p>
-
 
 <p>
 <b>Duty:</b>
@@ -1926,15 +1737,13 @@ ${d.duty
 : "⚪ OFF"}
 </p>
 
-
 <p>
 <b>Rating:</b>
 ⭐ ${d.rating || "Not Rated"}
 </p>
 
-
 <p>
-<b>Location:</b>
+<b>Coordinates:</b><br>
 ${
 Number.isFinite(d.lat)
 ? Number(d.lat).toFixed(6)
@@ -1947,15 +1756,21 @@ Number.isFinite(d.lng)
 }
 </p>
 
+<div
+id="presentLocation"
+class="locationBox locationLoading">
+
+📍 <b>Present Location:</b><br>
+Finding current address...
+
+</div>
 
 <p>
 <b>Last update:</b>
 ${esc(d.last || "Not updated")}
 </p>
 
-
 <div class="actions">
-
 
 <button
 class="btn"
@@ -1964,7 +1779,6 @@ onclick="center('${esc(d.id)}')">
 📍 Center Map
 
 </button>
-
 
 <a
 class="btn"
@@ -1975,7 +1789,6 @@ href="tel:${esc(d.phone)}">
 
 </a>
 
-
 <button
 class="btn"
 onclick="editDriver('${esc(d.id)}')">
@@ -1984,22 +1797,44 @@ onclick="editDriver('${esc(d.id)}')">
 
 </button>
 
-
 </div>
 
 `);
 
+if(
+Number.isFinite(d.lat) &&
+Number.isFinite(d.lng)
+){
+
+const address =
+await getPresentAddress(
+d.lat,
+d.lng
+);
+
+const box =
+document.getElementById(
+"presentLocation"
+);
+
+if(box){
+
+box.className =
+"locationBox";
+
+box.innerHTML =
+"📍 <b>Present Location:</b><br>" +
+esc(address);
+
 }
 
+}
 
-/* =====================================================
-   CENTER DRIVER
-===================================================== */
+}
 
 function center(id){
 
 closeModal();
-
 
 const d =
 drivers.find(
@@ -2009,7 +1844,6 @@ return x.id === id;
 
 }
 );
-
 
 if(
 d &&
@@ -2025,11 +1859,6 @@ map.setView(
 }
 
 }
-
-
-/* =====================================================
-   ADD / EDIT DRIVER
-===================================================== */
 
 function editDriver(id){
 
@@ -2059,7 +1888,6 @@ rating:0
 
 };
 
-
 if(id && !d){
 
 alert(
@@ -2069,7 +1897,6 @@ alert(
 return;
 
 }
-
 
 openModal(`
 
@@ -2081,7 +1908,6 @@ onclick="closeModal()">
 
 </button>
 
-
 <h2>
 
 ${
@@ -2092,9 +1918,7 @@ id
 
 </h2>
 
-
 <div class="row">
-
 
 <div class="field">
 
@@ -2108,7 +1932,6 @@ value="${esc(d.id)}">
 
 </div>
 
-
 <div class="field">
 
 <label>
@@ -2120,7 +1943,6 @@ id="f_name"
 value="${esc(d.name)}">
 
 </div>
-
 
 <div class="field">
 
@@ -2134,7 +1956,6 @@ value="${esc(d.phone)}">
 
 </div>
 
-
 <div class="field">
 
 <label>
@@ -2146,7 +1967,6 @@ id="f_vehicle"
 value="${esc(d.vehicle)}">
 
 </div>
-
 
 <div class="field">
 
@@ -2162,7 +1982,6 @@ value="${esc(d.telegramId)}">
 
 </div>
 
-
 <div class="field">
 
 <label>
@@ -2177,7 +1996,6 @@ value="${d.lat}">
 
 </div>
 
-
 <div class="field">
 
 <label>
@@ -2191,7 +2009,6 @@ step="0.000001"
 value="${d.lng}">
 
 </div>
-
 
 <div class="field">
 
@@ -2210,7 +2027,6 @@ Online
 
 </option>
 
-
 <option
 value="0"
 ${!d.online ? "selected" : ""}>
@@ -2222,7 +2038,6 @@ Offline
 </select>
 
 </div>
-
 
 <div class="field">
 
@@ -2241,7 +2056,6 @@ Duty ON
 
 </option>
 
-
 <option
 value="0"
 ${!d.duty ? "selected" : ""}>
@@ -2253,7 +2067,6 @@ Duty OFF
 </select>
 
 </div>
-
 
 <div class="field">
 
@@ -2271,9 +2084,7 @@ value="${d.rating || 0}">
 
 </div>
 
-
 </div>
-
 
 <div
 class="small"
@@ -2283,7 +2094,6 @@ Telegram ID से यह Driver Radar account
 इस Driver ID से link होगा।
 
 </div>
-
 
 <button
 class="btn"
@@ -2297,11 +2107,6 @@ onclick="saveDriver('${id || ""}')">
 
 }
 
-
-/* =====================================================
-   SAVE DRIVER
-===================================================== */
-
 async function saveDriver(oldId){
 
 const id =
@@ -2310,13 +2115,11 @@ document
 .value
 .trim();
 
-
 const name =
 document
 .getElementById("f_name")
 .value
 .trim();
-
 
 const phone =
 document
@@ -2324,20 +2127,17 @@ document
 .value
 .trim();
 
-
 const vehicle =
 document
 .getElementById("f_vehicle")
 .value
 .trim();
 
-
 const telegramId =
 document
 .getElementById("f_telegramId")
 .value
 .trim();
-
 
 const lat =
 parseFloat(
@@ -2346,7 +2146,6 @@ document
 .value
 );
 
-
 const lng =
 parseFloat(
 document
@@ -2354,18 +2153,15 @@ document
 .value
 );
 
-
 const online =
 document
 .getElementById("f_online")
 .value === "1";
 
-
 const duty =
 document
 .getElementById("f_duty")
 .value === "1";
-
 
 const rating =
 parseFloat(
@@ -2373,7 +2169,6 @@ document
 .getElementById("f_rating")
 .value
 ) || 0;
-
 
 if(
 !id ||
@@ -2390,7 +2185,6 @@ return;
 
 }
 
-
 if(
 rating < 0 ||
 rating > 5
@@ -2403,7 +2197,6 @@ alert(
 return;
 
 }
-
 
 try{
 
@@ -2437,11 +2230,6 @@ firebase.firestore.FieldValue.serverTimestamp()
 
 };
 
-
-/* =====================================================
-   EDIT
-===================================================== */
-
 if(oldId){
 
 const oldRef =
@@ -2449,10 +2237,8 @@ db
 .collection(DRIVER_COLLECTION)
 .doc(oldId);
 
-
 const oldDoc =
 await oldRef.get();
-
 
 if(!oldDoc.exists){
 
@@ -2464,11 +2250,6 @@ return;
 
 }
 
-
-/*
- Driver ID changed.
-*/
-
 if(id !== oldId){
 
 const newRef =
@@ -2476,10 +2257,8 @@ db
 .collection(DRIVER_COLLECTION)
 .doc(id);
 
-
 const newDoc =
 await newRef.get();
-
 
 if(newDoc.exists){
 
@@ -2491,9 +2270,6 @@ return;
 
 }
 
-
-/* Save private driver record */
-
 await newRef.set({
 
 ...driverData,
@@ -2502,9 +2278,6 @@ createdAt:
 firebase.firestore.FieldValue.serverTimestamp()
 
 });
-
-
-/* Create public radar record */
 
 await db
 .collection(PUBLIC_DRIVER_COLLECTION)
@@ -2515,14 +2288,12 @@ buildPublicDriver({
 })
 );
 
-
-/* Remove old public record */
-
 try{
 
 await deletePublicDriver(oldId);
 
-}catch(e){
+}
+catch(e){
 
 console.log(
 "Old public record not found."
@@ -2530,15 +2301,10 @@ console.log(
 
 }
 
-
-/* Delete old private record */
-
 await oldRef.delete();
 
 }
 else{
-
-/* Update private record */
 
 await oldRef.set(
 driverData,
@@ -2547,9 +2313,6 @@ merge:true
 }
 );
 
-
-/* Update public radar record */
-
 await syncPublicDriver({
 ...driverData
 });
@@ -2557,12 +2320,6 @@ await syncPublicDriver({
 }
 
 }
-
-
-/* =====================================================
-   ADD
-===================================================== */
-
 else{
 
 const newRef =
@@ -2570,10 +2327,8 @@ db
 .collection(DRIVER_COLLECTION)
 .doc(id);
 
-
 const existing =
 await newRef.get();
-
 
 if(existing.exists){
 
@@ -2584,9 +2339,6 @@ alert(
 return;
 
 }
-
-
-/* Save private driver */
 
 await newRef.set({
 
@@ -2600,30 +2352,23 @@ firebase.firestore.FieldValue.serverTimestamp()
 
 });
 
-
-/* Save public radar driver */
-
 await syncPublicDriver({
 ...driverData
 });
 
 }
 
-
 closeModal();
-
 
 showStatus(
 "Driver saved successfully. Radar data synced.",
 "statusOk"
 );
 
-
 setTimeout(
 hideStatus,
 3000
 );
-
 
 }
 catch(error){
@@ -2633,7 +2378,6 @@ console.error(
 error
 );
 
-
 alert(
 "Firebase save failed: " +
 error.message
@@ -2642,11 +2386,6 @@ error.message
 }
 
 }
-
-
-/* =====================================================
-   DELETE DRIVER
-===================================================== */
 
 async function delDriver(id){
 
@@ -2659,13 +2398,11 @@ return x.id === id;
 }
 );
 
-
 if(!d){
 
 return;
 
 }
-
 
 if(
 !confirm(
@@ -2679,24 +2416,19 @@ return;
 
 }
 
-
 try{
-
-/* Delete private record */
 
 await db
 .collection(DRIVER_COLLECTION)
 .doc(id)
 .delete();
 
-
-/* Delete public radar record */
-
 try{
 
 await deletePublicDriver(id);
 
-}catch(publicError){
+}
+catch(publicError){
 
 console.log(
 "Public driver record already missing."
@@ -2704,18 +2436,15 @@ console.log(
 
 }
 
-
 showStatus(
 "Driver deleted successfully from Firebase.",
 "statusOk"
 );
 
-
 setTimeout(
 hideStatus,
 2500
 );
-
 
 }
 catch(error){
@@ -2724,7 +2453,6 @@ console.error(
 "Delete driver error:",
 error
 );
-
 
 alert(
 "Firebase delete failed: " +
@@ -2735,15 +2463,9 @@ error.message
 
 }
 
-
-/* =====================================================
-   FILTER
-===================================================== */
-
 function setFilter(f,el){
 
 filter = f;
-
 
 document
 .querySelectorAll(".filters button")
@@ -2756,20 +2478,13 @@ button.classList.remove(
 
 });
 
-
 el.classList.add(
 "active"
 );
 
-
 render();
 
 }
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
 
 search.addEventListener(
 "input",
@@ -2779,11 +2494,6 @@ render();
 
 });
 
-
-/* =====================================================
-   SCROLL DRIVER LIST
-===================================================== */
-
 function scrollList(){
 
 driverList.scrollIntoView({
@@ -2791,11 +2501,6 @@ behavior:"smooth"
 });
 
 }
-
-
-/* =====================================================
-   TOP MAP
-===================================================== */
 
 function topMap(){
 
@@ -2805,11 +2510,6 @@ behavior:"smooth"
 });
 
 }
-
-
-/* =====================================================
-   SETTINGS
-===================================================== */
 
 function settings(){
 
@@ -2823,68 +2523,58 @@ onclick="closeModal()">
 
 </button>
 
-
 <h2>
 ⚙️ Admin Settings
 </h2>
-
 
 <p>
 <b>System:</b>
 Safety Cab Driver Radar
 </p>
 
-
 <p>
 <b>Firebase Project:</b>
 Safety Cab Radar
 </p>
-
 
 <p>
 <b>Private Driver Storage:</b>
 Firebase Firestore
 </p>
 
-
 <p>
 <b>Private Collection:</b>
 drivers
 </p>
-
 
 <p>
 <b>Radar Collection:</b>
 publicDrivers
 </p>
 
-
 <p>
 <b>Phone Protection:</b>
 Phone is NOT copied to publicDrivers
 </p>
-
 
 <p>
 <b>Telegram Link:</b>
 Telegram ID links Driver Radar to Driver ID
 </p>
 
+<p>
+<b>Present Location:</b>
+GPS coordinates are converted to address when Driver Details are opened.
+</p>
 
 <p>
 <b>Version:</b>
-Safety Cab Firebase Driver Database v2.0
+Safety Cab Firebase Driver Database v2.1
 </p>
-
 
 `);
 
 }
-
-
-/* =====================================================
-   CLOSE MODAL WHEN BACKGROUND IS CLICKED
-===================================================== */
 
 modal.addEventListener(
 "click",
@@ -2899,11 +2589,6 @@ closeModal();
 }
 
 });
-
-
-/* =====================================================
-   INITIAL MAP SIZE
-===================================================== */
 
 setTimeout(
 function(){

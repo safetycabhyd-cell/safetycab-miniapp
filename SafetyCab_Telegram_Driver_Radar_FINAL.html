@@ -121,16 +121,8 @@ border-color:#087fc3
 }
 
 .driver{
-display:flex;
-align-items:center;
-gap:10px;
 border-bottom:1px solid #edf0f4;
-padding:11px 0;
-cursor:pointer
-}
-
-.driver:last-child{
-border:0
+padding:11px 0
 }
 
 .avatar{
@@ -180,7 +172,7 @@ color:#b91c1c
 .action{
 border:0;
 border-radius:10px;
-padding:10px 12px;
+padding:9px 12px;
 font-weight:700;
 background:#0878c9;
 color:#fff;
@@ -195,6 +187,10 @@ color:#0878c9
 .danger{
 background:#fee2e2;
 color:#b91c1c
+}
+
+.greenBtn{
+background:#16a34a
 }
 
 .row{
@@ -291,8 +287,7 @@ font-size:11px;
 font-weight:700
 }
 
-
-/* ================= PHOTOS ================= */
+/* PHOTOS */
 
 .profilePhoto{
 width:110px;
@@ -318,8 +313,8 @@ font-size:48px
 }
 
 .popupPhoto{
-width:80px;
-height:80px;
+width:72px;
+height:72px;
 border-radius:50%;
 object-fit:cover;
 display:block;
@@ -328,166 +323,66 @@ border:3px solid #d9e3ec
 }
 
 .popupPhotoPlaceholder{
-width:80px;
-height:80px;
+width:72px;
+height:72px;
 border-radius:50%;
 display:grid;
 place-items:center;
 margin:0 auto 8px;
 background:#eef3f7;
-font-size:35px
+font-size:30px
 }
 
+/* SMALL CAR PHOTO */
+
 .popupCarPhoto{
-width:210px;
-height:125px;
-border-radius:12px;
+width:105px;
+height:65px;
+border-radius:9px;
 object-fit:cover;
 display:block;
-margin:10px auto;
+margin:8px auto;
 border:2px solid #d9e3ec;
-background:#eef3f7
+background:#eef3f7;
+cursor:pointer
 }
 
 .popupCarPlaceholder{
-width:210px;
-height:125px;
-border-radius:12px;
+width:105px;
+height:65px;
+border-radius:9px;
 display:grid;
 place-items:center;
-margin:10px auto;
+margin:8px auto;
 background:#eef3f7;
-font-size:48px
+font-size:32px
 }
 
 .detailCarPhoto{
-width:100%;
-max-width:320px;
-height:190px;
+width:150px;
+height:95px;
 object-fit:cover;
 display:block;
 margin:10px auto 15px;
-border-radius:14px;
+border-radius:10px;
 border:2px solid #d5dfe7;
-background:#eef3f7
+background:#eef3f7;
+cursor:pointer
 }
 
 .detailCarPlaceholder{
-width:100%;
-max-width:320px;
-height:190px;
+width:150px;
+height:95px;
 display:grid;
 place-items:center;
 margin:10px auto 15px;
-border-radius:14px;
+border-radius:10px;
 background:#eef3f7;
 border:2px solid #d5dfe7;
-font-size:60px
+font-size:40px
 }
 
-
-/* ================= BOOKING ================= */
-
-.bookingSheet{
-padding:14px 14px 18px
-}
-
-.bookingTitle{
-font-size:21px;
-font-weight:800;
-margin:2px 0 10px
-}
-
-.bookingDriverBox{
-background:#f4f7fb;
-border-radius:11px;
-padding:9px 10px;
-font-size:12px;
-line-height:1.4;
-margin-bottom:8px
-}
-
-.bookingLabel{
-font-size:12px;
-font-weight:700;
-display:block;
-margin-top:8px
-}
-
-.bookingInput{
-width:100%;
-padding:10px 11px;
-border:1px solid #ccd6e2;
-border-radius:10px;
-margin-top:5px;
-outline:none;
-font-size:13px;
-height:42px
-}
-
-.bookingInput:focus{
-border-color:#087fc3
-}
-
-.bookingButtons{
-display:grid;
-grid-template-columns:1fr 1.35fr;
-gap:8px;
-margin-top:9px
-}
-
-.bookingButtons .action{
-width:100%;
-padding:10px 7px;
-font-size:12px
-}
-
-.routeInfo{
-background:#e9f4ff;
-border-radius:11px;
-padding:9px 10px;
-margin-top:9px;
-font-size:12px;
-line-height:1.45
-}
-
-.routePoint{
-display:flex;
-align-items:flex-start;
-gap:6px;
-margin:4px 0
-}
-
-.routeDot{
-font-size:16px;
-line-height:17px
-}
-
-.routeMap{
-width:100%;
-height:230px;
-border-radius:11px;
-margin-top:9px;
-overflow:hidden;
-border:1px solid #d8e1ea
-}
-
-.routeLoading{
-text-align:center;
-padding:15px 8px;
-color:#667085;
-font-size:13px
-}
-
-.routeError{
-text-align:center;
-padding:13px 8px;
-color:#b91c1c;
-font-size:13px
-}
-
-
-/* ================= BOTTOM ================= */
+/* BOTTOM */
 
 .bottom{
 position:fixed;
@@ -519,8 +414,7 @@ color:#087fc3;
 font-weight:700
 }
 
-
-/* ================= MODAL ================= */
+/* NORMAL MODAL */
 
 .modal{
 display:none;
@@ -540,9 +434,8 @@ background:#fff;
 border-radius:18px 18px 0 0;
 width:100%;
 padding:18px;
-max-height:92vh;
-overflow:auto;
--webkit-overflow-scrolling:touch
+max-height:82vh;
+overflow:auto
 }
 
 .close{
@@ -550,13 +443,168 @@ float:right;
 border:0;
 border-radius:50%;
 width:32px;
-height:32px;
-background:#eef2f6;
-font-size:17px
+height:32px
 }
 
+/* BOOKING MODAL */
 
-/* ================= ACCESS LOCK ================= */
+.bookingModal{
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:7000;
+align-items:center;
+justify-content:center;
+padding:8px
+}
+
+.bookingModal.show{
+display:flex
+}
+
+.bookingSheet{
+background:#fff;
+width:100%;
+height:92vh;
+max-height:92vh;
+border-radius:18px;
+padding:14px;
+overflow:auto;
+position:relative
+}
+
+.bookingClose{
+position:absolute;
+right:12px;
+top:12px;
+z-index:5;
+border:0;
+background:#eef2f7;
+border-radius:50%;
+width:34px;
+height:34px;
+font-size:18px
+}
+
+.bookingTitle{
+font-size:22px;
+font-weight:800;
+padding-right:45px;
+margin-bottom:10px
+}
+
+.bookingDriver{
+background:#f4f7fb;
+border-radius:12px;
+padding:10px;
+margin-bottom:10px
+}
+
+.bookingInput{
+width:100%;
+padding:12px;
+border:1px solid #ccd6e2;
+border-radius:11px;
+font-size:14px;
+outline:none;
+margin-top:5px
+}
+
+.bookingLabel{
+font-weight:700;
+font-size:13px;
+display:block;
+margin-top:9px
+}
+
+.shortcutGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:6px;
+margin-top:8px
+}
+
+.shortcut{
+border:0;
+border-radius:9px;
+padding:8px 4px;
+background:#e9f4ff;
+color:#0878c9;
+font-size:11px;
+font-weight:700
+}
+
+.bookingMap{
+width:100%;
+height:280px;
+border-radius:13px;
+margin-top:10px;
+overflow:hidden;
+border:1px solid #d5dfe7
+}
+
+.routeInfo{
+background:#eef8ff;
+border-radius:12px;
+padding:10px;
+margin-top:8px;
+font-size:13px;
+line-height:1.6
+}
+
+.savedBox{
+background:#effdf3;
+border:1px solid #b7ebc6;
+border-radius:15px;
+padding:14px;
+margin-top:10px
+}
+
+.savedTitle{
+font-size:20px;
+font-weight:800;
+color:#15803d;
+margin-bottom:10px
+}
+
+/* PHOTO VIEWER */
+
+.photoViewer{
+display:none;
+position:fixed;
+inset:0;
+background:#000e;
+z-index:10000;
+align-items:center;
+justify-content:center;
+padding:15px
+}
+
+.photoViewer.show{
+display:flex
+}
+
+.photoViewer img{
+max-width:95vw;
+max-height:85vh;
+object-fit:contain;
+border-radius:12px
+}
+
+.photoClose{
+position:absolute;
+right:15px;
+top:15px;
+width:38px;
+height:38px;
+border:0;
+border-radius:50%;
+background:#fff;
+font-size:22px
+}
+
+/* ACCESS */
 
 #accessLock{
 position:fixed;
@@ -600,24 +648,19 @@ line-height:1.5
 display:none
 }
 
-
 @media(max-width:420px){
 
 .title{
 font-size:23px
 }
 
-.sheet{
-max-height:94vh;
-padding:14px
+.shortcutGrid{
+grid-template-columns:repeat(2,1fr)
 }
 
 .bookingSheet{
-padding:12px 10px 16px
-}
-
-.routeMap{
-height:215px
+height:94vh;
+max-height:94vh
 }
 
 }
@@ -628,16 +671,11 @@ height:215px
 
 <body>
 
-
-<!-- ================= ACCESS LOCK ================= -->
-
 <div id="accessLock">
 
 <div class="accessBox">
 
-<div id="accessIcon" class="accessIcon">
-🔒
-</div>
+<div id="accessIcon" class="accessIcon">🔒</div>
 
 <div id="accessTitle" class="accessTitle">
 Checking Driver Access...
@@ -652,35 +690,24 @@ Please wait...
 </div>
 
 
-<!-- ================= RADAR APP ================= -->
-
 <div id="radarApp">
 
 <div id="notice"></div>
 
-
 <header class="header">
 
-<div class="logo">
-🚕
-</div>
+<div class="logo">🚕</div>
 
 <div>
 
-<div class="title">
-Safety Cab
-</div>
+<div class="title">Safety Cab</div>
 
-<div class="sub">
-Driver Radar • Telegram Mini App
-</div>
+<div class="sub">Driver Radar • Telegram Mini App</div>
 
 </div>
 
 </header>
 
-
-<!-- ================= HOME ================= -->
 
 <section id="home" class="page active">
 
@@ -688,18 +715,13 @@ Driver Radar • Telegram Mini App
 
 <div class="stat green">
 
-<strong id="online">
-0
-</strong>
+<strong id="online">0</strong>
 
-<span>
-Online
-</span>
+<span>Online</span>
 
 </div>
 
 </div>
-
 
 <div
 id="selectedInfo"
@@ -707,22 +729,16 @@ class="selectedBox"
 style="display:none">
 </div>
 
-
 <div id="map"></div>
 
 </section>
 
 
-<!-- ================= DRIVERS ================= -->
-
 <section id="drivers" class="page">
 
 <div class="card">
 
-<h3>
-🚕 Driver Radar
-</h3>
-
+<h3>🚕 Driver Radar</h3>
 
 <input
 id="search"
@@ -730,80 +746,58 @@ class="search"
 placeholder="Search Driver ID  (DC001)"
 autocomplete="off">
 
-
 <div
 id="driverList"
 style="margin-top:10px">
+
+<div class="empty">
+Driver ID डालकर Search करें
 </div>
 
+</div>
 
 </div>
 
 </section>
 
 
-<!-- ================= PROFILE ================= -->
-
 <section id="profile" class="page">
 
 <div class="card">
 
-<h3>
-👤 My Profile
-</h3>
-
+<h3>👤 My Profile</h3>
 
 <div class="row">
 
-<span>
-Name
-</span>
+<span>Name</span>
 
-<strong id="tgName">
-Telegram User
-</strong>
+<strong id="tgName">Telegram User</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Telegram ID
-</span>
+<span>Telegram ID</span>
 
-<strong id="tgId">
--
-</strong>
+<strong id="tgId">-</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Driver ID
-</span>
+<span>Driver ID</span>
 
-<strong id="myDriverId">
-Not Registered
-</strong>
+<strong id="myDriverId">Not Registered</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Location
-</span>
+<span>Location</span>
 
-<span id="locStatus">
-Not shared
-</span>
+<span id="locStatus">Not shared</span>
 
 </div>
-
 
 <button
 class="action"
@@ -817,20 +811,13 @@ onclick="shareMyLocation()">
 </div>
 
 
-
 <div class="card">
 
-<h3>
-🚦 My Status
-</h3>
-
+<h3>🚦 My Status</h3>
 
 <div class="row">
 
-<span>
-Duty Status
-</span>
-
+<span>Duty Status</span>
 
 <button
 id="dutyToggle"
@@ -843,13 +830,9 @@ onclick="toggleDuty()">
 
 </div>
 
-
 <div class="row">
 
-<span>
-Auto GPS Update
-</span>
-
+<span>Auto GPS Update</span>
 
 <button
 id="gpsToggle"
@@ -862,88 +845,56 @@ onclick="toggleAutoGPS()">
 
 </div>
 
-
 </div>
 
 </section>
 
 
-
-<!-- ================= SETTINGS ================= -->
-
 <section id="settings" class="page">
 
 <div class="card">
 
-<h3>
-⚙️ Settings
-</h3>
-
+<h3>⚙️ Settings</h3>
 
 <div class="row">
 
-<span>
-Language
-</span>
+<span>Language</span>
 
-<strong>
-Hindi / English
-</strong>
+<strong>Hindi / English</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Map
-</span>
+<span>Map</span>
 
-<strong>
-OpenStreetMap
-</strong>
+<strong>OpenStreetMap</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-GPS Update
-</span>
+<span>GPS Update</span>
 
-<strong>
-Live GPS
-</strong>
+<strong>Live GPS</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Firebase
-</span>
+<span>Firebase</span>
 
-<strong id="firebaseState">
-Connecting...
-</strong>
+<strong id="firebaseState">Connecting...</strong>
 
 </div>
-
 
 <div class="row">
 
-<span>
-Version
-</span>
+<span>Version</span>
 
-<strong>
-Safety Cab Radar 4.1
-</strong>
+<strong>Safety Cab Radar 4.0</strong>
 
 </div>
-
 
 </div>
 
@@ -959,7 +910,6 @@ onclick="openHelp()">
 
 </button>
 
-
 <button
 class="action danger"
 style="width:100%"
@@ -974,57 +924,35 @@ onclick="closeMiniApp()">
 </section>
 
 
-
-<!-- ================= BOTTOM NAV ================= -->
-
 <nav class="bottom">
 
-<button
-class="navbtn active"
-data-page="home">
+<button class="navbtn active" data-page="home">
 
-<b>
-🗺️
-</b>
+<b>🗺️</b>
 
 Map
 
 </button>
 
+<button class="navbtn" data-page="drivers">
 
-<button
-class="navbtn"
-data-page="drivers">
-
-<b>
-🚕
-</b>
+<b>🚕</b>
 
 Drivers
 
 </button>
 
+<button class="navbtn" data-page="profile">
 
-<button
-class="navbtn"
-data-page="profile">
-
-<b>
-👤
-</b>
+<b>👤</b>
 
 Profile
 
 </button>
 
+<button class="navbtn" data-page="settings">
 
-<button
-class="navbtn"
-data-page="settings">
-
-<b>
-⚙️
-</b>
+<b>⚙️</b>
 
 Settings
 
@@ -1032,9 +960,6 @@ Settings
 
 </nav>
 
-
-
-<!-- ================= MODAL ================= -->
 
 <div
 id="modal"
@@ -1051,7 +976,6 @@ onclick="closeModal()">
 
 </button>
 
-
 <div id="modalBody"></div>
 
 </div>
@@ -1059,18 +983,56 @@ onclick="closeModal()">
 </div>
 
 
+<!-- BOOKING MODAL -->
+
+<div id="bookingModal" class="bookingModal">
+
+<div class="bookingSheet">
+
+<button
+class="bookingClose"
+onclick="closeBookingModal()">
+
+✕
+
+</button>
+
+<div id="bookingBody"></div>
+
+</div>
+
 </div>
 
 
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<!-- PHOTO VIEWER -->
 
+<div
+id="photoViewer"
+class="photoViewer"
+onclick="if(event.target===this)closePhoto()">
+
+<button
+class="photoClose"
+onclick="closePhoto()">
+
+✕
+
+</button>
+
+<img id="largePhoto" src="" alt="Large Photo">
+
+</div>
+
+
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
 /* =====================================================
-   FIREBASE
+ FIREBASE
 ===================================================== */
 
 const firebaseConfig = {
@@ -1098,10 +1060,7 @@ appId:
 
 };
 
-
-const SUPPORT_PHONE =
-"08062180745";
-
+const SUPPORT_PHONE="08062180745";
 
 const tg =
 window.Telegram &&
@@ -1111,113 +1070,95 @@ window.Telegram.WebApp
 :
 null;
 
-
 if(tg){
 
 tg.ready();
-
 tg.expand();
 
 }
 
+firebase.initializeApp(firebaseConfig);
 
-firebase.initializeApp(
-firebaseConfig
-);
-
-
-const auth =
-firebase.auth();
-
-const db =
-firebase.firestore();
-
-const rtdb =
-firebase.database();
+const auth=firebase.auth();
+const db=firebase.firestore();
+const rtdb=firebase.database();
 
 
 /* =====================================================
-   GLOBAL VARIABLES
+ GLOBALS
 ===================================================== */
 
-let map = null;
+let map=null;
 
-let myDriver = null;
+let bookingMap=null;
 
-let myTelegramId = null;
+let routeLine=null;
 
-let watchId = null;
+let routeMarkers=[];
 
-let autoGPS = true;
+let myDriver=null;
 
-let myDuty = false;
+let myTelegramId=null;
 
-let selectedDriverId = null;
+let watchId=null;
 
-let selectedDriverData = null;
+let autoGPS=true;
 
-let selectedLiveRef = null;
+let myDuty=false;
 
-let selectedLiveCallback = null;
+let selectedDriverId=null;
 
-let selectedMarker = null;
+let selectedDriverData=null;
 
-let mapCenteredOnce = false;
+let selectedLiveRef=null;
 
-let radarAuthorized = false;
+let selectedLiveCallback=null;
 
+let selectedMarker=null;
 
-/* ================= ROUTE VARIABLES ================= */
+let mapCenteredOnce=false;
 
-let routeMap = null;
+let radarAuthorized=false;
 
-let routeLayer = null;
+let searchedDriver=null;
 
-let routeDriverMarker = null;
+let searchTimer=null;
 
-let routePickupMarker = null;
+let bookingPickup=null;
 
-let routeDestinationMarker = null;
+let bookingDestination=null;
 
-let bookingPickupCoords = null;
+let currentBookingDriver=null;
+
+let currentRoute=null;
 
 
 /* =====================================================
-   HELPERS
+ HELPERS
 ===================================================== */
 
-const $ =
-id =>
-document.getElementById(id);
+const $=id=>document.getElementById(id);
 
 
 function showNotice(text){
 
-const n =
-$("notice");
+const n=$("notice");
 
-if(!n)
-return;
+if(!n)return;
 
-n.textContent =
-text;
+n.textContent=text;
 
-n.style.display =
-"block";
+n.style.display="block";
 
-clearTimeout(
-window.noticeTimer
-);
+clearTimeout(window.noticeTimer);
 
-window.noticeTimer =
-setTimeout(
+window.noticeTimer=setTimeout(
 function(){
 
-n.style.display =
-"none";
+n.style.display="none";
 
 },
-3000
+2800
 );
 
 }
@@ -1249,21 +1190,11 @@ return {
 function ejs(value){
 
 return String(value ?? "")
-.replace(
-/\\/g,
-"\\\\"
-)
-.replace(
-/'/g,
-"\\'"
-);
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'");
 
 }
 
-
-/* =====================================================
-   NORMALIZE DRIVER ID
-===================================================== */
 
 function normalizeDriverId(value){
 
@@ -1274,10 +1205,6 @@ return String(value || "")
 }
 
 
-/* =====================================================
-   VALID DRIVER ID
-===================================================== */
-
 function isValidDriverId(id){
 
 return /^DC\d{1,5}$/.test(id);
@@ -1286,14 +1213,85 @@ return /^DC\d{1,5}$/.test(id);
 
 
 /* =====================================================
-   PAGE NAVIGATION
+ LOCAL BOOKING STORAGE
+===================================================== */
+
+function bookingStorageKey(){
+
+return "safetyCabBookings_" +
+String(myTelegramId || "unknown");
+
+}
+
+
+function getLocalBookings(){
+
+try{
+
+return JSON.parse(
+localStorage.getItem(
+bookingStorageKey()
+) || "[]"
+);
+
+}
+catch(error){
+
+return [];
+
+}
+
+}
+
+
+function saveLocalBooking(booking){
+
+const list=getLocalBookings();
+
+const filtered=list.filter(
+function(x){
+
+return normalizeDriverId(x.driverId) !==
+normalizeDriverId(booking.driverId);
+
+}
+);
+
+filtered.unshift(booking);
+
+localStorage.setItem(
+bookingStorageKey(),
+JSON.stringify(
+filtered.slice(0,50)
+)
+);
+
+}
+
+
+function getLocalBookingForDriver(id){
+
+const list=getLocalBookings();
+
+return list.find(
+function(x){
+
+return normalizeDriverId(x.driverId) ===
+normalizeDriverId(id);
+
+}
+) || null;
+
+}
+
+
+/* =====================================================
+ PAGE
 ===================================================== */
 
 function page(id){
 
-if(!radarAuthorized)
-return;
-
+if(!radarAuthorized)return;
 
 document
 .querySelectorAll(".page")
@@ -1305,11 +1303,7 @@ x.classList.remove("active");
 }
 );
 
-
-$(id)
-.classList
-.add("active");
-
+$(id).classList.add("active");
 
 document
 .querySelectorAll(".navbtn")
@@ -1318,17 +1312,13 @@ function(x){
 
 x.classList.toggle(
 "active",
-x.dataset.page === id
+x.dataset.page===id
 );
 
 }
 );
 
-
-if(
-id === "home" &&
-map
-){
+if(id==="home" && map){
 
 setTimeout(
 function(){
@@ -1336,7 +1326,7 @@ function(){
 map.invalidateSize();
 
 },
-150
+120
 );
 
 }
@@ -1349,12 +1339,9 @@ document
 .forEach(
 function(button){
 
-button.onclick =
-function(){
+button.onclick=function(){
 
-page(
-button.dataset.page
-);
+page(button.dataset.page);
 
 };
 
@@ -1363,35 +1350,28 @@ button.dataset.page
 
 
 /* =====================================================
-   MAP
+ MAP
 ===================================================== */
 
 function initMap(){
 
-if(!radarAuthorized)
-return;
+if(!radarAuthorized)return;
 
+if(map)return;
 
-if(map)
-return;
-
-
-map =
-L
+map=L
 .map("map")
 .setView(
 [17.42536,78.48694],
 13
 );
 
-
 L
 .tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
 maxZoom:19,
-attribution:
-"© OpenStreetMap contributors"
+attribution:"© OpenStreetMap contributors"
 }
 )
 .addTo(map);
@@ -1400,10 +1380,10 @@ attribution:
 
 
 /* =====================================================
-   DRIVER ICON
+ DRIVER ICON
 ===================================================== */
 
-function driverIcon(d){
+function driverIcon(){
 
 return L.divIcon({
 
@@ -1416,11 +1396,9 @@ white-space:nowrap;
 line-height:1;
 ">🚕</div>`,
 
-iconSize:
-[42,42],
+iconSize:[42,42],
 
-iconAnchor:
-[21,21]
+iconAnchor:[21,21]
 
 });
 
@@ -1428,7 +1406,7 @@ iconAnchor:
 
 
 /* =====================================================
-   STOP LIVE LISTENER
+ LISTENER
 ===================================================== */
 
 function stopSelectedLiveListener(){
@@ -1445,15 +1423,15 @@ selectedLiveCallback
 
 }
 
-selectedLiveRef = null;
+selectedLiveRef=null;
 
-selectedLiveCallback = null;
+selectedLiveCallback=null;
 
 }
 
 
 /* =====================================================
-   CLEAR SELECTED MARKER
+ MARKER
 ===================================================== */
 
 function clearSelectedMarker(){
@@ -1461,30 +1439,47 @@ function clearSelectedMarker(){
 if(
 selectedMarker &&
 map &&
-map.hasLayer(
-selectedMarker
-)
+map.hasLayer(selectedMarker)
 ){
 
-map.removeLayer(
-selectedMarker
-);
+map.removeLayer(selectedMarker);
 
 }
 
-selectedMarker = null;
+selectedMarker=null;
 
 }
 
 
 /* =====================================================
-   PROFILE PHOTO HTML
+ PHOTOS
 ===================================================== */
 
-function profilePhotoHTML(
-photo,
-className
-){
+function openPhoto(src){
+
+if(!src)return;
+
+$("largePhoto").src=src;
+
+$("photoViewer")
+.classList
+.add("show");
+
+}
+
+
+function closePhoto(){
+
+$("largePhoto").src="";
+
+$("photoViewer")
+.classList
+.remove("show");
+
+}
+
+
+function profilePhotoHTML(photo,className){
 
 if(photo){
 
@@ -1497,8 +1492,7 @@ alt="Driver Profile Photo">
 
 }
 
-
-if(className === "popupPhoto"){
+if(className==="popupPhoto"){
 
 return `
 <div class="popupPhotoPlaceholder">
@@ -1507,7 +1501,6 @@ return `
 `;
 
 }
-
 
 return `
 <div class="profilePhotoPlaceholder">
@@ -1518,40 +1511,36 @@ return `
 }
 
 
-/* =====================================================
-   CAR PHOTO HTML
-===================================================== */
-
-function carPhotoHTML(
-photo,
-mode
-){
+function carPhotoHTML(photo,mode){
 
 if(photo){
 
-if(mode === "popup"){
+const onclick=
+`onclick="openPhoto('${ejs(photo)}')"`;
+
+if(mode==="popup"){
 
 return `
 <img
 class="popupCarPhoto"
 src="${esc(photo)}"
-alt="Car Photo">
+alt="Car Photo"
+${onclick}>
 `;
 
 }
-
 
 return `
 <img
 class="detailCarPhoto"
 src="${esc(photo)}"
-alt="Car Photo">
+alt="Car Photo"
+${onclick}>
 `;
 
 }
 
-
-if(mode === "popup"){
+if(mode==="popup"){
 
 return `
 <div class="popupCarPlaceholder">
@@ -1560,7 +1549,6 @@ return `
 `;
 
 }
-
 
 return `
 <div class="detailCarPlaceholder">
@@ -1572,28 +1560,18 @@ return `
 
 
 /* =====================================================
-   RENDER SELECTED DRIVER
+ RENDER DRIVER
 ===================================================== */
 
 function renderSelectedMarker(){
 
-if(
-!radarAuthorized ||
-!map
-)
-return;
-
+if(!radarAuthorized || !map)return;
 
 clearSelectedMarker();
 
+const d=selectedDriverData;
 
-const d =
-selectedDriverData;
-
-
-if(!d)
-return;
-
+if(!d)return;
 
 if(
 !Number.isFinite(d.lat) ||
@@ -1604,32 +1582,27 @@ return;
 
 }
 
-
-selectedMarker =
+selectedMarker=
 L
 .marker(
 [d.lat,d.lng],
 {
-icon:
-driverIcon(d)
+icon:driverIcon(d)
 }
 )
 .addTo(map);
 
-
-const popupPhoto =
+const popupPhoto=
 profilePhotoHTML(
 d.profilePhoto,
 "popupPhoto"
 );
 
-
-const carPhoto =
+const carPhoto=
 carPhotoHTML(
 d.carPhoto,
 "popup"
 );
-
 
 selectedMarker.bindPopup(
 
@@ -1638,19 +1611,16 @@ selectedMarker.bindPopup(
 <div
 style="
 text-align:center;
-min-width:225px;
+min-width:220px;
 ">
 
 ${popupPhoto}
-
 
 <b>
 🚕 ${esc(d.name || d.id)}
 </b>
 
-
 <br>
-
 
 <div
 style="
@@ -1659,106 +1629,73 @@ text-align:left;
 line-height:1.6;
 ">
 
-
 <b>Driver ID:</b>
 ${esc(d.id)}
 
-
 <br>
-
 
 <b>Name:</b>
 ${esc(d.name || "-")}
 
-
 <br>
-
 
 <b>Vehicle Number:</b>
 ${esc(d.vehicle || "-")}
 
-
 <br>
 
-
 <b>Vehicle Type:</b>
+
 <span class="vehicleTypeBadge">
 ${esc(d.vehicleType || "Not Set")}
 </span>
 
-
 <br>
-
 
 ${carPhoto}
 
-
 <b>GPS:</b>
-${
-d.online
-?
-"🟢 Online"
-:
-"🔴 Offline"
-}
-
+${d.online ? "🟢 Online" : "🔴 Offline"}
 
 <br>
-
 
 <b>Rating:</b>
 ⭐ ${d.rating || "Not Rated"}
 
-
 </div>
-
 
 <div
 id="popupArea"
 class="locationBox"
-style="text-align:left"
->
+style="text-align:left">
 
 📍 Area: Finding...
 
 </div>
 
-
 <button
 class="action"
-style="
-width:100%;
-margin-top:8px;
-"
-onclick="openDriverDetails()"
->
+style="width:100%;margin-top:8px"
+onclick="openDriverDetails()">
 
 View Details
 
 </button>
 
-
 <button
-class="action"
-style="
-width:100%;
-margin-top:8px;
-background:#16a34a;
-"
-onclick="openBooking()"
->
+class="action greenBtn"
+style="width:100%;margin-top:7px"
+onclick="openBooking()">
 
 🚕 Book Now
 
 </button>
-
 
 </div>
 
 `
 
 );
-
 
 loadArea(
 d.lat,
@@ -1769,41 +1706,27 @@ d.lng
 
 
 /* =====================================================
-   ONLINE COUNT
+ ONLINE
 ===================================================== */
 
 async function loadOnlineCount(){
 
-if(!radarAuthorized)
-return;
-
+if(!radarAuthorized)return;
 
 try{
 
-const snapshot =
+const snapshot=
 await db
 .collection("drivers")
-.where(
-"online",
-"==",
-true
-)
+.where("online","==",true)
 .get();
 
-
-$("online").textContent =
-snapshot.size;
+$("online").textContent=snapshot.size;
 
 }
 catch(error){
 
-console.error(
-"Online count error:",
-error
-);
-
-$("online").textContent =
-"0";
+$("online").textContent="0";
 
 }
 
@@ -1811,50 +1734,29 @@ $("online").textContent =
 
 
 /* =====================================================
-   DRIVER SEARCH
+ SEARCH
 ===================================================== */
 
-let searchTimer =
-null;
+$("search").oninput=function(){
 
+if(!radarAuthorized)return;
 
-$("search").oninput =
-function(){
+clearTimeout(searchTimer);
 
-if(!radarAuthorized)
-return;
-
-
-clearTimeout(
-searchTimer
-);
-
-
-const raw =
-this.value.trim();
-
+const raw=this.value.trim();
 
 if(!raw){
 
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Driver ID डालकर Search करें" +
-"</div>";
+$("driverList").innerHTML=
+"<div class='empty'>Driver ID डालकर Search करें</div>";
 
 return;
 
 }
 
+const id=normalizeDriverId(raw);
 
-const id =
-normalizeDriverId(
-raw
-);
-
-
-searchTimer =
-setTimeout(
+searchTimer=setTimeout(
 function(){
 
 searchDriverById(id);
@@ -1866,199 +1768,125 @@ searchDriverById(id);
 };
 
 
-/* =====================================================
-   SEARCH DRIVER BY ID
-===================================================== */
+async function searchDriverById(rawId){
 
-async function searchDriverById(
-rawId
-){
+if(!radarAuthorized)return;
 
-if(!radarAuthorized)
-return;
+const id=normalizeDriverId(rawId);
 
+if(!isValidDriverId(id)){
 
-const id =
-normalizeDriverId(
-rawId
-);
-
-
-if(
-!isValidDriverId(id)
-){
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-
-"Valid Driver ID डालें।<br>" +
-
-"Example: DC001 या dc001" +
-
-"</div>";
+$("driverList").innerHTML=
+"<div class='empty'>Valid Driver ID डालें।<br>Example: DC001</div>";
 
 return;
 
 }
 
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Searching..." +
-"</div>";
-
+$("driverList").innerHTML=
+"<div class='empty'>Searching...</div>";
 
 try{
 
-const snapshot =
+const snapshot=
 await db
 .collection("drivers")
-.where(
-"id",
-"==",
-id
-)
+.where("id","==",id)
 .limit(1)
 .get();
 
-
 if(snapshot.empty){
 
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-
-"Driver ID " +
-esc(id) +
-" not found" +
-
-"</div>";
+$("driverList").innerHTML=
+"<div class='empty'>Driver ID "+esc(id)+" not found</div>";
 
 return;
 
 }
 
+const doc=snapshot.docs[0];
 
-const doc =
-snapshot.docs[0];
+const d=doc.data();
 
+const driver={
 
-const d =
-doc.data();
+docId:doc.id,
 
+id:normalizeDriverId(d.id || doc.id),
 
-const driver = {
+name:d.name || "",
 
-docId:
-doc.id,
+phone:d.phone || "",
 
-id:
-normalizeDriverId(
-d.id ||
-doc.id
-),
+vehicle:d.vehicle || "",
 
-name:
-d.name ||
-"",
+vehicleType:d.vehicleType || "",
 
-phone:
-d.phone ||
-"",
+carPhoto:d.carPhoto || "",
 
-vehicle:
-d.vehicle ||
-"",
+lat:Number(d.lat),
 
-vehicleType:
-d.vehicleType ||
-"",
+lng:Number(d.lng),
 
-carPhoto:
-d.carPhoto ||
-"",
+online:d.online===true,
 
-lat:
-Number(d.lat),
+duty:d.duty===true,
 
-lng:
-Number(d.lng),
+rating:Number(d.rating || 0),
 
-online:
-d.online === true,
-
-duty:
-d.duty === true,
-
-rating:
-Number(d.rating || 0),
-
-profilePhoto:
-d.profilePhoto ||
-""
+profilePhoto:d.profilePhoto || ""
 
 };
 
+searchedDriver=driver;
 
-$("driverList").innerHTML =
+window.searchedDriver=driver;
+
+const booking=getLocalBookingForDriver(driver.id);
+
+$("driverList").innerHTML=
 
 `
 
-<div
-class="driver"
-onclick="
-selectDriver('${ejs(driver.id)}')
-">
+<div class="driver">
 
+<div
+style="
+display:flex;
+align-items:center;
+gap:10px;
+">
 
 <div class="avatar">
 
 ${
 driver.profilePhoto
 ?
-`
-<img
-src="${esc(driver.profilePhoto)}"
-alt="Driver">
-`
+`<img src="${esc(driver.profilePhoto)}" alt="Driver">`
 :
 "🚕"
 }
 
 </div>
 
-
 <div class="driverinfo">
 
 <b>
-
-${esc(driver.id)}
-
-•
-
-${esc(driver.name)}
-
+${esc(driver.id)} • ${esc(driver.name)}
 </b>
-
 
 <div class="small">
 
 ${esc(driver.vehicle || "-")}
-
 •
 
 <span class="vehicleTypeBadge">
-
 ${esc(driver.vehicleType || "Not Set")}
-
 </span>
 
 </div>
 
 </div>
-
 
 <span
 class="badge ${
@@ -2067,8 +1895,7 @@ driver.online
 "bgreen"
 :
 "bred"
-}"
->
+}">
 
 ${
 driver.online
@@ -2080,30 +1907,98 @@ driver.online
 
 </span>
 
+</div>
+
+
+<div
+style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+margin-top:10px;
+">
+
+<button
+class="action secondary"
+onclick="
+selectDriver('${ejs(driver.id)}');
+openDriverDetails();
+">
+
+View Details
+
+</button>
+
+<button
+class="action greenBtn"
+onclick="
+selectDriver('${ejs(driver.id)}');
+openBooking();
+">
+
+🚕 Book Now
+
+</button>
+
+</div>
+
+
+${
+booking
+?
+`
+
+<div class="locationBox">
+
+<b>
+📋 Your Booking for ${esc(driver.id)}
+</b>
+
+<br><br>
+
+📍 <b>Pickup:</b>
+${esc(booking.pickupText || "-")}
+
+<br>
+
+🏁 <b>Destination:</b>
+${esc(booking.destinationText || "-")}
+
+<br>
+
+🚕 <b>Driver Current:</b>
+${esc(booking.driverName || driver.name || "-")}
+
+<br>
+
+<button
+class="action"
+style="width:100%;margin-top:8px"
+onclick="openSavedBooking('${ejs(driver.id)}')">
+
+🗺️ View This Booking Map
+
+</button>
+
+</div>
+
+`
+:
+""
+
+}
 
 </div>
 
 `;
 
-
-window.searchedDriver =
-driver;
-
-
 }
 catch(error){
 
-console.error(
-"Driver search error:",
-error
-);
+console.error(error);
 
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Driver search error." +
-"</div>";
+$("driverList").innerHTML=
+"<div class='empty'>Driver search error.</div>";
 
 }
 
@@ -2111,227 +2006,47 @@ $("driverList").innerHTML =
 
 
 /* =====================================================
-   SELECT DRIVER
+ SELECT DRIVER
 ===================================================== */
 
-async function selectDriver(
-rawId
-){
+async function selectDriver(rawId){
 
-if(!radarAuthorized)
-return;
+if(!radarAuthorized)return;
 
+const id=normalizeDriverId(rawId);
 
-const id =
-normalizeDriverId(
-rawId
-);
-
-
-const driver =
-window.searchedDriver;
-
+const driver=
+window.searchedDriver ||
+searchedDriver;
 
 if(
 !driver ||
-normalizeDriverId(
-driver.id
-) !== id
+normalizeDriverId(driver.id)!==id
 ){
 
-showNotice(
-"Driver पहले search करें."
-);
+showNotice("Driver पहले search करें.");
 
 return;
 
 }
-
 
 stopSelectedLiveListener();
 
+selectedDriverId=id;
 
-selectedDriverId =
-id;
+selectedDriverData={...driver};
 
+mapCenteredOnce=false;
 
-selectedDriverData =
-{
-...driver
-};
+$("selectedInfo").style.display="block";
 
-
-mapCenteredOnce =
-false;
-
-
-$("selectedInfo").style.display =
-"block";
-
-
-$("selectedInfo").textContent =
-
-"Selected Driver: " +
-selectedDriverData.id +
-" • " +
+$("selectedInfo").textContent=
+"Selected Driver: "+
+selectedDriverData.id+
+" • "+
 selectedDriverData.name;
 
-
 renderSelectedMarker();
-
-
-/* तुरंत latest Firestore location पर center */
-
-if(
-Number.isFinite(
-selectedDriverData.lat
-) &&
-Number.isFinite(
-selectedDriverData.lng
-)
-){
-
-map.setView(
-[
-selectedDriverData.lat,
-selectedDriverData.lng
-],
-16,
-{
-animate:false
-}
-);
-
-
-mapCenteredOnce =
-true;
-
-}
-
-
-/*
- ONLY selected driver RTDB.
-*/
-
-selectedLiveRef =
-rtdb.ref(
-"liveLocations/" +
-id
-);
-
-
-selectedLiveCallback =
-function(snapshot){
-
-if(!radarAuthorized)
-return;
-
-
-const live =
-snapshot.val();
-
-
-if(!live){
-
-return;
-
-}
-
-
-const lat =
-Number(live.lat);
-
-
-const lng =
-Number(live.lng);
-
-
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
-
-return;
-
-}
-
-
-selectedDriverData.lat =
-lat;
-
-selectedDriverData.lng =
-lng;
-
-
-selectedDriverData.online =
-live.online === true;
-
-
-if(selectedMarker){
-
-selectedMarker.setLatLng(
-[lat,lng]
-);
-
-selectedMarker.setIcon(
-driverIcon(
-selectedDriverData
-)
-);
-
-}
-else{
-
-renderSelectedMarker();
-
-}
-
-
-/*
- First live GPS location:
- map goes directly to driver.
- After that it does NOT keep moving the map.
-*/
-
-if(!mapCenteredOnce){
-
-map.setView(
-[lat,lng],
-16,
-{
-animate:false
-}
-);
-
-mapCenteredOnce =
-true;
-
-}
-
-
-loadArea(
-lat,
-lng
-);
-
-};
-
-
-selectedLiveRef.on(
-"value",
-selectedLiveCallback
-);
-
-
-page("home");
-
-
-setTimeout(
-function(){
-
-if(map){
-
-map.invalidateSize();
 
 if(
 Number.isFinite(selectedDriverData.lat) &&
@@ -2343,56 +2058,110 @@ map.setView(
 selectedDriverData.lat,
 selectedDriverData.lng
 ],
-16,
-{
-animate:false
+16
+);
+
+mapCenteredOnce=true;
+
 }
+
+selectedLiveRef=
+rtdb.ref(
+"liveLocations/"+id
+);
+
+selectedLiveCallback=
+function(snapshot){
+
+if(!radarAuthorized)return;
+
+const live=snapshot.val();
+
+if(!live)return;
+
+const lat=Number(live.lat);
+
+const lng=Number(live.lng);
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+)return;
+
+selectedDriverData.lat=lat;
+
+selectedDriverData.lng=lng;
+
+selectedDriverData.online=
+live.online===true;
+
+if(selectedMarker){
+
+selectedMarker.setLatLng([lat,lng]);
+
+selectedMarker.setIcon(
+driverIcon(selectedDriverData)
 );
 
 }
+else{
+
+renderSelectedMarker();
 
 }
 
-},
-250
+if(!mapCenteredOnce){
+
+map.setView(
+[lat,lng],
+16
 );
+
+mapCenteredOnce=true;
+
+}
+
+loadArea(lat,lng);
+
+};
+
+selectedLiveRef.on(
+"value",
+selectedLiveCallback
+);
+
+page("home");
 
 }
 
 
 /* =====================================================
-   DRIVER DETAILS
+ DRIVER DETAILS
 ===================================================== */
 
 function openDriverDetails(){
 
-if(!radarAuthorized)
-return;
+if(!radarAuthorized)return;
 
+const d=selectedDriverData;
 
-const d =
-selectedDriverData;
+if(!d)return;
 
-
-if(!d)
-return;
-
-
-const profile =
+const profile=
 profilePhotoHTML(
 d.profilePhoto,
 "profilePhoto"
 );
 
-
-const car =
+const car=
 carPhotoHTML(
 d.carPhoto,
 "details"
 );
 
+$("modalBody")=
 
-$("modalBody").innerHTML =
+$("modalBody").innerHTML=
 
 `
 
@@ -2400,110 +2169,50 @@ $("modalBody").innerHTML =
 🚕 ${esc(d.name)}
 </h2>
 
-
 ${profile}
 
-
 <div class="row">
-
-<span>
-Driver ID
-</span>
-
-<b>
-${esc(d.id)}
-</b>
-
+<span>Driver ID</span>
+<b>${esc(d.id)}</b>
 </div>
 
-
 <div class="row">
-
-<span>
-Driver Name
-</span>
-
-<b>
-${esc(d.name || "-")}
-</b>
-
+<span>Driver Name</span>
+<b>${esc(d.name || "-")}</b>
 </div>
 
-
 <div class="row">
-
-<span>
-Vehicle Number
-</span>
-
-<b>
-${esc(d.vehicle || "-")}
-</b>
-
+<span>Vehicle Number</span>
+<b>${esc(d.vehicle || "-")}</b>
 </div>
 
-
 <div class="row">
-
-<span>
-Vehicle Type
-</span>
-
+<span>Vehicle Type</span>
 <b>
 <span class="vehicleTypeBadge">
 ${esc(d.vehicleType || "Not Set")}
 </span>
 </b>
-
 </div>
 
-
-<h3>
-🚗 Car Photo
-</h3>
-
+<h3>🚗 Car Photo</h3>
 
 ${car}
 
-
 <div class="row">
-
-<span>
-GPS
-</span>
-
+<span>GPS</span>
 <b>
-${
-d.online
-?
-"🟢 Online"
-:
-"🔴 Offline"
-}
+${d.online ? "🟢 Online" : "🔴 Offline"}
 </b>
-
 </div>
 
-
 <div class="row">
-
-<span>
-Rating
-</span>
-
-<b>
-⭐ ${d.rating || "Not Rated"}
-</b>
-
+<span>Rating</span>
+<b>⭐ ${d.rating || "Not Rated"}</b>
 </div>
 
-
 <div class="row">
-
-<span>
-Latitude
-</span>
-
+<span>Latitude</span>
 <b>
 ${
 Number.isFinite(d.lat)
@@ -2512,18 +2221,11 @@ Number(d.lat).toFixed(6)
 :
 "-"
 }
-
 </b>
-
 </div>
 
-
 <div class="row">
-
-<span>
-Longitude
-</span>
-
+<span>Longitude</span>
 <b>
 ${
 Number.isFinite(d.lng)
@@ -2532,15 +2234,10 @@ Number(d.lng).toFixed(6)
 :
 "-"
 }
-
 </b>
-
 </div>
 
-
-<div
-class="locationBox"
->
+<div class="locationBox">
 
 📍 Area:
 
@@ -2552,9 +2249,19 @@ Finding area...
 
 </div>
 
-
 <br>
 
+<button
+class="action greenBtn"
+style="width:100%;margin-bottom:8px"
+onclick="
+closeModal();
+openBooking();
+">
+
+🚕 Book This Driver
+
+</button>
 
 <button
 class="action"
@@ -2568,32 +2275,11 @@ page('home');
 
 </button>
 
-
-<br><br>
-
-
-<button
-class="action"
-style="
-width:100%;
-background:#16a34a;
-"
-onclick="
-closeModal();
-openBooking();
-">
-
-🚕 Book Now
-
-</button>
-
 `;
-
 
 $("modal")
 .classList
 .add("show");
-
 
 loadArea(
 Number(d.lat),
@@ -2607,9 +2293,7 @@ $("detailArea") &&
 area
 ){
 
-$("detailArea")
-.textContent =
-area;
+$("detailArea").textContent=area;
 
 }
 
@@ -2620,13 +2304,10 @@ area;
 
 
 /* =====================================================
-   REVERSE GEOCODING
+ AREA
 ===================================================== */
 
-async function loadArea(
-lat,
-lng
-){
+async function loadArea(lat,lng){
 
 if(
 !Number.isFinite(lat) ||
@@ -2637,63 +2318,33 @@ return null;
 
 }
 
-
 try{
 
-const controller =
-new AbortController();
-
-const timer =
-setTimeout(
-function(){
-controller.abort();
-},
-5000
-);
-
-
-const url =
-"https://nominatim.openstreetmap.org/reverse" +
-"?format=jsonv2" +
-"&lat=" +
-encodeURIComponent(lat) +
-"&lon=" +
-encodeURIComponent(lng) +
-"&zoom=18" +
+const url=
+"https://nominatim.openstreetmap.org/reverse"+
+"?format=jsonv2"+
+"&lat="+encodeURIComponent(lat)+
+"&lon="+encodeURIComponent(lng)+
+"&zoom=18"+
 "&addressdetails=1";
 
-
-const response =
+const response=
 await fetch(
 url,
 {
 headers:{
-"Accept":
-"application/json"
-},
-signal:
-controller.signal
+"Accept":"application/json"
+}
 }
 );
 
+if(!response.ok)return null;
 
-clearTimeout(timer);
+const data=await response.json();
 
+const address=data.address || {};
 
-if(!response.ok)
-return null;
-
-
-const data =
-await response.json();
-
-
-const address =
-data.address ||
-{};
-
-
-const area =
+const area=
 address.suburb ||
 address.neighbourhood ||
 address.village ||
@@ -2703,27 +2354,17 @@ address.city ||
 address.county ||
 "Area not available";
 
+if($("popupArea")){
 
-if(
-$("popupArea")
-){
-
-$("popupArea").innerHTML =
-"📍 Area: " +
-esc(area);
+$("popupArea").innerHTML=
+"📍 Area: "+esc(area);
 
 }
-
 
 return area;
 
 }
 catch(error){
-
-console.error(
-"Area lookup error:",
-error
-);
 
 return null;
 
@@ -2733,118 +2374,61 @@ return null;
 
 
 /* =====================================================
-   BOOKING
+ NORMAL MODAL
 ===================================================== */
 
-function openBooking(){
+function closeModal(){
 
-if(!radarAuthorized)
-return;
-
-
-const d =
-selectedDriverData;
-
-
-if(!d){
-
-showNotice(
-"पहले Driver select करें."
-);
-
-return;
+$("modal")
+.classList
+.remove("show");
 
 }
 
 
-bookingPickupCoords =
-null;
+/* =====================================================
+ HELP
+===================================================== */
 
+function openHelp(){
 
-$("modalBody").innerHTML =
+if(!radarAuthorized)return;
+
+$("modalBody").innerHTML=
 
 `
 
-<div class="bookingSheet">
+<h2>❓ Help & Support</h2>
 
-<div class="bookingTitle">
-🚕 Book ${esc(d.id)}
-</div>
+<p>
+Safety Cab Driver Radar के लिए सहायता चाहिए तो नीचे Support पर Call करें।
+</p>
 
+<a
+class="action"
+style="
+display:block;
+text-align:center;
+text-decoration:none;
+font-size:20px;
+margin:12px 0;
+"
+href="tel:${SUPPORT_PHONE}">
 
-<div class="bookingDriverBox">
+📞 ${SUPPORT_PHONE}
 
-<b>Driver:</b>
-${esc(d.name || "-")}
-
-<br>
-
-${esc(d.vehicle || "-")}
-&nbsp;•
-&nbsp;
-
-<span class="vehicleTypeBadge">
-${esc(d.vehicleType || "Not Set")}
-</span>
-
-</div>
-
-
-<label class="bookingLabel">
-📍 Pickup Location
-</label>
-
-
-<input
-id="pickupText"
-class="bookingInput"
-placeholder="Pickup location enter करें"
-autocomplete="off">
-
-
-<label class="bookingLabel">
-🏁 Destination
-</label>
-
-
-<input
-id="destinationText"
-class="bookingInput"
-placeholder="Destination enter करें"
-autocomplete="off">
-
-
-<div class="bookingButtons">
-
-<button
-class="action secondary"
-onclick="useMyCurrentLocationForPickup()">
-
-📍 Current Location
-
-</button>
-
+</a>
 
 <button
 class="action"
-onclick="showBookingRoute()">
+style="width:100%"
+onclick="closeModal()">
 
-🗺️ Show Route
+Close
 
 </button>
 
-</div>
-
-
-<div
-id="routeResult"
-style="display:none">
-</div>
-
-</div>
-
 `;
-
 
 $("modal")
 .classList
@@ -2854,78 +2438,329 @@ $("modal")
 
 
 /* =====================================================
-   CURRENT LOCATION FOR PICKUP
+ BOOKING - OPEN
 ===================================================== */
 
-function useMyCurrentLocationForPickup(){
+function openBooking(){
 
-if(!navigator.geolocation){
+if(!radarAuthorized)return;
 
-showNotice(
-"GPS supported नहीं है."
+const d=selectedDriverData;
+
+if(!d){
+
+showNotice("पहले Driver select करें.");
+
+return;
+
+}
+
+currentBookingDriver={...d};
+
+bookingPickup=null;
+
+bookingDestination=null;
+
+currentRoute=null;
+
+renderBookingForm();
+
+$("bookingModal")
+.classList
+.add("show");
+
+setTimeout(
+function(){
+
+if(
+Number.isFinite(d.lat) &&
+Number.isFinite(d.lng)
+){
+
+initBookingMap();
+
+}
+
+},
+100
+);
+
+}
+
+
+/* =====================================================
+ BOOKING FORM
+===================================================== */
+
+function renderBookingForm(){
+
+const d=currentBookingDriver;
+
+$("bookingBody").innerHTML=
+
+`
+
+<div class="bookingTitle">
+
+🚕 Book ${esc(d.id)}
+
+</div>
+
+
+<div class="bookingDriver">
+
+<b>Driver</b>
+
+<br>
+
+${esc(d.name || "-")}
+
+<br>
+
+${esc(d.vehicle || "-")}
+
+•
+
+<span class="vehicleTypeBadge">
+${esc(d.vehicleType || "Not Set")}
+</span>
+
+</div>
+
+
+<label class="bookingLabel">
+
+📍 Pickup Location
+
+<input
+id="pickupInput"
+class="bookingInput"
+placeholder="Pickup location डालें"
+autocomplete="off">
+
+</label>
+
+
+<label class="bookingLabel">
+
+🏁 Destination / Drop
+
+<input
+id="destinationInput"
+class="bookingInput"
+placeholder="Destination डालें"
+autocomplete="off">
+
+</label>
+
+
+<div class="shortcutGrid">
+
+<button
+class="shortcut"
+onclick="useCurrentLocation()">
+
+📍 Current
+
+</button>
+
+<button
+class="shortcut"
+onclick="shortcutPlace('home')">
+
+🏠 Home
+
+</button>
+
+<button
+class="shortcut"
+onclick="shortcutPlace('airport')">
+
+✈️ Airport
+
+</button>
+
+<button
+class="shortcut"
+onclick="shortcutPlace('railway')">
+
+🚉 Railway
+
+</button>
+
+<button
+class="shortcut"
+onclick="shortcutPlace('hospital')">
+
+🏥 Hospital
+
+</button>
+
+<button
+class="shortcut"
+onclick="shortcutPlace('popular')">
+
+⭐ Popular
+
+</button>
+
+</div>
+
+
+<button
+class="action secondary"
+style="width:100%;margin-top:8px"
+onclick="swapLocations()">
+
+🔄 Swap Pickup / Destination
+
+</button>
+
+
+<button
+class="action"
+style="width:100%;margin-top:8px"
+onclick="showBookingRoute()">
+
+🗺️ Show Route on Map
+
+</button>
+
+
+<div
+id="routeStatus"
+class="empty"
+style="padding:12px">
+
+Pickup और Destination डालकर Route देखें।
+
+</div>
+
+
+<div
+id="bookingMap"
+class="bookingMap">
+
+</div>
+
+
+<div
+id="routeInfo"
+class="routeInfo"
+style="display:none">
+</div>
+
+
+<button
+id="saveBookingBtn"
+class="action greenBtn"
+style="width:100%;margin-top:10px;display:none"
+onclick="saveBooking()">
+
+✅ Confirm Booking
+
+</button>
+
+`;
+
+}
+
+
+/* =====================================================
+ BOOKING MAP
+===================================================== */
+
+function initBookingMap(){
+
+if(bookingMap){
+
+setTimeout(
+function(){
+
+bookingMap.invalidateSize();
+
+},
+100
 );
 
 return;
 
 }
 
-
-showNotice(
-"Current Location मिल रही है..."
+bookingMap=
+L
+.map("bookingMap")
+.setView(
+[
+currentBookingDriver.lat,
+currentBookingDriver.lng
+],
+13
 );
 
+L
+.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:"© OpenStreetMap contributors"
+}
+)
+.addTo(bookingMap);
+
+}
+
+
+/* =====================================================
+ CURRENT LOCATION
+===================================================== */
+
+function useCurrentLocation(){
+
+if(!navigator.geolocation){
+
+showNotice("GPS supported नहीं है.");
+
+return;
+
+}
+
+showNotice("Current Location मिल रही है...");
 
 navigator.geolocation.getCurrentPosition(
 
 async function(position){
 
-const lat =
+const lat=
 Number(position.coords.latitude);
 
-const lng =
+const lng=
 Number(position.coords.longitude);
 
-
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
-
-showNotice(
-"Location नहीं मिली."
-);
-
-return;
-
-}
-
-
-bookingPickupCoords =
-{
+bookingPickup={
 lat:lat,
 lng:lng
 };
 
+let text=
+lat.toFixed(6)+", "+lng.toFixed(6);
 
-const area =
-await loadAreaForText(
-lat,
-lng
-);
+try{
 
+const area=await loadArea(lat,lng);
 
-$("pickupText").value =
-area ||
-(
-lat.toFixed(6) +
-", " +
-lng.toFixed(6)
-);
+if(area){
 
+text=area;
 
-showNotice(
-"Pickup Location set हो गई."
-);
+}
+
+}
+catch(error){}
+
+$("pickupInput").value=text;
+
+showNotice("Pickup Current Location set हो गया.");
 
 },
 
@@ -2939,7 +2774,7 @@ showNotice(
 
 {
 enableHighAccuracy:true,
-timeout:10000,
+timeout:12000,
 maximumAge:0
 }
 
@@ -2949,699 +2784,402 @@ maximumAge:0
 
 
 /* =====================================================
-   COMMON PLACE FAST MATCH
+ SHORTCUTS
 ===================================================== */
 
-function getKnownPlace(text){
+function shortcutPlace(type){
 
-const q =
-String(text || "")
-.trim()
-.toLowerCase();
+let text="";
+
+if(type==="home"){
+
+text=
+localStorage.getItem(
+"safetyCabHomePlace"
+) || "";
+
+if(!text){
+
+const value=
+prompt(
+"Home location डालें"
+);
+
+if(value){
+
+localStorage.setItem(
+"safetyCabHomePlace",
+value
+);
+
+text=value;
+
+}
+
+}
+
+if(text){
+
+$("pickupInput").value=text;
+
+bookingPickup=null;
+
+}
+
+return;
+
+}
+
+if(type==="airport"){
+
+text=
+"Rajiv Gandhi International Airport, Shamshabad, Hyderabad";
+
+}
+
+if(type==="railway"){
+
+text=
+"Hyderabad Deccan Railway Station, Hyderabad";
+
+}
+
+if(type==="hospital"){
+
+text=
+"Osmania General Hospital, Hyderabad";
+
+}
+
+if(type==="popular"){
+
+text=
+"Charminar, Hyderabad";
+
+}
+
+if(text){
+
+$("destinationInput").value=text;
+
+bookingDestination=null;
+
+showNotice("Destination set हो गया.");
+
+}
+
+}
 
 
-if(
-!q
-)
-return null;
+/* =====================================================
+ SWAP
+===================================================== */
+
+function swapLocations(){
+
+const p=$("pickupInput").value;
+
+const d=$("destinationInput").value;
+
+$("pickupInput").value=d;
+
+$("destinationInput").value=p;
+
+const oldPickup=bookingPickup;
+
+bookingPickup=bookingDestination;
+
+bookingDestination=oldPickup;
+
+}
 
 
-/*
- Rajiv Gandhi International Airport,
- Shamshabad Airport,
- Airport Shamshabad
-*/
+/* =====================================================
+ GEOCODING
+===================================================== */
 
-if(
-q.includes("airport") &&
-(
-q.includes("shamshabad") ||
-q.includes("rajiv") ||
-q.includes("rgia") ||
-q === "airport"
-)
-){
+async function geocodePlace(text){
+
+if(!text)return null;
+
+const url=
+"https://nominatim.openstreetmap.org/search"+
+"?format=jsonv2"+
+"&limit=1"+
+"&q="+encodeURIComponent(text);
+
+const response=
+await fetch(
+url,
+{
+headers:{
+"Accept":"application/json"
+}
+}
+);
+
+if(!response.ok)return null;
+
+const data=await response.json();
+
+if(!data.length)return null;
 
 return {
 
-lat:17.2402636,
+lat:Number(data[0].lat),
 
-lng:78.4293851,
+lng:Number(data[0].lon),
 
-display:
-"Rajiv Gandhi International Airport, Shamshabad, Hyderabad"
+display:data[0].display_name || text
 
 };
 
 }
 
 
-return null;
-
-}
-
-
 /* =====================================================
-   GEOCODING
-===================================================== */
-
-async function geocodePlace(
-text
-){
-
-const q =
-String(text || "").trim();
-
-
-if(!q)
-return null;
-
-
-/* Fast known-location check */
-
-const known =
-getKnownPlace(q);
-
-
-if(known){
-
-return known;
-
-}
-
-
-try{
-
-const controller =
-new AbortController();
-
-const timer =
-setTimeout(
-function(){
-controller.abort();
-},
-7000
-);
-
-
-const url =
-"https://nominatim.openstreetmap.org/search" +
-"?format=jsonv2" +
-"&limit=1" +
-"&countrycodes=in" +
-"&q=" +
-encodeURIComponent(q);
-
-
-const response =
-await fetch(
-url,
-{
-headers:{
-"Accept":
-"application/json"
-},
-signal:
-controller.signal
-}
-);
-
-
-clearTimeout(timer);
-
-
-if(!response.ok)
-return null;
-
-
-const data =
-await response.json();
-
-
-if(
-!Array.isArray(data) ||
-!data.length
-){
-
-return null;
-
-}
-
-
-return {
-
-lat:
-Number(data[0].lat),
-
-lng:
-Number(data[0].lon),
-
-display:
-data[0].display_name || q
-
-};
-
-}
-catch(error){
-
-console.error(
-"Geocode error:",
-error
-);
-
-return null;
-
-}
-
-}
-
-
-/* =====================================================
-   AREA FROM COORDINATES
-===================================================== */
-
-async function loadAreaForText(
-lat,
-lng
-){
-
-try{
-
-const controller =
-new AbortController();
-
-const timer =
-setTimeout(
-function(){
-controller.abort();
-},
-5000
-);
-
-
-const url =
-"https://nominatim.openstreetmap.org/reverse" +
-"?format=jsonv2" +
-"&lat=" +
-encodeURIComponent(lat) +
-"&lon=" +
-encodeURIComponent(lng) +
-"&zoom=18" +
-"&addressdetails=1";
-
-
-const response =
-await fetch(
-url,
-{
-headers:{
-"Accept":
-"application/json"
-},
-signal:
-controller.signal
-}
-);
-
-
-clearTimeout(timer);
-
-
-if(!response.ok)
-return null;
-
-
-const data =
-await response.json();
-
-
-return data.display_name || null;
-
-}
-catch(error){
-
-return null;
-
-}
-
-}
-
-
-/* =====================================================
-   ROAD ROUTE
+ ROUTE
 ===================================================== */
 
 async function showBookingRoute(){
 
-if(!radarAuthorized)
-return;
+const status=$("routeStatus");
 
+const pickupText=
+$("pickupInput").value.trim();
 
-const d =
-selectedDriverData;
-
-
-if(!d){
-
-showNotice(
-"Driver select नहीं है."
-);
-
-return;
-
-}
-
-
-const pickupText =
-$("pickupText")
-?
-$("pickupText").value.trim()
-:
-"";
-
-
-const destinationText =
-$("destinationText")
-?
-$("destinationText").value.trim()
-:
-"";
-
+const destinationText=
+$("destinationInput").value.trim();
 
 if(!pickupText){
 
-showNotice(
-"Pickup Location डालें."
-);
+status.textContent=
+"Pickup Location डालें।";
 
 return;
 
 }
-
 
 if(!destinationText){
 
-showNotice(
-"Destination डालें."
-);
+status.textContent=
+"Destination डालें।";
 
 return;
 
 }
-
-
-$("routeResult").style.display =
-"block";
-
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeLoading">
-⏳ Route तैयार हो रहा है...
-</div>
-`;
-
-
-/* DRIVER CURRENT LOCATION */
-
-let driverCoords = null;
-
 
 if(
-Number.isFinite(d.lat) &&
-Number.isFinite(d.lng)
+!currentBookingDriver ||
+!Number.isFinite(currentBookingDriver.lat) ||
+!Number.isFinite(currentBookingDriver.lng)
 ){
 
-driverCoords =
-{
-lat:Number(d.lat),
-lng:Number(d.lng)
-};
-
-}
-
-
-if(!driverCoords){
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeError">
-
-Driver की current GPS location उपलब्ध नहीं है.
-
-</div>
-`;
+status.textContent=
+"Driver की current GPS location उपलब्ध नहीं है।";
 
 return;
 
 }
 
+status.textContent=
+"Route loading...";
 
-/* PICKUP */
-
-let pickupCoords =
-bookingPickupCoords ||
-null;
-
-
-if(!pickupCoords){
-
-pickupCoords =
-await geocodePlace(
-pickupText
-);
-
-}
-
-
-if(!pickupCoords){
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeError">
-
-Pickup Location नहीं मिली.
-
-<br>
-
-कृपया location का पूरा नाम डालें.
-
-</div>
-`;
-
-return;
-
-}
-
-
-/* DESTINATION */
-
-const destinationCoords =
-await geocodePlace(
-destinationText
-);
-
-
-if(!destinationCoords){
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeError">
-
-Destination नहीं मिला.
-
-<br>
-
-कृपया सही location डालें.
-
-</div>
-`;
-
-return;
-
-}
-
-
-/* ROAD ROUTE */
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeLoading">
-⏳ Road route calculate हो रहा है...
-</div>
-`;
-
-
-const route =
-await getRoadRoute(
-driverCoords,
-pickupCoords,
-destinationCoords
-);
-
-
-if(!route){
-
-$("routeResult").innerHTML =
-
-`
-<div class="routeError">
-
-Road route अभी नहीं मिल पाया.
-
-<br>
-
-कृपया थोड़ी देर बाद दोबारा कोशिश करें.
-
-</div>
-`;
-
-return;
-
-}
-
-
-/* INFO */
-
-const km =
-(route.distance / 1000)
-.toFixed(1);
-
-
-const minutes =
-Math.max(
-1,
-Math.round(
-route.duration / 60
-)
-);
-
-
-$("routeResult").innerHTML =
-
-`
-
-<div class="routeInfo">
-
-<div class="routePoint">
-
-<span class="routeDot">
-🚕
-</span>
-
-<div>
-
-<b>Driver Current Location</b>
-
-<br>
-
-${esc(
-d.name ||
-d.id
-)}
-
-</div>
-
-</div>
-
-
-<div class="routePoint">
-
-<span class="routeDot">
-📍
-</span>
-
-<div>
-
-<b>Pickup</b>
-
-<br>
-
-${esc(
-pickupCoords.display ||
-pickupText
-)}
-
-</div>
-
-</div>
-
-
-<div class="routePoint">
-
-<span class="routeDot">
-🏁
-</span>
-
-<div>
-
-<b>Destination</b>
-
-<br>
-
-${esc(
-destinationCoords.display ||
-destinationText
-)}
-
-</div>
-
-</div>
-
-
-<hr style="margin:7px 0">
-
-
-<b>
-🛣️ Road Distance:
-</b>
-
-${km} km
-
-
-&nbsp;&nbsp;
-
-
-<b>
-⏱️
-</b>
-
-${minutes} min
-
-</div>
-
-
-<div
-id="routeMap"
-class="routeMap">
-</div>
-
-
-<button
-class="action"
-style="
-width:100%;
-margin-top:8px;
-background:#16a34a;
-"
-onclick="confirmBookingRoute()">
-
-✅ Confirm Booking
-
-</button>
-
-`;
-
-
-renderBookingRouteMap(
-driverCoords,
-pickupCoords,
-destinationCoords,
-route
-);
-
-}
-
-
-/* =====================================================
-   OSRM ROAD ROUTE
-===================================================== */
-
-async function getRoadRoute(
-driver,
-pickup,
-destination
-){
+$("saveBookingBtn").style.display="none";
 
 try{
 
-const coordinates =
+if(!bookingPickup){
 
-[
-driver,
-pickup,
-destination
-]
+bookingPickup=
+await geocodePlace(
+pickupText
+);
+
+}
+
+if(!bookingPickup){
+
+status.textContent=
+"Pickup location नहीं मिली।";
+
+return;
+
+}
+
+if(!bookingDestination){
+
+bookingDestination=
+await geocodePlace(
+destinationText
+);
+
+}
+
+if(!bookingDestination){
+
+status.textContent=
+"Destination location नहीं मिली।";
+
+return;
+
+}
+
+
+/*
+ Driver -> Pickup -> Destination
+*/
+
+const points=[
+
+{
+lat:Number(currentBookingDriver.lat),
+lng:Number(currentBookingDriver.lng)
+},
+
+{
+lat:Number(bookingPickup.lat),
+lng:Number(bookingPickup.lng)
+},
+
+{
+lat:Number(bookingDestination.lat),
+lng:Number(bookingDestination.lng)
+}
+
+];
+
+
+const coords=
+points
 .map(
 function(p){
 
-return (
-p.lng +
-"," +
-p.lat
-);
+return p.lng+","+p.lat;
 
 }
 )
 .join(";");
 
 
-const controller =
-new AbortController();
-
-const timer =
-setTimeout(
-function(){
-controller.abort();
-},
-10000
-);
-
-
-const url =
-"https://router.project-osrm.org/route/v1/driving/" +
-coordinates +
+const url=
+"https://router.project-osrm.org/route/v1/driving/"+
+coords+
 "?overview=full&geometries=geojson";
 
 
-const response =
+const controller=
+new AbortController();
+
+const timeout=
+setTimeout(
+function(){
+
+controller.abort();
+
+},
+15000
+);
+
+const response=
 await fetch(
 url,
 {
-signal:
-controller.signal
+signal:controller.signal
 }
 );
 
+clearTimeout(timeout);
 
-clearTimeout(timer);
+if(!response.ok){
 
+throw new Error(
+"Route service error"
+);
 
-if(!response.ok)
-return null;
+}
 
-
-const data =
+const data=
 await response.json();
 
-
 if(
-data.code !== "Ok" ||
 !data.routes ||
 !data.routes.length
 ){
 
-return null;
+throw new Error(
+"No route"
+);
 
 }
 
+const route=data.routes[0];
 
-return data.routes[0];
+currentRoute={
+
+points:points,
+
+geometry:route.geometry,
+
+distance:route.distance,
+
+duration:route.duration,
+
+pickupText:
+bookingPickup.display ||
+pickupText,
+
+destinationText:
+bookingDestination.display ||
+destinationText
+
+};
+
+drawBookingRoute(currentRoute);
+
+status.textContent=
+"Route ready.";
+
+$("routeInfo").style.display="block";
+
+$("routeInfo").innerHTML=
+
+`
+
+🚕 <b>Driver Current Location</b><br>
+${esc(currentBookingDriver.name || currentBookingDriver.id)}
+
+<br><br>
+
+📍 <b>Pickup</b><br>
+${esc(currentRoute.pickupText)}
+
+<br><br>
+
+🏁 <b>Destination</b><br>
+${esc(currentRoute.destinationText)}
+
+<hr>
+
+🚗 <b>Road Distance:</b>
+${(route.distance/1000).toFixed(1)} km
+
+<br>
+
+⏱️ <b>Estimated Time:</b>
+${Math.round(route.duration/60)} min
+
+`;
+
+$("saveBookingBtn").style.display="block";
 
 }
 catch(error){
 
-console.error(
-"Route error:",
-error
-);
+console.error(error);
 
-return null;
+status.textContent=
+"Route loading slow/error. फिर से Show Route दबाएँ।";
 
 }
 
@@ -3649,100 +3187,61 @@ return null;
 
 
 /* =====================================================
-   RENDER BOOKING ROUTE MAP
+ DRAW ROUTE
 ===================================================== */
 
-function renderBookingRouteMap(
-driver,
-pickup,
-destination,
-route
-){
+function drawBookingRoute(route){
 
-const el =
-$("routeMap");
+if(!bookingMap){
 
-
-if(!el)
-return;
-
-
-if(routeMap){
-
-try{
-
-routeMap.remove();
-
-}
-catch(error){}
-
-routeMap =
-null;
+initBookingMap();
 
 }
 
+if(routeLine){
 
-routeMap =
-L
-.map(
-"routeMap",
-{
-zoomControl:true
+bookingMap.removeLayer(routeLine);
+
+routeLine=null;
+
+}
+
+routeMarkers.forEach(
+function(marker){
+
+bookingMap.removeLayer(marker);
+
 }
 );
 
-
-L
-.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-maxZoom:19,
-attribution:
-"© OpenStreetMap contributors"
-}
-)
-.addTo(routeMap);
+routeMarkers=[];
 
 
-/* ROUTE */
-
-const coordinates =
+const latlngs=
 route.geometry.coordinates
 .map(
-function(pair){
+function(c){
 
-return [
-pair[1],
-pair[0]
-];
+return [c[1],c[0]];
 
 }
 );
 
 
-routeLayer =
+routeLine=
 L
 .polyline(
-coordinates,
+latlngs,
 {
-weight:5
+weight:6
 }
 )
-.addTo(routeMap);
+.addTo(bookingMap);
 
 
-/* DRIVER */
-
-routeDriverMarker =
+const driverIconMarker=
 L
-.marker(
-[
-driver.lat,
-driver.lng
-],
-{
-icon:
-L.divIcon({
+.divIcon({
 
 className:"",
 
@@ -3751,288 +3250,215 @@ html:
 font-size:24px;
 ">🚕</div>`,
 
-iconSize:
-[38,38],
+iconSize:[35,35],
+iconAnchor:[17,17]
 
-iconAnchor:
-[19,19]
+});
 
-})
+
+const driverMarker=
+L
+.marker(
+[
+route.points[0].lat,
+route.points[0].lng
+],
+{
+icon:driverIconMarker
 }
 )
-.addTo(routeMap)
+.addTo(bookingMap)
 .bindPopup(
 "🚕 Driver Current Location"
 );
 
 
-/* PICKUP */
-
-routePickupMarker =
+const pickupMarker=
 L
 .marker(
 [
-pickup.lat,
-pickup.lng
+route.points[1].lat,
+route.points[1].lng
 ]
 )
-.addTo(routeMap)
+.addTo(bookingMap)
 .bindPopup(
 "📍 Pickup"
 );
 
 
-/* DESTINATION */
-
-routeDestinationMarker =
+const destinationMarker=
 L
 .marker(
 [
-destination.lat,
-destination.lng
+route.points[2].lat,
+route.points[2].lng
 ]
 )
-.addTo(routeMap)
+.addTo(bookingMap)
 .bindPopup(
 "🏁 Destination"
 );
 
 
-/* FIT */
-
-routeMap.fitBounds(
-routeLayer.getBounds(),
-{
-padding:[20,20]
-}
+routeMarkers.push(
+driverMarker,
+pickupMarker,
+destinationMarker
 );
 
+
+const bounds=
+L.latLngBounds(latlngs);
+
+bookingMap.fitBounds(
+bounds,
+{
+padding:[25,25]
+}
+);
 
 setTimeout(
 function(){
 
-if(routeMap){
-
-routeMap.invalidateSize();
-
-}
+bookingMap.invalidateSize();
 
 },
-100
+150
 );
 
 }
 
 
 /* =====================================================
-   CONFIRM BOOKING
+ SAVE BOOKING
 ===================================================== */
 
-async function confirmBookingRoute(){
+async function saveBooking(){
 
-if(!radarAuthorized)
-return;
-
-
-const d =
-selectedDriverData;
-
-
-if(!d){
+if(!currentRoute){
 
 showNotice(
-"Driver select नहीं है."
+"पहले Route दिखाएँ."
 );
 
 return;
 
 }
 
-
-const pickupText =
-$("pickupText")
-?
-$("pickupText").value.trim()
-:
-"";
-
-
-const destinationText =
-$("destinationText")
-?
-$("destinationText").value.trim()
-:
-"";
-
-
-if(
-!pickupText ||
-!destinationText
-){
+if(!myTelegramId){
 
 showNotice(
-"Pickup और Destination दोनों डालें."
+"Telegram ID नहीं मिला."
 );
 
 return;
 
 }
 
-
-/* Prevent double click */
-
-const button =
-event &&
-event.target
-?
-event.target
-:
-null;
-
-
-if(button){
-
-button.disabled =
-true;
-
-button.textContent =
-"Saving...";
-
-}
-
-
-try{
-
-const bookingId =
-"BK-" +
-Date.now() +
-"-" +
+const bookingId=
+"BK"+
+Date.now()+
 Math.random()
 .toString(36)
-.substring(2,8)
+.substring(2,7)
 .toUpperCase();
 
 
-await db
-.collection("bookings")
-.doc(bookingId)
-.set({
+const booking={
 
-bookingId:
-bookingId,
+bookingId:bookingId,
+
+customerId:
+myTelegramId,
+
+telegramId:
+myTelegramId,
 
 driverId:
-d.id,
+currentBookingDriver.id,
 
 driverName:
-d.name || "",
+currentBookingDriver.name || "",
 
 vehicle:
-d.vehicle || "",
+currentBookingDriver.vehicle || "",
 
 vehicleType:
-d.vehicleType || "",
+currentBookingDriver.vehicleType || "",
 
 driverLat:
-Number(d.lat),
+Number(currentRoute.points[0].lat),
 
 driverLng:
-Number(d.lng),
+Number(currentRoute.points[0].lng),
 
 pickupText:
-pickupText,
+currentRoute.pickupText,
+
+pickupLat:
+Number(currentRoute.points[1].lat),
+
+pickupLng:
+Number(currentRoute.points[1].lng),
 
 destinationText:
-destinationText,
+currentRoute.destinationText,
+
+destinationLat:
+Number(currentRoute.points[2].lat),
+
+destinationLng:
+Number(currentRoute.points[2].lng),
+
+distanceMeters:
+Number(currentRoute.distance),
+
+durationSeconds:
+Number(currentRoute.duration),
 
 status:
-"requested",
-
-telegramDriverId:
-myTelegramId,
+"confirmed",
 
 createdAt:
 firebase.firestore
 .FieldValue
 .serverTimestamp()
 
+};
+
+
+const button=$("saveBookingBtn");
+
+button.disabled=true;
+
+button.textContent=
+"Saving...";
+
+
+try{
+
+await db
+.collection("bookings")
+.doc(bookingId)
+.set(booking);
+
+
+/*
+ Keep a local copy also.
+ This allows the same user to
+ immediately find the booking
+ by DC number.
+*/
+
+saveLocalBooking({
+...booking,
+createdAtLocal:
+Date.now()
 });
 
 
-$("modalBody").innerHTML =
-
-`
-
-<div
-style="text-align:center;padding:12px 4px"
->
-
-<div style="font-size:45px">
-✅
-</div>
-
-<h2 style="margin:8px 0">
-Booking Saved
-</h2>
-
-
-<div class="locationBox">
-
-<b>Booking ID</b>
-
-<br>
-
-${esc(bookingId)}
-
-<br><br>
-
-<b>Driver</b>
-
-<br>
-
-${esc(d.id)}
-•
-${esc(d.name || "-")}
-
-<br><br>
-
-<b>Pickup</b>
-
-<br>
-
-${esc(pickupText)}
-
-<br><br>
-
-<b>Destination</b>
-
-<br>
-
-${esc(destinationText)}
-
-</div>
-
-
-<button
-class="action"
-style="
-width:100%;
-margin-top:12px;
-"
-onclick="closeModal()">
-
-Close
-
-</button>
-
-</div>
-
-`;
-
-
-showNotice(
-"Booking Firebase में save हो गई."
-);
+renderBookingSaved(booking);
 
 }
 catch(error){
@@ -4042,6 +3468,10 @@ console.error(
 error
 );
 
+button.disabled=false;
+
+button.textContent=
+"✅ Confirm Booking";
 
 showNotice(
 "Booking save नहीं हुई."
@@ -4053,99 +3483,380 @@ showNotice(
 
 
 /* =====================================================
-   MODAL
+ BOOKING SAVED
 ===================================================== */
 
-function closeModal(){
+function renderBookingSaved(booking){
 
-$("modal")
-.classList
-.remove("show");
-
-
-if(routeMap){
-
-try{
-
-routeMap.remove();
-
-}
-catch(error){}
-
-routeMap =
-null;
-
-}
-
-}
-
-
-/* =====================================================
-   HELP
-===================================================== */
-
-function openHelp(){
-
-if(!radarAuthorized)
-return;
-
-
-$("modalBody").innerHTML =
+$("bookingBody").innerHTML=
 
 `
 
-<h2>
-❓ Help & Support
-</h2>
+<div
+class="savedBox"
+style="margin-top:35px">
+
+<div class="savedTitle">
+
+✅ Booking Saved
+
+</div>
 
 
-<p>
+<div class="row">
 
-Safety Cab Driver Radar के लिए
-सहायता चाहिए तो नीचे Support पर
-Call करें।
+<span>Booking ID</span>
 
-</p>
+<b>
+${esc(booking.bookingId)}
+</b>
+
+</div>
 
 
-<a
-class="action"
-style="
-display:block;
-text-align:center;
-text-decoration:none;
-font-size:20px;
-margin:12px 0;
-"
-href="tel:${SUPPORT_PHONE}"
->
+<div class="row">
 
-📞 ${SUPPORT_PHONE}
+<span>Driver</span>
 
-</a>
+<b>
+${esc(booking.driverId)}
+</b>
+
+</div>
+
+
+<div class="row">
+
+<span>Driver Name</span>
+
+<b>
+${esc(booking.driverName)}
+</b>
+
+</div>
+
+
+<div
+class="locationBox"
+style="background:#fff">
+
+📍 <b>Pickup</b>
+
+<br>
+
+${esc(booking.pickupText)}
+
+<br><br>
+
+🏁 <b>Destination</b>
+
+<br>
+
+${esc(booking.destinationText)}
+
+<br><br>
+
+🚗 <b>Road Distance:</b>
+${(booking.distanceMeters/1000).toFixed(1)} km
+
+<br>
+
+⏱️ <b>Estimated Time:</b>
+${Math.round(booking.durationSeconds/60)} min
+
+</div>
 
 
 <button
 class="action"
-style="width:100%"
-onclick="closeModal()">
+style="width:100%;margin-top:10px"
+onclick="showSavedRouteFromBooking()">
+
+🗺️ View Booking Map
+
+</button>
+
+
+<button
+class="action greenBtn"
+style="width:100%;margin-top:8px"
+onclick="startNewBooking()">
+
+➕ New Booking
+
+</button>
+
+
+<button
+class="action secondary"
+style="width:100%;margin-top:8px"
+onclick="closeBookingModal()">
 
 Close
 
 </button>
 
+</div>
+
 `;
 
-
-$("modal")
-.classList
-.add("show");
+window.lastSavedBooking=booking;
 
 }
 
 
 /* =====================================================
-   TELEGRAM CHECK
+ VIEW SAVED ROUTE
+===================================================== */
+
+function showSavedRouteFromBooking(){
+
+const b=window.lastSavedBooking;
+
+if(!b)return;
+
+currentBookingDriver={
+
+id:b.driverId,
+
+name:b.driverName,
+
+vehicle:b.vehicle,
+
+vehicleType:b.vehicleType,
+
+lat:b.driverLat,
+
+lng:b.driverLng
+
+};
+
+bookingPickup={
+
+lat:b.pickupLat,
+
+lng:b.pickupLng,
+
+display:b.pickupText
+
+};
+
+bookingDestination={
+
+lat:b.destinationLat,
+
+lng:b.destinationLng,
+
+display:b.destinationText
+
+};
+
+currentRoute={
+
+points:[
+
+{
+lat:b.driverLat,
+lng:b.driverLng
+},
+
+{
+lat:b.pickupLat,
+lng:b.pickupLng
+},
+
+{
+lat:b.destinationLat,
+lng:b.destinationLng
+}
+
+],
+
+distance:b.distanceMeters,
+
+duration:b.durationSeconds,
+
+pickupText:b.pickupText,
+
+destinationText:b.destinationText,
+
+geometry:null
+
+};
+
+
+/*
+ Re-fetch route for current map.
+*/
+
+$("bookingBody").innerHTML=
+
+`
+
+<div class="bookingTitle">
+
+🗺️ ${esc(b.driverId)} Booking Map
+
+</div>
+
+<div class="bookingDriver">
+
+🚕 <b>Driver Current Location</b><br>
+
+${esc(b.driverName)}
+
+</div>
+
+<div
+class="locationBox">
+
+📍 <b>Pickup:</b><br>
+${esc(b.pickupText)}
+
+<br><br>
+
+🏁 <b>Destination:</b><br>
+${esc(b.destinationText)}
+
+</div>
+
+<div id="bookingMap" class="bookingMap"></div>
+
+<div id="routeStatus" class="empty">
+Loading road route...
+</div>
+
+<button
+class="action greenBtn"
+style="width:100%"
+onclick="startNewBooking()">
+
+➕ New Booking
+
+</button>
+
+`;
+
+bookingMap=null;
+
+setTimeout(
+async function(){
+
+await showBookingRoute();
+
+},
+150
+);
+
+}
+
+
+/* =====================================================
+ OPEN SAVED BOOKING
+===================================================== */
+
+function openSavedBooking(driverId){
+
+const b=
+getLocalBookingForDriver(driverId);
+
+if(!b){
+
+showNotice(
+"No booking found for "+driverId
+);
+
+return;
+
+}
+
+window.lastSavedBooking=b;
+
+$("bookingModal")
+.classList
+.add("show");
+
+showSavedRouteFromBooking();
+
+}
+
+
+/* =====================================================
+ NEW BOOKING
+===================================================== */
+
+function startNewBooking(){
+
+closeBookingModal();
+
+page("drivers");
+
+$("search").value="";
+
+$("driverList").innerHTML=
+"<div class='empty'>Next Driver ID डालकर Search करें</div>";
+
+setTimeout(
+function(){
+
+$("search").focus();
+
+},
+200
+);
+
+showNotice(
+"New Booking: अगला DC नंबर Search करें."
+);
+
+}
+
+
+/* =====================================================
+ CLOSE BOOKING
+===================================================== */
+
+function closeBookingModal(){
+
+$("bookingModal")
+.classList
+.remove("show");
+
+if(bookingMap){
+
+try{
+
+bookingMap.remove();
+
+}
+catch(error){}
+
+bookingMap=null;
+
+}
+
+routeLine=null;
+
+routeMarkers=[];
+
+setTimeout(
+function(){
+
+if(map){
+
+map.invalidateSize();
+
+}
+
+},
+180
+);
+
+}
+
+
+/* =====================================================
+ TELEGRAM
 ===================================================== */
 
 function setupTG(){
@@ -4160,29 +3871,24 @@ return false;
 
 }
 
-
-const user =
+const user=
 tg.initDataUnsafe &&
 tg.initDataUnsafe.user;
-
 
 if(!user){
 
 denyRadarAccess(
-"Telegram account नहीं मिला. Direct URL access allowed नहीं है."
+"Telegram account नहीं मिला."
 );
 
 return false;
 
 }
 
-
-myTelegramId =
+myTelegramId=
 String(user.id);
 
-
-$("tgName").textContent =
-
+$("tgName").textContent=
 [
 user.first_name,
 user.last_name
@@ -4192,10 +3898,8 @@ user.last_name
 ||
 "Telegram User";
 
-
-$("tgId").textContent =
+$("tgId").textContent=
 myTelegramId;
-
 
 return true;
 
@@ -4203,7 +3907,7 @@ return true;
 
 
 /* =====================================================
-   FIREBASE ANONYMOUS AUTH
+ AUTH
 ===================================================== */
 
 async function authAnon(){
@@ -4212,10 +3916,8 @@ try{
 
 await auth.signInAnonymously();
 
-
-$("firebaseState").textContent =
+$("firebaseState").textContent=
 "Connected";
-
 
 return true;
 
@@ -4227,10 +3929,8 @@ console.error(
 error
 );
 
-
-$("firebaseState").textContent =
+$("firebaseState").textContent=
 "Auth Error";
-
 
 return false;
 
@@ -4240,21 +3940,113 @@ return false;
 
 
 /* =====================================================
-   CHECK REGISTERED DRIVER
+ DRIVER OBJECT
 ===================================================== */
 
-async function checkRegisteredDriver(){
+function makeDriver(doc){
 
-if(!myTelegramId){
+const d=doc.data();
 
-return false;
+return {
+
+docId:doc.id,
+
+id:normalizeDriverId(
+d.id || doc.id
+),
+
+name:d.name || "",
+
+phone:d.phone || "",
+
+vehicle:d.vehicle || "",
+
+vehicleType:d.vehicleType || "",
+
+carPhoto:d.carPhoto || "",
+
+lat:Number(d.lat),
+
+lng:Number(d.lng),
+
+online:d.online===true,
+
+duty:d.duty===true,
+
+rating:Number(d.rating || 0),
+
+profilePhoto:d.profilePhoto || ""
+
+};
 
 }
 
 
+/* =====================================================
+ CACHE
+===================================================== */
+
+function driverCacheKey(){
+
+return "safetyCabDriverCache_"+myTelegramId;
+
+}
+
+
+function getCachedDriver(){
+
 try{
 
-const snapshot =
+const raw=
+localStorage.getItem(
+driverCacheKey()
+);
+
+if(!raw)return null;
+
+const d=JSON.parse(raw);
+
+if(!d || !d.id)return null;
+
+return d;
+
+}
+catch(error){
+
+return null;
+
+}
+
+
+}
+
+
+function cacheDriver(d){
+
+try{
+
+localStorage.setItem(
+driverCacheKey(),
+JSON.stringify(d)
+);
+
+}
+catch(error){}
+
+}
+
+
+/* =====================================================
+ REGISTERED DRIVER
+===================================================== */
+
+async function checkRegisteredDriver(){
+
+if(!myTelegramId)return false;
+
+try{
+
+const snapshot=
 await db
 .collection("drivers")
 .where(
@@ -4265,82 +4057,22 @@ myTelegramId
 .limit(1)
 .get();
 
-
 if(snapshot.empty){
 
 return false;
 
 }
 
+const doc=snapshot.docs[0];
 
-const doc =
-snapshot.docs[0];
+myDriver=makeDriver(doc);
 
+cacheDriver(myDriver);
 
-const d =
-doc.data();
-
-
-myDriver = {
-
-docId:
-doc.id,
-
-id:
-normalizeDriverId(
-d.id ||
-doc.id
-),
-
-name:
-d.name ||
-"",
-
-phone:
-d.phone ||
-"",
-
-vehicle:
-d.vehicle ||
-"",
-
-vehicleType:
-d.vehicleType ||
-"",
-
-carPhoto:
-d.carPhoto ||
-"",
-
-lat:
-Number(d.lat),
-
-lng:
-Number(d.lng),
-
-online:
-d.online === true,
-
-duty:
-d.duty === true,
-
-rating:
-Number(d.rating || 0),
-
-profilePhoto:
-d.profilePhoto ||
-""
-
-};
-
-
-$("myDriverId").textContent =
+$("myDriverId").textContent=
 myDriver.id;
 
-
-myDuty =
-myDriver.duty;
-
+myDuty=myDriver.duty;
 
 $("dutyToggle")
 .classList
@@ -4348,7 +4080,6 @@ $("dutyToggle")
 "on",
 myDuty
 );
-
 
 return true;
 
@@ -4368,20 +4099,40 @@ return false;
 
 
 /* =====================================================
-   ACCESS DENIED
+ BACKGROUND VERIFY
+===================================================== */
+
+async function verifyCachedDriver(){
+
+const valid=
+await checkRegisteredDriver();
+
+if(!valid){
+
+denyRadarAccess(
+"आपका Telegram account Safety Cab में Registered नहीं है."
+);
+
+return false;
+
+}
+
+return true;
+
+}
+
+
+/* =====================================================
+ DENY
 ===================================================== */
 
 function denyRadarAccess(message){
 
-radarAuthorized =
-false;
-
+radarAuthorized=false;
 
 stopSelectedLiveListener();
 
-
 clearSelectedMarker();
-
 
 if(map){
 
@@ -4390,34 +4141,21 @@ try{
 map.remove();
 
 }
-catch(error){
+catch(error){}
 
-console.log(error);
-
-}
-
-map = null;
+map=null;
 
 }
 
+$("radarApp").style.display="none";
 
-$("radarApp").style.display =
-"none";
+$("accessLock").style.display="flex";
 
+$("accessIcon").textContent="🔒";
 
-$("accessLock").style.display =
-"flex";
+$("accessTitle").textContent="Access Denied";
 
-
-$("accessIcon").textContent =
-"🔒";
-
-
-$("accessTitle").textContent =
-"Access Denied";
-
-
-$("accessText").textContent =
+$("accessText").textContent=
 message ||
 "यह Driver Radar केवल Registered Safety Cab Drivers के लिए है.";
 
@@ -4425,34 +4163,27 @@ message ||
 
 
 /* =====================================================
-   ACCESS GRANTED
+ ALLOW
 ===================================================== */
 
 function allowRadarAccess(){
 
-radarAuthorized =
-true;
+radarAuthorized=true;
 
+$("accessLock").style.display="none";
 
-$("accessLock").style.display =
-"none";
-
-
-$("radarApp").style.display =
-"block";
+$("radarApp").style.display="block";
 
 }
 
 
 /* =====================================================
-   MANUAL LOCATION
+ LOCATION
 ===================================================== */
 
 function shareMyLocation(){
 
-if(!radarAuthorized)
-return;
-
+if(!radarAuthorized)return;
 
 if(!myDriver){
 
@@ -4464,7 +4195,6 @@ return;
 
 }
 
-
 if(!navigator.geolocation){
 
 showNotice(
@@ -4474,7 +4204,6 @@ showNotice(
 return;
 
 }
-
 
 navigator.geolocation.getCurrentPosition(
 
@@ -4499,106 +4228,62 @@ maximumAge:0
 }
 
 
-/* =====================================================
-   UPDATE MY LOCATION
-===================================================== */
-
 function updateMyLocation(position){
 
 if(
 !radarAuthorized ||
 !myDriver
-)
-return;
+)return;
 
+const lat=
+Number(position.coords.latitude);
 
-const lat =
-Number(
-position.coords.latitude
-);
-
-
-const lng =
-Number(
-position.coords.longitude
-);
-
+const lng=
+Number(position.coords.longitude);
 
 if(
 !Number.isFinite(lat) ||
 !Number.isFinite(lng)
-){
+)return;
 
-return;
+myDriver.lat=lat;
 
-}
+myDriver.lng=lng;
 
+myDriver.online=true;
 
-myDriver.lat =
-lat;
-
-myDriver.lng =
-lng;
-
-myDriver.online =
-true;
-
-
-$("locStatus").textContent =
+$("locStatus").textContent=
 "Location shared";
 
-
 if(
-selectedDriverId ===
-myDriver.id
+selectedDriverId===myDriver.id
 ){
 
 if(selectedDriverData){
 
-selectedDriverData.lat =
-lat;
-
-selectedDriverData.lng =
-lng;
-
-selectedDriverData.online =
-true;
+selectedDriverData.lat=lat;
+selectedDriverData.lng=lng;
+selectedDriverData.online=true;
 
 }
-
 
 if(selectedMarker){
 
-selectedMarker.setLatLng(
-[lat,lng]
-);
+selectedMarker.setLatLng([lat,lng]);
 
 }
-
 
 if(!mapCenteredOnce){
 
-map.setView(
-[lat,lng],
-16,
-{
-animate:false
-}
-);
+map.setView([lat,lng],16);
 
-mapCenteredOnce =
-true;
+mapCenteredOnce=true;
 
 }
 
 }
 
-
-writeLive(
-lat,
-lng
-);
-
+writeLive(lat,lng);
 
 db
 .collection("drivers")
@@ -4625,41 +4310,27 @@ firebase.firestore
 merge:true
 }
 )
-.catch(
-console.error
-);
+.catch(console.error);
 
 }
 
 
-/* =====================================================
-   WRITE LIVE LOCATION
-===================================================== */
-
-function writeLive(
-lat,
-lng
-){
+function writeLive(lat,lng){
 
 if(
 !radarAuthorized ||
 !myDriver
-)
-return;
-
+)return;
 
 rtdb
 .ref(
-"liveLocations/" +
-myDriver.id
+"liveLocations/"+myDriver.id
 )
 .set({
 
-driverId:
-myDriver.id,
+driverId:myDriver.id,
 
-telegramId:
-myTelegramId,
+telegramId:myTelegramId,
 
 lat:lat,
 
@@ -4675,22 +4346,13 @@ firebase.database
 .TIMESTAMP
 
 })
-.catch(
-function(error){
-
-console.error(
-"RTDB GPS write error:",
-error
-);
-
-}
-);
+.catch(console.error);
 
 }
 
 
 /* =====================================================
-   START GPS
+ GPS
 ===================================================== */
 
 function startGPS(){
@@ -4698,7 +4360,7 @@ function startGPS(){
 if(
 !radarAuthorized ||
 !myDriver ||
-watchId !== null ||
+watchId!==null ||
 !navigator.geolocation
 ){
 
@@ -4706,18 +4368,14 @@ return;
 
 }
 
-
-watchId =
+watchId=
 navigator.geolocation.watchPosition(
 
 updateMyLocation,
 
 function(error){
 
-console.error(
-"GPS watch error:",
-error
-);
+console.error(error);
 
 },
 
@@ -4732,22 +4390,15 @@ timeout:15000
 }
 
 
-/* =====================================================
-   STOP GPS
-===================================================== */
-
 function stopGPS(){
 
-if(
-watchId !== null
-){
+if(watchId!==null){
 
-navigator.geolocation
-.clearWatch(
+navigator.geolocation.clearWatch(
 watchId
 );
 
-watchId = null;
+watchId=null;
 
 }
 
@@ -4755,29 +4406,24 @@ watchId = null;
 
 
 /* =====================================================
-   DUTY
+ DUTY
 ===================================================== */
 
 async function toggleDuty(){
 
-if(!radarAuthorized)
-return;
-
+if(!radarAuthorized)return;
 
 if(!myDriver){
 
 showNotice(
-"Driver अभी Registered नहीं है."
+"Driver Registered नहीं है."
 );
 
 return;
 
 }
 
-
-myDuty =
-!myDuty;
-
+myDuty=!myDuty;
 
 $("dutyToggle")
 .classList
@@ -4785,7 +4431,6 @@ $("dutyToggle")
 "on",
 myDuty
 );
-
 
 try{
 
@@ -4810,19 +4455,15 @@ firebase.firestore
 merge:true
 });
 
-
 await rtdb
 .ref(
-"liveLocations/" +
-myDriver.id
+"liveLocations/"+myDriver.id
 )
 .update({
 
-driverId:
-myDriver.id,
+driverId:myDriver.id,
 
-telegramId:
-myTelegramId,
+telegramId:myTelegramId,
 
 online:true,
 
@@ -4835,7 +4476,6 @@ firebase.database
 
 });
 
-
 showNotice(
 myDuty
 ?
@@ -4847,9 +4487,6 @@ myDuty
 }
 catch(error){
 
-console.error(error);
-
-
 showNotice(
 "Status Firebase में save नहीं हुआ."
 );
@@ -4860,18 +4497,14 @@ showNotice(
 
 
 /* =====================================================
-   AUTO GPS
+ AUTO GPS
 ===================================================== */
 
 function toggleAutoGPS(){
 
-if(!radarAuthorized)
-return;
+if(!radarAuthorized)return;
 
-
-autoGPS =
-!autoGPS;
-
+autoGPS=!autoGPS;
 
 $("gpsToggle")
 .classList
@@ -4879,7 +4512,6 @@ $("gpsToggle")
 "on",
 autoGPS
 );
-
 
 if(autoGPS){
 
@@ -4891,7 +4523,6 @@ else{
 stopGPS();
 
 }
-
 
 showNotice(
 autoGPS
@@ -4905,15 +4536,12 @@ autoGPS
 
 
 /* =====================================================
-   CLOSE MINI APP
+ CLOSE
 ===================================================== */
 
 function closeMiniApp(){
 
-if(
-tg &&
-tg.close
-){
+if(tg && tg.close){
 
 tg.close();
 
@@ -4930,29 +4558,23 @@ showNotice(
 
 
 /* =====================================================
-   SECURE START
+ SECURE START
 ===================================================== */
 
 async function startApp(){
 
-/* 1. Telegram */
+const telegramOK=setupTG();
 
-const telegramOK =
-setupTG();
-
-
-if(!telegramOK){
-
-return;
-
-}
+if(!telegramOK)return;
 
 
-/* 2. Firebase Auth */
+/*
+ Firebase anonymous auth.
+ Existing Firebase session is normally
+ faster on repeat opens.
+*/
 
-const authOK =
-await authAnon();
-
+const authOK=await authAnon();
 
 if(!authOK){
 
@@ -4965,11 +4587,70 @@ return;
 }
 
 
-/* 3. Registered Driver */
+/*
+ FAST PATH:
+ If this Telegram user has already
+ been verified on this device,
+ show Radar immediately.
+*/
 
-const registered =
+const cached=getCachedDriver();
+
+if(cached){
+
+myDriver=cached;
+
+$("myDriverId").textContent=
+myDriver.id;
+
+myDuty=
+myDriver.duty===true;
+
+$("dutyToggle")
+.classList
+.toggle(
+"on",
+myDuty
+);
+
+allowRadarAccess();
+
+initMap();
+
+loadOnlineCount();
+
+window.searchedDriver={
+...myDriver
+};
+
+await selectDriver(
+myDriver.id
+);
+
+if(autoGPS){
+
+startGPS();
+
+}
+
+
+/*
+ Verify in background.
+*/
+
+verifyCachedDriver();
+
+return;
+
+}
+
+
+/*
+ First-time verification.
+*/
+
+const registered=
 await checkRegisteredDriver();
-
 
 if(!registered){
 
@@ -4981,42 +4662,19 @@ return;
 
 }
 
-
-/* 4. ACCESS GRANTED */
-
 allowRadarAccess();
-
-
-/* 5. MAP */
 
 initMap();
 
-
-/* 6. ONLINE COUNT */
-
 await loadOnlineCount();
 
-
-/* 7. CURRENT DRIVER */
-
-window.searchedDriver =
-{
+window.searchedDriver={
 ...myDriver
 };
-
-
-$("search").value =
-myDriver.id;
-
-
-/* 8. OWN DRIVER */
 
 await selectDriver(
 myDriver.id
 );
-
-
-/* 9. GPS */
 
 if(autoGPS){
 
@@ -5028,15 +4686,11 @@ startGPS();
 
 
 /* =====================================================
-   START
+ START
 ===================================================== */
 
 startApp();
 
-
-/* =====================================================
-   MAP RESIZE
-===================================================== */
 
 setTimeout(
 function(){
@@ -5051,7 +4705,7 @@ map.invalidateSize();
 }
 
 },
-1200
+1000
 );
 
 </script>

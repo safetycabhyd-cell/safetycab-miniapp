@@ -19,7 +19,6 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
-
 <style>
 
 *{
@@ -2352,8 +2351,11 @@ selectedDriverData.id +
 selectedDriverData.name;
 
 
-$("routeCard").style.display =
-"block";
+/*
+ IMPORTANT:
+ Route card will NOT open automatically.
+ User must press Plan Route.
+*/
 
 
 updateDriverCurrentText();
@@ -2472,8 +2474,7 @@ updateDriverCurrentText();
 
 /*
  If route is already active,
- update driver first point and
- redraw route automatically.
+ update driver first point.
 */
 
 if(routeLayer && routePickupPoint && routeDestinationPoint){
@@ -2692,7 +2693,9 @@ lng.toFixed(6)
 window.currentPickupCoords =
 {
 lat:lat,
-lng:lng
+lng:lng,
+text:
+$("pickupInput").value
 };
 
 
@@ -2713,7 +2716,9 @@ lng.toFixed(6);
 window.currentPickupCoords =
 {
 lat:lat,
-lng:lng
+lng:lng,
+text:
+$("pickupInput").value
 };
 
 }
@@ -3175,10 +3180,6 @@ destinationPoint[1] +
 destinationPoint[0];
 
 
-/*
- OSRM road route.
-*/
-
 const url =
 "https://router.project-osrm.org/route/v1/driving/" +
 coordinates +
@@ -3232,7 +3233,7 @@ opacity:.85
 .addTo(map);
 
 
-/* Driver marker */
+/* DRIVER MARKER */
 
 driverRouteMarker =
 L.marker(
@@ -3264,7 +3265,7 @@ esc(selectedDriverData.name || selectedDriverData.id)
 );
 
 
-/* Pickup marker */
+/* PICKUP MARKER */
 
 pickupRouteMarker =
 L.marker(
@@ -3277,7 +3278,7 @@ esc(pickupName || "Pickup Location")
 );
 
 
-/* Destination marker */
+/* DESTINATION MARKER */
 
 destinationRouteMarker =
 L.marker(
@@ -3290,7 +3291,7 @@ esc(destinationName || "Destination")
 );
 
 
-/* Fit full route */
+/* FIT FULL ROUTE */
 
 const group =
 L.featureGroup([
@@ -3309,7 +3310,7 @@ padding:[30,30]
 );
 
 
-/* Route summary */
+/* ROUTE SUMMARY */
 
 const distanceKm =
 Number(route.distance || 0) /

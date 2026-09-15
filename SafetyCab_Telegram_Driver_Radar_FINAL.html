@@ -15,11 +15,8 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
 
@@ -82,7 +79,8 @@ gap:9px;
 margin-bottom:10px
 }
 
-.stat,.card{
+.stat,
+.card{
 background:#fff;
 border-radius:18px;
 box-shadow:0 2px 10px #0001
@@ -284,6 +282,19 @@ font-size:13px;
 line-height:1.5
 }
 
+.vehicleTypeBadge{
+display:inline-block;
+background:#e4f1fb;
+color:#075a8c;
+padding:4px 8px;
+border-radius:10px;
+font-size:11px;
+font-weight:700
+}
+
+
+/* ================= PHOTOS ================= */
+
 .profilePhoto{
 width:110px;
 height:110px;
@@ -328,6 +339,56 @@ background:#eef3f7;
 font-size:35px
 }
 
+.popupCarPhoto{
+width:210px;
+height:125px;
+border-radius:12px;
+object-fit:cover;
+display:block;
+margin:10px auto;
+border:2px solid #d9e3ec;
+background:#eef3f7
+}
+
+.popupCarPlaceholder{
+width:210px;
+height:125px;
+border-radius:12px;
+display:grid;
+place-items:center;
+margin:10px auto;
+background:#eef3f7;
+font-size:48px
+}
+
+.detailCarPhoto{
+width:100%;
+max-width:320px;
+height:190px;
+object-fit:cover;
+display:block;
+margin:10px auto 15px;
+border-radius:14px;
+border:2px solid #d5dfe7;
+background:#eef3f7
+}
+
+.detailCarPlaceholder{
+width:100%;
+max-width:320px;
+height:190px;
+display:grid;
+place-items:center;
+margin:10px auto 15px;
+border-radius:14px;
+background:#eef3f7;
+border:2px solid #d5dfe7;
+font-size:60px
+}
+
+
+/* ================= BOTTOM ================= */
+
 .bottom{
 position:fixed;
 left:0;
@@ -357,6 +418,9 @@ font-size:23px
 color:#087fc3;
 font-weight:700
 }
+
+
+/* ================= MODAL ================= */
 
 .modal{
 display:none;
@@ -388,24 +452,8 @@ width:32px;
 height:32px
 }
 
-.supportNumber{
-display:block;
-width:100%;
-text-align:center;
-margin:10px 0;
-padding:13px;
-background:#e9f4ff;
-color:#0878c9;
-border-radius:12px;
-font-size:20px;
-font-weight:700;
-text-decoration:none
-}
 
-
-/* =====================================================
-   ACCESS LOCK
-===================================================== */
+/* ================= ACCESS LOCK ================= */
 
 #accessLock{
 position:fixed;
@@ -445,12 +493,6 @@ color:#667085;
 line-height:1.5
 }
 
-
-/*
- App is hidden until Telegram
- registration is verified.
-*/
-
 #radarApp{
 display:none
 }
@@ -473,7 +515,7 @@ font-size:23px
 
 
 <!-- =====================================================
-     ACCESS LOCK SCREEN
+     ACCESS LOCK
 ===================================================== -->
 
 <div id="accessLock">
@@ -488,7 +530,6 @@ class="accessIcon">
 
 </div>
 
-
 <div
 id="accessTitle"
 class="accessTitle">
@@ -496,7 +537,6 @@ class="accessTitle">
 Checking Driver Access...
 
 </div>
-
 
 <div
 id="accessText"
@@ -690,7 +730,6 @@ onclick="shareMyLocation()">
 
 </button>
 
-
 </div>
 
 
@@ -793,7 +832,7 @@ GPS Update
 </span>
 
 <strong>
-Every 15 sec
+Live GPS
 </strong>
 
 </div>
@@ -819,7 +858,7 @@ Version
 </span>
 
 <strong>
-Safety Cab Radar 3.6
+Safety Cab Radar 3.7
 </strong>
 
 </div>
@@ -1067,7 +1106,7 @@ id =>
 document.getElementById(id);
 
 
-function showNotice(t){
+function showNotice(text){
 
 const n =
 $("notice");
@@ -1076,18 +1115,18 @@ if(!n)
 return;
 
 n.textContent =
-t;
+text;
 
 n.style.display =
 "block";
 
 clearTimeout(
-window.nt
+window.noticeTimer
 );
 
-window.nt =
+window.noticeTimer =
 setTimeout(
-() => {
+function(){
 
 n.style.display =
 "none";
@@ -1099,29 +1138,32 @@ n.style.display =
 }
 
 
-function esc(v){
+function esc(value){
 
-return String(v ?? "")
+return String(value ?? "")
 .replace(
 /[&<>"']/g,
-m =>
-({
+function(m){
+
+return {
 
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
-"\"":"&quot;",
+'"':"&quot;",
 "'":"&#39;"
 
-}[m])
+}[m];
+
+}
 );
 
 }
 
 
-function ejs(v){
+function ejs(value){
 
-return String(v ?? "")
+return String(value ?? "")
 .replace(
 /\\/g,
 "\\\\"
@@ -1132,7 +1174,6 @@ return String(v ?? "")
 );
 
 }
-
 
 
 /* =====================================================
@@ -1148,7 +1189,6 @@ return String(value || "")
 }
 
 
-
 /* =====================================================
    VALID DRIVER ID
 ===================================================== */
@@ -1162,7 +1202,7 @@ return /^DC\d{1,5}$/.test(id);
 
 
 /* =====================================================
-   PAGE
+   PAGE NAVIGATION
 ===================================================== */
 
 function page(id){
@@ -1174,8 +1214,11 @@ return;
 document
 .querySelectorAll(".page")
 .forEach(
-x =>
-x.classList.remove("active")
+function(x){
+
+x.classList.remove("active");
+
+}
 );
 
 
@@ -1187,11 +1230,14 @@ $(id)
 document
 .querySelectorAll(".navbtn")
 .forEach(
-x =>
+function(x){
+
 x.classList.toggle(
 "active",
 x.dataset.page === id
-)
+);
+
+}
 );
 
 
@@ -1201,8 +1247,11 @@ map
 ){
 
 setTimeout(
-() =>
-map.invalidateSize(),
+function(){
+
+map.invalidateSize();
+
+},
 150
 );
 
@@ -1214,12 +1263,18 @@ map.invalidateSize(),
 document
 .querySelectorAll(".navbtn")
 .forEach(
-b =>
-b.onclick =
-() =>
+function(button){
+
+button.onclick =
+function(){
+
 page(
-b.dataset.page
-)
+button.dataset.page
+);
+
+};
+
+}
 );
 
 
@@ -1292,7 +1347,7 @@ iconAnchor:
 
 
 /* =====================================================
-   STOP SELECTED LIVE LISTENER
+   STOP LIVE LISTENER
 ===================================================== */
 
 function stopSelectedLiveListener(){
@@ -1363,18 +1418,21 @@ alt="Driver Profile Photo">
 
 }
 
+
+if(className === "popupPhoto"){
+
 return `
-<div
-class="${
-className === "popupPhoto"
-?
-"popupPhotoPlaceholder"
-:
-"profilePhotoPlaceholder"
-}">
-
+<div class="popupPhotoPlaceholder">
 👤
+</div>
+`;
 
+}
+
+
+return `
+<div class="profilePhotoPlaceholder">
+👤
 </div>
 `;
 
@@ -1383,7 +1441,61 @@ className === "popupPhoto"
 
 
 /* =====================================================
-   SHOW SELECTED DRIVER MARKER
+   CAR PHOTO HTML
+===================================================== */
+
+function carPhotoHTML(
+photo,
+mode
+){
+
+if(photo){
+
+if(mode === "popup"){
+
+return `
+<img
+class="popupCarPhoto"
+src="${esc(photo)}"
+alt="Car Photo">
+`;
+
+}
+
+
+return `
+<img
+class="detailCarPhoto"
+src="${esc(photo)}"
+alt="Car Photo">
+`;
+
+}
+
+
+if(mode === "popup"){
+
+return `
+<div class="popupCarPlaceholder">
+🚗
+</div>
+`;
+
+}
+
+
+return `
+<div class="detailCarPlaceholder">
+🚗
+</div>
+`;
+
+}
+
+
+
+/* =====================================================
+   RENDER SELECTED DRIVER
 ===================================================== */
 
 function renderSelectedMarker(){
@@ -1435,6 +1547,13 @@ d.profilePhoto,
 );
 
 
+const carPhoto =
+carPhotoHTML(
+d.carPhoto,
+"popup"
+);
+
+
 selectedMarker.bindPopup(
 
 `
@@ -1442,7 +1561,7 @@ selectedMarker.bindPopup(
 <div
 style="
 text-align:center;
-min-width:210px;
+min-width:225px;
 ">
 
 ${popupPhoto}
@@ -1478,18 +1597,23 @@ ${esc(d.name || "-")}
 <br>
 
 
-<b>Phone:</b>
-${esc(d.phone || "-")}
-
-
-<br>
-
-
-<b>Vehicle:</b>
+<b>Vehicle Number:</b>
 ${esc(d.vehicle || "-")}
 
 
 <br>
+
+
+<b>Vehicle Type:</b>
+<span class="vehicleTypeBadge">
+${esc(d.vehicleType || "Not Set")}
+</span>
+
+
+<br>
+
+
+${carPhoto}
 
 
 <b>GPS:</b>
@@ -1565,7 +1689,7 @@ return;
 
 try{
 
-const s =
+const snapshot =
 await db
 .collection("drivers")
 .where(
@@ -1577,15 +1701,14 @@ true
 
 
 $("online").textContent =
-s.size;
-
+snapshot.size;
 
 }
-catch(e){
+catch(error){
 
 console.error(
 "Online count error:",
-e
+error
 );
 
 $("online").textContent =
@@ -1598,7 +1721,7 @@ $("online").textContent =
 
 
 /* =====================================================
-   SEARCH
+   DRIVER SEARCH
 ===================================================== */
 
 let searchTimer =
@@ -1618,21 +1741,23 @@ searchTimer
 
 
 const raw =
-this.value
-.trim();
+this.value.trim();
 
 
 if(!raw){
 
 $("driverList").innerHTML =
-"<div class='empty'>Driver ID डालकर Search करें</div>";
+
+"<div class='empty'>" +
+"Driver ID डालकर Search करें" +
+"</div>";
 
 return;
 
 }
 
 
-const value =
+const id =
 normalizeDriverId(
 raw
 );
@@ -1640,8 +1765,11 @@ raw
 
 searchTimer =
 setTimeout(
-() =>
-searchDriverById(value),
+function(){
+
+searchDriverById(id);
+
+},
 450
 );
 
@@ -1650,7 +1778,7 @@ searchDriverById(value),
 
 
 /* =====================================================
-   SEARCH DRIVER
+   SEARCH DRIVER BY ID
 ===================================================== */
 
 async function searchDriverById(
@@ -1687,12 +1815,15 @@ return;
 
 
 $("driverList").innerHTML =
-"<div class='empty'>Searching...</div>";
+
+"<div class='empty'>" +
+"Searching..." +
+"</div>";
 
 
 try{
 
-const s =
+const snapshot =
 await db
 .collection("drivers")
 .where(
@@ -1704,7 +1835,7 @@ id
 .get();
 
 
-if(s.empty){
+if(snapshot.empty){
 
 $("driverList").innerHTML =
 
@@ -1722,7 +1853,7 @@ return;
 
 
 const doc =
-s.docs[0];
+snapshot.docs[0];
 
 
 const d =
@@ -1752,6 +1883,14 @@ vehicle:
 d.vehicle ||
 "",
 
+vehicleType:
+d.vehicleType ||
+"",
+
+carPhoto:
+d.carPhoto ||
+"",
+
 lat:
 Number(d.lat),
 
@@ -1765,9 +1904,7 @@ duty:
 d.duty === true,
 
 rating:
-Number(
-d.rating || 0
-),
+Number(d.rating || 0),
 
 profilePhoto:
 d.profilePhoto ||
@@ -1784,8 +1921,7 @@ $("driverList").innerHTML =
 class="driver"
 onclick="
 selectDriver('${ejs(driver.id)}')
-"
->
+">
 
 
 <div class="avatar">
@@ -1824,7 +1960,11 @@ ${esc(driver.vehicle || "-")}
 
 •
 
-⭐ ${driver.rating || "Not Rated"}
+<span class="vehicleTypeBadge">
+
+${esc(driver.vehicleType || "Not Set")}
+
+</span>
 
 </div>
 
@@ -1862,11 +2002,11 @@ driver;
 
 
 }
-catch(e){
+catch(error){
 
 console.error(
 "Driver search error:",
-e
+error
 );
 
 
@@ -1942,15 +2082,12 @@ $("selectedInfo").style.display =
 
 
 $("selectedInfo").textContent =
+
 "Selected Driver: " +
 selectedDriverData.id +
 " • " +
 selectedDriverData.name;
 
-
-/*
- Show last Firestore location.
-*/
 
 renderSelectedMarker();
 
@@ -1980,7 +2117,7 @@ true;
 
 
 /*
- ONLY selected driver's RTDB path.
+ ONLY selected driver RTDB.
 */
 
 selectedLiveRef =
@@ -1991,7 +2128,7 @@ id
 
 
 selectedLiveCallback =
-snapshot => {
+function(snapshot){
 
 if(!radarAuthorized)
 return;
@@ -2002,10 +2139,6 @@ snapshot.val();
 
 
 if(!live){
-
-showNotice(
-"इस Driver का live GPS अभी available नहीं है."
-);
 
 return;
 
@@ -2036,22 +2169,10 @@ lat;
 selectedDriverData.lng =
 lng;
 
+
 selectedDriverData.online =
 live.online === true;
 
-
-/*
- Duty remains internal only.
- It is NOT displayed in Radar.
-*/
-
-selectedDriverData.duty =
-live.duty === true;
-
-
-/*
- Move only marker.
-*/
 
 if(selectedMarker){
 
@@ -2072,10 +2193,6 @@ renderSelectedMarker();
 
 }
 
-
-/*
- Map centers only once.
-*/
 
 if(!mapCenteredOnce){
 
@@ -2128,6 +2245,20 @@ if(!d)
 return;
 
 
+const profile =
+profilePhotoHTML(
+d.profilePhoto,
+"profilePhoto"
+);
+
+
+const car =
+carPhotoHTML(
+d.carPhoto,
+"details"
+);
+
+
 $("modalBody").innerHTML =
 
 `
@@ -2137,10 +2268,7 @@ $("modalBody").innerHTML =
 </h2>
 
 
-${profilePhotoHTML(
-d.profilePhoto,
-"profilePhoto"
-)}
+${profile}
 
 
 <div class="row">
@@ -2172,11 +2300,11 @@ ${esc(d.name || "-")}
 <div class="row">
 
 <span>
-Phone
+Vehicle Number
 </span>
 
 <b>
-${esc(d.phone || "-")}
+${esc(d.vehicle || "-")}
 </b>
 
 </div>
@@ -2185,14 +2313,24 @@ ${esc(d.phone || "-")}
 <div class="row">
 
 <span>
-Vehicle
+Vehicle Type
 </span>
 
 <b>
-${esc(d.vehicle || "-")}
+<span class="vehicleTypeBadge">
+${esc(d.vehicleType || "Not Set")}
+</span>
 </b>
 
 </div>
+
+
+<h3>
+🚗 Car Photo
+</h3>
+
+
+${car}
 
 
 <div class="row">
@@ -2310,7 +2448,7 @@ Number(d.lat),
 Number(d.lng)
 )
 .then(
-area => {
+function(area){
 
 if(
 $("detailArea") &&
@@ -2331,7 +2469,7 @@ area;
 
 
 /* =====================================================
-   REVERSE GEOCODE
+   REVERSE GEOCODING
 ===================================================== */
 
 async function loadArea(
@@ -2362,7 +2500,7 @@ encodeURIComponent(lng) +
 "&addressdetails=1";
 
 
-const res =
+const response =
 await fetch(
 url,
 {
@@ -2374,27 +2512,27 @@ headers:{
 );
 
 
-if(!res.ok)
+if(!response.ok)
 return null;
 
 
 const data =
-await res.json();
+await response.json();
 
 
-const a =
+const address =
 data.address ||
 {};
 
 
 const area =
-a.suburb ||
-a.neighbourhood ||
-a.village ||
-a.town ||
-a.city_district ||
-a.city ||
-a.county ||
+address.suburb ||
+address.neighbourhood ||
+address.village ||
+address.town ||
+address.city_district ||
+address.city ||
+address.county ||
 "Area not available";
 
 
@@ -2412,11 +2550,11 @@ esc(area);
 return area;
 
 }
-catch(e){
+catch(error){
 
 console.error(
 "Area lookup error:",
-e
+error
 );
 
 return null;
@@ -2470,7 +2608,14 @@ Call करें।
 
 
 <a
-class="supportNumber"
+class="action"
+style="
+display:block;
+text-align:center;
+text-decoration:none;
+font-size:20px;
+margin:12px 0;
+"
 href="tel:${SUPPORT_PHONE}"
 >
 
@@ -2482,8 +2627,7 @@ href="tel:${SUPPORT_PHONE}"
 <button
 class="action"
 style="width:100%"
-onclick="closeModal()"
->
+onclick="closeModal()">
 
 Close
 
@@ -2501,7 +2645,7 @@ $("modal")
 
 
 /* =====================================================
-   TELEGRAM USER CHECK
+   TELEGRAM CHECK
 ===================================================== */
 
 function setupTG(){
@@ -2517,12 +2661,12 @@ return false;
 }
 
 
-const u =
+const user =
 tg.initDataUnsafe &&
 tg.initDataUnsafe.user;
 
 
-if(!u){
+if(!user){
 
 denyRadarAccess(
 "Telegram account नहीं मिला. Direct URL access allowed नहीं है."
@@ -2534,13 +2678,14 @@ return false;
 
 
 myTelegramId =
-String(u.id);
+String(user.id);
 
 
 $("tgName").textContent =
+
 [
-u.first_name,
-u.last_name
+user.first_name,
+user.last_name
 ]
 .filter(Boolean)
 .join(" ")
@@ -2559,7 +2704,7 @@ return true;
 
 
 /* =====================================================
-   ANONYMOUS AUTH
+   FIREBASE ANONYMOUS AUTH
 ===================================================== */
 
 async function authAnon(){
@@ -2576,10 +2721,11 @@ $("firebaseState").textContent =
 return true;
 
 }
-catch(e){
+catch(error){
 
 console.error(
-e
+"Firebase Auth Error:",
+error
 );
 
 
@@ -2596,7 +2742,7 @@ return false;
 
 
 /* =====================================================
-   REGISTERED DRIVER CHECK
+   CHECK REGISTERED DRIVER
 ===================================================== */
 
 async function checkRegisteredDriver(){
@@ -2610,7 +2756,7 @@ return false;
 
 try{
 
-const s =
+const snapshot =
 await db
 .collection("drivers")
 .where(
@@ -2622,7 +2768,7 @@ myTelegramId
 .get();
 
 
-if(s.empty){
+if(snapshot.empty){
 
 return false;
 
@@ -2630,7 +2776,7 @@ return false;
 
 
 const doc =
-s.docs[0];
+snapshot.docs[0];
 
 
 const d =
@@ -2660,6 +2806,14 @@ vehicle:
 d.vehicle ||
 "",
 
+vehicleType:
+d.vehicleType ||
+"",
+
+carPhoto:
+d.carPhoto ||
+"",
+
 lat:
 Number(d.lat),
 
@@ -2673,9 +2827,7 @@ duty:
 d.duty === true,
 
 rating:
-Number(
-d.rating || 0
-),
+Number(d.rating || 0),
 
 profilePhoto:
 d.profilePhoto ||
@@ -2703,11 +2855,11 @@ myDuty
 return true;
 
 }
-catch(e){
+catch(error){
 
 console.error(
 "Registered driver check error:",
-e
+error
 );
 
 return false;
@@ -2741,9 +2893,9 @@ try{
 map.remove();
 
 }
-catch(e){
+catch(error){
 
-console.log(e);
+console.log(error);
 
 }
 
@@ -2752,28 +2904,12 @@ map = null;
 }
 
 
-const app =
-$("radarApp");
-
-
-if(app){
-
-app.style.display =
+$("radarApp").style.display =
 "none";
 
-}
 
-
-const lock =
-$("accessLock");
-
-
-if(lock){
-
-lock.style.display =
+$("accessLock").style.display =
 "flex";
-
-}
 
 
 $("accessIcon").textContent =
@@ -2809,7 +2945,6 @@ $("accessLock").style.display =
 $("radarApp").style.display =
 "block";
 
-
 }
 
 
@@ -2827,7 +2962,7 @@ return;
 if(!myDriver){
 
 showNotice(
-"Driver पहले Admin Panel में register/link होना चाहिए."
+"Driver अभी Registered नहीं है."
 );
 
 return;
@@ -2850,10 +2985,13 @@ navigator.geolocation.getCurrentPosition(
 
 updateMyLocation,
 
-() =>
+function(){
+
 showNotice(
 "Location permission allow करें."
-),
+);
+
+},
 
 {
 enableHighAccuracy:true,
@@ -2871,7 +3009,7 @@ maximumAge:0
    UPDATE MY LOCATION
 ===================================================== */
 
-function updateMyLocation(p){
+function updateMyLocation(position){
 
 if(
 !radarAuthorized ||
@@ -2882,13 +3020,13 @@ return;
 
 const lat =
 Number(
-p.coords.latitude
+position.coords.latitude
 );
 
 
 const lng =
 Number(
-p.coords.longitude
+position.coords.longitude
 );
 
 
@@ -2999,7 +3137,7 @@ console.error
 
 
 /* =====================================================
-   WRITE LIVE RTDB GPS
+   WRITE LIVE LOCATION
 ===================================================== */
 
 function writeLive(
@@ -3042,11 +3180,14 @@ firebase.database
 
 })
 .catch(
-e =>
+function(error){
+
 console.error(
 "RTDB GPS write error:",
-e
-)
+error
+);
+
+}
 );
 
 }
@@ -3054,7 +3195,7 @@ e
 
 
 /* =====================================================
-   AUTO GPS
+   START GPS
 ===================================================== */
 
 function startGPS(){
@@ -3076,11 +3217,14 @@ navigator.geolocation.watchPosition(
 
 updateMyLocation,
 
-e =>
+function(error){
+
 console.error(
 "GPS watch error:",
-e
-),
+error
+);
+
+},
 
 {
 enableHighAccuracy:true,
@@ -3090,9 +3234,13 @@ timeout:15000
 
 );
 
-
 }
 
+
+
+/* =====================================================
+   STOP GPS
+===================================================== */
 
 function stopGPS(){
 
@@ -3204,9 +3352,9 @@ myDuty
 );
 
 }
-catch(e){
+catch(error){
 
-console.error(e);
+console.error(error);
 
 
 showNotice(
@@ -3220,7 +3368,7 @@ showNotice(
 
 
 /* =====================================================
-   AUTO GPS TOGGLE
+   AUTO GPS
 ===================================================== */
 
 function toggleAutoGPS(){
@@ -3241,10 +3389,16 @@ autoGPS
 );
 
 
-if(autoGPS)
+if(autoGPS){
+
 startGPS();
-else
+
+}
+else{
+
 stopGPS();
+
+}
 
 
 showNotice(
@@ -3286,20 +3440,19 @@ showNotice(
 
 
 /* =====================================================
-   SECURE START APP
+   SECURE START
 ===================================================== */
 
 async function startApp(){
 
 /*
- IMPORTANT:
-
- Map is NOT initialized here
- until registration is confirmed.
+ Map is NOT initialized before
+ Telegram + Driver registration
+ verification.
 */
 
 
-/* STEP 1: Telegram check */
+/* 1. Telegram */
 
 const telegramOK =
 setupTG();
@@ -3312,7 +3465,7 @@ return;
 }
 
 
-/* STEP 2: Firebase authentication */
+/* 2. Firebase Auth */
 
 const authOK =
 await authAnon();
@@ -3329,7 +3482,7 @@ return;
 }
 
 
-/* STEP 3: Registered driver check */
+/* 3. Registered Driver */
 
 const registered =
 await checkRegisteredDriver();
@@ -3346,35 +3499,30 @@ return;
 }
 
 
-/*
- STEP 4:
-
- Only registered driver reaches here.
-
- Now the actual Radar App
- and Map are opened.
-*/
+/* 4. ACCESS GRANTED */
 
 allowRadarAccess();
 
 
+/* 5. NOW initialize Map */
+
 initMap();
 
 
-/* Online count */
+/* 6. Online count */
 
 await loadOnlineCount();
 
 
-/*
- Current registered driver.
-*/
+/* 7. Current driver */
 
 window.searchedDriver =
 {
 ...myDriver
 };
 
+
+/* 8. Own driver selected */
 
 $("search").value =
 myDriver.id;
@@ -3385,14 +3533,9 @@ myDriver.id
 );
 
 
-/*
- Own GPS starts only
- for registered driver.
-*/
+/* 9. GPS */
 
-if(
-autoGPS
-){
+if(autoGPS){
 
 startGPS();
 
@@ -3403,7 +3546,7 @@ startGPS();
 
 
 /* =====================================================
-   START APP
+   START
 ===================================================== */
 
 startApp();
@@ -3415,7 +3558,7 @@ startApp();
 ===================================================== */
 
 setTimeout(
-() => {
+function(){
 
 if(
 radarAuthorized &&

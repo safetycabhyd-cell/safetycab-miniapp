@@ -180,7 +180,7 @@ color:#b91c1c
 .action{
 border:0;
 border-radius:10px;
-padding:9px 12px;
+padding:10px 12px;
 font-weight:700;
 background:#0878c9;
 color:#fff;
@@ -388,61 +388,102 @@ font-size:60px
 
 /* ================= BOOKING ================= */
 
+.bookingSheet{
+padding:14px 14px 18px
+}
+
+.bookingTitle{
+font-size:21px;
+font-weight:800;
+margin:2px 0 10px
+}
+
+.bookingDriverBox{
+background:#f4f7fb;
+border-radius:11px;
+padding:9px 10px;
+font-size:12px;
+line-height:1.4;
+margin-bottom:8px
+}
+
+.bookingLabel{
+font-size:12px;
+font-weight:700;
+display:block;
+margin-top:8px
+}
+
 .bookingInput{
 width:100%;
-padding:13px;
+padding:10px 11px;
 border:1px solid #ccd6e2;
-border-radius:11px;
-margin-top:7px;
+border-radius:10px;
+margin-top:5px;
 outline:none;
-font-size:14px
+font-size:13px;
+height:42px
 }
 
 .bookingInput:focus{
 border-color:#087fc3
 }
 
-.bookingLabel{
-font-size:13px;
-font-weight:700;
-display:block;
-margin-top:13px
+.bookingButtons{
+display:grid;
+grid-template-columns:1fr 1.35fr;
+gap:8px;
+margin-top:9px
+}
+
+.bookingButtons .action{
+width:100%;
+padding:10px 7px;
+font-size:12px
 }
 
 .routeInfo{
 background:#e9f4ff;
-border-radius:13px;
-padding:12px;
-margin-top:12px;
-font-size:13px;
-line-height:1.6
+border-radius:11px;
+padding:9px 10px;
+margin-top:9px;
+font-size:12px;
+line-height:1.45
 }
 
 .routePoint{
 display:flex;
 align-items:flex-start;
-gap:8px;
-margin:5px 0
+gap:6px;
+margin:4px 0
 }
 
 .routeDot{
-font-size:18px;
-line-height:18px
+font-size:16px;
+line-height:17px
 }
 
 .routeMap{
 width:100%;
-height:330px;
-border-radius:14px;
-margin-top:12px;
+height:230px;
+border-radius:11px;
+margin-top:9px;
 overflow:hidden;
 border:1px solid #d8e1ea
 }
 
 .routeLoading{
 text-align:center;
-padding:20px;
-color:#667085
+padding:15px 8px;
+color:#667085;
+font-size:13px
+}
+
+.routeError{
+text-align:center;
+padding:13px 8px;
+color:#b91c1c;
+font-size:13px
 }
 
 
@@ -499,8 +540,9 @@ background:#fff;
 border-radius:18px 18px 0 0;
 width:100%;
 padding:18px;
-max-height:88vh;
-overflow:auto
+max-height:92vh;
+overflow:auto;
+-webkit-overflow-scrolling:touch
 }
 
 .close{
@@ -508,7 +550,9 @@ float:right;
 border:0;
 border-radius:50%;
 width:32px;
-height:32px
+height:32px;
+background:#eef2f6;
+font-size:17px
 }
 
 
@@ -563,6 +607,19 @@ display:none
 font-size:23px
 }
 
+.sheet{
+max-height:94vh;
+padding:14px
+}
+
+.bookingSheet{
+padding:12px 10px 16px
+}
+
+.routeMap{
+height:215px
+}
+
 }
 
 </style>
@@ -571,6 +628,8 @@ font-size:23px
 
 <body>
 
+
+<!-- ================= ACCESS LOCK ================= -->
 
 <div id="accessLock">
 
@@ -592,6 +651,8 @@ Please wait...
 
 </div>
 
+
+<!-- ================= RADAR APP ================= -->
 
 <div id="radarApp">
 
@@ -878,7 +939,7 @@ Version
 </span>
 
 <strong>
-Safety Cab Radar 4.0
+Safety Cab Radar 4.1
 </strong>
 
 </div>
@@ -888,7 +949,6 @@ Safety Cab Radar 4.0
 
 
 <div class="card">
-
 
 <button
 class="action secondary"
@@ -909,7 +969,6 @@ onclick="closeMiniApp()">
 
 </button>
 
-
 </div>
 
 </section>
@@ -919,7 +978,6 @@ onclick="closeMiniApp()">
 <!-- ================= BOTTOM NAV ================= -->
 
 <nav class="bottom">
-
 
 <button
 class="navbtn active"
@@ -972,7 +1030,6 @@ Settings
 
 </button>
 
-
 </nav>
 
 
@@ -984,9 +1041,7 @@ id="modal"
 class="modal"
 onclick="if(event.target===this)closeModal()">
 
-
 <div class="sheet">
-
 
 <button
 class="close"
@@ -999,14 +1054,12 @@ onclick="closeModal()">
 
 <div id="modalBody"></div>
 
-
 </div>
 
 </div>
 
 
 </div>
-
 
 
 <script
@@ -1807,7 +1860,7 @@ function(){
 searchDriverById(id);
 
 },
-450
+300
 );
 
 };
@@ -2127,6 +2180,8 @@ selectedDriverData.name;
 renderSelectedMarker();
 
 
+/* तुरंत latest Firestore location पर center */
+
 if(
 Number.isFinite(
 selectedDriverData.lat
@@ -2141,7 +2196,10 @@ map.setView(
 selectedDriverData.lat,
 selectedDriverData.lng
 ],
-15
+16,
+{
+animate:false
+}
 );
 
 
@@ -2229,11 +2287,20 @@ renderSelectedMarker();
 }
 
 
+/*
+ First live GPS location:
+ map goes directly to driver.
+ After that it does NOT keep moving the map.
+*/
+
 if(!mapCenteredOnce){
 
 map.setView(
 [lat,lng],
-15
+16,
+{
+animate:false
+}
 );
 
 mapCenteredOnce =
@@ -2257,6 +2324,38 @@ selectedLiveCallback
 
 
 page("home");
+
+
+setTimeout(
+function(){
+
+if(map){
+
+map.invalidateSize();
+
+if(
+Number.isFinite(selectedDriverData.lat) &&
+Number.isFinite(selectedDriverData.lng)
+){
+
+map.setView(
+[
+selectedDriverData.lat,
+selectedDriverData.lng
+],
+16,
+{
+animate:false
+}
+);
+
+}
+
+}
+
+},
+250
+);
 
 }
 
@@ -2541,6 +2640,18 @@ return null;
 
 try{
 
+const controller =
+new AbortController();
+
+const timer =
+setTimeout(
+function(){
+controller.abort();
+},
+5000
+);
+
+
 const url =
 "https://nominatim.openstreetmap.org/reverse" +
 "?format=jsonv2" +
@@ -2559,9 +2670,14 @@ url,
 headers:{
 "Accept":
 "application/json"
-}
+},
+signal:
+controller.signal
 }
 );
+
+
+clearTimeout(timer);
 
 
 if(!response.ok)
@@ -2649,28 +2765,23 @@ $("modalBody").innerHTML =
 
 `
 
-<h2>
+<div class="bookingSheet">
+
+<div class="bookingTitle">
 🚕 Book ${esc(d.id)}
-</h2>
+</div>
 
 
-<div
-class="locationBox"
->
+<div class="bookingDriverBox">
 
-<b>
-Driver
-</b>
-
-<br>
-
+<b>Driver:</b>
 ${esc(d.name || "-")}
 
 <br>
 
 ${esc(d.vehicle || "-")}
-
-•
+&nbsp;•
+&nbsp;
 
 <span class="vehicleTypeBadge">
 ${esc(d.vehicleType || "Not Set")}
@@ -2703,40 +2814,37 @@ placeholder="Destination enter करें"
 autocomplete="off">
 
 
+<div class="bookingButtons">
+
 <button
 class="action secondary"
-style="
-width:100%;
-margin-top:12px;
-"
 onclick="useMyCurrentLocationForPickup()">
 
-📍 Use My Current Location
+📍 Current Location
 
 </button>
 
 
 <button
 class="action"
-style="
-width:100%;
-margin-top:10px;
-"
 onclick="showBookingRoute()">
 
-🗺️ Show Route on Map
+🗺️ Show Route
 
 </button>
+
+</div>
 
 
 <div
 id="routeResult"
-style="display:none"
->
+style="display:none">
+</div>
 
 </div>
 
 `;
+
 
 $("modal")
 .classList
@@ -2831,11 +2939,64 @@ showNotice(
 
 {
 enableHighAccuracy:true,
-timeout:15000,
+timeout:10000,
 maximumAge:0
 }
 
 );
+
+}
+
+
+/* =====================================================
+   COMMON PLACE FAST MATCH
+===================================================== */
+
+function getKnownPlace(text){
+
+const q =
+String(text || "")
+.trim()
+.toLowerCase();
+
+
+if(
+!q
+)
+return null;
+
+
+/*
+ Rajiv Gandhi International Airport,
+ Shamshabad Airport,
+ Airport Shamshabad
+*/
+
+if(
+q.includes("airport") &&
+(
+q.includes("shamshabad") ||
+q.includes("rajiv") ||
+q.includes("rgia") ||
+q === "airport"
+)
+){
+
+return {
+
+lat:17.2402636,
+
+lng:78.4293851,
+
+display:
+"Rajiv Gandhi International Airport, Shamshabad, Hyderabad"
+
+};
+
+}
+
+
+return null;
 
 }
 
@@ -2856,12 +3017,38 @@ if(!q)
 return null;
 
 
+/* Fast known-location check */
+
+const known =
+getKnownPlace(q);
+
+
+if(known){
+
+return known;
+
+}
+
+
 try{
+
+const controller =
+new AbortController();
+
+const timer =
+setTimeout(
+function(){
+controller.abort();
+},
+7000
+);
+
 
 const url =
 "https://nominatim.openstreetmap.org/search" +
 "?format=jsonv2" +
 "&limit=1" +
+"&countrycodes=in" +
 "&q=" +
 encodeURIComponent(q);
 
@@ -2873,9 +3060,14 @@ url,
 headers:{
 "Accept":
 "application/json"
-}
+},
+signal:
+controller.signal
 }
 );
+
+
+clearTimeout(timer);
 
 
 if(!response.ok)
@@ -2935,6 +3127,18 @@ lng
 
 try{
 
+const controller =
+new AbortController();
+
+const timer =
+setTimeout(
+function(){
+controller.abort();
+},
+5000
+);
+
+
 const url =
 "https://nominatim.openstreetmap.org/reverse" +
 "?format=jsonv2" +
@@ -2953,9 +3157,14 @@ url,
 headers:{
 "Accept":
 "application/json"
-}
+},
+signal:
+controller.signal
 }
 );
+
+
+clearTimeout(timer);
 
 
 if(!response.ok)
@@ -3049,7 +3258,7 @@ $("routeResult").innerHTML =
 
 `
 <div class="routeLoading">
-⏳ Locations और road route खोज रहे हैं...
+⏳ Route तैयार हो रहा है...
 </div>
 `;
 
@@ -3078,7 +3287,7 @@ if(!driverCoords){
 $("routeResult").innerHTML =
 
 `
-<div class="empty">
+<div class="routeError">
 
 Driver की current GPS location उपलब्ध नहीं है.
 
@@ -3112,7 +3321,7 @@ if(!pickupCoords){
 $("routeResult").innerHTML =
 
 `
-<div class="empty">
+<div class="routeError">
 
 Pickup Location नहीं मिली.
 
@@ -3141,7 +3350,7 @@ if(!destinationCoords){
 $("routeResult").innerHTML =
 
 `
-<div class="empty">
+<div class="routeError">
 
 Destination नहीं मिला.
 
@@ -3159,6 +3368,15 @@ return;
 
 /* ROAD ROUTE */
 
+$("routeResult").innerHTML =
+
+`
+<div class="routeLoading">
+⏳ Road route calculate हो रहा है...
+</div>
+`;
+
+
 const route =
 await getRoadRoute(
 driverCoords,
@@ -3172,13 +3390,13 @@ if(!route){
 $("routeResult").innerHTML =
 
 `
-<div class="empty">
+<div class="routeError">
 
 Road route अभी नहीं मिल पाया.
 
 <br>
 
-कृपया दोबारा कोशिश करें.
+कृपया थोड़ी देर बाद दोबारा कोशिश करें.
 
 </div>
 `;
@@ -3196,8 +3414,11 @@ const km =
 
 
 const minutes =
+Math.max(
+1,
 Math.round(
 route.duration / 60
+)
 );
 
 
@@ -3273,7 +3494,7 @@ destinationText
 </div>
 
 
-<hr>
+<hr style="margin:7px 0">
 
 
 <b>
@@ -3283,11 +3504,11 @@ destinationText
 ${km} km
 
 
-<br>
+&nbsp;&nbsp;
 
 
 <b>
-⏱️ Estimated Time:
+⏱️
 </b>
 
 ${minutes} min
@@ -3305,7 +3526,7 @@ class="routeMap">
 class="action"
 style="
 width:100%;
-margin-top:10px;
+margin-top:8px;
 background:#16a34a;
 "
 onclick="confirmBookingRoute()">
@@ -3360,6 +3581,18 @@ p.lat
 .join(";");
 
 
+const controller =
+new AbortController();
+
+const timer =
+setTimeout(
+function(){
+controller.abort();
+},
+10000
+);
+
+
 const url =
 "https://router.project-osrm.org/route/v1/driving/" +
 coordinates +
@@ -3368,8 +3601,15 @@ coordinates +
 
 const response =
 await fetch(
-url
+url,
+{
+signal:
+controller.signal
+}
 );
+
+
+clearTimeout(timer);
 
 
 if(!response.ok)
@@ -3445,7 +3685,10 @@ null;
 routeMap =
 L
 .map(
-"routeMap"
+"routeMap",
+{
+zoomControl:true
+}
 );
 
 
@@ -3482,7 +3725,7 @@ L
 .polyline(
 coordinates,
 {
-weight:6
+weight:5
 }
 )
 .addTo(routeMap);
@@ -3505,14 +3748,14 @@ className:"",
 
 html:
 `<div style="
-font-size:25px;
+font-size:24px;
 ">🚕</div>`,
 
 iconSize:
-[40,40],
+[38,38],
 
 iconAnchor:
-[20,20]
+[19,19]
 
 })
 }
@@ -3560,7 +3803,7 @@ destination.lng
 routeMap.fitBounds(
 routeLayer.getBounds(),
 {
-padding:[25,25]
+padding:[20,20]
 }
 );
 
@@ -3568,7 +3811,11 @@ padding:[25,25]
 setTimeout(
 function(){
 
+if(routeMap){
+
 routeMap.invalidateSize();
+
+}
 
 },
 100
@@ -3628,6 +3875,28 @@ showNotice(
 );
 
 return;
+
+}
+
+
+/* Prevent double click */
+
+const button =
+event &&
+event.target
+?
+event.target
+:
+null;
+
+
+if(button){
+
+button.disabled =
+true;
+
+button.textContent =
+"Saving...";
 
 }
 
@@ -3695,15 +3964,15 @@ $("modalBody").innerHTML =
 `
 
 <div
-style="text-align:center;padding:15px 5px"
+style="text-align:center;padding:12px 4px"
 >
 
-<div style="font-size:50px">
+<div style="font-size:45px">
 ✅
 </div>
 
-<h2>
-Booking Request Sent
+<h2 style="margin:8px 0">
+Booking Saved
 </h2>
 
 
@@ -3721,7 +3990,8 @@ ${esc(bookingId)}
 
 <br>
 
-${esc(d.id)} •
+${esc(d.id)}
+•
 ${esc(d.name || "-")}
 
 <br><br>
@@ -3745,7 +4015,10 @@ ${esc(destinationText)}
 
 <button
 class="action"
-style="width:100%;margin-top:14px"
+style="
+width:100%;
+margin-top:12px;
+"
 onclick="closeModal()">
 
 Close
@@ -3758,7 +4031,7 @@ Close
 
 
 showNotice(
-"Booking request Firebase में save हो गई."
+"Booking Firebase में save हो गई."
 );
 
 }
@@ -4307,7 +4580,10 @@ if(!mapCenteredOnce){
 
 map.setView(
 [lat,lng],
-15
+16,
+{
+animate:false
+}
 );
 
 mapCenteredOnce =

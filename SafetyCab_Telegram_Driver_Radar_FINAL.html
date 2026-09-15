@@ -54,7 +54,11 @@ function showDriverResult(d){
   if(!d){$('driverResult').innerHTML='';return}
   let profile=d.profilePhoto?`<img class="photo" style="max-height:180px" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:'';
   let car=d.carPhoto?`<img class="car-photo-small" style="height:110px;object-fit:cover" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:'';
-  $('driverResult').innerHTML=`<div class="booking-card" style="margin-top:10px"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">${d.profilePhoto?`<img src="${esc(d.profilePhoto)}" alt="">`:'🚕'}</div><div style="flex:1"><b>${esc(d.id)} • ${esc(d.name||d.id)}</b><div class="small">${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')} • ⭐ ${d.rating||'Not Rated'}</div></div><span class="badge ${d.online?'bgreen':'bred'}">${d.online?'ONLINE':'OFFLINE'}</span></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openDriver('${js(d.id)}')">📋 Details</button></div><button class="action" style="width:100%;margin-top:8px" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;
+  let existing=getBookingForDriver(d.id);
+  let bookingButton=existing
+    ? `<button class="action secondary" style="width:100%;margin-top:8px" onclick="showSavedBooking('${js(existing.bookingId)}')">📋 View Booking</button>`
+    : '';
+  $('driverResult').innerHTML=`<div class="booking-card" style="margin-top:10px"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">${d.profilePhoto?`<img src="${esc(d.profilePhoto)}" alt="">`:'🚕'}</div><div style="flex:1"><b>${esc(d.id)} • ${esc(d.name||d.id)}</b><div class="small">${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')} • ⭐ ${d.rating||'Not Rated'}</div></div><span class="badge ${d.online?'bgreen':'bred'}">${d.online?'ONLINE':'OFFLINE'}</span></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openDriver('${js(d.id)}')">📋 Details</button></div><button class="action" style="width:100%;margin-top:8px" onclick="openBooking('${js(d.id)}')">🚕 New Booking</button>${bookingButton}</div>`;
 }
 function focusDriver(id){
   let d=drivers.find(x=>x.id===id);

@@ -387,6 +387,99 @@ font-size:60px
 }
 
 
+/* ================= ROUTE ================= */
+
+.routeCard{
+background:#fff;
+border-radius:18px;
+box-shadow:0 2px 10px #0001;
+padding:15px;
+margin-bottom:12px;
+display:none
+}
+
+.routeTitle{
+font-size:20px;
+font-weight:800;
+margin-bottom:12px
+}
+
+.routePoint{
+display:flex;
+align-items:flex-start;
+gap:10px;
+margin-bottom:10px
+}
+
+.routeDot{
+width:18px;
+height:18px;
+min-width:18px;
+border-radius:50%;
+margin-top:3px
+}
+
+.driverDot{
+background:#087fc3
+}
+
+.pickupDot{
+background:#16a34a
+}
+
+.destinationDot{
+background:#dc2626
+}
+
+.routeInput{
+width:100%;
+padding:11px 12px;
+border:1px solid #ccd6e2;
+border-radius:11px;
+font-size:14px;
+outline:none
+}
+
+.routeInput:focus{
+border-color:#087fc3
+}
+
+.routeLabel{
+font-size:11px;
+font-weight:700;
+color:#667085;
+margin-bottom:4px
+}
+
+.routeButtons{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:8px
+}
+
+.routeButtons .action{
+width:100%
+}
+
+.routeSummary{
+margin-top:12px;
+padding:12px;
+background:#e9f4ff;
+border-radius:12px;
+font-size:13px;
+line-height:1.6;
+display:none
+}
+
+.routeLoading{
+text-align:center;
+padding:12px;
+color:#667085;
+display:none
+}
+
+
 /* ================= BOTTOM ================= */
 
 .bottom{
@@ -504,6 +597,10 @@ display:none
 font-size:23px
 }
 
+.routeButtons{
+grid-template-columns:1fr
+}
+
 }
 
 </style>
@@ -612,6 +709,141 @@ Online
 id="selectedInfo"
 class="selectedBox"
 style="display:none">
+</div>
+
+
+<!-- ================= ROUTE CARD ================= -->
+
+<div
+id="routeCard"
+class="routeCard">
+
+<div class="routeTitle">
+🗺️ Route / Trip Preview
+</div>
+
+
+<div class="routePoint">
+
+<div class="routeDot driverDot"></div>
+
+<div style="flex:1">
+
+<div class="routeLabel">
+DRIVER CURRENT LOCATION
+</div>
+
+<div id="driverCurrentText">
+Waiting for live location...
+</div>
+
+</div>
+
+</div>
+
+
+<div class="routePoint">
+
+<div class="routeDot pickupDot"></div>
+
+<div style="flex:1">
+
+<div class="routeLabel">
+PICKUP LOCATION
+</div>
+
+<input
+id="pickupInput"
+class="routeInput"
+placeholder="Enter Pickup Location"
+autocomplete="off">
+
+</div>
+
+</div>
+
+
+<div class="routePoint">
+
+<div class="routeDot destinationDot"></div>
+
+<div style="flex:1">
+
+<div class="routeLabel">
+DESTINATION
+</div>
+
+<input
+id="destinationInput"
+class="routeInput"
+placeholder="Enter Destination"
+autocomplete="off">
+
+</div>
+
+</div>
+
+
+<div
+class="routeButtons">
+
+<button
+class="action secondary"
+onclick="useCurrentPickup()">
+
+📍 Use My Current Location
+
+</button>
+
+
+<button
+class="action"
+onclick="showFullRoute()">
+
+🗺️ Show Full Route
+
+</button>
+
+</div>
+
+
+<div
+class="routeButtons">
+
+<button
+class="action secondary"
+onclick="swapRoutePoints()">
+
+🔄 Swap
+
+</button>
+
+
+<button
+class="action danger"
+onclick="clearRoute()">
+
+✕ Clear Route
+
+</button>
+
+</div>
+
+
+<div
+id="routeLoading"
+class="routeLoading">
+
+Finding locations and calculating road route...
+
+</div>
+
+
+<div
+id="routeSummary"
+class="routeSummary">
+</div>
+
 </div>
 
 
@@ -858,7 +1090,7 @@ Version
 </span>
 
 <strong>
-Safety Cab Radar 3.7
+Safety Cab Radar 3.8
 </strong>
 
 </div>
@@ -1094,6 +1326,23 @@ let selectedMarker = null;
 let mapCenteredOnce = false;
 
 let radarAuthorized = false;
+
+
+/* ================= ROUTE VARIABLES ================= */
+
+let routeLayer = null;
+
+let driverRouteMarker = null;
+
+let pickupRouteMarker = null;
+
+let destinationRouteMarker = null;
+
+let routeDriverPoint = null;
+
+let routePickupPoint = null;
+
+let routeDestinationPoint = null;
 
 
 
@@ -1661,6 +1910,20 @@ View Details
 </button>
 
 
+<button
+class="action secondary"
+style="
+width:100%;
+margin-top:8px;
+"
+onclick="openRouteCard()"
+>
+
+🗺️ Plan Route
+
+</button>
+
+
 </div>
 
 `
@@ -2089,6 +2352,16 @@ selectedDriverData.id +
 selectedDriverData.name;
 
 
+$("routeCard").style.display =
+"block";
+
+
+updateDriverCurrentText();
+
+
+clearRoute();
+
+
 renderSelectedMarker();
 
 
@@ -2194,6 +2467,27 @@ renderSelectedMarker();
 }
 
 
+updateDriverCurrentText();
+
+
+/*
+ If route is already active,
+ update driver first point and
+ redraw route automatically.
+*/
+
+if(routeLayer && routePickupPoint && routeDestinationPoint){
+
+routeDriverPoint =
+[lat,lng];
+
+updateRouteDriverMarker();
+
+redrawExistingRoute();
+
+}
+
+
 if(!mapCenteredOnce){
 
 map.setView(
@@ -2222,6 +2516,1094 @@ selectedLiveCallback
 
 
 page("home");
+
+}
+
+
+
+/* =====================================================
+   DRIVER CURRENT LOCATION TEXT
+===================================================== */
+
+function updateDriverCurrentText(){
+
+if(
+!$("driverCurrentText")
+)
+return;
+
+
+if(
+!selectedDriverData
+){
+
+$("driverCurrentText").textContent =
+"Driver not selected";
+
+return;
+
+}
+
+
+const lat =
+Number(selectedDriverData.lat);
+
+const lng =
+Number(selectedDriverData.lng);
+
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+){
+
+$("driverCurrentText").textContent =
+"Live location not available";
+
+return;
+
+}
+
+
+$("driverCurrentText").textContent =
+
+(selectedDriverData.name || selectedDriverData.id) +
+" • " +
+lat.toFixed(5) +
+", " +
+lng.toFixed(5);
+
+}
+
+
+
+/* =====================================================
+   OPEN ROUTE CARD
+===================================================== */
+
+function openRouteCard(){
+
+if(!radarAuthorized)
+return;
+
+
+if(!selectedDriverData){
+
+showNotice(
+"पहले Driver select करें."
+);
+
+return;
+
+}
+
+
+$("routeCard").style.display =
+"block";
+
+
+page("home");
+
+
+setTimeout(
+function(){
+
+map.invalidateSize();
+
+},
+150
+);
+
+}
+
+
+
+/* =====================================================
+   USE CURRENT USER LOCATION AS PICKUP
+===================================================== */
+
+function useCurrentPickup(){
+
+if(!radarAuthorized)
+return;
+
+
+if(
+!navigator.geolocation
+){
+
+showNotice(
+"GPS supported नहीं है."
+);
+
+return;
+
+}
+
+
+showNotice(
+"Current location मिल रही है..."
+);
+
+
+navigator.geolocation.getCurrentPosition(
+
+async function(position){
+
+const lat =
+Number(position.coords.latitude);
+
+const lng =
+Number(position.coords.longitude);
+
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+){
+
+showNotice(
+"Location नहीं मिली."
+);
+
+return;
+
+}
+
+
+try{
+
+const address =
+await reverseGeocodeFull(
+lat,
+lng
+);
+
+
+$("pickupInput").value =
+address ||
+(
+lat.toFixed(6) +
+", " +
+lng.toFixed(6)
+);
+
+
+window.currentPickupCoords =
+{
+lat:lat,
+lng:lng
+};
+
+
+showNotice(
+"Pickup location set हो गया."
+);
+
+}
+catch(error){
+
+console.error(error);
+
+$("pickupInput").value =
+lat.toFixed(6) +
+", " +
+lng.toFixed(6);
+
+window.currentPickupCoords =
+{
+lat:lat,
+lng:lng
+};
+
+}
+
+},
+
+function(){
+
+showNotice(
+"Location permission allow करें."
+);
+
+},
+
+{
+enableHighAccuracy:true,
+timeout:15000,
+maximumAge:0
+}
+
+);
+
+}
+
+
+
+/* =====================================================
+   REVERSE GEOCODE FULL
+===================================================== */
+
+async function reverseGeocodeFull(
+lat,
+lng
+){
+
+const url =
+"https://nominatim.openstreetmap.org/reverse" +
+"?format=jsonv2" +
+"&lat=" +
+encodeURIComponent(lat) +
+"&lon=" +
+encodeURIComponent(lng) +
+"&zoom=18" +
+"&addressdetails=1";
+
+
+const response =
+await fetch(
+url,
+{
+headers:{
+"Accept":
+"application/json"
+}
+}
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"Reverse geocode failed"
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+return data.display_name ||
+"";
+
+}
+
+
+
+/* =====================================================
+   GEOCODE TEXT LOCATION
+===================================================== */
+
+async function geocodeLocation(
+text
+){
+
+const query =
+String(text || "").trim();
+
+
+if(!query){
+
+throw new Error(
+"Location खाली है"
+);
+
+}
+
+
+const url =
+"https://nominatim.openstreetmap.org/search" +
+"?format=jsonv2" +
+"&q=" +
+encodeURIComponent(query) +
+"&limit=1" +
+"&addressdetails=1";
+
+
+const response =
+await fetch(
+url,
+{
+headers:{
+"Accept":
+"application/json"
+}
+}
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"Location search failed"
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+if(
+!data ||
+!data.length
+){
+
+throw new Error(
+"Location not found"
+);
+
+}
+
+
+return {
+
+lat:
+Number(data[0].lat),
+
+lng:
+Number(data[0].lon),
+
+displayName:
+data[0].display_name ||
+query
+
+};
+
+}
+
+
+
+/* =====================================================
+   GET PICKUP COORDINATES
+===================================================== */
+
+async function getPickupCoordinates(){
+
+const text =
+$("pickupInput").value.trim();
+
+
+if(!text){
+
+throw new Error(
+"Pickup Location डालें"
+);
+
+}
+
+
+if(
+window.currentPickupCoords &&
+window.currentPickupCoords.text === text
+){
+
+return {
+
+lat:
+window.currentPickupCoords.lat,
+
+lng:
+window.currentPickupCoords.lng,
+
+displayName:
+text
+
+};
+
+}
+
+
+const result =
+await geocodeLocation(
+text
+);
+
+
+return result;
+
+}
+
+
+
+/* =====================================================
+   GET DESTINATION COORDINATES
+===================================================== */
+
+async function getDestinationCoordinates(){
+
+const text =
+$("destinationInput").value.trim();
+
+
+if(!text){
+
+throw new Error(
+"Destination डालें"
+);
+
+}
+
+
+return await geocodeLocation(
+text
+);
+
+}
+
+
+
+/* =====================================================
+   SHOW FULL ROUTE
+===================================================== */
+
+async function showFullRoute(){
+
+if(!radarAuthorized)
+return;
+
+
+if(!selectedDriverData){
+
+showNotice(
+"पहले Driver select करें."
+);
+
+return;
+
+}
+
+
+const driverLat =
+Number(selectedDriverData.lat);
+
+const driverLng =
+Number(selectedDriverData.lng);
+
+
+if(
+!Number.isFinite(driverLat) ||
+!Number.isFinite(driverLng)
+){
+
+showNotice(
+"Driver की live location available नहीं है."
+);
+
+return;
+
+}
+
+
+const pickupText =
+$("pickupInput").value.trim();
+
+
+const destinationText =
+$("destinationInput").value.trim();
+
+
+if(!pickupText){
+
+showNotice(
+"Pickup Location डालें."
+);
+
+$("pickupInput").focus();
+
+return;
+
+}
+
+
+if(!destinationText){
+
+showNotice(
+"Destination डालें."
+);
+
+$("destinationInput").focus();
+
+return;
+
+}
+
+
+$("routeLoading").style.display =
+"block";
+
+
+$("routeSummary").style.display =
+"none";
+
+
+try{
+
+let pickup;
+
+if(
+window.currentPickupCoords &&
+window.currentPickupCoords.text === pickupText
+){
+
+pickup = {
+
+lat:
+window.currentPickupCoords.lat,
+
+lng:
+window.currentPickupCoords.lng,
+
+displayName:
+pickupText
+
+};
+
+}
+else{
+
+pickup =
+await getPickupCoordinates();
+
+}
+
+
+const destination =
+await getDestinationCoordinates();
+
+
+routeDriverPoint =
+[
+driverLat,
+driverLng
+];
+
+
+routePickupPoint =
+[
+Number(pickup.lat),
+Number(pickup.lng)
+];
+
+
+routeDestinationPoint =
+[
+Number(destination.lat),
+Number(destination.lng)
+];
+
+
+await drawRoute(
+routeDriverPoint,
+routePickupPoint,
+routeDestinationPoint,
+pickup.displayName || pickupText,
+destination.displayName || destinationText
+);
+
+
+showNotice(
+"Full road route तैयार है."
+);
+
+}
+catch(error){
+
+console.error(
+"Route error:",
+error
+);
+
+
+$("routeSummary").style.display =
+"block";
+
+
+$("routeSummary").innerHTML =
+
+"❌ <b>Route नहीं बन पाया</b><br>" +
+esc(error.message || "Location या route error");
+
+}
+finally{
+
+$("routeLoading").style.display =
+"none";
+
+}
+
+}
+
+
+
+/* =====================================================
+   DRAW ROUTE
+===================================================== */
+
+async function drawRoute(
+driverPoint,
+pickupPoint,
+destinationPoint,
+pickupName,
+destinationName
+){
+
+if(!map)
+return;
+
+
+clearRouteLayersOnly();
+
+
+const coordinates =
+
+driverPoint[1] +
+"," +
+driverPoint[0] +
+";" +
+
+pickupPoint[1] +
+"," +
+pickupPoint[0] +
+";" +
+
+destinationPoint[1] +
+"," +
+destinationPoint[0];
+
+
+/*
+ OSRM road route.
+*/
+
+const url =
+"https://router.project-osrm.org/route/v1/driving/" +
+coordinates +
+"?overview=full&geometries=geojson&steps=false";
+
+
+const response =
+await fetch(url);
+
+
+if(!response.ok){
+
+throw new Error(
+"Road route service unavailable"
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+if(
+data.code !== "Ok" ||
+!data.routes ||
+!data.routes.length
+){
+
+throw new Error(
+"Road route नहीं मिला"
+);
+
+}
+
+
+const route =
+data.routes[0];
+
+
+routeLayer =
+L.geoJSON(
+route.geometry,
+{
+style:{
+weight:6,
+opacity:.85
+}
+}
+)
+.addTo(map);
+
+
+/* Driver marker */
+
+driverRouteMarker =
+L.marker(
+driverPoint,
+{
+icon:
+L.divIcon({
+
+className:"",
+
+html:
+`<div style="
+font-size:25px;
+">🚕</div>`,
+
+iconSize:
+[40,40],
+
+iconAnchor:
+[20,20]
+
+})
+}
+)
+.addTo(map)
+.bindPopup(
+"<b>🚕 Driver Current Location</b><br>" +
+esc(selectedDriverData.name || selectedDriverData.id)
+);
+
+
+/* Pickup marker */
+
+pickupRouteMarker =
+L.marker(
+pickupPoint
+)
+.addTo(map)
+.bindPopup(
+"<b>🟢 Pickup</b><br>" +
+esc(pickupName || "Pickup Location")
+);
+
+
+/* Destination marker */
+
+destinationRouteMarker =
+L.marker(
+destinationPoint
+)
+.addTo(map)
+.bindPopup(
+"<b>🔴 Destination</b><br>" +
+esc(destinationName || "Destination")
+);
+
+
+/* Fit full route */
+
+const group =
+L.featureGroup([
+routeLayer,
+driverRouteMarker,
+pickupRouteMarker,
+destinationRouteMarker
+]);
+
+
+map.fitBounds(
+group.getBounds(),
+{
+padding:[30,30]
+}
+);
+
+
+/* Route summary */
+
+const distanceKm =
+Number(route.distance || 0) /
+1000;
+
+
+const durationMin =
+Number(route.duration || 0) /
+60;
+
+
+let timeText;
+
+if(durationMin >= 60){
+
+const hours =
+Math.floor(durationMin / 60);
+
+const mins =
+Math.round(durationMin % 60);
+
+timeText =
+hours +
+" hr " +
+mins +
+" min";
+
+}
+else{
+
+timeText =
+Math.round(durationMin) +
+" min";
+
+}
+
+
+$("routeSummary").innerHTML =
+
+"<b>🗺️ Full Route</b><br>" +
+
+"🚕 Driver → 🟢 Pickup → 🔴 Destination" +
+
+"<br><br>" +
+
+"<b>Pickup:</b> " +
+esc(pickupName) +
+
+"<br>" +
+
+"<b>Destination:</b> " +
+esc(destinationName) +
+
+"<br><br>" +
+
+"<b>Distance:</b> " +
+distanceKm.toFixed(1) +
+" km" +
+
+"<br>" +
+
+"<b>Estimated Time:</b> " +
+esc(timeText);
+
+
+$("routeSummary").style.display =
+"block";
+
+}
+
+
+
+/* =====================================================
+   UPDATE DRIVER ROUTE MARKER
+===================================================== */
+
+function updateRouteDriverMarker(){
+
+if(
+!map ||
+!routeDriverPoint
+)
+return;
+
+
+if(driverRouteMarker){
+
+driverRouteMarker.setLatLng(
+routeDriverPoint
+);
+
+}
+else{
+
+driverRouteMarker =
+L.marker(
+routeDriverPoint
+)
+.addTo(map)
+.bindPopup(
+"<b>🚕 Driver Current Location</b>"
+);
+
+}
+
+}
+
+
+
+/* =====================================================
+   REDRAW EXISTING ROUTE
+===================================================== */
+
+async function redrawExistingRoute(){
+
+if(
+!routeDriverPoint ||
+!routePickupPoint ||
+!routeDestinationPoint
+)
+return;
+
+
+if(
+!$("pickupInput").value.trim() ||
+!$("destinationInput").value.trim()
+)
+return;
+
+
+try{
+
+await drawRoute(
+routeDriverPoint,
+routePickupPoint,
+routeDestinationPoint,
+$("pickupInput").value.trim(),
+$("destinationInput").value.trim()
+);
+
+}
+catch(error){
+
+console.error(
+"Live route redraw error:",
+error
+);
+
+}
+
+}
+
+
+
+/* =====================================================
+   CLEAR ROUTE LAYERS ONLY
+===================================================== */
+
+function clearRouteLayersOnly(){
+
+if(
+routeLayer &&
+map &&
+map.hasLayer(routeLayer)
+){
+
+map.removeLayer(routeLayer);
+
+}
+
+
+if(
+driverRouteMarker &&
+map &&
+map.hasLayer(driverRouteMarker)
+){
+
+map.removeLayer(driverRouteMarker);
+
+}
+
+
+if(
+pickupRouteMarker &&
+map &&
+map.hasLayer(pickupRouteMarker)
+){
+
+map.removeLayer(pickupRouteMarker);
+
+}
+
+
+if(
+destinationRouteMarker &&
+map &&
+map.hasLayer(destinationRouteMarker)
+){
+
+map.removeLayer(destinationRouteMarker);
+
+}
+
+
+routeLayer = null;
+
+driverRouteMarker = null;
+
+pickupRouteMarker = null;
+
+destinationRouteMarker = null;
+
+}
+
+
+
+/* =====================================================
+   CLEAR COMPLETE ROUTE
+===================================================== */
+
+function clearRoute(){
+
+clearRouteLayersOnly();
+
+
+routeDriverPoint = null;
+
+routePickupPoint = null;
+
+routeDestinationPoint = null;
+
+
+window.currentPickupCoords =
+null;
+
+
+if($("routeSummary")){
+
+$("routeSummary").style.display =
+"none";
+
+$("routeSummary").innerHTML =
+"";
+
+}
+
+
+if($("routeLoading")){
+
+$("routeLoading").style.display =
+"none";
+
+}
+
+}
+
+
+
+/* =====================================================
+   SWAP PICKUP / DESTINATION
+===================================================== */
+
+function swapRoutePoints(){
+
+if(!radarAuthorized)
+return;
+
+
+const pickup =
+$("pickupInput").value;
+
+
+const destination =
+$("destinationInput").value;
+
+
+$("pickupInput").value =
+destination;
+
+
+$("destinationInput").value =
+pickup;
+
+
+window.currentPickupCoords =
+null;
+
+
+clearRoute();
+
+
+showNotice(
+"Pickup और Destination swap हो गए."
+);
 
 }
 
@@ -2425,6 +3807,19 @@ Finding area...
 
 <button
 class="action"
+style="width:100%;margin-bottom:8px"
+onclick="
+closeModal();
+openRouteCard();
+">
+
+🗺️ Plan Route
+
+</button>
+
+
+<button
+class="action secondary"
 style="width:100%"
 onclick="
 closeModal();
@@ -2886,6 +4281,9 @@ stopSelectedLiveListener();
 clearSelectedMarker();
 
 
+clearRoute();
+
+
 if(map){
 
 try{
@@ -3091,6 +4489,22 @@ map.setView(
 
 mapCenteredOnce =
 true;
+
+}
+
+
+/*
+ Update active route
+ if this driver is being used
+ as route start.
+*/
+
+if(routeLayer && routePickupPoint && routeDestinationPoint){
+
+routeDriverPoint =
+[lat,lng];
+
+redrawExistingRoute();
 
 }
 

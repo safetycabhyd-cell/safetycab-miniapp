@@ -19,6 +19,7 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
+
 <style>
 
 *{
@@ -1089,7 +1090,7 @@ Version
 </span>
 
 <strong>
-Safety Cab Radar 3.8
+Safety Cab Radar 3.9
 </strong>
 
 </div>
@@ -2352,11 +2353,8 @@ selectedDriverData.name;
 
 
 /*
- IMPORTANT:
- Route card will NOT open automatically.
- User must press Plan Route.
+ Route card does NOT open automatically.
 */
-
 
 updateDriverCurrentText();
 
@@ -2471,11 +2469,6 @@ renderSelectedMarker();
 
 updateDriverCurrentText();
 
-
-/*
- If route is already active,
- update driver first point.
-*/
 
 if(routeLayer && routePickupPoint && routeDestinationPoint){
 
@@ -2769,6 +2762,8 @@ const response =
 await fetch(
 url,
 {
+method:"GET",
+mode:"cors",
 headers:{
 "Accept":
 "application/json"
@@ -2831,6 +2826,8 @@ const response =
 await fetch(
 url,
 {
+method:"GET",
+mode:"cors",
 headers:{
 "Accept":
 "application/json"
@@ -2922,13 +2919,9 @@ text
 }
 
 
-const result =
-await geocodeLocation(
+return await geocodeLocation(
 text
 );
-
-
-return result;
 
 }
 
@@ -2956,6 +2949,98 @@ throw new Error(
 return await geocodeLocation(
 text
 );
+
+}
+
+
+
+/* =====================================================
+   ROUTING REQUEST WITH TIMEOUT
+===================================================== */
+
+async function fetchRouteFromServer(
+baseUrl,
+coordinates
+){
+
+const url =
+baseUrl +
+"/route/v1/driving/" +
+coordinates +
+"?overview=full&geometries=geojson&steps=false";
+
+
+const controller =
+new AbortController();
+
+
+const timeout =
+setTimeout(
+function(){
+
+controller.abort();
+
+},
+15000
+);
+
+
+try{
+
+const response =
+await fetch(
+url,
+{
+method:"GET",
+mode:"cors",
+headers:{
+"Accept":
+"application/json"
+},
+signal:
+controller.signal
+}
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"HTTP " +
+response.status
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+if(
+data.code !== "Ok" ||
+!data.routes ||
+!data.routes.length
+){
+
+throw new Error(
+data.code ||
+"No route"
+);
+
+}
+
+
+return data;
+
+}
+finally{
+
+clearTimeout(
+timeout
+);
+
+}
 
 }
 
@@ -3130,7 +3215,9 @@ $("routeSummary").style.display =
 $("routeSummary").innerHTML =
 
 "❌ <b>Route नहीं बन पाया</b><br>" +
-esc(error.message || "Location या route error");
+esc(error.message || "Location या route error") +
+"<br><br>" +
+"कृपया थोड़ी देर बाद फिर कोशिश करें।";
 
 }
 finally{
@@ -3163,6 +3250,11 @@ return;
 clearRouteLayersOnly();
 
 
+/*
+ OSRM coordinates MUST be:
+ longitude,latitude
+*/
+
 const coordinates =
 
 driverPoint[1] +
@@ -3180,37 +3272,70 @@ destinationPoint[1] +
 destinationPoint[0];
 
 
-const url =
-"https://router.project-osrm.org/route/v1/driving/" +
-coordinates +
-"?overview=full&geometries=geojson&steps=false";
+/*
+ First routing server:
+ FOSSGIS / OpenStreetMap
+*/
+
+let data = null;
+
+let lastError = null;
 
 
-const response =
-await fetch(url);
+const routingServers = [
+
+"https://routing.openstreetmap.de/routed-car",
+
+"https://router.project-osrm.org"
+
+];
 
 
-if(!response.ok){
+for(
+let i = 0;
+i < routingServers.length;
+i++
+){
 
-throw new Error(
-"Road route service unavailable"
+try{
+
+data =
+await fetchRouteFromServer(
+routingServers[i],
+coordinates
+);
+
+if(data){
+
+break;
+
+}
+
+}
+catch(error){
+
+lastError =
+error;
+
+console.warn(
+"Routing server failed:",
+routingServers[i],
+error
 );
 
 }
 
-
-const data =
-await response.json();
+}
 
 
 if(
-data.code !== "Ok" ||
+!data ||
 !data.routes ||
 !data.routes.length
 ){
 
 throw new Error(
-"Road route नहीं मिला"
+"Routing server unavailable"
 );
 
 }
@@ -3218,6 +3343,17 @@ throw new Error(
 
 const route =
 data.routes[0];
+
+
+if(
+!route.geometry
+){
+
+throw new Error(
+"Route geometry नहीं मिली"
+);
+
+}
 
 
 routeLayer =
@@ -3310,12 +3446,14 @@ padding:[30,30]
 );
 
 
-/* ROUTE SUMMARY */
+/* ROUTE DISTANCE */
 
 const distanceKm =
 Number(route.distance || 0) /
 1000;
 
+
+/* ROUTE TIME */
 
 const durationMin =
 Number(route.duration || 0) /
@@ -3324,13 +3462,16 @@ Number(route.duration || 0) /
 
 let timeText;
 
+
 if(durationMin >= 60){
 
 const hours =
 Math.floor(durationMin / 60);
 
 const mins =
-Math.round(durationMin % 60);
+Math.round(
+durationMin % 60
+);
 
 timeText =
 hours +
@@ -3348,13 +3489,20 @@ Math.round(durationMin) +
 }
 
 
+/* SUMMARY */
+
 $("routeSummary").innerHTML =
 
-"<b>🗺️ Full Route</b><br>" +
+"<b>🗺️ Full Road Route</b><br>" +
 
 "🚕 Driver → 🟢 Pickup → 🔴 Destination" +
 
 "<br><br>" +
+
+"<b>Driver:</b> " +
+esc(selectedDriverData.id) +
+
+"<br>" +
 
 "<b>Pickup:</b> " +
 esc(pickupName) +
@@ -3900,6 +4048,8 @@ const response =
 await fetch(
 url,
 {
+method:"GET",
+mode:"cors",
 headers:{
 "Accept":
 "application/json"
@@ -4494,12 +4644,6 @@ true;
 }
 
 
-/*
- Update active route
- if this driver is being used
- as route start.
-*/
-
 if(routeLayer && routePickupPoint && routeDestinationPoint){
 
 routeDriverPoint =
@@ -4860,15 +5004,6 @@ showNotice(
 
 async function startApp(){
 
-/*
- Map is NOT initialized before
- Telegram + Driver registration
- verification.
-*/
-
-
-/* 1. Telegram */
-
 const telegramOK =
 setupTG();
 
@@ -4879,8 +5014,6 @@ return;
 
 }
 
-
-/* 2. Firebase Auth */
 
 const authOK =
 await authAnon();
@@ -4897,8 +5030,6 @@ return;
 }
 
 
-/* 3. Registered Driver */
-
 const registered =
 await checkRegisteredDriver();
 
@@ -4914,30 +5045,20 @@ return;
 }
 
 
-/* 4. ACCESS GRANTED */
-
 allowRadarAccess();
 
-
-/* 5. NOW initialize Map */
 
 initMap();
 
 
-/* 6. Online count */
-
 await loadOnlineCount();
 
-
-/* 7. Current driver */
 
 window.searchedDriver =
 {
 ...myDriver
 };
 
-
-/* 8. Own driver selected */
 
 $("search").value =
 myDriver.id;
@@ -4947,8 +5068,6 @@ await selectDriver(
 myDriver.id
 );
 
-
-/* 9. GPS */
 
 if(autoGPS){
 

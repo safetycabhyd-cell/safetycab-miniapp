@@ -14,6 +14,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   background:#f4f7fb;
@@ -21,6 +22,7 @@ body{
   font-family:Arial,sans-serif;
   padding-bottom:72px
 }
+
 .header{
   height:108px;
   background:#087fc3;
@@ -30,6 +32,7 @@ body{
   padding:15px 18px;
   gap:12px
 }
+
 .logo{
   width:58px;
   height:58px;
@@ -39,48 +42,64 @@ body{
   place-items:center;
   font-size:30px
 }
+
 .title{font-size:25px;font-weight:800}
 .sub{font-size:13px}
-.page{display:none;padding:12px}
+
+.page{
+  display:none;
+  padding:12px
+}
+
 .page.active{display:block}
+
 .stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:9px;
   margin-bottom:10px
 }
+
 .stat,.card{
   background:#fff;
   border-radius:18px;
   box-shadow:0 2px 10px #0001
 }
+
 .stat{
   text-align:center;
   padding:15px 5px
 }
+
 .stat strong{
   display:block;
   font-size:28px
 }
+
 .stat.green strong{color:#16a34a}
 .stat.blue strong{color:#087fc3}
+
 .card{
   padding:16px;
   margin-bottom:12px
 }
+
 .card h3{font-size:22px}
+
 .search{
   width:100%;
   padding:12px;
   border:1px solid #ccd6e2;
   border-radius:11px
 }
+
 .filters{
   display:flex;
   gap:6px;
   overflow:auto;
   margin:9px 0
 }
+
 .filter{
   border:1px solid #ccd6e2;
   background:#fff;
@@ -88,10 +107,12 @@ body{
   padding:7px 11px;
   white-space:nowrap
 }
+
 .filter.on{
   background:#0878c9;
   color:#fff
 }
+
 .driver,.row{
   display:flex;
   align-items:center;
@@ -99,7 +120,9 @@ body{
   border-bottom:1px solid #edf0f4;
   padding:11px 0
 }
+
 .driver:last-child,.row:last-child{border:0}
+
 .avatar{
   width:40px;
   height:40px;
@@ -108,21 +131,26 @@ body{
   display:grid;
   place-items:center
 }
+
 .driverinfo{flex:1}
+
 .small{
   font-size:11px;
   color:#667085;
   margin-top:3px
 }
+
 .badge{
   padding:4px 7px;
   border-radius:12px;
   font-size:10px;
   font-weight:700
 }
+
 .bgreen{background:#dcfce7;color:#15803d}
 .bred{background:#fee2e2;color:#b91c1c}
 .byellow{background:#fef3c7;color:#92400e}
+
 .action{
   border:0;
   border-radius:10px;
@@ -131,9 +159,21 @@ body{
   background:#0878c9;
   color:#fff
 }
-.secondary{background:#e9f4ff;color:#0878c9}
-.danger{background:#fee2e2;color:#b91c1c}
-.row{justify-content:space-between}
+
+.secondary{
+  background:#e9f4ff;
+  color:#0878c9
+}
+
+.danger{
+  background:#fee2e2;
+  color:#b91c1c
+}
+
+.row{
+  justify-content:space-between
+}
+
 .toggle{
   width:48px;
   height:26px;
@@ -142,6 +182,7 @@ body{
   background:#cbd5e1;
   padding:3px
 }
+
 .toggle i{
   display:block;
   width:20px;
@@ -150,17 +191,21 @@ body{
   border-radius:50%;
   transition:.2s
 }
+
 .toggle.on{background:#16a34a}
 .toggle.on i{transform:translateX(22px)}
+
 #map{
   height:calc(100vh - 270px);
   min-height:420px
 }
+
 .empty{
   text-align:center;
   color:#667085;
   padding:30px
 }
+
 #notice{
   position:fixed;
   top:70px;
@@ -174,6 +219,7 @@ body{
   z-index:5000;
   display:none
 }
+
 .bottom{
   position:fixed;
   left:0;
@@ -186,20 +232,24 @@ body{
   grid-template-columns:repeat(4,1fr);
   z-index:2000
 }
+
 .navbtn{
   border:0;
   background:#fff;
   color:#667085;
   font-size:11px
 }
+
 .navbtn b{
   display:block;
   font-size:23px
 }
+
 .navbtn.active{
   color:#087fc3;
   font-weight:700
 }
+
 .modal{
   display:none;
   position:fixed;
@@ -208,7 +258,9 @@ body{
   z-index:3000;
   align-items:flex-end
 }
+
 .modal.show{display:flex}
+
 .sheet{
   background:#fff;
   border-radius:18px 18px 0 0;
@@ -217,6 +269,7 @@ body{
   max-height:82vh;
   overflow:auto
 }
+
 .close{
   float:right;
   border:0;
@@ -224,6 +277,26 @@ body{
   width:32px;
   height:32px
 }
+
+.locationBox{
+  margin-top:12px;
+  padding:12px;
+  background:#f4f7fb;
+  border-radius:12px;
+  font-size:13px;
+  line-height:1.5
+}
+
+.selectedBox{
+  margin-bottom:10px;
+  padding:10px 12px;
+  background:#e9f4ff;
+  color:#0878c9;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700
+}
+
 @media(max-width:420px){
   .title{font-size:23px}
 }
@@ -245,6 +318,7 @@ body{
 <section id="home" class="page active">
 
   <div class="stats">
+
     <div class="stat">
       <strong id="total">0</strong>
       <span>Total</span>
@@ -259,11 +333,15 @@ body{
       <strong id="duty">0</strong>
       <span>Duty ON</span>
     </div>
+
   </div>
+
+  <div id="selectedInfo" class="selectedBox" style="display:none"></div>
 
   <div id="map"></div>
 
 </section>
+
 
 <section id="drivers" class="page">
 
@@ -278,10 +356,35 @@ body{
     >
 
     <div class="filters">
-      <button class="filter on" data-filter="all">All</button>
-      <button class="filter" data-filter="online">Online</button>
-      <button class="filter" data-filter="duty">Duty ON</button>
-      <button class="filter" data-filter="offduty">Duty OFF</button>
+
+      <button
+        class="filter on"
+        data-filter="all"
+      >
+        All
+      </button>
+
+      <button
+        class="filter"
+        data-filter="online"
+      >
+        Online
+      </button>
+
+      <button
+        class="filter"
+        data-filter="duty"
+      >
+        Duty ON
+      </button>
+
+      <button
+        class="filter"
+        data-filter="offduty"
+      >
+        Duty OFF
+      </button>
+
     </div>
 
     <div id="driverList"></div>
@@ -289,6 +392,7 @@ body{
   </div>
 
 </section>
+
 
 <section id="profile" class="page">
 
@@ -326,12 +430,14 @@ body{
 
   </div>
 
+
   <div class="card">
 
     <h3>🚦 My Status</h3>
 
     <div class="row">
       <span>Duty Status</span>
+
       <button
         id="dutyToggle"
         class="toggle"
@@ -339,10 +445,12 @@ body{
       >
         <i></i>
       </button>
+
     </div>
 
     <div class="row">
       <span>Auto GPS Update</span>
+
       <button
         id="gpsToggle"
         class="toggle on"
@@ -350,11 +458,13 @@ body{
       >
         <i></i>
       </button>
+
     </div>
 
   </div>
 
 </section>
+
 
 <section id="settings" class="page">
 
@@ -384,10 +494,11 @@ body{
 
     <div class="row">
       <span>Version</span>
-      <strong>Safety Cab Radar 3.2</strong>
+      <strong>Safety Cab Radar 3.3</strong>
     </div>
 
   </div>
+
 
   <div class="card">
 
@@ -411,36 +522,61 @@ body{
 
 </section>
 
+
 <nav class="bottom">
 
-  <button class="navbtn active" data-page="home">
+  <button
+    class="navbtn active"
+    data-page="home"
+  >
     <b>🗺️</b>Map
   </button>
 
-  <button class="navbtn" data-page="drivers">
+  <button
+    class="navbtn"
+    data-page="drivers"
+  >
     <b>🚕</b>Drivers
   </button>
 
-  <button class="navbtn" data-page="profile">
+  <button
+    class="navbtn"
+    data-page="profile"
+  >
     <b>👤</b>Profile
   </button>
 
-  <button class="navbtn" data-page="settings">
+  <button
+    class="navbtn"
+    data-page="settings"
+  >
     <b>⚙️</b>Settings
   </button>
 
 </nav>
+
 
 <div
   id="modal"
   class="modal"
   onclick="if(event.target===this)closeModal()"
 >
+
   <div class="sheet">
-    <button class="close" onclick="closeModal()">✕</button>
+
+    <button
+      class="close"
+      onclick="closeModal()"
+    >
+      ✕
+    </button>
+
     <div id="modalBody"></div>
+
   </div>
+
 </div>
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -460,22 +596,33 @@ const firebaseConfig = {
   appId:"1:900129993912:web:48c98c4d62154d0f39704d"
 };
 
+
 const tg =
   window.Telegram &&
   window.Telegram.WebApp
   ? window.Telegram.WebApp
   : null;
 
+
 if(tg){
+
   tg.ready();
   tg.expand();
+
 }
+
 
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-const rtdb = firebase.database();
+
+const auth =
+  firebase.auth();
+
+const db =
+  firebase.firestore();
+
+const rtdb =
+  firebase.database();
 
 
 /* =========================
@@ -500,7 +647,22 @@ let myDriver = null;
 
 let myTelegramId = null;
 
-let liveListenerStarted = false;
+
+/*
+  IMPORTANT:
+  Only ONE selected driver's
+  live RTDB listener is active.
+*/
+
+let selectedDriverId = null;
+
+let selectedLiveRef = null;
+
+let selectedLiveCallback = null;
+
+let selectedLiveError = null;
+
+let selectedDriverData = null;
 
 let mapCenteredOnce = false;
 
@@ -509,23 +671,29 @@ let mapCenteredOnce = false;
    HELPERS
 ========================= */
 
-const $ = id => document.getElementById(id);
+const $ =
+  id => document.getElementById(id);
 
 
 function showNotice(t){
 
-  const n = $("notice");
+  const n =
+    $("notice");
 
-  n.textContent = t;
+  n.textContent =
+    t;
 
-  n.style.display = "block";
+  n.style.display =
+    "block";
 
   clearTimeout(window.nt);
 
-  window.nt = setTimeout(
-    () => n.style.display = "none",
-    3000
-  );
+  window.nt =
+    setTimeout(
+      () => n.style.display = "none",
+      3000
+    );
+
 }
 
 
@@ -533,20 +701,27 @@ function page(id){
 
   document
     .querySelectorAll(".page")
-    .forEach(x => x.classList.remove("active"));
+    .forEach(
+      x => x.classList.remove("active")
+    );
 
   $(id).classList.add("active");
 
   document
     .querySelectorAll(".navbtn")
-    .forEach(x =>
-      x.classList.toggle(
-        "active",
-        x.dataset.page === id
-      )
+    .forEach(
+      x =>
+        x.classList.toggle(
+          "active",
+          x.dataset.page === id
+        )
     );
 
-  if(id === "home" && map){
+
+  if(
+    id === "home" &&
+    map
+  ){
 
     setTimeout(
       () => map.invalidateSize(),
@@ -561,7 +736,9 @@ function page(id){
 document
   .querySelectorAll(".navbtn")
   .forEach(
-    b => b.onclick = () => page(b.dataset.page)
+    b =>
+      b.onclick =
+        () => page(b.dataset.page)
   );
 
 
@@ -597,12 +774,14 @@ function ejs(v){
 
 function initMap(){
 
-  map = L
-    .map("map")
-    .setView(
-      [17.42536,78.48694],
-      13
-    );
+  map =
+    L
+      .map("map")
+      .setView(
+        [17.42536,78.48694],
+        13
+      );
+
 
   L
     .tileLayer(
@@ -629,6 +808,7 @@ function icon(d){
       : d.online
       ? "🟡"
       : "🔴";
+
 
   return L.divIcon({
 
@@ -660,71 +840,111 @@ function clearMarkers(){
     .values(markers)
     .forEach(
       m => {
-        if(map && map.hasLayer(m)){
+
+        if(
+          map &&
+          map.hasLayer(m)
+        ){
+
           map.removeLayer(m);
+
         }
+
       }
     );
+
 
   markers = {};
 
 }
 
 
+/*
+  IMPORTANT:
+  Only selected driver is
+  rendered on the map.
+*/
+
 function renderMarkers(){
 
-  if(!map) return;
+  if(!map)
+    return;
+
 
   clearMarkers();
 
-  drivers.forEach(d => {
 
-    if(
-      !Number.isFinite(d.lat) ||
-      !Number.isFinite(d.lng)
-    ){
-      return;
-    }
+  if(!selectedDriverData)
+    return;
 
-    const m =
-      L.marker(
+
+  const d =
+    selectedDriverData;
+
+
+  if(
+    !Number.isFinite(d.lat) ||
+    !Number.isFinite(d.lng)
+  ){
+
+    return;
+
+  }
+
+
+  const m =
+    L
+      .marker(
         [d.lat,d.lng],
         {icon:icon(d)}
       )
       .addTo(map);
 
-    m.bindPopup(
-      `<b>🚕 ${esc(d.name || d.id)}</b>
-      <br>
-      Driver ID: ${esc(d.id)}
-      <br>
-      Vehicle: ${esc(d.vehicle || "-")}
-      <br>
-      Status: ${
-        d.online
-        ? "🟢 Online"
-        : "🔴 Offline"
-      }
-      <br>
-      Duty: ${
-        d.duty
-        ? "🟢 ON"
-        : "⚪ OFF"
-      }
-      <br>
-      ⭐ ${d.rating || "Not Rated"}
-      <br><br>
-      <button
-        class="action"
-        onclick="openDriver('${ejs(d.id)}')"
-      >
-        View Details
-      </button>`
-    );
 
-    markers[d.id] = m;
+  m.bindPopup(
 
-  });
+    `<b>🚕 ${esc(d.name || d.id)}</b>
+    <br>
+    Driver ID: ${esc(d.id)}
+    <br>
+    Name: ${esc(d.name || "-")}
+    <br>
+    Phone: ${esc(d.phone || "-")}
+    <br>
+    Vehicle: ${esc(d.vehicle || "-")}
+    <br>
+    Status:
+    ${
+      d.online
+      ? "🟢 Online"
+      : "🔴 Offline"
+    }
+    <br>
+    Duty:
+    ${
+      d.duty
+      ? "🟢 ON"
+      : "⚪ OFF"
+    }
+    <br>
+    ⭐ ${d.rating || "Not Rated"}
+    <br>
+    <div id="popupArea-${ejs(d.id)}">
+      Area: Loading...
+    </div>
+    <br>
+    <button
+      class="action"
+      onclick="openDriver('${ejs(d.id)}')"
+    >
+      View Details
+    </button>`
+
+  );
+
+
+  markers[d.id] =
+    m;
 
 }
 
@@ -739,10 +959,14 @@ function stats(){
     drivers.length;
 
   $("online").textContent =
-    drivers.filter(d => d.online).length;
+    drivers.filter(
+      d => d.online
+    ).length;
 
   $("duty").textContent =
-    drivers.filter(d => d.duty).length;
+    drivers.filter(
+      d => d.duty
+    ).length;
 
 }
 
@@ -759,100 +983,522 @@ function renderList(){
       .toLowerCase()
       .trim();
 
+
   let a =
-    drivers.filter(d =>
-      !q ||
-      (
-        (d.id || "") +
-        " " +
-        (d.name || "") +
-        " " +
-        (d.vehicle || "")
-      )
-      .toLowerCase()
-      .includes(q)
+    drivers.filter(
+      d =>
+        !q ||
+        (
+          (d.id || "") +
+          " " +
+          (d.name || "") +
+          " " +
+          (d.vehicle || "")
+        )
+        .toLowerCase()
+        .includes(q)
     );
 
+
   if(activeFilter === "online")
-    a = a.filter(d => d.online);
+    a = a.filter(
+      d => d.online
+    );
+
 
   if(activeFilter === "duty")
-    a = a.filter(d => d.duty);
+    a = a.filter(
+      d => d.duty
+    );
+
 
   if(activeFilter === "offduty")
-    a = a.filter(d => !d.duty);
+    a = a.filter(
+      d => !d.duty
+    );
+
 
   $("driverList").innerHTML =
     a.length
-    ? a.map(d =>
-      `<div
-        class="driver"
-        onclick="focusDriver('${ejs(d.id)}')"
-      >
 
-        <div class="avatar">🚕</div>
+    ? a.map(
+        d =>
 
-        <div class="driverinfo">
+        `<div
+          class="driver"
+          onclick="focusDriver('${ejs(d.id)}')"
+        >
 
-          <b>
-            ${esc(d.id)}
-            •
-            ${esc(d.name)}
-          </b>
-
-          <div class="small">
-            ${esc(d.vehicle || "-")}
-            •
-            ⭐ ${d.rating || "Not Rated"}
+          <div class="avatar">
+            🚕
           </div>
 
-        </div>
+          <div class="driverinfo">
 
-        <span
-          class="badge ${
-            d.online
-            ? (d.duty ? "bgreen" : "byellow")
-            : "bred"
-          }"
-        >
-          ${
-            d.online
-            ? (d.duty ? "DUTY ON" : "DUTY OFF")
-            : "OFFLINE"
-          }
-        </span>
+            <b>
+              ${esc(d.id)}
+              •
+              ${esc(d.name)}
+            </b>
 
-      </div>`
-    ).join("")
+            <div class="small">
+              ${esc(d.vehicle || "-")}
+              •
+              ⭐ ${d.rating || "Not Rated"}
+            </div>
+
+          </div>
+
+          <span
+            class="badge ${
+              d.online
+              ? (
+                  d.duty
+                  ? "bgreen"
+                  : "byellow"
+                )
+              : "bred"
+            }"
+          >
+            ${
+              d.online
+              ? (
+                  d.duty
+                  ? "DUTY ON"
+                  : "DUTY OFF"
+                )
+              : "OFFLINE"
+            }
+          </span>
+
+        </div>`
+
+      ).join("")
+
     : "<div class='empty'>No driver found</div>";
 
 }
 
 
-$("search").oninput = renderList;
+$("search").oninput =
+  renderList;
 
 
 document
   .querySelectorAll(".filter")
   .forEach(
+
     b =>
+
       b.onclick = () => {
 
         document
           .querySelectorAll(".filter")
           .forEach(
-            x => x.classList.remove("on")
+            x =>
+              x.classList.remove("on")
           );
 
+
         b.classList.add("on");
+
 
         activeFilter =
           b.dataset.filter;
 
+
         renderList();
 
       }
+
   );
+
+
+/* =========================
+   STOP SELECTED LIVE LISTENER
+========================= */
+
+function stopSelectedLiveListener(){
+
+  if(
+    selectedLiveRef &&
+    selectedLiveCallback
+  ){
+
+    selectedLiveRef.off(
+      "value",
+      selectedLiveCallback
+    );
+
+  }
+
+
+  selectedLiveRef = null;
+  selectedLiveCallback = null;
+
+}
+
+
+/* =========================
+   SELECT DRIVER
+========================= */
+
+async function selectDriver(id){
+
+  const master =
+    drivers.find(
+      x => x.id === id
+    );
+
+
+  if(!master){
+
+    showNotice(
+      "Driver not found."
+    );
+
+    return;
+
+  }
+
+
+  stopSelectedLiveListener();
+
+
+  selectedDriverId =
+    id;
+
+
+  selectedDriverData =
+    {
+      ...master
+    };
+
+
+  $("selectedInfo").style.display =
+    "block";
+
+
+  $("selectedInfo").textContent =
+    "Selected Driver: " +
+    (master.id || "-") +
+    " • " +
+    (master.name || "-");
+
+
+  /*
+    Immediately show the master's
+    last known location if available.
+  */
+
+  renderMarkers();
+
+
+  if(
+    Number.isFinite(master.lat) &&
+    Number.isFinite(master.lng)
+  ){
+
+    map.setView(
+      [master.lat,master.lng],
+      15
+    );
+
+    mapCenteredOnce = true;
+
+  }
+
+
+  /*
+    IMPORTANT:
+    Read ONLY:
+    liveLocations/<selectedDriverId>
+
+    NOT:
+    liveLocations
+  */
+
+  const liveRef =
+    rtdb.ref(
+      "liveLocations/" +
+      id
+    );
+
+
+  selectedLiveRef =
+    liveRef;
+
+
+  selectedLiveCallback =
+    snapshot => {
+
+      const live =
+        snapshot.val();
+
+
+      if(!live){
+
+        renderMarkers();
+
+        showNotice(
+          "इस Driver का live GPS अभी available नहीं है."
+        );
+
+        return;
+
+      }
+
+
+      const lat =
+        Number(live.lat);
+
+      const lng =
+        Number(live.lng);
+
+
+      if(
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng)
+      ){
+
+        return;
+
+      }
+
+
+      /*
+        Update ONLY selected driver.
+      */
+
+      selectedDriverData.lat =
+        lat;
+
+      selectedDriverData.lng =
+        lng;
+
+      selectedDriverData.online =
+        live.online === true;
+
+      selectedDriverData.duty =
+        live.duty === true;
+
+
+      /*
+        Update master copy too,
+        but only for this driver.
+      */
+
+      const d =
+        drivers.find(
+          x => x.id === id
+        );
+
+
+      if(d){
+
+        d.lat = lat;
+        d.lng = lng;
+        d.online =
+          live.online === true;
+        d.duty =
+          live.duty === true;
+
+      }
+
+
+      stats();
+      renderList();
+      renderMarkers();
+
+
+      /*
+        Center ONLY first time
+        when selected driver live
+        location arrives.
+
+        It will NOT jump every
+        15-second update.
+      */
+
+      if(!mapCenteredOnce){
+
+        map.setView(
+          [lat,lng],
+          15
+        );
+
+        mapCenteredOnce = true;
+
+      }
+
+
+      /*
+        Keep the same map position
+        during future GPS updates.
+        Only marker moves.
+      */
+
+      if(markers[id]){
+
+        markers[id].setLatLng(
+          [lat,lng]
+        );
+
+      }
+
+    };
+
+
+  liveRef.on(
+    "value",
+    selectedLiveCallback
+  );
+
+
+  page("home");
+
+
+  /*
+    Ask reverse geocoder for
+    selected driver's area only.
+  */
+
+  loadArea(
+    latFromDriver(selectedDriverData),
+    lngFromDriver(selectedDriverData),
+    id
+  );
+
+}
+
+
+/* =========================
+   COORDINATE HELPERS
+========================= */
+
+function latFromDriver(d){
+
+  return Number(d?.lat);
+
+}
+
+
+function lngFromDriver(d){
+
+  return Number(d?.lng);
+
+}
+
+
+/* =========================
+   DRIVER AREA
+========================= */
+
+async function loadArea(lat,lng,id){
+
+  if(
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lng)
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    const url =
+      "https://nominatim.openstreetmap.org/reverse" +
+      "?format=jsonv2" +
+      "&lat=" +
+      encodeURIComponent(lat) +
+      "&lon=" +
+      encodeURIComponent(lng) +
+      "&zoom=18" +
+      "&addressdetails=1";
+
+
+    const res =
+      await fetch(
+        url,
+        {
+          headers:{
+            "Accept":"application/json"
+          }
+        }
+      );
+
+
+    if(!res.ok)
+      return;
+
+
+    const data =
+      await res.json();
+
+
+    const a =
+      data.address || {};
+
+
+    const area =
+      a.suburb ||
+      a.neighbourhood ||
+      a.village ||
+      a.town ||
+      a.city_district ||
+      a.city ||
+      a.county ||
+      "Area not available";
+
+
+    /*
+      Put area in popup
+      when popup exists.
+    */
+
+    const el =
+      document.getElementById(
+        "popupArea-" +
+        id
+      );
+
+
+    if(el){
+
+      el.innerHTML =
+        "Area: " +
+        esc(area);
+
+    }
+
+
+    /*
+      Store area for details.
+    */
+
+    if(
+      selectedDriverData &&
+      selectedDriverData.id === id
+    ){
+
+      selectedDriverData.area =
+        area;
+
+    }
+
+
+  }catch(e){
+
+    console.error(
+      "Area lookup error:",
+      e
+    );
+
+  }
+
+}
 
 
 /* =========================
@@ -861,27 +1507,9 @@ document
 
 function focusDriver(id){
 
-  page("home");
+  mapCenteredOnce = false;
 
-  let d =
-    drivers.find(x => x.id === id);
-
-  if(
-    d &&
-    Number.isFinite(d.lat) &&
-    Number.isFinite(d.lng)
-  ){
-
-    map.setView(
-      [d.lat,d.lng],
-      16
-    );
-
-    if(markers[id]){
-      markers[id].openPopup();
-    }
-
-  }
+  selectDriver(id);
 
 }
 
@@ -893,9 +1521,30 @@ function focusDriver(id){
 function openDriver(id){
 
   let d =
-    drivers.find(x => x.id === id);
+    drivers.find(
+      x => x.id === id
+    );
 
-  if(!d) return;
+
+  if(!d)
+    return;
+
+
+  /*
+    If selected driver exists,
+    use its latest live information.
+  */
+
+  if(
+    selectedDriverData &&
+    selectedDriverData.id === id
+  ){
+
+    d =
+      selectedDriverData;
+
+  }
+
 
   $("modalBody").innerHTML = `
 
@@ -907,6 +1556,16 @@ function openDriver(id){
     </div>
 
     <div class="row">
+      <span>Driver Name</span>
+      <b>${esc(d.name || "-")}</b>
+    </div>
+
+    <div class="row">
+      <span>Phone</span>
+      <b>${esc(d.phone || "-")}</b>
+    </div>
+
+    <div class="row">
       <span>Vehicle</span>
       <b>${esc(d.vehicle || "-")}</b>
     </div>
@@ -914,14 +1573,22 @@ function openDriver(id){
     <div class="row">
       <span>GPS</span>
       <b>
-        ${d.online ? "🟢 Online" : "🔴 Offline"}
+        ${
+          d.online
+          ? "🟢 Online"
+          : "🔴 Offline"
+        }
       </b>
     </div>
 
     <div class="row">
       <span>Duty</span>
       <b>
-        ${d.duty ? "🟢 ON" : "⚪ OFF"}
+        ${
+          d.duty
+          ? "🟢 ON"
+          : "⚪ OFF"
+        }
       </b>
     </div>
 
@@ -942,9 +1609,23 @@ function openDriver(id){
       <b>${Number(d.lng).toFixed(6)}</b>
     </div>
 
+    <div class="locationBox">
+      📍 Area:
+      <br>
+      <strong id="detailArea">
+        ${
+          d.area ||
+          "Finding area..."
+        }
+      </strong>
+    </div>
+
+    <br>
+
     <button
       class="action"
       onclick="
+        mapCenteredOnce=false;
         focusDriver('${ejs(d.id)}');
         closeModal();
       "
@@ -954,9 +1635,38 @@ function openDriver(id){
 
   `;
 
+
   $("modal")
     .classList
     .add("show");
+
+
+  loadArea(
+    Number(d.lat),
+    Number(d.lng),
+    d.id
+  )
+  .then(
+    () => {
+
+      const el =
+        $("detailArea");
+
+
+      if(
+        el &&
+        selectedDriverData &&
+        selectedDriverData.id === d.id &&
+        selectedDriverData.area
+      ){
+
+        el.textContent =
+          selectedDriverData.area;
+
+      }
+
+    }
+  );
 
 }
 
@@ -985,9 +1695,11 @@ function setupTG(){
 
   }
 
+
   let u =
     tg.initDataUnsafe &&
     tg.initDataUnsafe.user;
+
 
   if(!u){
 
@@ -998,18 +1710,25 @@ function setupTG(){
 
   }
 
+
   myTelegramId =
     String(u.id);
 
+
   $("tgName").textContent =
-    [u.first_name,u.last_name]
-      .filter(Boolean)
-      .join(" ")
-      ||
-      "Telegram User";
+    [
+      u.first_name,
+      u.last_name
+    ]
+    .filter(Boolean)
+    .join(" ")
+    ||
+    "Telegram User";
+
 
   $("tgId").textContent =
     myTelegramId;
+
 
   return true;
 
@@ -1026,21 +1745,27 @@ async function authAnon(){
 
     await auth.signInAnonymously();
 
+
     $("firebaseState").textContent =
       "Connected";
 
+
     return true;
+
 
   }catch(e){
 
     console.error(e);
 
+
     $("firebaseState").textContent =
       "Auth Error";
+
 
     showNotice(
       "Firebase authentication error."
     );
+
 
     return false;
 
@@ -1058,6 +1783,7 @@ async function loadMine(){
   if(!myTelegramId)
     return false;
 
+
   try{
 
     let s =
@@ -1071,64 +1797,95 @@ async function loadMine(){
         .limit(1)
         .get();
 
+
     if(s.empty){
 
       myDriver = null;
 
+
       $("myDriverId").textContent =
         "Not Registered";
+
 
       return false;
 
     }
 
-    let doc = s.docs[0];
 
-    let d = doc.data();
+    let doc =
+      s.docs[0];
+
+
+    let d =
+      doc.data();
+
 
     myDriver = {
 
       docId:doc.id,
 
-      id:d.id || doc.id,
+      id:
+        d.id ||
+        doc.id,
 
-      name:d.name || "",
+      name:
+        d.name ||
+        "",
 
-      phone:d.phone || "",
+      phone:
+        d.phone ||
+        "",
 
-      vehicle:d.vehicle || "",
+      vehicle:
+        d.vehicle ||
+        "",
 
-      lat:Number(d.lat),
+      lat:
+        Number(d.lat),
 
-      lng:Number(d.lng),
+      lng:
+        Number(d.lng),
 
-      online:d.online === true,
+      online:
+        d.online === true,
 
-      duty:d.duty === true,
+      duty:
+        d.duty === true,
 
-      rating:Number(d.rating || 0)
+      rating:
+        Number(d.rating || 0)
 
     };
+
 
     $("myDriverId").textContent =
       myDriver.id;
 
+
     myDuty =
       myDriver.duty;
 
+
     $("dutyToggle")
       .classList
-      .toggle("on",myDuty);
+      .toggle(
+        "on",
+        myDuty
+      );
+
 
     return true;
+
 
   }catch(e){
 
     console.error(e);
 
+
     showNotice(
       "Driver Firebase data load failed."
     );
+
 
     return false;
 
@@ -1139,7 +1896,7 @@ async function loadMine(){
 
 /* =========================
    LOAD DRIVER MASTER DATA
-   FIRESTORE FALLBACK
+   FIRESTORE ONLY
 ========================= */
 
 async function loadDrivers(){
@@ -1151,252 +1908,90 @@ async function loadDrivers(){
         .collection("drivers")
         .get();
 
+
     drivers =
-      s.docs.map(doc => {
+      s.docs.map(
+        doc => {
 
-        let d =
-          doc.data();
+          let d =
+            doc.data();
 
-        return {
 
-          id:d.id || doc.id,
+          return {
 
-          name:d.name || "",
+            id:
+              d.id ||
+              doc.id,
 
-          phone:d.phone || "",
+            name:
+              d.name ||
+              "",
 
-          vehicle:d.vehicle || "",
+            phone:
+              d.phone ||
+              "",
 
-          lat:Number(d.lat),
+            vehicle:
+              d.vehicle ||
+              "",
 
-          lng:Number(d.lng),
+            lat:
+              Number(d.lat),
 
-          online:d.online === true,
+            lng:
+              Number(d.lng),
 
-          duty:d.duty === true,
+            online:
+              d.online === true,
 
-          rating:Number(d.rating || 0),
+            duty:
+              d.duty === true,
 
-          telegramId:
-            d.telegramId
-            ? String(d.telegramId)
-            : ""
+            rating:
+              Number(d.rating || 0),
 
-        };
+            telegramId:
+              d.telegramId
+              ? String(d.telegramId)
+              : ""
 
-      });
+          };
+
+        }
+      );
+
 
     stats();
 
-    renderMarkers();
-
     renderList();
+
+
+    /*
+      Do NOT render all driver
+      GPS markers here.
+
+      Map starts empty until
+      one driver is selected.
+    */
+
 
   }catch(e){
 
     console.error(e);
 
-    drivers=[];
+
+    drivers = [];
+
 
     stats();
-
     renderList();
+
 
     showNotice(
       "Drivers Firebase से load नहीं हुए."
     );
 
   }
-
-}
-
-
-/* ==================================================
-   IMPORTANT:
-   REAL-TIME LOCATION FROM FIREBASE RTDB
-   liveLocations/DC001
-================================================== */
-
-function startLiveLocations(){
-
-  if(liveListenerStarted)
-    return;
-
-  liveListenerStarted = true;
-
-  const liveRef =
-    rtdb.ref("liveLocations");
-
-  liveRef.on(
-    "value",
-    snapshot => {
-
-      const liveData =
-        snapshot.val() || {};
-
-      let changed = false;
-
-      Object.keys(liveData)
-        .forEach(driverId => {
-
-          const live =
-            liveData[driverId];
-
-          if(!live)
-            return;
-
-          const lat =
-            Number(live.lat);
-
-          const lng =
-            Number(live.lng);
-
-          if(
-            !Number.isFinite(lat) ||
-            !Number.isFinite(lng)
-          ){
-            return;
-          }
-
-          let d =
-            drivers.find(
-              x => x.id === driverId
-            );
-
-          /*
-
-             If driver exists in Firestore,
-             replace its old coordinates
-             with LIVE RTDB coordinates.
-
-          */
-
-          if(d){
-
-            d.lat = lat;
-
-            d.lng = lng;
-
-            d.online =
-              live.online === true;
-
-            d.duty =
-              live.duty === true;
-
-            changed = true;
-
-          }else{
-
-            /*
-
-              Extra protection:
-              if a driver exists in RTDB
-              but Firestore list has not loaded,
-              create a temporary driver entry.
-
-            */
-
-            drivers.push({
-
-              id:driverId,
-
-              name:live.name || driverId,
-
-              phone:"",
-
-              vehicle:live.vehicle || "-",
-
-              lat:lat,
-
-              lng:lng,
-
-              online:
-                live.online === true,
-
-              duty:
-                live.duty === true,
-
-              rating:Number(
-                live.rating || 0
-              ),
-
-              telegramId:
-                live.telegramId
-                ? String(live.telegramId)
-                : ""
-
-            });
-
-            changed = true;
-
-          }
-
-        });
-
-
-      if(changed){
-
-        stats();
-
-        renderMarkers();
-
-        renderList();
-
-        /*
-
-          First live GPS received:
-          center map on the real driver location.
-
-          After that, map will NOT jump
-          on every 15-second GPS update.
-
-        */
-
-        if(
-          !mapCenteredOnce &&
-          myDriver
-        ){
-
-          const mine =
-            drivers.find(
-              d => d.id === myDriver.id
-            );
-
-          if(
-            mine &&
-            Number.isFinite(mine.lat) &&
-            Number.isFinite(mine.lng)
-          ){
-
-            map.setView(
-              [mine.lat,mine.lng],
-              16
-            );
-
-            mapCenteredOnce = true;
-
-          }
-
-        }
-
-      }
-
-    },
-
-    error => {
-
-      console.error(
-        "RTDB liveLocations error:",
-        error
-      );
-
-      showNotice(
-        "Live GPS connection error."
-      );
-
-    }
-
-  );
 
 }
 
@@ -1409,6 +2004,7 @@ async function saveStatus(){
 
   if(!myDriver)
     return;
+
 
   try{
 
@@ -1436,6 +2032,7 @@ async function saveStatus(){
         x => x.id === myDriver.id
       );
 
+
     if(d){
 
       d.online = true;
@@ -1444,16 +2041,14 @@ async function saveStatus(){
 
     }
 
-    stats();
 
-    renderMarkers();
+    stats();
 
     renderList();
 
+
     /*
-
-      Also keep RTDB status synchronized.
-
+      Keep own RTDB status synchronized.
     */
 
     if(myDriver.id){
@@ -1465,7 +2060,8 @@ async function saveStatus(){
         )
         .update({
 
-          driverId:myDriver.id,
+          driverId:
+            myDriver.id,
 
           telegramId:
             myTelegramId,
@@ -1484,9 +2080,11 @@ async function saveStatus(){
 
     }
 
+
   }catch(e){
 
     console.error(e);
+
 
     showNotice(
       "Status Firebase में save नहीं हुआ."
@@ -1513,6 +2111,7 @@ function shareMyLocation(){
 
   }
 
+
   if(!navigator.geolocation){
 
     showNotice(
@@ -1522,6 +2121,7 @@ function shareMyLocation(){
     return;
 
   }
+
 
   navigator.geolocation.getCurrentPosition(
 
@@ -1552,59 +2152,131 @@ function updateMyLocation(p){
   if(!myDriver)
     return;
 
+
   const lat =
-    Number(p.coords.latitude);
+    Number(
+      p.coords.latitude
+    );
+
 
   const lng =
-    Number(p.coords.longitude);
+    Number(
+      p.coords.longitude
+    );
+
 
   if(
     !Number.isFinite(lat) ||
     !Number.isFinite(lng)
   ){
+
     return;
+
   }
 
-  myDriver.lat = lat;
 
-  myDriver.lng = lng;
+  myDriver.lat =
+    lat;
 
-  myDriver.online = true;
+  myDriver.lng =
+    lng;
+
+  myDriver.online =
+    true;
+
 
   let d =
     drivers.find(
       x => x.id === myDriver.id
     );
 
+
   if(d){
 
-    d.lat = lat;
+    d.lat =
+      lat;
 
-    d.lng = lng;
+    d.lng =
+      lng;
 
-    d.online = true;
+    d.online =
+      true;
 
-    d.duty = myDuty;
+    d.duty =
+      myDuty;
 
   }
+
 
   $("locStatus").textContent =
     "Location shared";
 
+
   stats();
 
-  renderMarkers();
+  renderList();
 
-  if(map){
 
-    map.setView(
-      [lat,lng],
-      15
-    );
+  /*
+    Only move own marker if
+    this driver is currently selected.
+  */
 
-    mapCenteredOnce = true;
+  if(
+    selectedDriverId === myDriver.id
+  ){
+
+    if(
+      selectedDriverData
+    ){
+
+      selectedDriverData.lat =
+        lat;
+
+      selectedDriverData.lng =
+        lng;
+
+      selectedDriverData.online =
+        true;
+
+      selectedDriverData.duty =
+        myDuty;
+
+    }
+
+
+    if(markers[myDriver.id]){
+
+      markers[myDriver.id]
+        .setLatLng(
+          [lat,lng]
+        );
+
+    }else{
+
+      renderMarkers();
+
+    }
+
+
+    /*
+      Do not continuously
+      move the map itself.
+    */
+
+    if(!mapCenteredOnce){
+
+      map.setView(
+        [lat,lng],
+        15
+      );
+
+      mapCenteredOnce = true;
+
+    }
 
   }
+
 
   writeLive(
     lat,
@@ -1648,6 +2320,7 @@ function writeLive(lat,lng){
   if(!myDriver)
     return;
 
+
   rtdb
     .ref(
       "liveLocations/" +
@@ -1675,11 +2348,12 @@ function writeLive(lat,lng){
           .TIMESTAMP
 
     })
-    .catch(e =>
-      console.error(
-        "RTDB GPS write error:",
-        e
-      )
+    .catch(
+      e =>
+        console.error(
+          "RTDB GPS write error:",
+          e
+        )
     );
 
 }
@@ -1696,8 +2370,11 @@ function startGPS(){
     watchId !== null ||
     !navigator.geolocation
   ){
+
     return;
+
   }
+
 
   watchId =
     navigator.geolocation.watchPosition(
@@ -1723,10 +2400,14 @@ function startGPS(){
 
 function stopGPS(){
 
-  if(watchId !== null){
+  if(
+    watchId !== null
+  ){
 
     navigator.geolocation
-      .clearWatch(watchId);
+      .clearWatch(
+        watchId
+      );
 
     watchId = null;
 
@@ -1751,7 +2432,10 @@ async function toggleDuty(){
 
   }
 
-  myDuty = !myDuty;
+
+  myDuty =
+    !myDuty;
+
 
   $("dutyToggle")
     .classList
@@ -1760,7 +2444,9 @@ async function toggleDuty(){
       myDuty
     );
 
+
   await saveStatus();
+
 
   showNotice(
     myDuty
@@ -1777,7 +2463,9 @@ async function toggleDuty(){
 
 function toggleAutoGPS(){
 
-  autoGPS = !autoGPS;
+  autoGPS =
+    !autoGPS;
+
 
   $("gpsToggle")
     .classList
@@ -1786,10 +2474,12 @@ function toggleAutoGPS(){
       autoGPS
     );
 
+
   if(autoGPS)
     startGPS();
   else
     stopGPS();
+
 
   showNotice(
     autoGPS
@@ -1806,7 +2496,10 @@ function toggleAutoGPS(){
 
 function closeMiniApp(){
 
-  if(tg && tg.close){
+  if(
+    tg &&
+    tg.close
+  ){
 
     tg.close();
 
@@ -1817,6 +2510,19 @@ function closeMiniApp(){
     );
 
   }
+
+}
+
+
+/* =========================
+   HELP / SUPPORT
+========================= */
+
+function showHelp(){
+
+  showNotice(
+    "Help & Support coming next."
+  );
 
 }
 
@@ -1835,26 +2541,51 @@ async function startApp(){
 
   renderList();
 
-  if(!(await authAnon()))
+
+  if(
+    !(await authAnon())
+  ){
+
     return;
+
+  }
+
 
   const found =
     await loadMine();
 
+
   /*
-    Firestore driver information
-    is loaded first as fallback.
+    Firestore driver master data
+    loads without RTDB live GPS.
   */
 
   await loadDrivers();
 
+
   /*
-    IMPORTANT:
-    RTDB live GPS listener starts
-    after Firebase authentication.
+    Default selection:
+    If this Telegram user is a
+    registered driver, show ONLY
+    his own driver on the map.
   */
 
-  startLiveLocations();
+  if(
+    found &&
+    myDriver &&
+    drivers.some(
+      d => d.id === myDriver.id
+    )
+  ){
+
+    mapCenteredOnce = false;
+
+    await selectDriver(
+      myDriver.id
+    );
+
+  }
+
 
   /*
     Driver's own GPS starts only
@@ -1879,14 +2610,18 @@ async function startApp(){
 
 startApp();
 
+
 setTimeout(
+
   () => {
 
     if(map)
       map.invalidateSize();
 
   },
+
   1000
+
 );
 
 </script>

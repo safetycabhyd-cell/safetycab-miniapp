@@ -285,7 +285,8 @@ font-weight:800
 
 .small{
 font-size:12px;
-color:#667
+color:#667;
+margin-top:3px
 }
 
 .badge{
@@ -331,7 +332,7 @@ background:#667
 }
 
 
-/* ================= PHOTO ================= */
+/* ================= PROFILE PHOTO ================= */
 
 .photoBox{
 width:130px;
@@ -379,6 +380,78 @@ align-items:center;
 gap:7px;
 font-size:12px;
 margin:8px 0 12px
+}
+
+
+/* ================= CAR PHOTO ================= */
+
+.carPhotoBox{
+width:100%;
+max-width:280px;
+height:170px;
+border-radius:14px;
+margin:5px auto 10px;
+background:#eef3f7;
+border:3px dashed #b9c7d3;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
+cursor:pointer
+}
+
+.carPhotoBox img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block
+}
+
+.carPhotoPlaceholder{
+text-align:center;
+font-size:18px;
+font-weight:700;
+color:#667;
+line-height:1.5
+}
+
+.carPhotoIcon{
+font-size:48px;
+display:block;
+margin-bottom:5px
+}
+
+.carPhotoFile{
+display:none
+}
+
+.carPhotoHint{
+font-size:11px;
+color:#667;
+text-align:center;
+margin-bottom:10px
+}
+
+.carPhotoRemove{
+display:flex;
+align-items:center;
+gap:7px;
+font-size:12px;
+margin:8px 0 14px
+}
+
+
+/* ================= VEHICLE TYPE ================= */
+
+.vehicleTypeBadge{
+display:inline-block;
+background:#e4f1fb;
+color:#075a8c;
+padding:4px 8px;
+border-radius:10px;
+font-size:11px;
+font-weight:700
 }
 
 
@@ -464,7 +537,8 @@ margin-bottom:4px
 width:100%;
 padding:10px;
 border:1px solid #ccd5dd;
-border-radius:9px
+border-radius:9px;
+background:#fff
 }
 
 .close{
@@ -504,6 +578,33 @@ color:#a40000
 .statusInfo{
 background:#e4f1fb;
 color:#075a8c
+}
+
+
+.detailCarPhoto{
+width:100%;
+max-width:320px;
+height:190px;
+object-fit:cover;
+display:block;
+margin:10px auto 15px;
+border-radius:14px;
+border:2px solid #d5dfe7;
+background:#eef3f7
+}
+
+.detailCarPlaceholder{
+width:100%;
+max-width:320px;
+height:190px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:10px auto 15px;
+border-radius:14px;
+background:#eef3f7;
+border:2px solid #d5dfe7;
+font-size:60px
 }
 
 
@@ -1435,6 +1536,12 @@ d.name || "",
 vehicle:
 d.vehicle || "",
 
+vehicleType:
+d.vehicleType || "",
+
+carPhoto:
+d.carPhoto || "",
+
 lat:
 Number(d.lat),
 
@@ -1552,6 +1659,12 @@ data.phone || "",
 vehicle:
 data.vehicle || "",
 
+vehicleType:
+data.vehicleType || "",
+
+carPhoto:
+data.carPhoto || "",
+
 telegramId:
 data.telegramId
 ?
@@ -1578,10 +1691,6 @@ last:
 data.last ||
 timestampText(data.updatedAt),
 
-/*
- Profile photo is stored
- only in private drivers record.
-*/
 profilePhoto:
 data.profilePhoto || ""
 
@@ -2018,6 +2127,8 @@ const t =
 " " +
 (d.vehicle || "") +
 " " +
+(d.vehicleType || "") +
+" " +
 (d.phone || "")
 )
 .toLowerCase();
@@ -2092,6 +2203,12 @@ ${esc(d.id)}
 •
 
 ${esc(d.vehicle)}
+
+•
+
+<span class="vehicleTypeBadge">
+${esc(d.vehicleType || "Not Set")}
+</span>
 
 </div>
 
@@ -2297,6 +2414,23 @@ alt="Driver Profile Photo">
 `;
 
 
+const carPhotoHTML =
+d.carPhoto
+?
+`
+<img
+class="detailCarPhoto"
+src="${esc(d.carPhoto)}"
+alt="Car Photo">
+`
+:
+`
+<div class="detailCarPlaceholder">
+🚕
+</div>
+`;
+
+
 openModal(`
 
 <button
@@ -2329,9 +2463,25 @@ ${esc(d.phone)}
 
 
 <p>
-<b>Vehicle:</b>
+<b>Vehicle Number:</b>
 ${esc(d.vehicle)}
 </p>
+
+
+<p>
+<b>Vehicle Type:</b>
+<span class="vehicleTypeBadge">
+${esc(d.vehicleType || "Not Set")}
+</span>
+</p>
+
+
+<h3>
+🚗 Car Photo
+</h3>
+
+
+${carPhotoHTML}
 
 
 <p>
@@ -2570,10 +2720,102 @@ reader.readAsDataURL(file);
 
 
 /* =====================================================
-   COMPRESS PROFILE PHOTO
+   CAR PHOTO PREVIEW
 ===================================================== */
 
-function compressProfilePhoto(file){
+function previewCarPhoto(input){
+
+const file =
+input.files &&
+input.files[0];
+
+if(!file){
+
+return;
+
+}
+
+
+/* Only image */
+
+if(!file.type.startsWith("image/")){
+
+alert(
+"Please select an image file."
+);
+
+input.value = "";
+
+return;
+
+}
+
+
+const reader =
+new FileReader();
+
+reader.onload =
+function(e){
+
+const preview =
+document.getElementById(
+"carPhotoPreview"
+);
+
+if(preview){
+
+preview.src =
+e.target.result;
+
+preview.style.display =
+"block";
+
+}
+
+const placeholder =
+document.getElementById(
+"carPhotoPlaceholder"
+);
+
+if(placeholder){
+
+placeholder.style.display =
+"none";
+
+}
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+/* =====================================================
+   OPEN CAR GALLERY
+===================================================== */
+
+function openCarGallery(){
+
+const input =
+document.getElementById(
+"f_carPhoto"
+);
+
+if(input){
+
+input.click();
+
+}
+
+}
+
+
+/* =====================================================
+   COMPRESS IMAGE
+===================================================== */
+
+function compressImage(file){
 
 return new Promise(
 function(resolve,reject){
@@ -2598,7 +2840,7 @@ new Image();
 img.onload =
 function(){
 
-const MAX_SIZE = 600;
+const MAX_SIZE = 700;
 
 let width =
 img.width;
@@ -2652,6 +2894,7 @@ height;
 const ctx =
 canvas.getContext("2d");
 
+
 ctx.drawImage(
 img,
 0,
@@ -2662,47 +2905,59 @@ height
 
 
 /*
- JPEG compression keeps the
- Firestore document small.
+ First compression.
 */
 
-const compressed =
+let compressed =
 canvas.toDataURL(
 "image/jpeg",
-0.70
+0.68
 );
 
 
 /*
- Safety check.
- Firestore document limit is
- approximately 1 MiB.
+ If image is still large,
+compress again.
 */
 
 if(compressed.length > 700000){
 
-const smaller =
+compressed =
 canvas.toDataURL(
 "image/jpeg",
-0.55
+0.52
 );
 
-resolve(smaller);
+}
+
+
+/*
+ Final safety compression.
+*/
+
+if(compressed.length > 900000){
+
+compressed =
+canvas.toDataURL(
+"image/jpeg",
+0.42
+);
 
 }
-else{
+
 
 resolve(compressed);
 
-}
-
 };
+
 
 img.onerror =
 function(){
 
 reject(
-new Error("Could not read image.")
+new Error(
+"Could not read image."
+)
 );
 
 };
@@ -2712,11 +2967,14 @@ event.target.result;
 
 };
 
+
 reader.onerror =
 function(){
 
 reject(
-new Error("Could not read selected photo.")
+new Error(
+"Could not read selected photo."
+)
 );
 
 };
@@ -2729,7 +2987,29 @@ reader.readAsDataURL(file);
 
 
 /* =====================================================
-   REMOVE PHOTO CHECK
+   COMPRESS PROFILE PHOTO
+===================================================== */
+
+function compressProfilePhoto(file){
+
+return compressImage(file);
+
+}
+
+
+/* =====================================================
+   COMPRESS CAR PHOTO
+===================================================== */
+
+function compressCarPhoto(file){
+
+return compressImage(file);
+
+}
+
+
+/* =====================================================
+   REMOVE PROFILE PHOTO CHECK
 ===================================================== */
 
 function toggleRemovePhoto(){
@@ -2785,6 +3065,62 @@ placeholder.style.display =
 
 
 /* =====================================================
+   REMOVE CAR PHOTO CHECK
+===================================================== */
+
+function toggleRemoveCarPhoto(){
+
+const checkbox =
+document.getElementById(
+"f_removeCarPhoto"
+);
+
+const fileInput =
+document.getElementById(
+"f_carPhoto"
+);
+
+if(
+checkbox &&
+checkbox.checked
+){
+
+if(fileInput){
+
+fileInput.value = "";
+
+}
+
+const preview =
+document.getElementById(
+"carPhotoPreview"
+);
+
+if(preview){
+
+preview.style.display =
+"none";
+
+}
+
+const placeholder =
+document.getElementById(
+"carPhotoPlaceholder"
+);
+
+if(placeholder){
+
+placeholder.style.display =
+"block";
+
+}
+
+}
+
+}
+
+
+/* =====================================================
    ADD / EDIT DRIVER
 ===================================================== */
 
@@ -2820,6 +3156,8 @@ id:"",
 name:"",
 phone:"",
 vehicle:"",
+vehicleType:"Sedan",
+carPhoto:"",
 telegramId:"",
 lat:17.42536,
 lng:78.48694,
@@ -2848,36 +3186,116 @@ const currentPhoto =
 d.profilePhoto || "";
 
 
+const currentCarPhoto =
+d.carPhoto || "";
+
+
+const selectedVehicleType =
+d.vehicleType === "SUV"
+?
+"SUV"
+:
+"Sedan";
+
+
 const photoHTML =
 currentPhoto
 ?
 `
 <div class="photoBox">
+
 <img
 id="profilePhotoPreview"
 src="${esc(currentPhoto)}"
 alt="Driver Profile Photo">
+
 <div
 id="profilePhotoPlaceholder"
 class="photoPlaceholder"
 style="display:none">
+
 👤
+
 </div>
+
 </div>
 `
 :
 `
 <div class="photoBox">
+
 <img
 id="profilePhotoPreview"
 src=""
 alt="Driver Profile Photo"
 style="display:none">
+
 <div
 id="profilePhotoPlaceholder"
 class="photoPlaceholder">
+
 👤
+
 </div>
+
+</div>
+`;
+
+
+const carPhotoHTML =
+currentCarPhoto
+?
+`
+<div
+id="carPhotoBox"
+class="carPhotoBox"
+onclick="openCarGallery()">
+
+<img
+id="carPhotoPreview"
+src="${esc(currentCarPhoto)}"
+alt="Car Photo">
+
+<div
+id="carPhotoPlaceholder"
+class="carPhotoPlaceholder"
+style="display:none">
+
+<span class="carPhotoIcon">
+🚗
+</span>
+
+Tap to Select Car Photo
+
+</div>
+
+</div>
+`
+:
+`
+<div
+id="carPhotoBox"
+class="carPhotoBox"
+onclick="openCarGallery()">
+
+<img
+id="carPhotoPreview"
+src=""
+alt="Car Photo"
+style="display:none">
+
+<div
+id="carPhotoPlaceholder"
+class="carPhotoPlaceholder">
+
+<span class="carPhotoIcon">
+📷
+</span>
+
+Tap to Select Car Photo
+
+</div>
+
 </div>
 `;
 
@@ -2904,7 +3322,9 @@ id
 </h2>
 
 
-<!-- ================= PROFILE PHOTO ================= -->
+<!-- =================================================
+     PROFILE PHOTO
+================================================= -->
 
 <label
 style="
@@ -2915,7 +3335,7 @@ text-align:center;
 margin-bottom:5px;
 ">
 
-Profile Photo
+Driver Profile Photo
 
 </label>
 
@@ -2949,6 +3369,59 @@ Remove Profile Photo
 
 </label>
 
+
+<!-- =================================================
+     CAR PHOTO
+================================================= -->
+
+<label
+style="
+display:block;
+font-size:13px;
+font-weight:700;
+text-align:center;
+margin-top:8px;
+margin-bottom:5px;
+">
+
+🚗 Car Photo
+
+</label>
+
+
+${carPhotoHTML}
+
+
+<input
+id="f_carPhoto"
+class="carPhotoFile"
+type="file"
+accept="image/*"
+onchange="previewCarPhoto(this)">
+
+
+<div class="carPhotoHint">
+
+Tap the Car Photo box to open Gallery
+
+</div>
+
+
+<label class="carPhotoRemove">
+
+<input
+id="f_removeCarPhoto"
+type="checkbox"
+onchange="toggleRemoveCarPhoto()">
+
+Remove Car Photo
+
+</label>
+
+
+<!-- =================================================
+     DRIVER FIELDS
+================================================= -->
 
 <div class="row">
 
@@ -3000,7 +3473,43 @@ Vehicle Number
 
 <input
 id="f_vehicle"
-value="${esc(d.vehicle)}">
+value="${esc(d.vehicle)}"
+placeholder="Example: TS08UE0850">
+
+</div>
+
+
+<!-- =================================================
+     VEHICLE TYPE
+================================================= -->
+
+<div class="field">
+
+<label>
+Vehicle Type
+</label>
+
+<select
+id="f_vehicleType">
+
+<option
+value="Sedan"
+${selectedVehicleType === "Sedan" ? "selected" : ""}>
+
+Sedan
+
+</option>
+
+
+<option
+value="SUV"
+${selectedVehicleType === "SUV" ? "selected" : ""}>
+
+SUV
+
+</option>
+
+</select>
 
 </div>
 
@@ -3139,6 +3648,11 @@ style="margin-bottom:12px">
 Telegram ID से यह Driver Radar account
 इस Driver ID से link होगा।
 
+<br><br>
+
+Vehicle Type और Car Photo भी इसी Driver
+record के साथ Firebase में save होंगे।
+
 </div>
 
 
@@ -3165,7 +3679,8 @@ const id =
 document
 .getElementById("f_id")
 .value
-.trim();
+.trim()
+.toUpperCase();
 
 
 const name =
@@ -3187,6 +3702,12 @@ document
 .getElementById("f_vehicle")
 .value
 .trim();
+
+
+const vehicleType =
+document
+.getElementById("f_vehicleType")
+.value;
 
 
 const telegramId =
@@ -3235,12 +3756,27 @@ document
 if(
 !id ||
 !name ||
+!vehicle ||
 !Number.isFinite(lat) ||
 !Number.isFinite(lng)
 ){
 
 alert(
-"Driver ID, Name, Latitude and Longitude are required."
+"Driver ID, Name, Vehicle Number, Latitude and Longitude are required."
+);
+
+return;
+
+}
+
+
+if(
+vehicleType !== "Sedan" &&
+vehicleType !== "SUV"
+){
+
+alert(
+"Vehicle Type must be Sedan or SUV."
 );
 
 return;
@@ -3266,10 +3802,12 @@ try{
 
 
 /* =====================================================
-   GET OLD PHOTO
+   GET OLD PHOTO DATA
 ===================================================== */
 
-let existingPhoto = "";
+let existingProfilePhoto = "";
+
+let existingCarPhoto = "";
 
 
 if(oldId){
@@ -3285,8 +3823,14 @@ if(
 oldSnapshot.exists
 ){
 
-existingPhoto =
-oldSnapshot.data().profilePhoto || "";
+const oldData =
+oldSnapshot.data();
+
+existingProfilePhoto =
+oldData.profilePhoto || "";
+
+existingCarPhoto =
+oldData.carPhoto || "";
 
 }
 
@@ -3310,7 +3854,7 @@ document.getElementById(
 
 
 let profilePhoto =
-existingPhoto;
+existingProfilePhoto;
 
 
 if(
@@ -3344,6 +3888,56 @@ photoInput.files[0]
 
 
 /* =====================================================
+   CAR PHOTO
+===================================================== */
+
+const carPhotoInput =
+document.getElementById(
+"f_carPhoto"
+);
+
+
+const removeCarPhoto =
+document.getElementById(
+"f_removeCarPhoto"
+);
+
+
+let carPhoto =
+existingCarPhoto;
+
+
+if(
+removeCarPhoto &&
+removeCarPhoto.checked
+){
+
+carPhoto = "";
+
+}
+
+
+if(
+carPhotoInput &&
+carPhotoInput.files &&
+carPhotoInput.files[0]
+){
+
+showStatus(
+"Compressing car photo...",
+"statusInfo"
+);
+
+
+carPhoto =
+await compressCarPhoto(
+carPhotoInput.files[0]
+);
+
+}
+
+
+/* =====================================================
    DRIVER DATA
 ===================================================== */
 
@@ -3356,6 +3950,12 @@ name:name,
 phone:phone,
 
 vehicle:vehicle,
+
+vehicleType:
+vehicleType,
+
+carPhoto:
+carPhoto || "",
 
 telegramId:
 telegramId || "",
@@ -3568,14 +4168,14 @@ closeModal();
 
 
 showStatus(
-"Driver saved successfully. Profile photo saved.",
+"Driver saved successfully. Vehicle Type and Car Photo saved.",
 "statusOk"
 );
 
 
 setTimeout(
 hideStatus,
-3000
+3500
 );
 
 
@@ -3817,8 +4417,20 @@ Realtime Database / liveLocations
 
 
 <p>
-<b>Profile Photo:</b>
+<b>Driver Profile Photo:</b>
 Compressed and stored with driver record
+</p>
+
+
+<p>
+<b>Car Photo:</b>
+Compressed and stored with driver record
+</p>
+
+
+<p>
+<b>Vehicle Type:</b>
+Sedan / SUV
 </p>
 
 
@@ -3836,7 +4448,7 @@ Telegram ID links Driver Radar to Driver ID
 
 <p>
 <b>Version:</b>
-Safety Cab Firebase Driver Database v2.2
+Safety Cab Firebase Driver Database v2.3
 </p>
 
 

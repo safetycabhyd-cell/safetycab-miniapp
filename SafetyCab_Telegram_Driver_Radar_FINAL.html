@@ -556,6 +556,7 @@ line-height:1.5
 display:none
 }
 
+
 @media(max-width:420px){
 
 .title{
@@ -569,6 +570,7 @@ font-size:23px
 </head>
 
 <body>
+
 
 <div id="accessLock">
 
@@ -594,6 +596,7 @@ Please wait...
 <div id="radarApp">
 
 <div id="notice"></div>
+
 
 <header class="header">
 
@@ -659,16 +662,19 @@ style="display:none">
 🚕 Driver Radar
 </h3>
 
+
 <input
 id="search"
 class="search"
 placeholder="Search Driver ID  (DC001)"
 autocomplete="off">
 
+
 <div
 id="driverList"
 style="margin-top:10px">
 </div>
+
 
 </div>
 
@@ -685,6 +691,7 @@ style="margin-top:10px">
 👤 My Profile
 </h3>
 
+
 <div class="row">
 
 <span>
@@ -696,6 +703,7 @@ Telegram User
 </strong>
 
 </div>
+
 
 <div class="row">
 
@@ -709,6 +717,7 @@ Telegram ID
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -720,6 +729,7 @@ Not Registered
 </strong>
 
 </div>
+
 
 <div class="row">
 
@@ -733,6 +743,7 @@ Not shared
 
 </div>
 
+
 <button
 class="action"
 style="width:100%;margin-top:12px"
@@ -745,17 +756,20 @@ onclick="shareMyLocation()">
 </div>
 
 
+
 <div class="card">
 
 <h3>
 🚦 My Status
 </h3>
 
+
 <div class="row">
 
 <span>
 Duty Status
 </span>
+
 
 <button
 id="dutyToggle"
@@ -768,11 +782,13 @@ onclick="toggleDuty()">
 
 </div>
 
+
 <div class="row">
 
 <span>
 Auto GPS Update
 </span>
+
 
 <button
 id="gpsToggle"
@@ -785,9 +801,11 @@ onclick="toggleAutoGPS()">
 
 </div>
 
+
 </div>
 
 </section>
+
 
 
 <!-- ================= SETTINGS ================= -->
@@ -799,6 +817,7 @@ onclick="toggleAutoGPS()">
 <h3>
 ⚙️ Settings
 </h3>
+
 
 <div class="row">
 
@@ -812,6 +831,7 @@ Hindi / English
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -823,6 +843,7 @@ OpenStreetMap
 </strong>
 
 </div>
+
 
 <div class="row">
 
@@ -836,6 +857,7 @@ Live GPS
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -847,6 +869,7 @@ Connecting...
 </strong>
 
 </div>
+
 
 <div class="row">
 
@@ -860,10 +883,12 @@ Safety Cab Radar 4.0
 
 </div>
 
+
 </div>
 
 
 <div class="card">
+
 
 <button
 class="action secondary"
@@ -874,6 +899,7 @@ onclick="openHelp()">
 
 </button>
 
+
 <button
 class="action danger"
 style="width:100%"
@@ -883,14 +909,17 @@ onclick="closeMiniApp()">
 
 </button>
 
+
 </div>
 
 </section>
 
 
+
 <!-- ================= BOTTOM NAV ================= -->
 
 <nav class="bottom">
+
 
 <button
 class="navbtn active"
@@ -904,6 +933,7 @@ Map
 
 </button>
 
+
 <button
 class="navbtn"
 data-page="drivers">
@@ -915,6 +945,7 @@ data-page="drivers">
 Drivers
 
 </button>
+
 
 <button
 class="navbtn"
@@ -928,6 +959,7 @@ Profile
 
 </button>
 
+
 <button
 class="navbtn"
 data-page="settings">
@@ -940,7 +972,9 @@ Settings
 
 </button>
 
+
 </nav>
+
 
 
 <!-- ================= MODAL ================= -->
@@ -950,7 +984,9 @@ id="modal"
 class="modal"
 onclick="if(event.target===this)closeModal()">
 
+
 <div class="sheet">
+
 
 <button
 class="close"
@@ -960,13 +996,17 @@ onclick="closeModal()">
 
 </button>
 
+
 <div id="modalBody"></div>
 
-</div>
 
 </div>
 
 </div>
+
+
+</div>
+
 
 
 <script
@@ -983,7 +1023,7 @@ src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 const firebaseConfig = {
 
 apiKey:
-"AIzaBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
+"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
 
 authDomain:
 "safety-cab-radar.firebaseapp.com",
@@ -1022,6 +1062,7 @@ null;
 if(tg){
 
 tg.ready();
+
 tg.expand();
 
 }
@@ -1085,7 +1126,7 @@ let routePickupMarker = null;
 
 let routeDestinationMarker = null;
 
-let routeDriverPosition = null;
+let bookingPickupCoords = null;
 
 
 /* =====================================================
@@ -1200,6 +1241,7 @@ function page(id){
 if(!radarAuthorized)
 return;
 
+
 document
 .querySelectorAll(".page")
 .forEach(
@@ -1210,9 +1252,11 @@ x.classList.remove("active");
 }
 );
 
+
 $(id)
 .classList
 .add("active");
+
 
 document
 .querySelectorAll(".navbtn")
@@ -1226,6 +1270,7 @@ x.dataset.page === id
 
 }
 );
+
 
 if(
 id === "home" &&
@@ -1273,8 +1318,10 @@ function initMap(){
 if(!radarAuthorized)
 return;
 
+
 if(map)
 return;
+
 
 map =
 L
@@ -1283,6 +1330,7 @@ L
 [17.42536,78.48694],
 13
 );
+
 
 L
 .tileLayer(
@@ -1396,6 +1444,7 @@ alt="Driver Profile Photo">
 
 }
 
+
 if(className === "popupPhoto"){
 
 return `
@@ -1405,6 +1454,7 @@ return `
 `;
 
 }
+
 
 return `
 <div class="profilePhotoPlaceholder">
@@ -1437,6 +1487,7 @@ alt="Car Photo">
 
 }
 
+
 return `
 <img
 class="detailCarPhoto"
@@ -1445,6 +1496,7 @@ alt="Car Photo">
 `;
 
 }
+
 
 if(mode === "popup"){
 
@@ -1455,6 +1507,7 @@ return `
 `;
 
 }
+
 
 return `
 <div class="detailCarPlaceholder">
@@ -1477,13 +1530,17 @@ if(
 )
 return;
 
+
 clearSelectedMarker();
+
 
 const d =
 selectedDriverData;
 
+
 if(!d)
 return;
+
 
 if(
 !Number.isFinite(d.lat) ||
@@ -1493,6 +1550,7 @@ if(
 return;
 
 }
+
 
 selectedMarker =
 L
@@ -1505,17 +1563,20 @@ driverIcon(d)
 )
 .addTo(map);
 
+
 const popupPhoto =
 profilePhotoHTML(
 d.profilePhoto,
 "popupPhoto"
 );
 
+
 const carPhoto =
 carPhotoHTML(
 d.carPhoto,
 "popup"
 );
+
 
 selectedMarker.bindPopup(
 
@@ -1529,11 +1590,14 @@ min-width:225px;
 
 ${popupPhoto}
 
+
 <b>
 🚕 ${esc(d.name || d.id)}
 </b>
 
+
 <br>
+
 
 <div
 style="
@@ -1542,33 +1606,41 @@ text-align:left;
 line-height:1.6;
 ">
 
+
 <b>Driver ID:</b>
 ${esc(d.id)}
 
+
 <br>
+
 
 <b>Name:</b>
 ${esc(d.name || "-")}
 
+
 <br>
+
 
 <b>Vehicle Number:</b>
 ${esc(d.vehicle || "-")}
 
+
 <br>
 
-<b>Vehicle Type:</b>
 
+<b>Vehicle Type:</b>
 <span class="vehicleTypeBadge">
 ${esc(d.vehicleType || "Not Set")}
 </span>
 
+
 <br>
+
 
 ${carPhoto}
 
-<b>GPS:</b>
 
+<b>GPS:</b>
 ${
 d.online
 ?
@@ -1577,12 +1649,16 @@ d.online
 "🔴 Offline"
 }
 
+
 <br>
+
 
 <b>Rating:</b>
 ⭐ ${d.rating || "Not Rated"}
 
+
 </div>
+
 
 <div
 id="popupArea"
@@ -1593,6 +1669,7 @@ style="text-align:left"
 📍 Area: Finding...
 
 </div>
+
 
 <button
 class="action"
@@ -1622,11 +1699,13 @@ onclick="openBooking()"
 
 </button>
 
+
 </div>
 
 `
 
 );
+
 
 loadArea(
 d.lat,
@@ -1645,6 +1724,7 @@ async function loadOnlineCount(){
 if(!radarAuthorized)
 return;
 
+
 try{
 
 const snapshot =
@@ -1656,6 +1736,7 @@ await db
 true
 )
 .get();
+
 
 $("online").textContent =
 snapshot.size;
@@ -1683,18 +1764,22 @@ $("online").textContent =
 let searchTimer =
 null;
 
+
 $("search").oninput =
 function(){
 
 if(!radarAuthorized)
 return;
 
+
 clearTimeout(
 searchTimer
 );
 
+
 const raw =
 this.value.trim();
+
 
 if(!raw){
 
@@ -1708,10 +1793,12 @@ return;
 
 }
 
+
 const id =
 normalizeDriverId(
 raw
 );
+
 
 searchTimer =
 setTimeout(
@@ -1737,10 +1824,12 @@ rawId
 if(!radarAuthorized)
 return;
 
+
 const id =
 normalizeDriverId(
 rawId
 );
+
 
 if(
 !isValidDriverId(id)
@@ -1760,11 +1849,13 @@ return;
 
 }
 
+
 $("driverList").innerHTML =
 
 "<div class='empty'>" +
 "Searching..." +
 "</div>";
+
 
 try{
 
@@ -1778,6 +1869,7 @@ id
 )
 .limit(1)
 .get();
+
 
 if(snapshot.empty){
 
@@ -1795,11 +1887,14 @@ return;
 
 }
 
+
 const doc =
 snapshot.docs[0];
 
+
 const d =
 doc.data();
+
 
 const driver = {
 
@@ -1853,6 +1948,7 @@ d.profilePhoto ||
 
 };
 
+
 $("driverList").innerHTML =
 
 `
@@ -1862,6 +1958,7 @@ class="driver"
 onclick="
 selectDriver('${ejs(driver.id)}')
 ">
+
 
 <div class="avatar">
 
@@ -1879,6 +1976,7 @@ alt="Driver">
 
 </div>
 
+
 <div class="driverinfo">
 
 <b>
@@ -1890,6 +1988,7 @@ ${esc(driver.id)}
 ${esc(driver.name)}
 
 </b>
+
 
 <div class="small">
 
@@ -1906,6 +2005,7 @@ ${esc(driver.vehicleType || "Not Set")}
 </div>
 
 </div>
+
 
 <span
 class="badge ${
@@ -1927,12 +2027,15 @@ driver.online
 
 </span>
 
+
 </div>
 
 `;
 
+
 window.searchedDriver =
 driver;
+
 
 }
 catch(error){
@@ -1941,6 +2044,7 @@ console.error(
 "Driver search error:",
 error
 );
+
 
 $("driverList").innerHTML =
 
@@ -1964,13 +2068,16 @@ rawId
 if(!radarAuthorized)
 return;
 
+
 const id =
 normalizeDriverId(
 rawId
 );
 
+
 const driver =
 window.searchedDriver;
+
 
 if(
 !driver ||
@@ -1987,21 +2094,27 @@ return;
 
 }
 
+
 stopSelectedLiveListener();
+
 
 selectedDriverId =
 id;
+
 
 selectedDriverData =
 {
 ...driver
 };
 
+
 mapCenteredOnce =
 false;
 
+
 $("selectedInfo").style.display =
 "block";
+
 
 $("selectedInfo").textContent =
 
@@ -2010,7 +2123,9 @@ selectedDriverData.id +
 " • " +
 selectedDriverData.name;
 
+
 renderSelectedMarker();
+
 
 if(
 Number.isFinite(
@@ -2029,10 +2144,16 @@ selectedDriverData.lng
 15
 );
 
+
 mapCenteredOnce =
 true;
 
 }
+
+
+/*
+ ONLY selected driver RTDB.
+*/
 
 selectedLiveRef =
 rtdb.ref(
@@ -2040,14 +2161,17 @@ rtdb.ref(
 id
 );
 
+
 selectedLiveCallback =
 function(snapshot){
 
 if(!radarAuthorized)
 return;
 
+
 const live =
 snapshot.val();
+
 
 if(!live){
 
@@ -2055,11 +2179,14 @@ return;
 
 }
 
+
 const lat =
 Number(live.lat);
 
+
 const lng =
 Number(live.lng);
+
 
 if(
 !Number.isFinite(lat) ||
@@ -2070,14 +2197,17 @@ return;
 
 }
 
+
 selectedDriverData.lat =
 lat;
 
 selectedDriverData.lng =
 lng;
 
+
 selectedDriverData.online =
 live.online === true;
+
 
 if(selectedMarker){
 
@@ -2098,6 +2228,7 @@ renderSelectedMarker();
 
 }
 
+
 if(!mapCenteredOnce){
 
 map.setView(
@@ -2110,6 +2241,7 @@ true;
 
 }
 
+
 loadArea(
 lat,
 lng
@@ -2117,10 +2249,12 @@ lng
 
 };
 
+
 selectedLiveRef.on(
 "value",
 selectedLiveCallback
 );
+
 
 page("home");
 
@@ -2136,11 +2270,14 @@ function openDriverDetails(){
 if(!radarAuthorized)
 return;
 
+
 const d =
 selectedDriverData;
 
+
 if(!d)
 return;
+
 
 const profile =
 profilePhotoHTML(
@@ -2148,11 +2285,13 @@ d.profilePhoto,
 "profilePhoto"
 );
 
+
 const car =
 carPhotoHTML(
 d.carPhoto,
 "details"
 );
+
 
 $("modalBody").innerHTML =
 
@@ -2162,7 +2301,9 @@ $("modalBody").innerHTML =
 🚕 ${esc(d.name)}
 </h2>
 
+
 ${profile}
+
 
 <div class="row">
 
@@ -2176,6 +2317,7 @@ ${esc(d.id)}
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -2188,6 +2330,7 @@ ${esc(d.name || "-")}
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -2199,6 +2342,7 @@ ${esc(d.vehicle || "-")}
 </b>
 
 </div>
+
 
 <div class="row">
 
@@ -2214,11 +2358,14 @@ ${esc(d.vehicleType || "Not Set")}
 
 </div>
 
+
 <h3>
 🚗 Car Photo
 </h3>
 
+
 ${car}
+
 
 <div class="row">
 
@@ -2238,6 +2385,7 @@ d.online
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -2249,6 +2397,7 @@ Rating
 </b>
 
 </div>
+
 
 <div class="row">
 
@@ -2269,6 +2418,7 @@ Number(d.lat).toFixed(6)
 
 </div>
 
+
 <div class="row">
 
 <span>
@@ -2288,6 +2438,7 @@ Number(d.lng).toFixed(6)
 
 </div>
 
+
 <div
 class="locationBox"
 >
@@ -2302,7 +2453,9 @@ Finding area...
 
 </div>
 
+
 <br>
+
 
 <button
 class="action"
@@ -2316,7 +2469,9 @@ page('home');
 
 </button>
 
+
 <br><br>
+
 
 <button
 class="action"
@@ -2335,9 +2490,11 @@ openBooking();
 
 `;
 
+
 $("modal")
 .classList
 .add("show");
+
 
 loadArea(
 Number(d.lat),
@@ -2381,6 +2538,7 @@ return null;
 
 }
 
+
 try{
 
 const url =
@@ -2393,6 +2551,7 @@ encodeURIComponent(lng) +
 "&zoom=18" +
 "&addressdetails=1";
 
+
 const response =
 await fetch(
 url,
@@ -2404,15 +2563,19 @@ headers:{
 }
 );
 
+
 if(!response.ok)
 return null;
+
 
 const data =
 await response.json();
 
+
 const address =
 data.address ||
 {};
+
 
 const area =
 address.suburb ||
@@ -2424,6 +2587,7 @@ address.city ||
 address.county ||
 "Area not available";
 
+
 if(
 $("popupArea")
 ){
@@ -2433,6 +2597,7 @@ $("popupArea").innerHTML =
 esc(area);
 
 }
+
 
 return area;
 
@@ -2460,8 +2625,10 @@ function openBooking(){
 if(!radarAuthorized)
 return;
 
+
 const d =
 selectedDriverData;
+
 
 if(!d){
 
@@ -2473,6 +2640,11 @@ return;
 
 }
 
+
+bookingPickupCoords =
+null;
+
+
 $("modalBody").innerHTML =
 
 `
@@ -2480,6 +2652,7 @@ $("modalBody").innerHTML =
 <h2>
 🚕 Book ${esc(d.id)}
 </h2>
+
 
 <div
 class="locationBox"
@@ -2510,6 +2683,7 @@ ${esc(d.vehicleType || "Not Set")}
 📍 Pickup Location
 </label>
 
+
 <input
 id="pickupText"
 class="bookingInput"
@@ -2520,6 +2694,7 @@ autocomplete="off">
 <label class="bookingLabel">
 🏁 Destination
 </label>
+
 
 <input
 id="destinationText"
@@ -2586,9 +2761,11 @@ return;
 
 }
 
+
 showNotice(
 "Current Location मिल रही है..."
 );
+
 
 navigator.geolocation.getCurrentPosition(
 
@@ -2599,6 +2776,7 @@ Number(position.coords.latitude);
 
 const lng =
 Number(position.coords.longitude);
+
 
 if(
 !Number.isFinite(lat) ||
@@ -2613,17 +2791,20 @@ return;
 
 }
 
-window.bookingPickupCoords =
+
+bookingPickupCoords =
 {
 lat:lat,
 lng:lng
 };
+
 
 const area =
 await loadAreaForText(
 lat,
 lng
 );
+
 
 $("pickupText").value =
 area ||
@@ -2632,6 +2813,7 @@ lat.toFixed(6) +
 ", " +
 lng.toFixed(6)
 );
+
 
 showNotice(
 "Pickup Location set हो गई."
@@ -2659,7 +2841,7 @@ maximumAge:0
 
 
 /* =====================================================
-   GEOCODING TEXT
+   GEOCODING
 ===================================================== */
 
 async function geocodePlace(
@@ -2669,8 +2851,10 @@ text
 const q =
 String(text || "").trim();
 
+
 if(!q)
 return null;
+
 
 try{
 
@@ -2680,6 +2864,7 @@ const url =
 "&limit=1" +
 "&q=" +
 encodeURIComponent(q);
+
 
 const response =
 await fetch(
@@ -2692,11 +2877,14 @@ headers:{
 }
 );
 
+
 if(!response.ok)
 return null;
 
+
 const data =
 await response.json();
+
 
 if(
 !Array.isArray(data) ||
@@ -2706,6 +2894,7 @@ if(
 return null;
 
 }
+
 
 return {
 
@@ -2756,6 +2945,7 @@ encodeURIComponent(lng) +
 "&zoom=18" +
 "&addressdetails=1";
 
+
 const response =
 await fetch(
 url,
@@ -2767,11 +2957,14 @@ headers:{
 }
 );
 
+
 if(!response.ok)
 return null;
 
+
 const data =
 await response.json();
+
 
 return data.display_name || null;
 
@@ -2786,7 +2979,7 @@ return null;
 
 
 /* =====================================================
-   ROUTE
+   ROAD ROUTE
 ===================================================== */
 
 async function showBookingRoute(){
@@ -2794,8 +2987,10 @@ async function showBookingRoute(){
 if(!radarAuthorized)
 return;
 
+
 const d =
 selectedDriverData;
+
 
 if(!d){
 
@@ -2807,6 +3002,7 @@ return;
 
 }
 
+
 const pickupText =
 $("pickupText")
 ?
@@ -2814,12 +3010,14 @@ $("pickupText").value.trim()
 :
 "";
 
+
 const destinationText =
 $("destinationText")
 ?
 $("destinationText").value.trim()
 :
 "";
+
 
 if(!pickupText){
 
@@ -2831,6 +3029,7 @@ return;
 
 }
 
+
 if(!destinationText){
 
 showNotice(
@@ -2841,8 +3040,10 @@ return;
 
 }
 
+
 $("routeResult").style.display =
 "block";
+
 
 $("routeResult").innerHTML =
 
@@ -2857,6 +3058,7 @@ $("routeResult").innerHTML =
 
 let driverCoords = null;
 
+
 if(
 Number.isFinite(d.lat) &&
 Number.isFinite(d.lng)
@@ -2870,13 +3072,16 @@ lng:Number(d.lng)
 
 }
 
+
 if(!driverCoords){
 
 $("routeResult").innerHTML =
 
 `
 <div class="empty">
+
 Driver की current GPS location उपलब्ध नहीं है.
+
 </div>
 `;
 
@@ -2888,8 +3093,9 @@ return;
 /* PICKUP */
 
 let pickupCoords =
-window.bookingPickupCoords ||
+bookingPickupCoords ||
 null;
+
 
 if(!pickupCoords){
 
@@ -2900,15 +3106,20 @@ pickupText
 
 }
 
+
 if(!pickupCoords){
 
 $("routeResult").innerHTML =
 
 `
 <div class="empty">
+
 Pickup Location नहीं मिली.
+
 <br>
+
 कृपया location का पूरा नाम डालें.
+
 </div>
 `;
 
@@ -2924,15 +3135,20 @@ await geocodePlace(
 destinationText
 );
 
+
 if(!destinationCoords){
 
 $("routeResult").innerHTML =
 
 `
 <div class="empty">
+
 Destination नहीं मिला.
+
 <br>
+
 कृपया सही location डालें.
+
 </div>
 `;
 
@@ -2950,15 +3166,20 @@ pickupCoords,
 destinationCoords
 );
 
+
 if(!route){
 
 $("routeResult").innerHTML =
 
 `
 <div class="empty">
+
 Road route अभी नहीं मिल पाया.
+
 <br>
+
 कृपया दोबारा कोशिश करें.
+
 </div>
 `;
 
@@ -2967,26 +3188,18 @@ return;
 }
 
 
-/* DRAW */
-
-renderBookingRouteMap(
-driverCoords,
-pickupCoords,
-destinationCoords,
-route
-);
-
-
 /* INFO */
 
 const km =
 (route.distance / 1000)
 .toFixed(1);
 
+
 const minutes =
 Math.round(
 route.duration / 60
 );
+
 
 $("routeResult").innerHTML =
 
@@ -3103,6 +3316,7 @@ onclick="confirmBookingRoute()">
 
 `;
 
+
 renderBookingRouteMap(
 driverCoords,
 pickupCoords,
@@ -3151,16 +3365,20 @@ const url =
 coordinates +
 "?overview=full&geometries=geojson";
 
+
 const response =
 await fetch(
 url
 );
 
+
 if(!response.ok)
 return null;
 
+
 const data =
 await response.json();
+
 
 if(
 data.code !== "Ok" ||
@@ -3171,6 +3389,7 @@ data.code !== "Ok" ||
 return null;
 
 }
+
 
 return data.routes[0];
 
@@ -3203,11 +3422,10 @@ route
 const el =
 $("routeMap");
 
+
 if(!el)
 return;
 
-
-/* remove old map */
 
 if(routeMap){
 
@@ -3223,11 +3441,13 @@ null;
 
 }
 
+
 routeMap =
 L
 .map(
 "routeMap"
 );
+
 
 L
 .tileLayer(
@@ -3243,17 +3463,6 @@ attribution:
 
 /* ROUTE */
 
-if(routeLayer){
-
-try{
-
-routeLayer.remove();
-
-}
-catch(error){}
-
-}
-
 const coordinates =
 route.geometry.coordinates
 .map(
@@ -3267,6 +3476,7 @@ pair[0]
 }
 );
 
+
 routeLayer =
 L
 .polyline(
@@ -3279,12 +3489,6 @@ weight:6
 
 
 /* DRIVER */
-
-if(routeDriverMarker){
-
-routeDriverMarker.remove();
-
-}
 
 routeDriverMarker =
 L
@@ -3321,12 +3525,6 @@ iconAnchor:
 
 /* PICKUP */
 
-if(routePickupMarker){
-
-routePickupMarker.remove();
-
-}
-
 routePickupMarker =
 L
 .marker(
@@ -3342,12 +3540,6 @@ pickup.lng
 
 
 /* DESTINATION */
-
-if(routeDestinationMarker){
-
-routeDestinationMarker.remove();
-
-}
 
 routeDestinationMarker =
 L
@@ -3372,6 +3564,7 @@ padding:[25,25]
 }
 );
 
+
 setTimeout(
 function(){
 
@@ -3393,8 +3586,10 @@ async function confirmBookingRoute(){
 if(!radarAuthorized)
 return;
 
+
 const d =
 selectedDriverData;
+
 
 if(!d){
 
@@ -3406,6 +3601,7 @@ return;
 
 }
 
+
 const pickupText =
 $("pickupText")
 ?
@@ -3413,12 +3609,14 @@ $("pickupText").value.trim()
 :
 "";
 
+
 const destinationText =
 $("destinationText")
 ?
 $("destinationText").value.trim()
 :
 "";
+
 
 if(
 !pickupText ||
@@ -3434,15 +3632,6 @@ return;
 }
 
 
-/*
- Prototype booking record.
-
- Driver Radar में अभी customer authentication
- अलग से मौजूद नहीं है, इसलिए customer-private
- production booking security को backend rules
- के साथ बाद में जोड़ना होगा.
-*/
-
 try{
 
 const bookingId =
@@ -3453,6 +3642,7 @@ Math.random()
 .toString(36)
 .substring(2,8)
 .toUpperCase();
+
 
 await db
 .collection("bookings")
@@ -3516,6 +3706,7 @@ style="text-align:center;padding:15px 5px"
 Booking Request Sent
 </h2>
 
+
 <div class="locationBox">
 
 <b>Booking ID</b>
@@ -3551,6 +3742,7 @@ ${esc(destinationText)}
 
 </div>
 
+
 <button
 class="action"
 style="width:100%;margin-top:14px"
@@ -3564,6 +3756,7 @@ Close
 
 `;
 
+
 showNotice(
 "Booking request Firebase में save हो गई."
 );
@@ -3575,6 +3768,7 @@ console.error(
 "Booking save error:",
 error
 );
+
 
 showNotice(
 "Booking save नहीं हुई."
@@ -3594,6 +3788,7 @@ function closeModal(){
 $("modal")
 .classList
 .remove("show");
+
 
 if(routeMap){
 
@@ -3621,6 +3816,7 @@ function openHelp(){
 if(!radarAuthorized)
 return;
 
+
 $("modalBody").innerHTML =
 
 `
@@ -3629,6 +3825,7 @@ $("modalBody").innerHTML =
 ❓ Help & Support
 </h2>
 
+
 <p>
 
 Safety Cab Driver Radar के लिए
@@ -3636,6 +3833,7 @@ Safety Cab Driver Radar के लिए
 Call करें।
 
 </p>
+
 
 <a
 class="action"
@@ -3653,6 +3851,7 @@ href="tel:${SUPPORT_PHONE}"
 
 </a>
 
+
 <button
 class="action"
 style="width:100%"
@@ -3663,6 +3862,7 @@ Close
 </button>
 
 `;
+
 
 $("modal")
 .classList
@@ -3687,9 +3887,11 @@ return false;
 
 }
 
+
 const user =
 tg.initDataUnsafe &&
 tg.initDataUnsafe.user;
+
 
 if(!user){
 
@@ -3701,8 +3903,10 @@ return false;
 
 }
 
+
 myTelegramId =
 String(user.id);
+
 
 $("tgName").textContent =
 
@@ -3715,8 +3919,10 @@ user.last_name
 ||
 "Telegram User";
 
+
 $("tgId").textContent =
 myTelegramId;
+
 
 return true;
 
@@ -3733,8 +3939,10 @@ try{
 
 await auth.signInAnonymously();
 
+
 $("firebaseState").textContent =
 "Connected";
+
 
 return true;
 
@@ -3746,8 +3954,10 @@ console.error(
 error
 );
 
+
 $("firebaseState").textContent =
 "Auth Error";
+
 
 return false;
 
@@ -3768,6 +3978,7 @@ return false;
 
 }
 
+
 try{
 
 const snapshot =
@@ -3781,17 +3992,21 @@ myTelegramId
 .limit(1)
 .get();
 
+
 if(snapshot.empty){
 
 return false;
 
 }
 
+
 const doc =
 snapshot.docs[0];
 
+
 const d =
 doc.data();
+
 
 myDriver = {
 
@@ -3845,11 +4060,14 @@ d.profilePhoto ||
 
 };
 
+
 $("myDriverId").textContent =
 myDriver.id;
 
+
 myDuty =
 myDriver.duty;
+
 
 $("dutyToggle")
 .classList
@@ -3857,6 +4075,7 @@ $("dutyToggle")
 "on",
 myDuty
 );
+
 
 return true;
 
@@ -3884,9 +4103,12 @@ function denyRadarAccess(message){
 radarAuthorized =
 false;
 
+
 stopSelectedLiveListener();
 
+
 clearSelectedMarker();
+
 
 if(map){
 
@@ -3895,23 +4117,32 @@ try{
 map.remove();
 
 }
-catch(error){}
+catch(error){
+
+console.log(error);
+
+}
 
 map = null;
 
 }
 
+
 $("radarApp").style.display =
 "none";
+
 
 $("accessLock").style.display =
 "flex";
 
+
 $("accessIcon").textContent =
 "🔒";
 
+
 $("accessTitle").textContent =
 "Access Denied";
+
 
 $("accessText").textContent =
 message ||
@@ -3929,8 +4160,10 @@ function allowRadarAccess(){
 radarAuthorized =
 true;
 
+
 $("accessLock").style.display =
 "none";
+
 
 $("radarApp").style.display =
 "block";
@@ -3947,6 +4180,7 @@ function shareMyLocation(){
 if(!radarAuthorized)
 return;
 
+
 if(!myDriver){
 
 showNotice(
@@ -3957,6 +4191,7 @@ return;
 
 }
 
+
 if(!navigator.geolocation){
 
 showNotice(
@@ -3966,6 +4201,7 @@ showNotice(
 return;
 
 }
+
 
 navigator.geolocation.getCurrentPosition(
 
@@ -4002,15 +4238,18 @@ if(
 )
 return;
 
+
 const lat =
 Number(
 position.coords.latitude
 );
 
+
 const lng =
 Number(
 position.coords.longitude
 );
+
 
 if(
 !Number.isFinite(lat) ||
@@ -4021,6 +4260,7 @@ return;
 
 }
 
+
 myDriver.lat =
 lat;
 
@@ -4030,8 +4270,10 @@ lng;
 myDriver.online =
 true;
 
+
 $("locStatus").textContent =
 "Location shared";
+
 
 if(
 selectedDriverId ===
@@ -4051,6 +4293,7 @@ true;
 
 }
 
+
 if(selectedMarker){
 
 selectedMarker.setLatLng(
@@ -4058,6 +4301,7 @@ selectedMarker.setLatLng(
 );
 
 }
+
 
 if(!mapCenteredOnce){
 
@@ -4073,10 +4317,12 @@ true;
 
 }
 
+
 writeLive(
 lat,
 lng
 );
+
 
 db
 .collection("drivers")
@@ -4124,6 +4370,7 @@ if(
 !myDriver
 )
 return;
+
 
 rtdb
 .ref(
@@ -4183,6 +4430,7 @@ return;
 
 }
 
+
 watchId =
 navigator.geolocation.watchPosition(
 
@@ -4239,6 +4487,7 @@ async function toggleDuty(){
 if(!radarAuthorized)
 return;
 
+
 if(!myDriver){
 
 showNotice(
@@ -4249,8 +4498,10 @@ return;
 
 }
 
+
 myDuty =
 !myDuty;
+
 
 $("dutyToggle")
 .classList
@@ -4258,6 +4509,7 @@ $("dutyToggle")
 "on",
 myDuty
 );
+
 
 try{
 
@@ -4281,6 +4533,7 @@ firebase.firestore
 {
 merge:true
 });
+
 
 await rtdb
 .ref(
@@ -4306,6 +4559,7 @@ firebase.database
 
 });
 
+
 showNotice(
 myDuty
 ?
@@ -4318,6 +4572,7 @@ myDuty
 catch(error){
 
 console.error(error);
+
 
 showNotice(
 "Status Firebase में save नहीं हुआ."
@@ -4337,8 +4592,10 @@ function toggleAutoGPS(){
 if(!radarAuthorized)
 return;
 
+
 autoGPS =
 !autoGPS;
+
 
 $("gpsToggle")
 .classList
@@ -4346,6 +4603,7 @@ $("gpsToggle")
 "on",
 autoGPS
 );
+
 
 if(autoGPS){
 
@@ -4357,6 +4615,7 @@ else{
 stopGPS();
 
 }
+
 
 showNotice(
 autoGPS
@@ -4400,8 +4659,11 @@ showNotice(
 
 async function startApp(){
 
+/* 1. Telegram */
+
 const telegramOK =
 setupTG();
+
 
 if(!telegramOK){
 
@@ -4409,8 +4671,12 @@ return;
 
 }
 
+
+/* 2. Firebase Auth */
+
 const authOK =
 await authAnon();
+
 
 if(!authOK){
 
@@ -4422,8 +4688,12 @@ return;
 
 }
 
+
+/* 3. Registered Driver */
+
 const registered =
 await checkRegisteredDriver();
+
 
 if(!registered){
 
@@ -4435,23 +4705,42 @@ return;
 
 }
 
+
+/* 4. ACCESS GRANTED */
+
 allowRadarAccess();
+
+
+/* 5. MAP */
 
 initMap();
 
+
+/* 6. ONLINE COUNT */
+
 await loadOnlineCount();
+
+
+/* 7. CURRENT DRIVER */
 
 window.searchedDriver =
 {
 ...myDriver
 };
 
+
 $("search").value =
 myDriver.id;
+
+
+/* 8. OWN DRIVER */
 
 await selectDriver(
 myDriver.id
 );
+
+
+/* 9. GPS */
 
 if(autoGPS){
 

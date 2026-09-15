@@ -123,10 +123,6 @@ outline:none
 border-color:#087fc3
 }
 
-.filters{
-display:none
-}
-
 .driver{
 display:flex;
 align-items:center;
@@ -182,11 +178,6 @@ color:#15803d
 .bred{
 background:#fee2e2;
 color:#b91c1c
-}
-
-.byellow{
-background:#fef3c7;
-color:#92400e
 }
 
 .action{
@@ -411,6 +402,60 @@ font-weight:700;
 text-decoration:none
 }
 
+
+/* =====================================================
+   ACCESS LOCK
+===================================================== */
+
+#accessLock{
+position:fixed;
+inset:0;
+z-index:99999;
+background:#f4f7fb;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.accessBox{
+width:100%;
+max-width:380px;
+background:#fff;
+border-radius:20px;
+padding:28px 20px;
+text-align:center;
+box-shadow:0 4px 20px #0002
+}
+
+.accessIcon{
+font-size:55px;
+margin-bottom:12px
+}
+
+.accessTitle{
+font-size:23px;
+font-weight:800;
+margin-bottom:8px
+}
+
+.accessText{
+font-size:14px;
+color:#667085;
+line-height:1.5
+}
+
+
+/*
+ App is hidden until Telegram
+ registration is verified.
+*/
+
+#radarApp{
+display:none
+}
+
+
 @media(max-width:420px){
 
 .title{
@@ -425,6 +470,53 @@ font-size:23px
 
 
 <body>
+
+
+<!-- =====================================================
+     ACCESS LOCK SCREEN
+===================================================== -->
+
+<div id="accessLock">
+
+<div class="accessBox">
+
+<div
+id="accessIcon"
+class="accessIcon">
+
+🔒
+
+</div>
+
+
+<div
+id="accessTitle"
+class="accessTitle">
+
+Checking Driver Access...
+
+</div>
+
+
+<div
+id="accessText"
+class="accessText">
+
+Please wait...
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     RADAR APP
+===================================================== -->
+
+<div id="radarApp">
 
 
 <div id="notice"></div>
@@ -727,7 +819,7 @@ Version
 </span>
 
 <strong>
-Safety Cab Radar 3.5
+Safety Cab Radar 3.6
 </strong>
 
 </div>
@@ -854,6 +946,9 @@ onclick="closeModal()">
 </div>
 
 
+</div>
+
+
 
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
@@ -959,7 +1054,7 @@ let selectedMarker = null;
 
 let mapCenteredOnce = false;
 
-let onlineCountLoaded = false;
+let radarAuthorized = false;
 
 
 
@@ -976,6 +1071,9 @@ function showNotice(t){
 
 const n =
 $("notice");
+
+if(!n)
+return;
 
 n.textContent =
 t;
@@ -1036,6 +1134,7 @@ return String(v ?? "")
 }
 
 
+
 /* =====================================================
    NORMALIZE DRIVER ID
 ===================================================== */
@@ -1049,8 +1148,9 @@ return String(value || "")
 }
 
 
+
 /* =====================================================
-   VALIDATE DRIVER ID
+   VALID DRIVER ID
 ===================================================== */
 
 function isValidDriverId(id){
@@ -1060,11 +1160,16 @@ return /^DC\d{1,5}$/.test(id);
 }
 
 
+
 /* =====================================================
    PAGE
 ===================================================== */
 
 function page(id){
+
+if(!radarAuthorized)
+return;
+
 
 document
 .querySelectorAll(".page")
@@ -1125,6 +1230,14 @@ b.dataset.page
 
 function initMap(){
 
+if(!radarAuthorized)
+return;
+
+
+if(map)
+return;
+
+
 map =
 L
 .map("map")
@@ -1179,7 +1292,7 @@ iconAnchor:
 
 
 /* =====================================================
-   STOP LIVE LISTENER
+   STOP SELECTED LIVE LISTENER
 ===================================================== */
 
 function stopSelectedLiveListener(){
@@ -1270,12 +1383,15 @@ className === "popupPhoto"
 
 
 /* =====================================================
-   SHOW SELECTED DRIVER
+   SHOW SELECTED DRIVER MARKER
 ===================================================== */
 
 function renderSelectedMarker(){
 
-if(!map)
+if(
+!radarAuthorized ||
+!map
+)
 return;
 
 
@@ -1331,11 +1447,14 @@ min-width:210px;
 
 ${popupPhoto}
 
+
 <b>
 🚕 ${esc(d.name || d.id)}
 </b>
 
+
 <br>
+
 
 <div
 style="
@@ -1344,25 +1463,34 @@ text-align:left;
 line-height:1.6;
 ">
 
+
 <b>Driver ID:</b>
 ${esc(d.id)}
 
+
 <br>
+
 
 <b>Name:</b>
 ${esc(d.name || "-")}
 
+
 <br>
+
 
 <b>Phone:</b>
 ${esc(d.phone || "-")}
 
+
 <br>
+
 
 <b>Vehicle:</b>
 ${esc(d.vehicle || "-")}
 
+
 <br>
+
 
 <b>GPS:</b>
 ${
@@ -1373,10 +1501,13 @@ d.online
 "🔴 Offline"
 }
 
+
 <br>
+
 
 <b>Rating:</b>
 ⭐ ${d.rating || "Not Rated"}
+
 
 </div>
 
@@ -1405,6 +1536,7 @@ View Details
 
 </button>
 
+
 </div>
 
 `
@@ -1422,10 +1554,14 @@ d.lng
 
 
 /* =====================================================
-   LOAD ONLINE COUNT
+   ONLINE COUNT
 ===================================================== */
 
 async function loadOnlineCount(){
+
+if(!radarAuthorized)
+return;
+
 
 try{
 
@@ -1442,10 +1578,6 @@ true
 
 $("online").textContent =
 s.size;
-
-
-onlineCountLoaded =
-true;
 
 
 }
@@ -1466,7 +1598,7 @@ $("online").textContent =
 
 
 /* =====================================================
-   SEARCH INPUT
+   SEARCH
 ===================================================== */
 
 let searchTimer =
@@ -1475,6 +1607,10 @@ null;
 
 $("search").oninput =
 function(){
+
+if(!radarAuthorized)
+return;
+
 
 clearTimeout(
 searchTimer
@@ -1496,11 +1632,6 @@ return;
 }
 
 
-/*
- Convert small/capital
- to one standard format.
-*/
-
 const value =
 normalizeDriverId(
 raw
@@ -1510,9 +1641,7 @@ raw
 searchTimer =
 setTimeout(
 () =>
-searchDriverById(
-value
-),
+searchDriverById(value),
 450
 );
 
@@ -1521,12 +1650,16 @@ value
 
 
 /* =====================================================
-   SEARCH DRIVER BY ID
+   SEARCH DRIVER
 ===================================================== */
 
 async function searchDriverById(
 rawId
 ){
+
+if(!radarAuthorized)
+return;
+
 
 const id =
 normalizeDriverId(
@@ -1541,8 +1674,11 @@ if(
 $("driverList").innerHTML =
 
 "<div class='empty'>" +
+
 "Valid Driver ID डालें।<br>" +
+
 "Example: DC001 या dc001" +
+
 "</div>";
 
 return;
@@ -1555,14 +1691,6 @@ $("driverList").innerHTML =
 
 
 try{
-
-/*
- Exact Firebase ID match.
-
- Because Admin IDs are stored
- in capital format, search input
- is normalized to capital.
-*/
 
 const s =
 await db
@@ -1581,9 +1709,11 @@ if(s.empty){
 $("driverList").innerHTML =
 
 "<div class='empty'>" +
+
 "Driver ID " +
 esc(id) +
 " not found" +
+
 "</div>";
 
 return;
@@ -1638,12 +1768,6 @@ rating:
 Number(
 d.rating || 0
 ),
-
-/*
- IMPORTANT:
- Photo comes from
- Firestore drivers document.
-*/
 
 profilePhoto:
 d.profilePhoto ||
@@ -1733,11 +1857,6 @@ driver.online
 `;
 
 
-/*
- Store only this one searched
- driver temporarily.
-*/
-
 window.searchedDriver =
 driver;
 
@@ -1770,6 +1889,10 @@ $("driverList").innerHTML =
 async function selectDriver(
 rawId
 ){
+
+if(!radarAuthorized)
+return;
+
 
 const id =
 normalizeDriverId(
@@ -1826,8 +1949,7 @@ selectedDriverData.name;
 
 
 /*
- Show Firestore location
- immediately.
+ Show last Firestore location.
 */
 
 renderSelectedMarker();
@@ -1858,17 +1980,7 @@ true;
 
 
 /*
- ONLY selected driver's
- RTDB location is read.
-
- Example:
-
- liveLocations/DC001
-
- NOT:
-
- liveLocations
-
+ ONLY selected driver's RTDB path.
 */
 
 selectedLiveRef =
@@ -1880,6 +1992,10 @@ id
 
 selectedLiveCallback =
 snapshot => {
+
+if(!radarAuthorized)
+return;
+
 
 const live =
 snapshot.val();
@@ -1914,10 +2030,6 @@ return;
 }
 
 
-/*
- Update selected driver only.
-*/
-
 selectedDriverData.lat =
 lat;
 
@@ -1929,9 +2041,8 @@ live.online === true;
 
 
 /*
- Duty is kept internally for
- Firebase/GPS compatibility,
- but NOT displayed in Radar.
+ Duty remains internal only.
+ It is NOT displayed in Radar.
 */
 
 selectedDriverData.duty =
@@ -1939,9 +2050,7 @@ live.duty === true;
 
 
 /*
- Move marker only.
- Map does not jump every
- GPS update.
+ Move only marker.
 */
 
 if(selectedMarker){
@@ -1965,7 +2074,7 @@ renderSelectedMarker();
 
 
 /*
- Center only first time.
+ Map centers only once.
 */
 
 if(!mapCenteredOnce){
@@ -2006,6 +2115,10 @@ page("home");
 ===================================================== */
 
 function openDriverDetails(){
+
+if(!radarAuthorized)
+return;
+
 
 const d =
 selectedDriverData;
@@ -2128,6 +2241,7 @@ Number(d.lat).toFixed(6)
 :
 "-"
 }
+
 </b>
 
 </div>
@@ -2147,6 +2261,7 @@ Number(d.lng).toFixed(6)
 :
 "-"
 }
+
 </b>
 
 </div>
@@ -2176,8 +2291,7 @@ style="width:100%"
 onclick="
 closeModal();
 page('home');
-"
->
+">
 
 🗺️ View Map
 
@@ -2328,10 +2442,14 @@ $("modal")
 
 
 /* =====================================================
-   HELP & SUPPORT
+   HELP
 ===================================================== */
 
 function openHelp(){
+
+if(!radarAuthorized)
+return;
+
 
 $("modalBody").innerHTML =
 
@@ -2383,15 +2501,16 @@ $("modal")
 
 
 /* =====================================================
-   TELEGRAM
+   TELEGRAM USER CHECK
 ===================================================== */
 
 function setupTG(){
 
 if(!tg){
 
-$("tgName").textContent =
-"Open from Telegram";
+denyRadarAccess(
+"Driver Radar केवल Telegram Mini App के अंदर खुलेगा."
+);
 
 return false;
 
@@ -2405,8 +2524,9 @@ tg.initDataUnsafe.user;
 
 if(!u){
 
-$("tgName").textContent =
-"Open from Telegram";
+denyRadarAccess(
+"Telegram account नहीं मिला. Direct URL access allowed नहीं है."
+);
 
 return false;
 
@@ -2458,16 +2578,13 @@ return true;
 }
 catch(e){
 
-console.error(e);
+console.error(
+e
+);
 
 
 $("firebaseState").textContent =
 "Auth Error";
-
-
-showNotice(
-"Firebase authentication error."
-);
 
 
 return false;
@@ -2479,13 +2596,16 @@ return false;
 
 
 /* =====================================================
-   LOAD MY DRIVER
+   REGISTERED DRIVER CHECK
 ===================================================== */
 
-async function loadMine(){
+async function checkRegisteredDriver(){
 
-if(!myTelegramId)
+if(!myTelegramId){
+
 return false;
+
+}
 
 
 try{
@@ -2503,13 +2623,6 @@ myTelegramId
 
 
 if(s.empty){
-
-myDriver = null;
-
-
-$("myDriverId").textContent =
-"Not Registered";
-
 
 return false;
 
@@ -2592,13 +2705,10 @@ return true;
 }
 catch(e){
 
-console.error(e);
-
-
-showNotice(
-"Driver Firebase data load failed."
+console.error(
+"Registered driver check error:",
+e
 );
-
 
 return false;
 
@@ -2609,10 +2719,110 @@ return false;
 
 
 /* =====================================================
+   ACCESS DENIED
+===================================================== */
+
+function denyRadarAccess(message){
+
+radarAuthorized =
+false;
+
+
+stopSelectedLiveListener();
+
+
+clearSelectedMarker();
+
+
+if(map){
+
+try{
+
+map.remove();
+
+}
+catch(e){
+
+console.log(e);
+
+}
+
+map = null;
+
+}
+
+
+const app =
+$("radarApp");
+
+
+if(app){
+
+app.style.display =
+"none";
+
+}
+
+
+const lock =
+$("accessLock");
+
+
+if(lock){
+
+lock.style.display =
+"flex";
+
+}
+
+
+$("accessIcon").textContent =
+"🔒";
+
+
+$("accessTitle").textContent =
+"Access Denied";
+
+
+$("accessText").textContent =
+message ||
+"यह Driver Radar केवल Registered Safety Cab Drivers के लिए है.";
+
+}
+
+
+
+/* =====================================================
+   ACCESS GRANTED
+===================================================== */
+
+function allowRadarAccess(){
+
+radarAuthorized =
+true;
+
+
+$("accessLock").style.display =
+"none";
+
+
+$("radarApp").style.display =
+"block";
+
+
+}
+
+
+
+/* =====================================================
    MANUAL LOCATION
 ===================================================== */
 
 function shareMyLocation(){
+
+if(!radarAuthorized)
+return;
+
 
 if(!myDriver){
 
@@ -2663,7 +2873,10 @@ maximumAge:0
 
 function updateMyLocation(p){
 
-if(!myDriver)
+if(
+!radarAuthorized ||
+!myDriver
+)
 return;
 
 
@@ -2702,11 +2915,6 @@ true;
 $("locStatus").textContent =
 "Location shared";
 
-
-/*
- If currently viewing myself,
- update marker only.
-*/
 
 if(
 selectedDriverId ===
@@ -2799,7 +3007,10 @@ lat,
 lng
 ){
 
-if(!myDriver)
+if(
+!radarAuthorized ||
+!myDriver
+)
 return;
 
 
@@ -2849,6 +3060,7 @@ e
 function startGPS(){
 
 if(
+!radarAuthorized ||
 !myDriver ||
 watchId !== null ||
 !navigator.geolocation
@@ -2878,6 +3090,7 @@ timeout:15000
 
 );
 
+
 }
 
 
@@ -2905,6 +3118,10 @@ watchId = null;
 ===================================================== */
 
 async function toggleDuty(){
+
+if(!radarAuthorized)
+return;
+
 
 if(!myDriver){
 
@@ -3008,6 +3225,10 @@ showNotice(
 
 function toggleAutoGPS(){
 
+if(!radarAuthorized)
+return;
+
+
 autoGPS =
 !autoGPS;
 
@@ -3065,39 +3286,89 @@ showNotice(
 
 
 /* =====================================================
-   START APP
+   SECURE START APP
 ===================================================== */
 
 async function startApp(){
 
-initMap();
+/*
+ IMPORTANT:
 
+ Map is NOT initialized here
+ until registration is confirmed.
+*/
+
+
+/* STEP 1: Telegram check */
+
+const telegramOK =
 setupTG();
 
 
-/*
- Only Online count.
-*/
+if(!telegramOK){
 
+return;
+
+}
+
+
+/* STEP 2: Firebase authentication */
+
+const authOK =
 await authAnon();
 
+
+if(!authOK){
+
+denyRadarAccess(
+"Firebase connection failed."
+);
+
+return;
+
+}
+
+
+/* STEP 3: Registered driver check */
+
+const registered =
+await checkRegisteredDriver();
+
+
+if(!registered){
+
+denyRadarAccess(
+"आपका Telegram account Safety Cab में Registered नहीं है."
+);
+
+return;
+
+}
+
+
+/*
+ STEP 4:
+
+ Only registered driver reaches here.
+
+ Now the actual Radar App
+ and Map are opened.
+*/
+
+allowRadarAccess();
+
+
+initMap();
+
+
+/* Online count */
 
 await loadOnlineCount();
 
 
 /*
- Load only current
- Telegram driver.
+ Current registered driver.
 */
-
-const found =
-await loadMine();
-
-
-if(
-found &&
-myDriver
-){
 
 window.searchedDriver =
 {
@@ -3113,24 +3384,13 @@ await selectDriver(
 myDriver.id
 );
 
-}
-else{
-
-$("driverList").innerHTML =
-"<div class='empty'>" +
-"Driver ID डालकर Search करें" +
-"</div>";
-
-}
-
 
 /*
- Own GPS starts only if
- registered.
+ Own GPS starts only
+ for registered driver.
 */
 
 if(
-found &&
 autoGPS
 ){
 
@@ -3143,23 +3403,31 @@ startGPS();
 
 
 /* =====================================================
-   MAP RESIZE
+   START APP
 ===================================================== */
 
 startApp();
 
 
+
+/* =====================================================
+   MAP RESIZE
+===================================================== */
+
 setTimeout(
 () => {
 
-if(map){
+if(
+radarAuthorized &&
+map
+){
 
 map.invalidateSize();
 
 }
 
 },
-1000
+1200
 );
 
 </script>

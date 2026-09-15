@@ -1,5111 +1,3264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>Safety Cab - Driver Radar</title>
+<title>Safety Cab Driver Radar</title>
 
 <link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
-
-
 <style>
-
 *{
-box-sizing:border-box
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f7fb;
+  color:#18202a;
 }
 
 body{
-margin:0;
-background:#f4f7fb;
-color:#172033;
-font-family:Arial,sans-serif;
-padding-bottom:72px
+  overflow-x:hidden;
 }
 
-.header{
-height:108px;
-background:#087fc3;
-color:#fff;
-display:flex;
-align-items:center;
-padding:15px 18px;
-gap:12px
+button,
+input{
+  font:inherit;
 }
 
-.logo{
-width:58px;
-height:58px;
-border-radius:50%;
-background:#ffd21c;
-display:grid;
-place-items:center;
-font-size:30px
+button{
+  border:0;
+  cursor:pointer;
 }
-
-.title{
-font-size:25px;
-font-weight:800
-}
-
-.sub{
-font-size:13px
-}
-
-.page{
-display:none;
-padding:12px
-}
-
-.page.active{
-display:block
-}
-
-.stats{
-display:grid;
-grid-template-columns:1fr;
-gap:9px;
-margin-bottom:10px
-}
-
-.stat,
-.card{
-background:#fff;
-border-radius:18px;
-box-shadow:0 2px 10px #0001
-}
-
-.stat{
-text-align:center;
-padding:15px 5px
-}
-
-.stat strong{
-display:block;
-font-size:28px
-}
-
-.stat.green strong{
-color:#16a34a
-}
-
-.card{
-padding:16px;
-margin-bottom:12px
-}
-
-.card h3{
-font-size:22px
-}
-
-.search{
-width:100%;
-padding:12px;
-border:1px solid #ccd6e2;
-border-radius:11px;
-outline:none
-}
-
-.search:focus{
-border-color:#087fc3
-}
-
-.driver{
-display:flex;
-align-items:center;
-gap:10px;
-border-bottom:1px solid #edf0f4;
-padding:11px 0;
-cursor:pointer
-}
-
-.driver:last-child{
-border:0
-}
-
-.avatar{
-width:44px;
-height:44px;
-min-width:44px;
-border-radius:50%;
-background:#e8f3ff;
-display:grid;
-place-items:center;
-overflow:hidden
-}
-
-.avatar img{
-width:100%;
-height:100%;
-object-fit:cover
-}
-
-.driverinfo{
-flex:1
-}
-
-.small{
-font-size:11px;
-color:#667085;
-margin-top:3px
-}
-
-.badge{
-padding:4px 7px;
-border-radius:12px;
-font-size:10px;
-font-weight:700
-}
-
-.bgreen{
-background:#dcfce7;
-color:#15803d
-}
-
-.bred{
-background:#fee2e2;
-color:#b91c1c
-}
-
-.action{
-border:0;
-border-radius:10px;
-padding:9px 12px;
-font-weight:700;
-background:#0878c9;
-color:#fff;
-cursor:pointer
-}
-
-.secondary{
-background:#e9f4ff;
-color:#0878c9
-}
-
-.danger{
-background:#fee2e2;
-color:#b91c1c
-}
-
-.row{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-border-bottom:1px solid #edf0f4;
-padding:11px 0
-}
-
-.row:last-child{
-border:0
-}
-
-.toggle{
-width:48px;
-height:26px;
-border:0;
-border-radius:20px;
-background:#cbd5e1;
-padding:3px
-}
-
-.toggle i{
-display:block;
-width:20px;
-height:20px;
-background:#fff;
-border-radius:50%;
-transition:.2s
-}
-
-.toggle.on{
-background:#16a34a
-}
-
-.toggle.on i{
-transform:translateX(22px)
-}
-
-#map{
-height:calc(100vh - 220px);
-min-height:420px
-}
-
-.empty{
-text-align:center;
-color:#667085;
-padding:30px
-}
-
-#notice{
-position:fixed;
-top:70px;
-left:50%;
-transform:translateX(-50%);
-background:#172033;
-color:#fff;
-padding:9px 14px;
-border-radius:20px;
-font-size:12px;
-z-index:5000;
-display:none;
-white-space:nowrap
-}
-
-.selectedBox{
-margin-bottom:10px;
-padding:10px 12px;
-background:#e9f4ff;
-color:#0878c9;
-border-radius:12px;
-font-size:13px;
-font-weight:700
-}
-
-.locationBox{
-margin-top:12px;
-padding:12px;
-background:#f4f7fb;
-border-radius:12px;
-font-size:13px;
-line-height:1.5
-}
-
-.vehicleTypeBadge{
-display:inline-block;
-background:#e4f1fb;
-color:#075a8c;
-padding:4px 8px;
-border-radius:10px;
-font-size:11px;
-font-weight:700
-}
-
-
-/* ================= PHOTOS ================= */
-
-.profilePhoto{
-width:110px;
-height:110px;
-border-radius:50%;
-object-fit:cover;
-display:block;
-margin:5px auto 14px;
-border:3px solid #d9e3ec;
-background:#eef3f7
-}
-
-.profilePhotoPlaceholder{
-width:110px;
-height:110px;
-border-radius:50%;
-display:grid;
-place-items:center;
-margin:5px auto 14px;
-border:3px solid #d9e3ec;
-background:#eef3f7;
-font-size:48px
-}
-
-.popupPhoto{
-width:80px;
-height:80px;
-border-radius:50%;
-object-fit:cover;
-display:block;
-margin:0 auto 8px;
-border:3px solid #d9e3ec
-}
-
-.popupPhotoPlaceholder{
-width:80px;
-height:80px;
-border-radius:50%;
-display:grid;
-place-items:center;
-margin:0 auto 8px;
-background:#eef3f7;
-font-size:35px
-}
-
-.popupCarPhoto{
-width:210px;
-height:125px;
-border-radius:12px;
-object-fit:cover;
-display:block;
-margin:10px auto;
-border:2px solid #d9e3ec;
-background:#eef3f7
-}
-
-.popupCarPlaceholder{
-width:210px;
-height:125px;
-border-radius:12px;
-display:grid;
-place-items:center;
-margin:10px auto;
-background:#eef3f7;
-font-size:48px
-}
-
-.detailCarPhoto{
-width:100%;
-max-width:320px;
-height:190px;
-object-fit:cover;
-display:block;
-margin:10px auto 15px;
-border-radius:14px;
-border:2px solid #d5dfe7;
-background:#eef3f7
-}
-
-.detailCarPlaceholder{
-width:100%;
-max-width:320px;
-height:190px;
-display:grid;
-place-items:center;
-margin:10px auto 15px;
-border-radius:14px;
-background:#eef3f7;
-border:2px solid #d5dfe7;
-font-size:60px
-}
-
-
-/* ================= ROUTE ================= */
-
-.routeCard{
-background:#fff;
-border-radius:18px;
-box-shadow:0 2px 10px #0001;
-padding:15px;
-margin-bottom:12px;
-display:none
-}
-
-.routeTitle{
-font-size:20px;
-font-weight:800;
-margin-bottom:12px
-}
-
-.routePoint{
-display:flex;
-align-items:flex-start;
-gap:10px;
-margin-bottom:10px
-}
-
-.routeDot{
-width:18px;
-height:18px;
-min-width:18px;
-border-radius:50%;
-margin-top:3px
-}
-
-.driverDot{
-background:#087fc3
-}
-
-.pickupDot{
-background:#16a34a
-}
-
-.destinationDot{
-background:#dc2626
-}
-
-.routeInput{
-width:100%;
-padding:11px 12px;
-border:1px solid #ccd6e2;
-border-radius:11px;
-font-size:14px;
-outline:none
-}
-
-.routeInput:focus{
-border-color:#087fc3
-}
-
-.routeLabel{
-font-size:11px;
-font-weight:700;
-color:#667085;
-margin-bottom:4px
-}
-
-.routeButtons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-margin-top:8px
-}
-
-.routeButtons .action{
-width:100%
-}
-
-.routeSummary{
-margin-top:12px;
-padding:12px;
-background:#e9f4ff;
-border-radius:12px;
-font-size:13px;
-line-height:1.6;
-display:none
-}
-
-.routeLoading{
-text-align:center;
-padding:12px;
-color:#667085;
-display:none
-}
-
-
-/* ================= BOTTOM ================= */
-
-.bottom{
-position:fixed;
-left:0;
-right:0;
-bottom:0;
-height:72px;
-background:#fff;
-border-top:1px solid #ddd;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-z-index:2000
-}
-
-.navbtn{
-border:0;
-background:#fff;
-color:#667085;
-font-size:11px
-}
-
-.navbtn b{
-display:block;
-font-size:23px
-}
-
-.navbtn.active{
-color:#087fc3;
-font-weight:700
-}
-
-
-/* ================= MODAL ================= */
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:#0008;
-z-index:3000;
-align-items:flex-end
-}
-
-.modal.show{
-display:flex
-}
-
-.sheet{
-background:#fff;
-border-radius:18px 18px 0 0;
-width:100%;
-padding:18px;
-max-height:82vh;
-overflow:auto
-}
-
-.close{
-float:right;
-border:0;
-border-radius:50%;
-width:32px;
-height:32px
-}
-
-
-/* ================= ACCESS LOCK ================= */
 
 #accessLock{
-position:fixed;
-inset:0;
-z-index:99999;
-background:#f4f7fb;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:#f4f7fb;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+  text-align:center;
 }
 
-.accessBox{
-width:100%;
-max-width:380px;
-background:#fff;
-border-radius:20px;
-padding:28px 20px;
-text-align:center;
-box-shadow:0 4px 20px #0002
+.lockBox{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:20px;
+  padding:30px 22px;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
 }
 
-.accessIcon{
-font-size:55px;
-margin-bottom:12px
+.lockIcon{
+  font-size:55px;
+  margin-bottom:10px;
 }
 
-.accessTitle{
-font-size:23px;
-font-weight:800;
-margin-bottom:8px
+.lockBox h2{
+  margin:8px 0;
 }
 
-.accessText{
-font-size:14px;
-color:#667085;
-line-height:1.5
+.lockBox p{
+  color:#66717d;
+  line-height:1.5;
 }
 
 #radarApp{
-display:none
+  display:none;
+  min-height:100vh;
+  padding-bottom:75px;
 }
 
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#fff;
+  padding:13px 16px;
+  border-bottom:1px solid #e5e8ed;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-@media(max-width:420px){
+.headerTitle{
+  font-size:20px;
+  font-weight:800;
+}
 
-.title{
-font-size:23px
+.headerVersion{
+  font-size:11px;
+  color:#777;
+  margin-top:2px;
+}
+
+.onlineBox{
+  background:#eaf8ef;
+  color:#159447;
+  border-radius:20px;
+  padding:8px 12px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.page{
+  display:none;
+  padding:15px;
+}
+
+.page.active{
+  display:block;
+}
+
+.card{
+  background:#fff;
+  border-radius:17px;
+  padding:15px;
+  margin-bottom:14px;
+  box-shadow:0 3px 13px rgba(0,0,0,.07);
+}
+
+.cardTitle{
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.searchRow{
+  display:flex;
+  gap:8px;
+}
+
+.searchRow input{
+  flex:1;
+  min-width:0;
+  padding:13px;
+  border:1px solid #d9dee5;
+  border-radius:12px;
+  outline:none;
+  text-transform:uppercase;
+}
+
+.primaryBtn{
+  background:#1479e9;
+  color:#fff;
+  border-radius:12px;
+  padding:12px 15px;
+  font-weight:800;
+}
+
+.secondaryBtn{
+  background:#edf3f9;
+  color:#145b91;
+  border-radius:12px;
+  padding:11px 14px;
+  font-weight:700;
+}
+
+.dangerBtn{
+  background:#f8dddd;
+  color:#a32929;
+  border-radius:12px;
+  padding:11px 14px;
+  font-weight:700;
+}
+
+.driverCard{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.driverPhoto{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#e8edf2;
+  flex-shrink:0;
+}
+
+.driverName{
+  font-size:17px;
+  font-weight:800;
+}
+
+.driverId{
+  color:#1479e9;
+  font-weight:800;
+}
+
+.meta{
+  font-size:13px;
+  color:#68737e;
+  margin-top:3px;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800;
+  margin-top:5px;
+  margin-right:4px;
+}
+
+.onlineBadge{
+  background:#e8f8ed;
+  color:#138c42;
+}
+
+.vehicleBadge{
+  background:#eaf2ff;
+  color:#1764b0;
+}
+
+#map{
+  width:100%;
+  height:52vh;
+  min-height:330px;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.mapSmall{
+  height:400px !important;
+}
+
+.mapInfo{
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.55;
+}
+
+.routeCard{
+  display:none;
+}
+
+.routeLabel{
+  font-size:12px;
+  font-weight:800;
+  color:#626c76;
+  margin-bottom:5px;
+}
+
+.routeInput{
+  width:100%;
+  padding:13px;
+  border:1px solid #d7dde4;
+  border-radius:12px;
+  margin-bottom:10px;
+  outline:none;
 }
 
 .routeButtons{
-grid-template-columns:1fr
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 
+.fullBtn{
+  width:100%;
+  margin-top:8px;
 }
 
+.routeSummary{
+  background:#f5f9fd;
+  border-radius:14px;
+  padding:13px;
+  margin-top:12px;
+  line-height:1.6;
+  font-size:13px;
+  display:none;
+}
+
+.routeError{
+  display:none;
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  background:#fff0f0;
+  color:#a32828;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.routePoint{
+  margin:7px 0;
+}
+
+.pointDriver{
+  color:#a18a00;
+  font-weight:800;
+}
+
+.pointPickup{
+  color:#0a9142;
+  font-weight:800;
+}
+
+.pointDestination{
+  color:#d72c35;
+  font-weight:800;
+}
+
+.photoBox{
+  margin-top:10px;
+}
+
+.carPhoto{
+  width:100%;
+  max-height:210px;
+  object-fit:cover;
+  border-radius:14px;
+  display:none;
+}
+
+.profilePhotoLarge{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#e7ebef;
+  display:block;
+  margin:0 auto 12px;
+}
+
+.center{
+  text-align:center;
+}
+
+.detailRow{
+  padding:9px 0;
+  border-bottom:1px solid #edf0f3;
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.detailRow:last-child{
+  border-bottom:0;
+}
+
+.detailLabel{
+  color:#69737d;
+}
+
+.detailValue{
+  font-weight:700;
+  text-align:right;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  background:rgba(0,0,0,.55);
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modalBox{
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:22px 22px 0 0;
+  padding:20px;
+}
+
+.modalTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.closeBtn{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#edf1f5;
+  font-size:20px;
+}
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:3000;
+  height:68px;
+  background:rgba(255,255,255,.97);
+  border-top:1px solid #e2e6ea;
+  display:flex;
+}
+
+.navBtn{
+  flex:1;
+  background:none;
+  color:#65707a;
+  font-size:11px;
+  font-weight:700;
+}
+
+.navIcon{
+  display:block;
+  font-size:22px;
+  margin-bottom:2px;
+}
+
+.navBtn.active{
+  color:#1479e9;
+}
+
+.statusLine{
+  font-size:13px;
+  margin-top:8px;
+  color:#66717d;
+}
+
+.loading{
+  text-align:center;
+  padding:18px;
+  color:#66717d;
+}
+
+.hidden{
+  display:none !important;
+}
 </style>
-
 </head>
-
 
 <body>
 
-
-<!-- =====================================================
-     ACCESS LOCK
-===================================================== -->
-
 <div id="accessLock">
-
-<div class="accessBox">
-
-<div
-id="accessIcon"
-class="accessIcon">
-
-🔒
-
+  <div class="lockBox">
+    <div class="lockIcon">🔒</div>
+    <h2>Access Denied</h2>
+    <p>
+      This Driver Radar is available only to registered
+      Safety Cab drivers.
+    </p>
+    <p id="lockReason"></p>
+  </div>
 </div>
-
-<div
-id="accessTitle"
-class="accessTitle">
-
-Checking Driver Access...
-
-</div>
-
-<div
-id="accessText"
-class="accessText">
-
-Please wait...
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- =====================================================
-     RADAR APP
-===================================================== -->
 
 <div id="radarApp">
 
+<header>
+  <div>
+    <div class="headerTitle">🚕 Safetycab</div>
+    <div class="headerVersion">Driver Radar 4.0</div>
+  </div>
 
-<div id="notice"></div>
-
-
-<header class="header">
-
-<div class="logo">
-🚕
-</div>
-
-<div>
-
-<div class="title">
-Safety Cab
-</div>
-
-<div class="sub">
-Driver Radar • Telegram Mini App
-</div>
-
-</div>
-
+  <div class="onlineBox">
+    🟢 Online <span id="onlineCount">0</span>
+  </div>
 </header>
 
-
-
-<!-- ================= HOME ================= -->
-
-<section
-id="home"
-class="page active">
-
-
-<div class="stats">
-
-<div class="stat green">
-
-<strong id="online">
-0
-</strong>
-
-<span>
-Online
-</span>
-
-</div>
-
-</div>
-
-
-<div
-id="selectedInfo"
-class="selectedBox"
-style="display:none">
-</div>
-
-
-<!-- ================= ROUTE CARD ================= -->
-
-<div
-id="routeCard"
-class="routeCard">
-
-<div class="routeTitle">
-🗺️ Route / Trip Preview
-</div>
-
-
-<div class="routePoint">
-
-<div class="routeDot driverDot"></div>
-
-<div style="flex:1">
-
-<div class="routeLabel">
-DRIVER CURRENT LOCATION
-</div>
-
-<div id="driverCurrentText">
-Waiting for live location...
-</div>
-
-</div>
-
-</div>
-
-
-<div class="routePoint">
-
-<div class="routeDot pickupDot"></div>
-
-<div style="flex:1">
-
-<div class="routeLabel">
-PICKUP LOCATION
-</div>
-
-<input
-id="pickupInput"
-class="routeInput"
-placeholder="Enter Pickup Location"
-autocomplete="off">
-
-</div>
-
-</div>
-
-
-<div class="routePoint">
-
-<div class="routeDot destinationDot"></div>
-
-<div style="flex:1">
-
-<div class="routeLabel">
-DESTINATION
-</div>
-
-<input
-id="destinationInput"
-class="routeInput"
-placeholder="Enter Destination"
-autocomplete="off">
-
-</div>
-
-</div>
-
-
-<div
-class="routeButtons">
-
-<button
-class="action secondary"
-onclick="useCurrentPickup()">
-
-📍 Use My Current Location
-
-</button>
-
-
-<button
-class="action"
-onclick="showFullRoute()">
-
-🗺️ Show Full Route
-
-</button>
-
-</div>
-
-
-<div
-class="routeButtons">
-
-<button
-class="action secondary"
-onclick="swapRoutePoints()">
-
-🔄 Swap
-
-</button>
-
-
-<button
-class="action danger"
-onclick="clearRoute()">
-
-✕ Clear Route
-
-</button>
-
-</div>
-
-
-<div
-id="routeLoading"
-class="routeLoading">
-
-Finding locations and calculating road route...
-
-</div>
-
-
-<div
-id="routeSummary"
-class="routeSummary">
-</div>
-
-</div>
-
-
-<div id="map"></div>
-
+<!-- MAP PAGE -->
+<section id="pageMap" class="page active">
+
+  <div class="card">
+
+    <div class="cardTitle">
+      🔎 Search Driver
+    </div>
+
+    <div class="searchRow">
+      <input
+        id="driverSearch"
+        type="text"
+        placeholder="Enter Driver ID e.g. DC001"
+        autocomplete="off"
+      >
+
+      <button class="primaryBtn" onclick="searchDriver()">
+        Search
+      </button>
+    </div>
+
+    <div id="searchStatus" class="statusLine"></div>
+
+  </div>
+
+  <div id="selectedDriverCard" class="card hidden"></div>
+
+  <div id="routeCard" class="card routeCard">
+
+    <div class="cardTitle">
+      🛣️ Route / Trip Preview
+    </div>
+
+    <div class="routeLabel">
+      📍 Pickup Location
+    </div>
+
+    <input
+      id="pickupInput"
+      class="routeInput"
+      type="text"
+      placeholder="Example: Koti"
+      autocomplete="off"
+    >
+
+    <div class="routeLabel">
+      🔴 Destination
+    </div>
+
+    <input
+      id="destinationInput"
+      class="routeInput"
+      type="text"
+      placeholder="Example: Airport Shamshabad"
+      autocomplete="off"
+    >
+
+    <div class="routeButtons">
+
+      <button
+        class="secondaryBtn"
+        onclick="useCurrentLocation()">
+        📍 Use My Current Location
+      </button>
+
+      <button
+        class="primaryBtn"
+        onclick="showFullRoute()">
+        🗺️ Show Full Route
+      </button>
+
+      <button
+        class="secondaryBtn"
+        onclick="swapRoute()">
+        🔄 Swap
+      </button>
+
+      <button
+        class="dangerBtn"
+        onclick="clearRoute()">
+        ✕ Clear Route
+      </button>
+
+    </div>
+
+    <div id="routeSummary" class="routeSummary"></div>
+
+    <div id="routeError" class="routeError"></div>
+
+  </div>
+
+  <div class="card">
+    <div id="map"></div>
+  </div>
 
 </section>
 
+<!-- DRIVERS PAGE -->
+<section id="pageDrivers" class="page">
 
+  <div class="card">
+    <div class="cardTitle">
+      🚕 Driver Search
+    </div>
 
-<!-- ================= DRIVERS ================= -->
+    <input
+      id="driverSearch2"
+      class="routeInput"
+      type="text"
+      placeholder="Driver ID e.g. DC001"
+      autocomplete="off"
+    >
 
-<section
-id="drivers"
-class="page">
+    <button
+      class="primaryBtn fullBtn"
+      onclick="searchDriverFromDrivers()">
+      Search Driver
+    </button>
 
-
-<div class="card">
-
-<h3>
-🚕 Driver Radar
-</h3>
-
-
-<input
-id="search"
-class="search"
-placeholder="Search Driver ID  (DC001)"
-autocomplete="off">
-
-
-<div
-id="driverList"
-style="margin-top:10px">
-</div>
-
-
-</div>
+    <div id="driverSearchResult"></div>
+  </div>
 
 </section>
 
+<!-- PROFILE PAGE -->
+<section id="pageProfile" class="page">
 
-
-<!-- ================= PROFILE ================= -->
-
-<section
-id="profile"
-class="page">
-
-
-<div class="card">
-
-<h3>
-👤 My Profile
-</h3>
-
-
-<div class="row">
-
-<span>
-Name
-</span>
-
-<strong id="tgName">
-Telegram User
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Telegram ID
-</span>
-
-<strong id="tgId">
--
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Driver ID
-</span>
-
-<strong id="myDriverId">
-Not Registered
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Location
-</span>
-
-<span id="locStatus">
-Not shared
-</span>
-
-</div>
-
-
-<button
-class="action"
-style="width:100%;margin-top:12px"
-onclick="shareMyLocation()">
-
-📍 Share My Location
-
-</button>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🚦 My Status
-</h3>
-
-
-<div class="row">
-
-<span>
-Duty Status
-</span>
-
-
-<button
-id="dutyToggle"
-class="toggle"
-onclick="toggleDuty()">
-
-<i></i>
-
-</button>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Auto GPS Update
-</span>
-
-
-<button
-id="gpsToggle"
-class="toggle on"
-onclick="toggleAutoGPS()">
-
-<i></i>
-
-</button>
-
-</div>
-
-
-</div>
+  <div id="profileCard" class="card">
+    <div class="loading">
+      Loading profile...
+    </div>
+  </div>
 
 </section>
 
+<!-- SETTINGS PAGE -->
+<section id="pageSettings" class="page">
 
+  <div class="card">
 
-<!-- ================= SETTINGS ================= -->
+    <div class="cardTitle">
+      ⚙️ Settings
+    </div>
 
-<section
-id="settings"
-class="page">
+    <button
+      id="dutyBtn"
+      class="secondaryBtn fullBtn"
+      onclick="toggleDuty()">
+      Duty ON
+    </button>
 
+    <button
+      id="autoGpsBtn"
+      class="secondaryBtn fullBtn"
+      onclick="toggleAutoGPS()">
+      📡 Auto GPS ON
+    </button>
 
-<div class="card">
+    <div class="statusLine">
+      GPS updates are sent only while Auto GPS is enabled.
+    </div>
 
-<h3>
-⚙️ Settings
-</h3>
+  </div>
 
+  <div class="card">
 
-<div class="row">
+    <div class="cardTitle">
+      🆘 Help & Support
+    </div>
 
-<span>
-Language
-</span>
+    <div>
+      Safety Cab Support
+    </div>
 
-<strong>
-Hindi / English
-</strong>
+    <button
+      class="primaryBtn fullBtn"
+      onclick="callSupport()">
+      📞 Call Support
+    </button>
 
-</div>
-
-
-<div class="row">
-
-<span>
-Map
-</span>
-
-<strong>
-OpenStreetMap
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-GPS Update
-</span>
-
-<strong>
-Live GPS
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Firebase
-</span>
-
-<strong id="firebaseState">
-Connecting...
-</strong>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Version
-</span>
-
-<strong>
-Safety Cab Radar 3.9
-</strong>
-
-</div>
-
-
-</div>
-
-
-<div class="card">
-
-
-<button
-class="action secondary"
-style="width:100%;margin-bottom:8px"
-onclick="openHelp()">
-
-❓ Help & Support
-
-</button>
-
-
-<button
-class="action danger"
-style="width:100%"
-onclick="closeMiniApp()">
-
-🚪 Close Mini App
-
-</button>
-
-
-</div>
+  </div>
 
 </section>
 
+<div class="bottomNav">
 
+  <button
+    id="navMap"
+    class="navBtn active"
+    onclick="page('Map')">
+    <span class="navIcon">🗺️</span>
+    Map
+  </button>
 
-<!-- ================= BOTTOM NAV ================= -->
+  <button
+    id="navDrivers"
+    class="navBtn"
+    onclick="page('Drivers')">
+    <span class="navIcon">🚕</span>
+    Drivers
+  </button>
 
-<nav class="bottom">
+  <button
+    id="navProfile"
+    class="navBtn"
+    onclick="page('Profile')">
+    <span class="navIcon">👤</span>
+    Profile
+  </button>
 
-
-<button
-class="navbtn active"
-data-page="home">
-
-<b>
-🗺️
-</b>
-
-Map
-
-</button>
-
-
-<button
-class="navbtn"
-data-page="drivers">
-
-<b>
-🚕
-</b>
-
-Drivers
-
-</button>
-
-
-<button
-class="navbtn"
-data-page="profile">
-
-<b>
-👤
-</b>
-
-Profile
-
-</button>
-
-
-<button
-class="navbtn"
-data-page="settings">
-
-<b>
-⚙️
-</b>
-
-Settings
-
-</button>
-
-
-</nav>
-
-
-
-<!-- ================= MODAL ================= -->
-
-<div
-id="modal"
-class="modal"
-onclick="if(event.target===this)closeModal()">
-
-
-<div class="sheet">
-
-
-<button
-class="close"
-onclick="closeModal()">
-
-✕
-
-</button>
-
-
-<div id="modalBody"></div>
-
+  <button
+    id="navSettings"
+    class="navBtn"
+    onclick="page('Settings')">
+    <span class="navIcon">⚙️</span>
+    Settings
+  </button>
 
 </div>
 
 </div>
 
+<!-- DETAILS MODAL -->
+<div id="detailsModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTop">
+      <strong>Driver Details</strong>
+
+      <button
+        class="closeBtn"
+        onclick="closeDetails()">
+        ×
+      </button>
+    </div>
+
+    <div id="detailsContent"></div>
+
+  </div>
 
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<script type="module">
 
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
-
-
-<script>
-
-/* =====================================================
+/* =========================================================
    FIREBASE
-===================================================== */
+========================================================= */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  limit,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  off
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 const firebaseConfig = {
-
-apiKey:
-"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
-
-authDomain:
-"safety-cab-radar.firebaseapp.com",
-
-databaseURL:
-"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-projectId:
-"safety-cab-radar",
-
-storageBucket:
-"safety-cab-radar.firebasestorage.app",
-
-messagingSenderId:
-"900129993912",
-
-appId:
-"1:900129993912:web:48c98c4d62154d0f39704d"
-
+  apiKey: "AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
+  authDomain: "safety-cab-radar.firebaseapp.com",
+  databaseURL: "https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "safety-cab-radar",
+  storageBucket: "safety-cab-radar.firebasestorage.app",
+  messagingSenderId: "900129993912",
+  appId: "1:900129993912:web:48c98c4d62154d0f39704d"
 };
 
+const app = initializeApp(firebaseConfig);
 
-const SUPPORT_PHONE =
-"08062180745";
+const db = getFirestore(app);
 
+const rtdb = getDatabase(app);
 
-const tg =
-window.Telegram &&
-window.Telegram.WebApp
-?
-window.Telegram.WebApp
-:
-null;
+const auth = getAuth(app);
 
 
-if(tg){
+/* =========================================================
+   TELEGRAM
+========================================================= */
+
+const tg = window.Telegram.WebApp;
 
 tg.ready();
-
 tg.expand();
 
-}
 
-
-firebase.initializeApp(
-firebaseConfig
-);
-
-
-const auth =
-firebase.auth();
-
-const db =
-firebase.firestore();
-
-const rtdb =
-firebase.database();
-
-
-
-/* =====================================================
-   GLOBAL VARIABLES
-===================================================== */
-
-let map = null;
-
-let myDriver = null;
-
-let myTelegramId = null;
-
-let watchId = null;
-
-let autoGPS = true;
-
-let myDuty = false;
-
-let selectedDriverId = null;
-
-let selectedDriverData = null;
-
-let selectedLiveRef = null;
-
-let selectedLiveCallback = null;
-
-let selectedMarker = null;
-
-let mapCenteredOnce = false;
+/* =========================================================
+   GLOBALS
+========================================================= */
 
 let radarAuthorized = false;
 
+let currentTelegramId = "";
 
-/* ================= ROUTE VARIABLES ================= */
+let currentDriver = null;
+
+let selectedDriver = null;
+
+let map = null;
+
+let driverMarker = null;
+
+let pickupMarker = null;
+
+let destinationMarker = null;
 
 let routeLayer = null;
 
-let driverRouteMarker = null;
+let selectedDriverListener = null;
 
-let pickupRouteMarker = null;
+let myLocation = null;
 
-let destinationRouteMarker = null;
+let myGpsWatch = null;
 
-let routeDriverPoint = null;
+let duty = true;
 
-let routePickupPoint = null;
-
-let routeDestinationPoint = null;
+let autoGPS = true;
 
 
+/* =========================================================
+   HYDERABAD GEOCODING SETTINGS
+========================================================= */
 
-/* =====================================================
-   HELPERS
-===================================================== */
+/*
+   IMPORTANT FIX
 
-const $ =
-id =>
-document.getElementById(id);
+   Nominatim previously selected:
 
+   Koti, Tuy, Upper-Basins, Burkina Faso
 
-function showNotice(text){
+   We now force India and strongly focus Hyderabad.
+*/
 
-const n =
-$("notice");
-
-if(!n)
-return;
-
-n.textContent =
-text;
-
-n.style.display =
-"block";
-
-clearTimeout(
-window.noticeTimer
-);
-
-window.noticeTimer =
-setTimeout(
-function(){
-
-n.style.display =
-"none";
-
-},
-3000
-);
-
-}
+const HYD_VIEWBOX =
+  "78.15,17.65,78.70,17.15";
 
 
-function esc(value){
+/*
+   Hyderabad geographical safety boundary.
 
-return String(value ?? "")
-.replace(
-/[&<>"']/g,
-function(m){
+   This is intentionally broad enough for:
+   Hyderabad
+   Secunderabad
+   Shamshabad
+   Airport
+   surrounding Hyderabad area
+*/
 
-return {
+const HYD_MIN_LAT = 17.10;
+const HYD_MAX_LAT = 17.75;
 
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
+const HYD_MIN_LNG = 78.05;
+const HYD_MAX_LNG = 78.75;
 
-}[m];
 
-}
-);
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
+async function startAuth(){
+
+  try{
+
+    await signInAnonymously(auth);
+
+  }catch(error){
+
+    console.error(error);
+
+    showAccessDenied(
+      "Firebase authentication failed."
+    );
+
+  }
 
 }
 
 
-function ejs(value){
+/* =========================================================
+   TELEGRAM DRIVER CHECK
+========================================================= */
 
-return String(value ?? "")
-.replace(
-/\\/g,
-"\\\\"
-)
-.replace(
-/'/g,
-"\\'"
-);
+async function authorizeDriver(){
 
-}
+  try{
 
+    const user =
+      tg.initDataUnsafe &&
+      tg.initDataUnsafe.user;
 
-/* =====================================================
-   NORMALIZE DRIVER ID
-===================================================== */
+    if(!user){
 
-function normalizeDriverId(value){
+      showAccessDenied(
+        "Please open Safety Cab from Telegram."
+      );
 
-return String(value || "")
-.trim()
-.toUpperCase();
+      return;
 
-}
+    }
 
+    currentTelegramId =
+      String(user.id);
 
-/* =====================================================
-   VALID DRIVER ID
-===================================================== */
+    await signInAnonymously(auth);
 
-function isValidDriverId(id){
+    const q = query(
+      collection(db,"drivers"),
+      where("telegramId","==",currentTelegramId),
+      limit(1)
+    );
 
-return /^DC\d{1,5}$/.test(id);
+    const snap =
+      await getDocs(q);
 
-}
+    if(snap.empty){
 
+      showAccessDenied(
+        "Your Telegram ID is not registered."
+      );
 
+      return;
 
-/* =====================================================
-   PAGE NAVIGATION
-===================================================== */
+    }
 
-function page(id){
+    const d =
+      snap.docs[0];
 
-if(!radarAuthorized)
-return;
+    currentDriver = {
+      docId:d.id,
+      ...d.data()
+    };
 
+    radarAuthorized = true;
 
-document
-.querySelectorAll(".page")
-.forEach(
-function(x){
+    document
+      .getElementById("accessLock")
+      .style.display = "none";
 
-x.classList.remove("active");
+    document
+      .getElementById("radarApp")
+      .style.display = "block";
 
-}
-);
+    duty =
+      currentDriver.duty !== false;
 
+    autoGPS =
+      currentDriver.autoGPS !== false;
 
-$(id)
-.classList
-.add("active");
+    updateSettingsUI();
 
+    initMap();
 
-document
-.querySelectorAll(".navbtn")
-.forEach(
-function(x){
+    loadOnlineCount();
 
-x.classList.toggle(
-"active",
-x.dataset.page === id
-);
+    loadOwnProfile();
 
-}
-);
+    startOwnGPS();
 
+    selectDriver(
+      currentDriver.id || currentDriver.driverId
+    );
 
-if(
-id === "home" &&
-map
-){
+  }catch(error){
 
-setTimeout(
-function(){
+    console.error(error);
 
-map.invalidateSize();
+    showAccessDenied(
+      "Unable to verify Driver registration."
+    );
 
-},
-150
-);
-
-}
+  }
 
 }
 
 
-document
-.querySelectorAll(".navbtn")
-.forEach(
-function(button){
+/* =========================================================
+   ACCESS DENIED
+========================================================= */
 
-button.onclick =
-function(){
+function showAccessDenied(reason){
 
-page(
-button.dataset.page
-);
+  document
+    .getElementById("radarApp")
+    .style.display = "none";
 
-};
+  document
+    .getElementById("accessLock")
+    .style.display = "flex";
+
+  document
+    .getElementById("lockReason")
+    .textContent = reason || "";
 
 }
-);
 
 
-
-/* =====================================================
+/* =========================================================
    MAP
-===================================================== */
+========================================================= */
 
 function initMap(){
 
-if(!radarAuthorized)
-return;
+  if(map) return;
 
+  map =
+    L.map("map",{
+      zoomControl:true
+    }).setView(
+      [17.3850,78.4867],
+      11
+    );
 
-if(map)
-return;
-
-
-map =
-L
-.map("map")
-.setView(
-[17.42536,78.48694],
-13
-);
-
-
-L
-.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-maxZoom:19,
-attribution:
-"© OpenStreetMap contributors"
-}
-)
-.addTo(map);
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom:19,
+      attribution:
+        "&copy; OpenStreetMap contributors"
+    }
+  ).addTo(map);
 
 }
 
 
-
-/* =====================================================
-   DRIVER ICON
-===================================================== */
-
-function driverIcon(d){
-
-return L.divIcon({
-
-className:"",
-
-html:
-`<div style="
-font-size:25px;
-white-space:nowrap;
-line-height:1;
-">🚕</div>`,
-
-iconSize:
-[42,42],
-
-iconAnchor:
-[21,21]
-
-});
-
-}
-
-
-
-/* =====================================================
-   STOP LIVE LISTENER
-===================================================== */
-
-function stopSelectedLiveListener(){
-
-if(
-selectedLiveRef &&
-selectedLiveCallback
-){
-
-selectedLiveRef.off(
-"value",
-selectedLiveCallback
-);
-
-}
-
-selectedLiveRef = null;
-
-selectedLiveCallback = null;
-
-}
-
-
-
-/* =====================================================
-   CLEAR SELECTED MARKER
-===================================================== */
-
-function clearSelectedMarker(){
-
-if(
-selectedMarker &&
-map &&
-map.hasLayer(
-selectedMarker
-)
-){
-
-map.removeLayer(
-selectedMarker
-);
-
-}
-
-selectedMarker = null;
-
-}
-
-
-
-/* =====================================================
-   PROFILE PHOTO HTML
-===================================================== */
-
-function profilePhotoHTML(
-photo,
-className
-){
-
-if(photo){
-
-return `
-<img
-class="${className}"
-src="${esc(photo)}"
-alt="Driver Profile Photo">
-`;
-
-}
-
-
-if(className === "popupPhoto"){
-
-return `
-<div class="popupPhotoPlaceholder">
-👤
-</div>
-`;
-
-}
-
-
-return `
-<div class="profilePhotoPlaceholder">
-👤
-</div>
-`;
-
-}
-
-
-
-/* =====================================================
-   CAR PHOTO HTML
-===================================================== */
-
-function carPhotoHTML(
-photo,
-mode
-){
-
-if(photo){
-
-if(mode === "popup"){
-
-return `
-<img
-class="popupCarPhoto"
-src="${esc(photo)}"
-alt="Car Photo">
-`;
-
-}
-
-
-return `
-<img
-class="detailCarPhoto"
-src="${esc(photo)}"
-alt="Car Photo">
-`;
-
-}
-
-
-if(mode === "popup"){
-
-return `
-<div class="popupCarPlaceholder">
-🚗
-</div>
-`;
-
-}
-
-
-return `
-<div class="detailCarPlaceholder">
-🚗
-</div>
-`;
-
-}
-
-
-
-/* =====================================================
-   RENDER SELECTED DRIVER
-===================================================== */
-
-function renderSelectedMarker(){
-
-if(
-!radarAuthorized ||
-!map
-)
-return;
-
-
-clearSelectedMarker();
-
-
-const d =
-selectedDriverData;
-
-
-if(!d)
-return;
-
-
-if(
-!Number.isFinite(d.lat) ||
-!Number.isFinite(d.lng)
-){
-
-return;
-
-}
-
-
-selectedMarker =
-L
-.marker(
-[d.lat,d.lng],
-{
-icon:
-driverIcon(d)
-}
-)
-.addTo(map);
-
-
-const popupPhoto =
-profilePhotoHTML(
-d.profilePhoto,
-"popupPhoto"
-);
-
-
-const carPhoto =
-carPhotoHTML(
-d.carPhoto,
-"popup"
-);
-
-
-selectedMarker.bindPopup(
-
-`
-
-<div
-style="
-text-align:center;
-min-width:225px;
-">
-
-${popupPhoto}
-
-
-<b>
-🚕 ${esc(d.name || d.id)}
-</b>
-
-
-<br>
-
-
-<div
-style="
-margin-top:5px;
-text-align:left;
-line-height:1.6;
-">
-
-
-<b>Driver ID:</b>
-${esc(d.id)}
-
-
-<br>
-
-
-<b>Name:</b>
-${esc(d.name || "-")}
-
-
-<br>
-
-
-<b>Vehicle Number:</b>
-${esc(d.vehicle || "-")}
-
-
-<br>
-
-
-<b>Vehicle Type:</b>
-<span class="vehicleTypeBadge">
-${esc(d.vehicleType || "Not Set")}
-</span>
-
-
-<br>
-
-
-${carPhoto}
-
-
-<b>GPS:</b>
-${
-d.online
-?
-"🟢 Online"
-:
-"🔴 Offline"
-}
-
-
-<br>
-
-
-<b>Rating:</b>
-⭐ ${d.rating || "Not Rated"}
-
-
-</div>
-
-
-<div
-id="popupArea"
-class="locationBox"
-style="text-align:left"
->
-
-📍 Area: Finding...
-
-</div>
-
-
-<button
-class="action"
-style="
-width:100%;
-margin-top:8px;
-"
-onclick="openDriverDetails()"
->
-
-View Details
-
-</button>
-
-
-<button
-class="action secondary"
-style="
-width:100%;
-margin-top:8px;
-"
-onclick="openRouteCard()"
->
-
-🗺️ Plan Route
-
-</button>
-
-
-</div>
-
-`
-
-);
-
-
-loadArea(
-d.lat,
-d.lng
-);
-
-}
-
-
-
-/* =====================================================
+/* =========================================================
    ONLINE COUNT
-===================================================== */
+========================================================= */
 
 async function loadOnlineCount(){
 
-if(!radarAuthorized)
-return;
+  try{
 
+    const q = query(
+      collection(db,"drivers"),
+      where("online","==",true)
+    );
 
-try{
+    const snap =
+      await getDocs(q);
 
-const snapshot =
-await db
-.collection("drivers")
-.where(
-"online",
-"==",
-true
-)
-.get();
+    document
+      .getElementById("onlineCount")
+      .textContent =
+      snap.size;
 
+  }catch(error){
 
-$("online").textContent =
-snapshot.size;
+    console.error(error);
 
-}
-catch(error){
-
-console.error(
-"Online count error:",
-error
-);
-
-$("online").textContent =
-"0";
-
-}
+  }
 
 }
 
 
+/* =========================================================
+   DRIVER ID NORMALIZATION
+========================================================= */
 
-/* =====================================================
-   DRIVER SEARCH
-===================================================== */
+function normalizeDriverId(value){
 
-let searchTimer =
-null;
-
-
-$("search").oninput =
-function(){
-
-if(!radarAuthorized)
-return;
-
-
-clearTimeout(
-searchTimer
-);
-
-
-const raw =
-this.value.trim();
-
-
-if(!raw){
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Driver ID डालकर Search करें" +
-"</div>";
-
-return;
+  return String(value || "")
+    .trim()
+    .toUpperCase();
 
 }
 
 
-const id =
-normalizeDriverId(
-raw
-);
+/* =========================================================
+   SEARCH DRIVER
+========================================================= */
 
+window.searchDriver = async function(){
 
-searchTimer =
-setTimeout(
-function(){
+  const input =
+    document.getElementById("driverSearch");
 
-searchDriverById(id);
+  const id =
+    normalizeDriverId(input.value);
 
-},
-450
-);
+  input.value = id;
+
+  const status =
+    document.getElementById("searchStatus");
+
+  if(!/^DC\d{1,5}$/.test(id)){
+
+    status.textContent =
+      "Enter a valid Driver ID like DC001.";
+
+    return;
+
+  }
+
+  status.textContent =
+    "Searching...";
+
+  try{
+
+    const q = query(
+      collection(db,"drivers"),
+      where("id","==",id),
+      limit(1)
+    );
+
+    const snap =
+      await getDocs(q);
+
+    if(snap.empty){
+
+      status.textContent =
+        "Driver not found.";
+
+      document
+        .getElementById("selectedDriverCard")
+        .classList.add("hidden");
+
+      return;
+
+    }
+
+    const d =
+      snap.docs[0];
+
+    selectedDriver = {
+      docId:d.id,
+      ...d.data()
+    };
+
+    status.textContent =
+      "Driver found.";
+
+    renderSelectedDriver();
+
+    selectDriver(id);
+
+  }catch(error){
+
+    console.error(error);
+
+    status.textContent =
+      "Search failed.";
+
+  }
 
 };
 
 
-
-/* =====================================================
-   SEARCH DRIVER BY ID
-===================================================== */
-
-async function searchDriverById(
-rawId
-){
-
-if(!radarAuthorized)
-return;
-
-
-const id =
-normalizeDriverId(
-rawId
-);
-
-
-if(
-!isValidDriverId(id)
-){
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-
-"Valid Driver ID डालें।<br>" +
-
-"Example: DC001 या dc001" +
-
-"</div>";
-
-return;
-
-}
-
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Searching..." +
-"</div>";
-
-
-try{
-
-const snapshot =
-await db
-.collection("drivers")
-.where(
-"id",
-"==",
-id
-)
-.limit(1)
-.get();
-
-
-if(snapshot.empty){
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-
-"Driver ID " +
-esc(id) +
-" not found" +
-
-"</div>";
-
-return;
-
-}
-
-
-const doc =
-snapshot.docs[0];
-
-
-const d =
-doc.data();
-
-
-const driver = {
-
-docId:
-doc.id,
-
-id:
-normalizeDriverId(
-d.id ||
-doc.id
-),
-
-name:
-d.name ||
-"",
-
-phone:
-d.phone ||
-"",
-
-vehicle:
-d.vehicle ||
-"",
-
-vehicleType:
-d.vehicleType ||
-"",
-
-carPhoto:
-d.carPhoto ||
-"",
-
-lat:
-Number(d.lat),
-
-lng:
-Number(d.lng),
-
-online:
-d.online === true,
-
-duty:
-d.duty === true,
-
-rating:
-Number(d.rating || 0),
-
-profilePhoto:
-d.profilePhoto ||
-""
-
-};
-
-
-$("driverList").innerHTML =
-
-`
-
-<div
-class="driver"
-onclick="
-selectDriver('${ejs(driver.id)}')
-">
-
-
-<div class="avatar">
-
-${
-driver.profilePhoto
-?
-`
-<img
-src="${esc(driver.profilePhoto)}"
-alt="Driver">
-`
-:
-"🚕"
-}
-
-</div>
-
-
-<div class="driverinfo">
-
-<b>
-
-${esc(driver.id)}
-
-•
-
-${esc(driver.name)}
-
-</b>
-
-
-<div class="small">
-
-${esc(driver.vehicle || "-")}
-
-•
-
-<span class="vehicleTypeBadge">
-
-${esc(driver.vehicleType || "Not Set")}
-
-</span>
-
-</div>
-
-</div>
-
-
-<span
-class="badge ${
-driver.online
-?
-"bgreen"
-:
-"bred"
-}"
->
-
-${
-driver.online
-?
-"ONLINE"
-:
-"OFFLINE"
-}
-
-</span>
-
-
-</div>
-
-`;
-
-
-window.searchedDriver =
-driver;
-
-
-}
-catch(error){
-
-console.error(
-"Driver search error:",
-error
-);
-
-
-$("driverList").innerHTML =
-
-"<div class='empty'>" +
-"Driver search error." +
-"</div>";
-
-}
-
-}
-
-
-
-/* =====================================================
+/* =========================================================
    SELECT DRIVER
-===================================================== */
+========================================================= */
 
-async function selectDriver(
-rawId
-){
+async function selectDriver(id){
 
-if(!radarAuthorized)
-return;
+  if(!id) return;
 
+  id =
+    normalizeDriverId(id);
 
-const id =
-normalizeDriverId(
-rawId
-);
+  selectedDriver =
+    selectedDriver || {};
 
+  selectedDriver.id =
+    id;
 
-const driver =
-window.searchedDriver;
+  if(selectedDriverListener){
 
+    off(
+      selectedDriverListener
+    );
 
-if(
-!driver ||
-normalizeDriverId(
-driver.id
-) !== id
-){
+    selectedDriverListener = null;
 
-showNotice(
-"Driver पहले search करें."
-);
+  }
 
-return;
+  const locationRef =
+    ref(
+      rtdb,
+      "liveLocations/" + id
+    );
+
+  selectedDriverListener =
+    onValue(
+      locationRef,
+      snapshot => {
+
+        const data =
+          snapshot.val();
+
+        if(!data ||
+           typeof data.lat !== "number" ||
+           typeof data.lng !== "number"){
+
+          return;
+
+        }
+
+        updateDriverMarker(
+          data.lat,
+          data.lng
+        );
+
+        selectedDriver.live =
+          data;
+
+        /*
+          If route is already active,
+          update driver marker only.
+        */
+
+        if(
+          document
+            .getElementById("routeCard")
+            .style.display === "block"
+        ){
+
+          updateRouteDriverPoint(
+            data.lat,
+            data.lng
+          );
+
+        }
+
+      }
+    );
 
 }
 
 
-stopSelectedLiveListener();
+/* =========================================================
+   DRIVER MARKER
+========================================================= */
+
+function updateDriverMarker(lat,lng){
+
+  if(!map) return;
+
+  const icon =
+    L.divIcon({
+      className:"",
+      html:
+        '<div style="' +
+        'font-size:30px;' +
+        'transform:translate(-50%,-50%);' +
+        '">🚕</div>',
+      iconSize:[30,30],
+      iconAnchor:[15,15]
+    });
+
+  if(!driverMarker){
+
+    driverMarker =
+      L.marker(
+        [lat,lng],
+        {icon}
+      ).addTo(map);
+
+    map.setView(
+      [lat,lng],
+      14
+    );
+
+  }else{
+
+    driverMarker.setLatLng(
+      [lat,lng]
+    );
+
+  }
+
+}
 
 
-selectedDriverId =
-id;
+/* =========================================================
+   SELECTED DRIVER CARD
+========================================================= */
+
+function renderSelectedDriver(){
+
+  if(!selectedDriver) return;
+
+  const card =
+    document.getElementById(
+      "selectedDriverCard"
+    );
+
+  const profile =
+    selectedDriver.profilePhoto || "";
+
+  const car =
+    selectedDriver.carPhoto || "";
+
+  const vehicle =
+    selectedDriver.vehicleType || "";
+
+  const online =
+    selectedDriver.online === true;
+
+  card.classList.remove("hidden");
+
+  card.innerHTML = `
+
+    <div class="cardTitle">
+      🚕 Selected Driver
+    </div>
+
+    <div class="driverCard">
+
+      <img
+        class="driverPhoto"
+        src="${profile}"
+        onerror="this.style.display='none'"
+      >
+
+      <div>
+
+        <div class="driverName">
+          ${escapeHtml(
+            selectedDriver.name || "Driver"
+          )}
+        </div>
+
+        <div class="driverId">
+          ${escapeHtml(
+            selectedDriver.id || ""
+          )}
+        </div>
+
+        <div class="meta">
+          ${escapeHtml(
+            selectedDriver.vehicle || ""
+          )}
+        </div>
+
+        ${
+          vehicle
+          ?
+          `<span class="badge vehicleBadge">
+             ${escapeHtml(vehicle)}
+           </span>`
+          : ""
+        }
+
+        ${
+          online
+          ?
+          `<span class="badge onlineBadge">
+             🟢 ONLINE
+           </span>`
+          :
+          `<span class="badge">
+             ⚪ OFFLINE
+           </span>`
+        }
+
+      </div>
+
+    </div>
+
+    ${
+      car
+      ?
+      `<div class="photoBox">
+        <img
+          class="carPhoto"
+          src="${car}"
+          style="display:block"
+          onerror="this.style.display='none'"
+        >
+      </div>`
+      : ""
+    }
+
+    <div class="routeButtons"
+         style="margin-top:12px">
+
+      <button
+        class="primaryBtn"
+        onclick="openRoutePlanner()">
+        🗺️ Plan Route
+      </button>
+
+      <button
+        class="secondaryBtn"
+        onclick="openDetails()">
+        📋 Details
+      </button>
+
+    </div>
+
+  `;
+
+}
 
 
-selectedDriverData =
-{
-...driver
+/* =========================================================
+   ROUTE PLANNER
+========================================================= */
+
+window.openRoutePlanner =
+function(){
+
+  const card =
+    document.getElementById(
+      "routeCard"
+    );
+
+  card.style.display = "block";
+
+  document
+    .getElementById("routeSummary")
+    .style.display = "none";
+
+  document
+    .getElementById("routeError")
+    .style.display = "none";
+
+  setTimeout(()=>{
+    card.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },100);
+
 };
 
 
-mapCenteredOnce =
-false;
+/* =========================================================
+   CURRENT LOCATION
+========================================================= */
+
+window.useCurrentLocation =
+function(){
+
+  if(!myLocation){
+
+    if(
+      currentDriver &&
+      currentDriver.lat &&
+      currentDriver.lng
+    ){
+
+      myLocation = {
+        lat:Number(
+          currentDriver.lat
+        ),
+        lng:Number(
+          currentDriver.lng
+        )
+      };
+
+    }
+
+  }
+
+  if(!myLocation){
+
+    if(!navigator.geolocation){
+
+      showRouteError(
+        "GPS is not available on this device."
+      );
+
+      return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+
+        myLocation = {
+          lat:position.coords.latitude,
+          lng:position.coords.longitude
+        };
+
+        document
+          .getElementById("pickupInput")
+          .value =
+          "My Current Location";
+
+      },
+      error => {
+
+        showRouteError(
+          "Unable to get current location."
+        );
+
+      },
+      {
+        enableHighAccuracy:true,
+        timeout:10000,
+        maximumAge:5000
+      }
+    );
+
+    return;
+
+  }
+
+  document
+    .getElementById("pickupInput")
+    .value =
+    "My Current Location";
+
+};
 
 
-$("selectedInfo").style.display =
-"block";
-
-
-$("selectedInfo").textContent =
-
-"Selected Driver: " +
-selectedDriverData.id +
-" • " +
-selectedDriverData.name;
-
+/* =========================================================
+   ROUTE GEOCODING
+========================================================= */
 
 /*
- Route card does NOT open automatically.
+  THIS IS THE MAIN FIX.
+
+  Short Hyderabad place names are automatically searched as:
+
+  Koti, Hyderabad, Telangana, India
+
+  and restricted to India.
+
+  This prevents:
+  Koti -> Burkina Faso
 */
 
-updateDriverCurrentText();
+function prepareHyderabadQuery(text){
 
+  let q =
+    String(text || "").trim();
 
-clearRoute();
+  if(!q) return "";
 
+  const lower =
+    q.toLowerCase();
 
-renderSelectedMarker();
+  const alreadyLocal =
+    lower.includes("hyderabad") ||
+    lower.includes("secunderabad") ||
+    lower.includes("telangana") ||
+    lower.includes("shamshabad") ||
+    lower.includes("rangareddy") ||
+    lower.includes("ranga reddy");
 
+  const alreadyIndia =
+    lower.includes("india");
 
-if(
-Number.isFinite(
-selectedDriverData.lat
-) &&
-Number.isFinite(
-selectedDriverData.lng
-)
-){
+  if(alreadyIndia){
 
-map.setView(
-[
-selectedDriverData.lat,
-selectedDriverData.lng
-],
-15
-);
+    return q;
 
+  }
 
-mapCenteredOnce =
-true;
+  if(alreadyLocal){
 
-}
+    return q + ", India";
 
+  }
 
-/*
- ONLY selected driver RTDB.
-*/
-
-selectedLiveRef =
-rtdb.ref(
-"liveLocations/" +
-id
-);
-
-
-selectedLiveCallback =
-function(snapshot){
-
-if(!radarAuthorized)
-return;
-
-
-const live =
-snapshot.val();
-
-
-if(!live){
-
-return;
+  return q +
+    ", Hyderabad, Telangana, India";
 
 }
 
 
-const lat =
-Number(live.lat);
+/* =========================================================
+   CHECK HYDERABAD RESULT
+========================================================= */
 
+function isHyderabadArea(lat,lng){
 
-const lng =
-Number(live.lng);
-
-
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
-
-return;
+  return (
+    lat >= HYD_MIN_LAT &&
+    lat <= HYD_MAX_LAT &&
+    lng >= HYD_MIN_LNG &&
+    lng <= HYD_MAX_LNG
+  );
 
 }
 
 
-selectedDriverData.lat =
-lat;
+/* =========================================================
+   GEOCODE PLACE
+========================================================= */
 
-selectedDriverData.lng =
-lng;
+async function geocodePlace(text){
+
+  const original =
+    String(text || "").trim();
+
+  if(!original){
+
+    throw new Error(
+      "Location is empty."
+    );
+
+  }
+
+  /*
+    Current GPS is handled separately.
+  */
+
+  if(
+    original.toLowerCase() ===
+    "my current location"
+  ){
+
+    if(!myLocation){
+
+      throw new Error(
+        "Current location is not available."
+      );
+
+    }
+
+    return {
+      lat:myLocation.lat,
+      lng:myLocation.lng,
+      display_name:
+        "My Current Location"
+    };
+
+  }
 
 
-selectedDriverData.online =
-live.online === true;
+  /*
+    First query:
+    Hyderabad + India + bounded area
+  */
+
+  const localQuery =
+    prepareHyderabadQuery(
+      original
+    );
+
+  const url =
+    "https://nominatim.openstreetmap.org/search" +
+    "?format=jsonv2" +
+    "&addressdetails=1" +
+    "&limit=5" +
+    "&countrycodes=in" +
+    "&viewbox=" +
+    encodeURIComponent(
+      HYD_VIEWBOX
+    ) +
+    "&bounded=1" +
+    "&q=" +
+    encodeURIComponent(
+      localQuery
+    );
+
+  const response =
+    await fetch(
+      url,
+      {
+        headers:{
+          "Accept":
+            "application/json"
+        }
+      }
+    );
+
+  if(!response.ok){
+
+    throw new Error(
+      "Location search failed."
+    );
+
+  }
+
+  const results =
+    await response.json();
+
+  if(!Array.isArray(results) ||
+     results.length === 0){
+
+    /*
+      Second India-only fallback.
+    */
+
+    const fallbackUrl =
+      "https://nominatim.openstreetmap.org/search" +
+      "?format=jsonv2" +
+      "&addressdetails=1" +
+      "&limit=5" +
+      "&countrycodes=in" +
+      "&q=" +
+      encodeURIComponent(
+        localQuery
+      );
+
+    const fallbackResponse =
+      await fetch(
+        fallbackUrl
+      );
+
+    if(!fallbackResponse.ok){
+
+      throw new Error(
+        "Location not found."
+      );
+
+    }
+
+    const fallbackResults =
+      await fallbackResponse.json();
+
+    if(
+      !Array.isArray(
+        fallbackResults
+      ) ||
+      fallbackResults.length === 0
+    ){
+
+      throw new Error(
+        "Location not found."
+      );
+
+    }
+
+    /*
+      Prefer Hyderabad result.
+    */
+
+    const preferred =
+      fallbackResults.find(
+        r => {
+
+          const lat =
+            Number(r.lat);
+
+          const lng =
+            Number(r.lon);
+
+          return isHyderabadArea(
+            lat,
+            lng
+          );
+
+        }
+      );
+
+    if(!preferred){
+
+      throw new Error(
+        "Location was found, but it is outside the Hyderabad area. Please enter the Hyderabad/Telangana location."
+      );
+
+    }
+
+    return {
+      lat:Number(preferred.lat),
+      lng:Number(preferred.lon),
+      display_name:
+        preferred.display_name
+    };
+
+  }
 
 
-if(selectedMarker){
+  /*
+    Pick the best Hyderabad result.
+  */
 
-selectedMarker.setLatLng(
-[lat,lng]
-);
+  const preferred =
+    results.find(
+      r => {
 
-selectedMarker.setIcon(
-driverIcon(
-selectedDriverData
-)
-);
+        const lat =
+          Number(r.lat);
+
+        const lng =
+          Number(r.lon);
+
+        return isHyderabadArea(
+          lat,
+          lng
+        );
+
+      }
+    );
+
+  if(!preferred){
+
+    throw new Error(
+      "Location result is outside Hyderabad area."
+    );
+
+  }
+
+  const countryCode =
+    preferred.address &&
+    preferred.address.country_code
+      ?
+      preferred.address.country_code
+      .toLowerCase()
+      :
+      "";
+
+  if(countryCode !== "in"){
+
+    throw new Error(
+      "Wrong country result rejected."
+    );
+
+  }
+
+  return {
+    lat:Number(preferred.lat),
+    lng:Number(preferred.lon),
+    display_name:
+      preferred.display_name
+  };
 
 }
-else{
-
-renderSelectedMarker();
-
-}
 
 
-updateDriverCurrentText();
+/* =========================================================
+   ROUTE
+========================================================= */
+
+window.showFullRoute =
+async function(){
+
+  const pickupText =
+    document
+      .getElementById(
+        "pickupInput"
+      )
+      .value.trim();
+
+  const destinationText =
+    document
+      .getElementById(
+        "destinationInput"
+      )
+      .value.trim();
+
+  hideRouteError();
+
+  if(!selectedDriver){
+
+    showRouteError(
+      "Please select a driver first."
+    );
+
+    return;
+
+  }
+
+  if(!pickupText){
+
+    showRouteError(
+      "Please enter Pickup Location."
+    );
+
+    return;
+
+  }
+
+  if(!destinationText){
+
+    showRouteError(
+      "Please enter Destination."
+    );
+
+    return;
+
+  }
+
+  const summary =
+    document
+      .getElementById(
+        "routeSummary"
+      );
+
+  summary.style.display = "block";
+
+  summary.innerHTML =
+    "🔎 Finding locations...";
+
+  try{
+
+    let driverLat = null;
+    let driverLng = null;
+
+    /*
+      Driver current location
+      from RTDB.
+    */
+
+    if(
+      selectedDriver.live &&
+      typeof selectedDriver.live.lat ===
+      "number" &&
+      typeof selectedDriver.live.lng ===
+      "number"
+    ){
+
+      driverLat =
+        selectedDriver.live.lat;
+
+      driverLng =
+        selectedDriver.live.lng;
+
+    }
+
+    /*
+      Fallback to currentDriver GPS.
+    */
+
+    if(
+      driverLat === null &&
+      currentDriver &&
+      currentDriver.lat &&
+      currentDriver.lng
+    ){
+
+      driverLat =
+        Number(currentDriver.lat);
+
+      driverLng =
+        Number(currentDriver.lng);
+
+    }
+
+    if(
+      driverLat === null ||
+      driverLng === null
+    ){
+
+      throw new Error(
+        "Driver current GPS location is not available."
+      );
+
+    }
 
 
-if(routeLayer && routePickupPoint && routeDestinationPoint){
+    summary.innerHTML =
+      "🔎 Finding Pickup...";
 
-routeDriverPoint =
-[lat,lng];
-
-updateRouteDriverMarker();
-
-redrawExistingRoute();
-
-}
+    const pickup =
+      await geocodePlace(
+        pickupText
+      );
 
 
-if(!mapCenteredOnce){
+    summary.innerHTML =
+      "🔎 Finding Destination...";
 
-map.setView(
-[lat,lng],
-15
-);
-
-mapCenteredOnce =
-true;
-
-}
+    const destination =
+      await geocodePlace(
+        destinationText
+      );
 
 
-loadArea(
-lat,
-lng
-);
+    /*
+      Update inputs with correct
+      resolved addresses.
+    */
+
+    document
+      .getElementById(
+        "pickupInput"
+      )
+      .value =
+      pickup.display_name;
+
+    document
+      .getElementById(
+        "destinationInput"
+      )
+      .value =
+      destination.display_name;
+
+
+    summary.innerHTML =
+      "🛣️ Calculating full road route...";
+
+
+    const route =
+      await calculateRoute(
+        [
+          [driverLng,driverLat],
+          [pickup.lng,pickup.lat],
+          [destination.lng,destination.lat]
+        ]
+      );
+
+
+    drawRoute(
+      route,
+      driverLat,
+      driverLng,
+      pickup,
+      destination
+    );
+
+
+    const km =
+      route.distance / 1000;
+
+    const minutes =
+      Math.round(
+        route.duration / 60
+      );
+
+    let timeText = "";
+
+    if(minutes >= 60){
+
+      const hours =
+        Math.floor(
+          minutes / 60
+        );
+
+      const mins =
+        minutes % 60;
+
+      timeText =
+        hours +
+        " hr " +
+        mins +
+        " min";
+
+    }else{
+
+      timeText =
+        minutes +
+        " min";
+
+    }
+
+
+    summary.innerHTML = `
+
+      <div class="routePoint pointDriver">
+        🚕 Driver:
+        ${escapeHtml(
+          selectedDriver.id || ""
+        )}
+      </div>
+
+      <div class="routePoint pointPickup">
+        🟢 Pickup:
+        ${escapeHtml(
+          pickup.display_name
+        )}
+      </div>
+
+      <div class="routePoint pointDestination">
+        🔴 Destination:
+        ${escapeHtml(
+          destination.display_name
+        )}
+      </div>
+
+      <hr>
+
+      <strong>
+        📏 Distance:
+      </strong>
+      ${km.toFixed(1)} km
+
+      <br>
+
+      <strong>
+        ⏱ Estimated Time:
+      </strong>
+      ${timeText}
+
+    `;
+
+  }catch(error){
+
+    console.error(error);
+
+    showRouteError(
+      "❌ Route नहीं बन पाया.<br><br>" +
+      escapeHtml(
+        error.message ||
+        "Location or routing service failed."
+      )
+    );
+
+  }
 
 };
 
 
-selectedLiveRef.on(
-"value",
-selectedLiveCallback
-);
+/* =========================================================
+   ROUTING SERVERS
+========================================================= */
+
+async function calculateRoute(coords){
+
+  const coordinateString =
+    coords
+      .map(
+        c =>
+          c[0] + "," + c[1]
+      )
+      .join(";");
 
 
-page("home");
+  const servers = [
 
-}
+    "https://routing.openstreetmap.de/routed-car",
 
+    "https://router.project-osrm.org"
 
-
-/* =====================================================
-   DRIVER CURRENT LOCATION TEXT
-===================================================== */
-
-function updateDriverCurrentText(){
-
-if(
-!$("driverCurrentText")
-)
-return;
+  ];
 
 
-if(
-!selectedDriverData
-){
-
-$("driverCurrentText").textContent =
-"Driver not selected";
-
-return;
-
-}
+  let lastError = null;
 
 
-const lat =
-Number(selectedDriverData.lat);
+  for(
+    const server of servers
+  ){
 
-const lng =
-Number(selectedDriverData.lng);
+    try{
 
+      const url =
+        server +
+        "/route/v1/driving/" +
+        coordinateString +
+        "?overview=full" +
+        "&geometries=geojson" +
+        "&steps=false";
 
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
+      const controller =
+        new AbortController();
 
-$("driverCurrentText").textContent =
-"Live location not available";
+      const timeout =
+        setTimeout(
+          () =>
+            controller.abort(),
+          15000
+        );
 
-return;
+      const response =
+        await fetch(
+          url,
+          {
+            signal:
+              controller.signal
+          }
+        );
 
-}
+      clearTimeout(
+        timeout
+      );
 
+      if(!response.ok){
 
-$("driverCurrentText").textContent =
+        throw new Error(
+          "Routing server returned " +
+          response.status
+        );
 
-(selectedDriverData.name || selectedDriverData.id) +
-" • " +
-lat.toFixed(5) +
-", " +
-lng.toFixed(5);
+      }
 
-}
+      const data =
+        await response.json();
 
+      if(
+        data.code !== "Ok" ||
+        !data.routes ||
+        !data.routes.length
+      ){
 
+        throw new Error(
+          "No road route found."
+        );
 
-/* =====================================================
-   OPEN ROUTE CARD
-===================================================== */
+      }
 
-function openRouteCard(){
+      return data.routes[0];
 
-if(!radarAuthorized)
-return;
+    }catch(error){
 
+      console.warn(
+        "Routing server failed:",
+        server,
+        error
+      );
 
-if(!selectedDriverData){
+      lastError =
+        error;
 
-showNotice(
-"पहले Driver select करें."
-);
+    }
 
-return;
-
-}
-
-
-$("routeCard").style.display =
-"block";
-
-
-page("home");
-
-
-setTimeout(
-function(){
-
-map.invalidateSize();
-
-},
-150
-);
-
-}
-
-
-
-/* =====================================================
-   USE CURRENT USER LOCATION AS PICKUP
-===================================================== */
-
-function useCurrentPickup(){
-
-if(!radarAuthorized)
-return;
+  }
 
 
-if(
-!navigator.geolocation
-){
-
-showNotice(
-"GPS supported नहीं है."
-);
-
-return;
+  throw lastError ||
+    new Error(
+      "All routing servers failed."
+    );
 
 }
 
 
-showNotice(
-"Current location मिल रही है..."
-);
-
-
-navigator.geolocation.getCurrentPosition(
-
-async function(position){
-
-const lat =
-Number(position.coords.latitude);
-
-const lng =
-Number(position.coords.longitude);
-
-
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
-
-showNotice(
-"Location नहीं मिली."
-);
-
-return;
-
-}
-
-
-try{
-
-const address =
-await reverseGeocodeFull(
-lat,
-lng
-);
-
-
-$("pickupInput").value =
-address ||
-(
-lat.toFixed(6) +
-", " +
-lng.toFixed(6)
-);
-
-
-window.currentPickupCoords =
-{
-lat:lat,
-lng:lng,
-text:
-$("pickupInput").value
-};
-
-
-showNotice(
-"Pickup location set हो गया."
-);
-
-}
-catch(error){
-
-console.error(error);
-
-$("pickupInput").value =
-lat.toFixed(6) +
-", " +
-lng.toFixed(6);
-
-window.currentPickupCoords =
-{
-lat:lat,
-lng:lng,
-text:
-$("pickupInput").value
-};
-
-}
-
-},
-
-function(){
-
-showNotice(
-"Location permission allow करें."
-);
-
-},
-
-{
-enableHighAccuracy:true,
-timeout:15000,
-maximumAge:0
-}
-
-);
-
-}
-
-
-
-/* =====================================================
-   REVERSE GEOCODE FULL
-===================================================== */
-
-async function reverseGeocodeFull(
-lat,
-lng
-){
-
-const url =
-"https://nominatim.openstreetmap.org/reverse" +
-"?format=jsonv2" +
-"&lat=" +
-encodeURIComponent(lat) +
-"&lon=" +
-encodeURIComponent(lng) +
-"&zoom=18" +
-"&addressdetails=1";
-
-
-const response =
-await fetch(
-url,
-{
-method:"GET",
-mode:"cors",
-headers:{
-"Accept":
-"application/json"
-}
-}
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"Reverse geocode failed"
-);
-
-}
-
-
-const data =
-await response.json();
-
-
-return data.display_name ||
-"";
-
-}
-
-
-
-/* =====================================================
-   GEOCODE TEXT LOCATION
-===================================================== */
-
-async function geocodeLocation(
-text
-){
-
-const query =
-String(text || "").trim();
-
-
-if(!query){
-
-throw new Error(
-"Location खाली है"
-);
-
-}
-
-
-const url =
-"https://nominatim.openstreetmap.org/search" +
-"?format=jsonv2" +
-"&q=" +
-encodeURIComponent(query) +
-"&limit=1" +
-"&addressdetails=1";
-
-
-const response =
-await fetch(
-url,
-{
-method:"GET",
-mode:"cors",
-headers:{
-"Accept":
-"application/json"
-}
-}
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"Location search failed"
-);
-
-}
-
-
-const data =
-await response.json();
-
-
-if(
-!data ||
-!data.length
-){
-
-throw new Error(
-"Location not found"
-);
-
-}
-
-
-return {
-
-lat:
-Number(data[0].lat),
-
-lng:
-Number(data[0].lon),
-
-displayName:
-data[0].display_name ||
-query
-
-};
-
-}
-
-
-
-/* =====================================================
-   GET PICKUP COORDINATES
-===================================================== */
-
-async function getPickupCoordinates(){
-
-const text =
-$("pickupInput").value.trim();
-
-
-if(!text){
-
-throw new Error(
-"Pickup Location डालें"
-);
-
-}
-
-
-if(
-window.currentPickupCoords &&
-window.currentPickupCoords.text === text
-){
-
-return {
-
-lat:
-window.currentPickupCoords.lat,
-
-lng:
-window.currentPickupCoords.lng,
-
-displayName:
-text
-
-};
-
-}
-
-
-return await geocodeLocation(
-text
-);
-
-}
-
-
-
-/* =====================================================
-   GET DESTINATION COORDINATES
-===================================================== */
-
-async function getDestinationCoordinates(){
-
-const text =
-$("destinationInput").value.trim();
-
-
-if(!text){
-
-throw new Error(
-"Destination डालें"
-);
-
-}
-
-
-return await geocodeLocation(
-text
-);
-
-}
-
-
-
-/* =====================================================
-   ROUTING REQUEST WITH TIMEOUT
-===================================================== */
-
-async function fetchRouteFromServer(
-baseUrl,
-coordinates
-){
-
-const url =
-baseUrl +
-"/route/v1/driving/" +
-coordinates +
-"?overview=full&geometries=geojson&steps=false";
-
-
-const controller =
-new AbortController();
-
-
-const timeout =
-setTimeout(
-function(){
-
-controller.abort();
-
-},
-15000
-);
-
-
-try{
-
-const response =
-await fetch(
-url,
-{
-method:"GET",
-mode:"cors",
-headers:{
-"Accept":
-"application/json"
-},
-signal:
-controller.signal
-}
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"HTTP " +
-response.status
-);
-
-}
-
-
-const data =
-await response.json();
-
-
-if(
-data.code !== "Ok" ||
-!data.routes ||
-!data.routes.length
-){
-
-throw new Error(
-data.code ||
-"No route"
-);
-
-}
-
-
-return data;
-
-}
-finally{
-
-clearTimeout(
-timeout
-);
-
-}
-
-}
-
-
-
-/* =====================================================
-   SHOW FULL ROUTE
-===================================================== */
-
-async function showFullRoute(){
-
-if(!radarAuthorized)
-return;
-
-
-if(!selectedDriverData){
-
-showNotice(
-"पहले Driver select करें."
-);
-
-return;
-
-}
-
-
-const driverLat =
-Number(selectedDriverData.lat);
-
-const driverLng =
-Number(selectedDriverData.lng);
-
-
-if(
-!Number.isFinite(driverLat) ||
-!Number.isFinite(driverLng)
-){
-
-showNotice(
-"Driver की live location available नहीं है."
-);
-
-return;
-
-}
-
-
-const pickupText =
-$("pickupInput").value.trim();
-
-
-const destinationText =
-$("destinationInput").value.trim();
-
-
-if(!pickupText){
-
-showNotice(
-"Pickup Location डालें."
-);
-
-$("pickupInput").focus();
-
-return;
-
-}
-
-
-if(!destinationText){
-
-showNotice(
-"Destination डालें."
-);
-
-$("destinationInput").focus();
-
-return;
-
-}
-
-
-$("routeLoading").style.display =
-"block";
-
-
-$("routeSummary").style.display =
-"none";
-
-
-try{
-
-let pickup;
-
-if(
-window.currentPickupCoords &&
-window.currentPickupCoords.text === pickupText
-){
-
-pickup = {
-
-lat:
-window.currentPickupCoords.lat,
-
-lng:
-window.currentPickupCoords.lng,
-
-displayName:
-pickupText
-
-};
-
-}
-else{
-
-pickup =
-await getPickupCoordinates();
-
-}
-
-
-const destination =
-await getDestinationCoordinates();
-
-
-routeDriverPoint =
-[
-driverLat,
-driverLng
-];
-
-
-routePickupPoint =
-[
-Number(pickup.lat),
-Number(pickup.lng)
-];
-
-
-routeDestinationPoint =
-[
-Number(destination.lat),
-Number(destination.lng)
-];
-
-
-await drawRoute(
-routeDriverPoint,
-routePickupPoint,
-routeDestinationPoint,
-pickup.displayName || pickupText,
-destination.displayName || destinationText
-);
-
-
-showNotice(
-"Full road route तैयार है."
-);
-
-}
-catch(error){
-
-console.error(
-"Route error:",
-error
-);
-
-
-$("routeSummary").style.display =
-"block";
-
-
-$("routeSummary").innerHTML =
-
-"❌ <b>Route नहीं बन पाया</b><br>" +
-esc(error.message || "Location या route error") +
-"<br><br>" +
-"कृपया थोड़ी देर बाद फिर कोशिश करें।";
-
-}
-finally{
-
-$("routeLoading").style.display =
-"none";
-
-}
-
-}
-
-
-
-/* =====================================================
+/* =========================================================
    DRAW ROUTE
-===================================================== */
+========================================================= */
 
-async function drawRoute(
-driverPoint,
-pickupPoint,
-destinationPoint,
-pickupName,
-destinationName
+function drawRoute(
+  route,
+  driverLat,
+  driverLng,
+  pickup,
+  destination
 ){
 
-if(!map)
-return;
+  if(!map) return;
 
 
-clearRouteLayersOnly();
+  /*
+    Remove old route.
+  */
+
+  if(routeLayer){
+
+    map.removeLayer(
+      routeLayer
+    );
+
+    routeLayer = null;
+
+  }
 
 
-/*
- OSRM coordinates MUST be:
- longitude,latitude
-*/
+  if(driverMarker){
 
-const coordinates =
+    map.removeLayer(
+      driverMarker
+    );
 
-driverPoint[1] +
-"," +
-driverPoint[0] +
-";" +
+    driverMarker = null;
 
-pickupPoint[1] +
-"," +
-pickupPoint[0] +
-";" +
-
-destinationPoint[1] +
-"," +
-destinationPoint[0];
+  }
 
 
-/*
- First routing server:
- FOSSGIS / OpenStreetMap
-*/
+  if(pickupMarker){
 
-let data = null;
+    map.removeLayer(
+      pickupMarker
+    );
 
-let lastError = null;
+    pickupMarker = null;
 
-
-const routingServers = [
-
-"https://routing.openstreetmap.de/routed-car",
-
-"https://router.project-osrm.org"
-
-];
+  }
 
 
-for(
-let i = 0;
-i < routingServers.length;
-i++
+  if(destinationMarker){
+
+    map.removeLayer(
+      destinationMarker
+    );
+
+    destinationMarker = null;
+
+  }
+
+
+  /*
+    Driver icon
+  */
+
+  const driverIcon =
+    L.divIcon({
+      className:"",
+      html:
+        '<div style="' +
+        'font-size:30px;' +
+        'transform:translate(-50%,-50%);' +
+        '">🚕</div>',
+      iconSize:[30,30],
+      iconAnchor:[15,15]
+    });
+
+
+  /*
+    Pickup icon
+  */
+
+  const pickupIcon =
+    L.divIcon({
+      className:"",
+      html:
+        '<div style="' +
+        'font-size:27px;' +
+        'transform:translate(-50%,-50%);' +
+        '">🟢</div>',
+      iconSize:[27,27],
+      iconAnchor:[13,13]
+    });
+
+
+  /*
+    Destination icon
+  */
+
+  const destinationIcon =
+    L.divIcon({
+      className:"",
+      html:
+        '<div style="' +
+        'font-size:27px;' +
+        'transform:translate(-50%,-50%);' +
+        '">🔴</div>',
+      iconSize:[27,27],
+      iconAnchor:[13,13]
+    });
+
+
+  driverMarker =
+    L.marker(
+      [driverLat,driverLng],
+      {
+        icon:driverIcon
+      }
+    )
+    .addTo(map)
+    .bindPopup(
+      "🚕 Driver Current Location"
+    );
+
+
+  pickupMarker =
+    L.marker(
+      [pickup.lat,pickup.lng],
+      {
+        icon:pickupIcon
+      }
+    )
+    .addTo(map)
+    .bindPopup(
+      "🟢 Pickup<br>" +
+      escapeHtml(
+        pickup.display_name
+      )
+    );
+
+
+  destinationMarker =
+    L.marker(
+      [
+        destination.lat,
+        destination.lng
+      ],
+      {
+        icon:destinationIcon
+      }
+    )
+    .addTo(map)
+    .bindPopup(
+      "🔴 Destination<br>" +
+      escapeHtml(
+        destination.display_name
+      )
+    );
+
+
+  routeLayer =
+    L.geoJSON(
+      route.geometry,
+      {
+        style:{
+          weight:6,
+          opacity:.9
+        }
+      }
+    )
+    .addTo(map);
+
+
+  const bounds =
+    routeLayer.getBounds();
+
+  if(bounds.isValid()){
+
+    map.fitBounds(
+      bounds,
+      {
+        padding:[25,25]
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LIVE DRIVER UPDATE WITH ROUTE
+========================================================= */
+
+function updateRouteDriverPoint(
+  lat,
+  lng
 ){
 
-try{
+  if(!driverMarker) return;
 
-data =
-await fetchRouteFromServer(
-routingServers[i],
-coordinates
-);
-
-if(data){
-
-break;
-
-}
-
-}
-catch(error){
-
-lastError =
-error;
-
-console.warn(
-"Routing server failed:",
-routingServers[i],
-error
-);
-
-}
+  driverMarker.setLatLng(
+    [lat,lng]
+  );
 
 }
 
 
-if(
-!data ||
-!data.routes ||
-!data.routes.length
-){
-
-throw new Error(
-"Routing server unavailable"
-);
-
-}
-
-
-const route =
-data.routes[0];
-
-
-if(
-!route.geometry
-){
-
-throw new Error(
-"Route geometry नहीं मिली"
-);
-
-}
-
-
-routeLayer =
-L.geoJSON(
-route.geometry,
-{
-style:{
-weight:6,
-opacity:.85
-}
-}
-)
-.addTo(map);
-
-
-/* DRIVER MARKER */
-
-driverRouteMarker =
-L.marker(
-driverPoint,
-{
-icon:
-L.divIcon({
-
-className:"",
-
-html:
-`<div style="
-font-size:25px;
-">🚕</div>`,
-
-iconSize:
-[40,40],
-
-iconAnchor:
-[20,20]
-
-})
-}
-)
-.addTo(map)
-.bindPopup(
-"<b>🚕 Driver Current Location</b><br>" +
-esc(selectedDriverData.name || selectedDriverData.id)
-);
-
-
-/* PICKUP MARKER */
-
-pickupRouteMarker =
-L.marker(
-pickupPoint
-)
-.addTo(map)
-.bindPopup(
-"<b>🟢 Pickup</b><br>" +
-esc(pickupName || "Pickup Location")
-);
-
-
-/* DESTINATION MARKER */
-
-destinationRouteMarker =
-L.marker(
-destinationPoint
-)
-.addTo(map)
-.bindPopup(
-"<b>🔴 Destination</b><br>" +
-esc(destinationName || "Destination")
-);
-
-
-/* FIT FULL ROUTE */
-
-const group =
-L.featureGroup([
-routeLayer,
-driverRouteMarker,
-pickupRouteMarker,
-destinationRouteMarker
-]);
-
-
-map.fitBounds(
-group.getBounds(),
-{
-padding:[30,30]
-}
-);
-
-
-/* ROUTE DISTANCE */
-
-const distanceKm =
-Number(route.distance || 0) /
-1000;
-
-
-/* ROUTE TIME */
-
-const durationMin =
-Number(route.duration || 0) /
-60;
-
-
-let timeText;
-
-
-if(durationMin >= 60){
-
-const hours =
-Math.floor(durationMin / 60);
-
-const mins =
-Math.round(
-durationMin % 60
-);
-
-timeText =
-hours +
-" hr " +
-mins +
-" min";
-
-}
-else{
-
-timeText =
-Math.round(durationMin) +
-" min";
-
-}
-
-
-/* SUMMARY */
-
-$("routeSummary").innerHTML =
-
-"<b>🗺️ Full Road Route</b><br>" +
-
-"🚕 Driver → 🟢 Pickup → 🔴 Destination" +
-
-"<br><br>" +
-
-"<b>Driver:</b> " +
-esc(selectedDriverData.id) +
-
-"<br>" +
-
-"<b>Pickup:</b> " +
-esc(pickupName) +
-
-"<br>" +
-
-"<b>Destination:</b> " +
-esc(destinationName) +
-
-"<br><br>" +
-
-"<b>Distance:</b> " +
-distanceKm.toFixed(1) +
-" km" +
-
-"<br>" +
-
-"<b>Estimated Time:</b> " +
-esc(timeText);
-
-
-$("routeSummary").style.display =
-"block";
-
-}
-
-
-
-/* =====================================================
-   UPDATE DRIVER ROUTE MARKER
-===================================================== */
-
-function updateRouteDriverMarker(){
-
-if(
-!map ||
-!routeDriverPoint
-)
-return;
-
-
-if(driverRouteMarker){
-
-driverRouteMarker.setLatLng(
-routeDriverPoint
-);
-
-}
-else{
-
-driverRouteMarker =
-L.marker(
-routeDriverPoint
-)
-.addTo(map)
-.bindPopup(
-"<b>🚕 Driver Current Location</b>"
-);
-
-}
-
-}
-
-
-
-/* =====================================================
-   REDRAW EXISTING ROUTE
-===================================================== */
-
-async function redrawExistingRoute(){
-
-if(
-!routeDriverPoint ||
-!routePickupPoint ||
-!routeDestinationPoint
-)
-return;
-
-
-if(
-!$("pickupInput").value.trim() ||
-!$("destinationInput").value.trim()
-)
-return;
-
-
-try{
-
-await drawRoute(
-routeDriverPoint,
-routePickupPoint,
-routeDestinationPoint,
-$("pickupInput").value.trim(),
-$("destinationInput").value.trim()
-);
-
-}
-catch(error){
-
-console.error(
-"Live route redraw error:",
-error
-);
-
-}
-
-}
-
-
-
-/* =====================================================
-   CLEAR ROUTE LAYERS ONLY
-===================================================== */
-
-function clearRouteLayersOnly(){
-
-if(
-routeLayer &&
-map &&
-map.hasLayer(routeLayer)
-){
-
-map.removeLayer(routeLayer);
-
-}
-
-
-if(
-driverRouteMarker &&
-map &&
-map.hasLayer(driverRouteMarker)
-){
-
-map.removeLayer(driverRouteMarker);
-
-}
-
-
-if(
-pickupRouteMarker &&
-map &&
-map.hasLayer(pickupRouteMarker)
-){
-
-map.removeLayer(pickupRouteMarker);
-
-}
-
-
-if(
-destinationRouteMarker &&
-map &&
-map.hasLayer(destinationRouteMarker)
-){
-
-map.removeLayer(destinationRouteMarker);
-
-}
-
-
-routeLayer = null;
-
-driverRouteMarker = null;
-
-pickupRouteMarker = null;
-
-destinationRouteMarker = null;
-
-}
-
-
-
-/* =====================================================
-   CLEAR COMPLETE ROUTE
-===================================================== */
-
-function clearRoute(){
-
-clearRouteLayersOnly();
-
-
-routeDriverPoint = null;
-
-routePickupPoint = null;
-
-routeDestinationPoint = null;
-
-
-window.currentPickupCoords =
-null;
-
-
-if($("routeSummary")){
-
-$("routeSummary").style.display =
-"none";
-
-$("routeSummary").innerHTML =
-"";
-
-}
-
-
-if($("routeLoading")){
-
-$("routeLoading").style.display =
-"none";
-
-}
-
-}
-
-
-
-/* =====================================================
-   SWAP PICKUP / DESTINATION
-===================================================== */
-
-function swapRoutePoints(){
-
-if(!radarAuthorized)
-return;
-
-
-const pickup =
-$("pickupInput").value;
-
-
-const destination =
-$("destinationInput").value;
-
-
-$("pickupInput").value =
-destination;
-
-
-$("destinationInput").value =
-pickup;
-
-
-window.currentPickupCoords =
-null;
-
-
-clearRoute();
-
-
-showNotice(
-"Pickup और Destination swap हो गए."
-);
-
-}
-
-
-
-/* =====================================================
-   DRIVER DETAILS
-===================================================== */
-
-function openDriverDetails(){
-
-if(!radarAuthorized)
-return;
-
-
-const d =
-selectedDriverData;
-
-
-if(!d)
-return;
-
-
-const profile =
-profilePhotoHTML(
-d.profilePhoto,
-"profilePhoto"
-);
-
-
-const car =
-carPhotoHTML(
-d.carPhoto,
-"details"
-);
-
-
-$("modalBody").innerHTML =
-
-`
-
-<h2>
-🚕 ${esc(d.name)}
-</h2>
-
-
-${profile}
-
-
-<div class="row">
-
-<span>
-Driver ID
-</span>
-
-<b>
-${esc(d.id)}
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Driver Name
-</span>
-
-<b>
-${esc(d.name || "-")}
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Vehicle Number
-</span>
-
-<b>
-${esc(d.vehicle || "-")}
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Vehicle Type
-</span>
-
-<b>
-<span class="vehicleTypeBadge">
-${esc(d.vehicleType || "Not Set")}
-</span>
-</b>
-
-</div>
-
-
-<h3>
-🚗 Car Photo
-</h3>
-
-
-${car}
-
-
-<div class="row">
-
-<span>
-GPS
-</span>
-
-<b>
-${
-d.online
-?
-"🟢 Online"
-:
-"🔴 Offline"
-}
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Rating
-</span>
-
-<b>
-⭐ ${d.rating || "Not Rated"}
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Latitude
-</span>
-
-<b>
-${
-Number.isFinite(d.lat)
-?
-Number(d.lat).toFixed(6)
-:
-"-"
-}
-
-</b>
-
-</div>
-
-
-<div class="row">
-
-<span>
-Longitude
-</span>
-
-<b>
-${
-Number.isFinite(d.lng)
-?
-Number(d.lng).toFixed(6)
-:
-"-"
-}
-
-</b>
-
-</div>
-
-
-<div
-class="locationBox"
->
-
-📍 Area:
-
-<br>
-
-<strong id="detailArea">
-Finding area...
-</strong>
-
-</div>
-
-
-<br>
-
-
-<button
-class="action"
-style="width:100%;margin-bottom:8px"
-onclick="
-closeModal();
-openRouteCard();
-">
-
-🗺️ Plan Route
-
-</button>
-
-
-<button
-class="action secondary"
-style="width:100%"
-onclick="
-closeModal();
-page('home');
-">
-
-🗺️ View Map
-
-</button>
-
-`;
-
-
-$("modal")
-.classList
-.add("show");
-
-
-loadArea(
-Number(d.lat),
-Number(d.lng)
-)
-.then(
-function(area){
-
-if(
-$("detailArea") &&
-area
-){
-
-$("detailArea")
-.textContent =
-area;
-
-}
-
-}
-);
-
-}
-
-
-
-/* =====================================================
-   REVERSE GEOCODING
-===================================================== */
-
-async function loadArea(
-lat,
-lng
-){
-
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
-
-return null;
-
-}
-
-
-try{
-
-const url =
-"https://nominatim.openstreetmap.org/reverse" +
-"?format=jsonv2" +
-"&lat=" +
-encodeURIComponent(lat) +
-"&lon=" +
-encodeURIComponent(lng) +
-"&zoom=18" +
-"&addressdetails=1";
-
-
-const response =
-await fetch(
-url,
-{
-method:"GET",
-mode:"cors",
-headers:{
-"Accept":
-"application/json"
-}
-}
-);
-
-
-if(!response.ok)
-return null;
-
-
-const data =
-await response.json();
-
-
-const address =
-data.address ||
-{};
-
-
-const area =
-address.suburb ||
-address.neighbourhood ||
-address.village ||
-address.town ||
-address.city_district ||
-address.city ||
-address.county ||
-"Area not available";
-
-
-if(
-$("popupArea")
-){
-
-$("popupArea").innerHTML =
-"📍 Area: " +
-esc(area);
-
-}
-
-
-return area;
-
-}
-catch(error){
-
-console.error(
-"Area lookup error:",
-error
-);
-
-return null;
-
-}
-
-}
-
-
-
-/* =====================================================
-   MODAL
-===================================================== */
-
-function closeModal(){
-
-$("modal")
-.classList
-.remove("show");
-
-}
-
-
-
-/* =====================================================
-   HELP
-===================================================== */
-
-function openHelp(){
-
-if(!radarAuthorized)
-return;
-
-
-$("modalBody").innerHTML =
-
-`
-
-<h2>
-❓ Help & Support
-</h2>
-
-
-<p>
-
-Safety Cab Driver Radar के लिए
-सहायता चाहिए तो नीचे Support पर
-Call करें।
-
-</p>
-
-
-<a
-class="action"
-style="
-display:block;
-text-align:center;
-text-decoration:none;
-font-size:20px;
-margin:12px 0;
-"
-href="tel:${SUPPORT_PHONE}"
->
-
-📞 ${SUPPORT_PHONE}
-
-</a>
-
-
-<button
-class="action"
-style="width:100%"
-onclick="closeModal()">
-
-Close
-
-</button>
-
-`;
-
-
-$("modal")
-.classList
-.add("show");
-
-}
-
-
-
-/* =====================================================
-   TELEGRAM CHECK
-===================================================== */
-
-function setupTG(){
-
-if(!tg){
-
-denyRadarAccess(
-"Driver Radar केवल Telegram Mini App के अंदर खुलेगा."
-);
-
-return false;
-
-}
-
-
-const user =
-tg.initDataUnsafe &&
-tg.initDataUnsafe.user;
-
-
-if(!user){
-
-denyRadarAccess(
-"Telegram account नहीं मिला. Direct URL access allowed नहीं है."
-);
-
-return false;
-
-}
-
-
-myTelegramId =
-String(user.id);
-
-
-$("tgName").textContent =
-
-[
-user.first_name,
-user.last_name
-]
-.filter(Boolean)
-.join(" ")
-||
-"Telegram User";
-
-
-$("tgId").textContent =
-myTelegramId;
-
-
-return true;
-
-}
-
-
-
-/* =====================================================
-   FIREBASE ANONYMOUS AUTH
-===================================================== */
-
-async function authAnon(){
-
-try{
-
-await auth.signInAnonymously();
-
-
-$("firebaseState").textContent =
-"Connected";
-
-
-return true;
-
-}
-catch(error){
-
-console.error(
-"Firebase Auth Error:",
-error
-);
-
-
-$("firebaseState").textContent =
-"Auth Error";
-
-
-return false;
-
-}
-
-}
-
-
-
-/* =====================================================
-   CHECK REGISTERED DRIVER
-===================================================== */
-
-async function checkRegisteredDriver(){
-
-if(!myTelegramId){
-
-return false;
-
-}
-
-
-try{
-
-const snapshot =
-await db
-.collection("drivers")
-.where(
-"telegramId",
-"==",
-myTelegramId
-)
-.limit(1)
-.get();
-
-
-if(snapshot.empty){
-
-return false;
-
-}
-
-
-const doc =
-snapshot.docs[0];
-
-
-const d =
-doc.data();
-
-
-myDriver = {
-
-docId:
-doc.id,
-
-id:
-normalizeDriverId(
-d.id ||
-doc.id
-),
-
-name:
-d.name ||
-"",
-
-phone:
-d.phone ||
-"",
-
-vehicle:
-d.vehicle ||
-"",
-
-vehicleType:
-d.vehicleType ||
-"",
-
-carPhoto:
-d.carPhoto ||
-"",
-
-lat:
-Number(d.lat),
-
-lng:
-Number(d.lng),
-
-online:
-d.online === true,
-
-duty:
-d.duty === true,
-
-rating:
-Number(d.rating || 0),
-
-profilePhoto:
-d.profilePhoto ||
-""
+/* =========================================================
+   SWAP
+========================================================= */
+
+window.swapRoute =
+function(){
+
+  const pickup =
+    document
+      .getElementById(
+        "pickupInput"
+      );
+
+  const destination =
+    document
+      .getElementById(
+        "destinationInput"
+      );
+
+  const temp =
+    pickup.value;
+
+  pickup.value =
+    destination.value;
+
+  destination.value =
+    temp;
 
 };
 
 
-$("myDriverId").textContent =
-myDriver.id;
-
-
-myDuty =
-myDriver.duty;
-
-
-$("dutyToggle")
-.classList
-.toggle(
-"on",
-myDuty
-);
-
-
-return true;
-
-}
-catch(error){
-
-console.error(
-"Registered driver check error:",
-error
-);
-
-return false;
-
-}
-
-}
-
-
-
-/* =====================================================
-   ACCESS DENIED
-===================================================== */
-
-function denyRadarAccess(message){
-
-radarAuthorized =
-false;
-
-
-stopSelectedLiveListener();
-
-
-clearSelectedMarker();
-
-
-clearRoute();
-
-
-if(map){
-
-try{
-
-map.remove();
-
-}
-catch(error){
-
-console.log(error);
-
-}
-
-map = null;
-
-}
-
-
-$("radarApp").style.display =
-"none";
-
-
-$("accessLock").style.display =
-"flex";
-
-
-$("accessIcon").textContent =
-"🔒";
-
-
-$("accessTitle").textContent =
-"Access Denied";
-
-
-$("accessText").textContent =
-message ||
-"यह Driver Radar केवल Registered Safety Cab Drivers के लिए है.";
-
-}
-
-
-
-/* =====================================================
-   ACCESS GRANTED
-===================================================== */
-
-function allowRadarAccess(){
-
-radarAuthorized =
-true;
-
-
-$("accessLock").style.display =
-"none";
-
-
-$("radarApp").style.display =
-"block";
-
-}
-
-
-
-/* =====================================================
-   MANUAL LOCATION
-===================================================== */
-
-function shareMyLocation(){
-
-if(!radarAuthorized)
-return;
-
-
-if(!myDriver){
-
-showNotice(
-"Driver अभी Registered नहीं है."
-);
-
-return;
-
-}
-
-
-if(!navigator.geolocation){
-
-showNotice(
-"GPS supported नहीं है."
-);
-
-return;
-
-}
-
-
-navigator.geolocation.getCurrentPosition(
-
-updateMyLocation,
-
+/* =========================================================
+   CLEAR ROUTE
+========================================================= */
+
+window.clearRoute =
 function(){
 
-showNotice(
-"Location permission allow करें."
-);
+  document
+    .getElementById(
+      "pickupInput"
+    )
+    .value = "";
 
-},
+  document
+    .getElementById(
+      "destinationInput"
+    )
+    .value = "";
 
-{
-enableHighAccuracy:true,
-timeout:15000,
-maximumAge:0
-}
+  document
+    .getElementById(
+      "routeSummary"
+    )
+    .style.display = "none";
 
-);
-
-}
-
-
-
-/* =====================================================
-   UPDATE MY LOCATION
-===================================================== */
-
-function updateMyLocation(position){
-
-if(
-!radarAuthorized ||
-!myDriver
-)
-return;
+  hideRouteError();
 
 
-const lat =
-Number(
-position.coords.latitude
-);
+  if(routeLayer){
+
+    map.removeLayer(
+      routeLayer
+    );
+
+    routeLayer = null;
+
+  }
+
+  if(pickupMarker){
+
+    map.removeLayer(
+      pickupMarker
+    );
+
+    pickupMarker = null;
+
+  }
+
+  if(destinationMarker){
+
+    map.removeLayer(
+      destinationMarker
+    );
+
+    destinationMarker = null;
+
+  }
+
+};
 
 
-const lng =
-Number(
-position.coords.longitude
-);
+/* =========================================================
+   ROUTE ERROR
+========================================================= */
 
+function showRouteError(message){
 
-if(
-!Number.isFinite(lat) ||
-!Number.isFinite(lng)
-){
+  const el =
+    document
+      .getElementById(
+        "routeError"
+      );
 
-return;
+  el.innerHTML =
+    message;
 
-}
-
-
-myDriver.lat =
-lat;
-
-myDriver.lng =
-lng;
-
-myDriver.online =
-true;
-
-
-$("locStatus").textContent =
-"Location shared";
-
-
-if(
-selectedDriverId ===
-myDriver.id
-){
-
-if(selectedDriverData){
-
-selectedDriverData.lat =
-lat;
-
-selectedDriverData.lng =
-lng;
-
-selectedDriverData.online =
-true;
+  el.style.display =
+    "block";
 
 }
 
 
-if(selectedMarker){
+function hideRouteError(){
 
-selectedMarker.setLatLng(
-[lat,lng]
-);
-
-}
-
-
-if(!mapCenteredOnce){
-
-map.setView(
-[lat,lng],
-15
-);
-
-mapCenteredOnce =
-true;
+  document
+    .getElementById(
+      "routeError"
+    )
+    .style.display =
+    "none";
 
 }
 
 
-if(routeLayer && routePickupPoint && routeDestinationPoint){
+/* =========================================================
+   DETAILS
+========================================================= */
 
-routeDriverPoint =
-[lat,lng];
+window.openDetails =
+function(){
 
-redrawExistingRoute();
+  if(!selectedDriver){
+
+    return;
+
+  }
+
+  const d =
+    selectedDriver;
+
+  const profile =
+    d.profilePhoto || "";
+
+  const car =
+    d.carPhoto || "";
+
+  document
+    .getElementById(
+      "detailsContent"
+    )
+    .innerHTML = `
+
+      ${
+        profile
+        ?
+        `<img
+          class="profilePhotoLarge"
+          src="${profile}"
+          onerror="this.style.display='none'"
+        >`
+        : ""
+      }
+
+      <div class="center">
+        <h2 style="margin:5px 0">
+          ${escapeHtml(
+            d.name || "Driver"
+          )}
+        </h2>
+
+        <div class="driverId">
+          ${escapeHtml(
+            d.id || ""
+          )}
+        </div>
+      </div>
+
+      ${
+        car
+        ?
+        `<div class="photoBox">
+          <img
+            class="carPhoto"
+            src="${car}"
+            style="display:block"
+            onerror="this.style.display='none'"
+          >
+        </div>`
+        : ""
+      }
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          Driver ID
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(d.id || "-")}
+        </span>
+      </div>
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          Name
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(d.name || "-")}
+        </span>
+      </div>
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          Vehicle
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(d.vehicle || "-")}
+        </span>
+      </div>
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          Vehicle Type
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(
+            d.vehicleType || "-"
+          )}
+        </span>
+      </div>
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          GPS
+        </span>
+        <span class="detailValue">
+          ${
+            d.online === true
+            ? "🟢 ONLINE"
+            : "⚪ OFFLINE"
+          }
+        </span>
+      </div>
+
+      <div class="detailRow">
+        <span class="detailLabel">
+          Rating
+        </span>
+        <span class="detailValue">
+          ⭐ ${escapeHtml(
+            String(d.rating || "5")
+          )}
+        </span>
+      </div>
+
+      ${
+        d.live &&
+        typeof d.live.lat === "number"
+        ?
+        `<div class="detailRow">
+          <span class="detailLabel">
+            Latitude
+          </span>
+          <span class="detailValue">
+            ${d.live.lat.toFixed(6)}
+          </span>
+        </div>
+
+        <div class="detailRow">
+          <span class="detailLabel">
+            Longitude
+          </span>
+          <span class="detailValue">
+            ${d.live.lng.toFixed(6)}
+          </span>
+        </div>`
+        : ""
+      }
+
+      <button
+        class="primaryBtn fullBtn"
+        onclick="closeDetails();openRoutePlanner();">
+        🗺️ Plan Route
+      </button>
+
+    `;
+
+  document
+    .getElementById(
+      "detailsModal"
+    )
+    .style.display = "flex";
+
+};
+
+
+window.closeDetails =
+function(){
+
+  document
+    .getElementById(
+      "detailsModal"
+    )
+    .style.display = "none";
+
+};
+
+
+/* =========================================================
+   OWN GPS
+========================================================= */
+
+function startOwnGPS(){
+
+  if(
+    !navigator.geolocation
+  ){
+
+    return;
+
+  }
+
+  if(myGpsWatch){
+
+    navigator.geolocation.clearWatch(
+      myGpsWatch
+    );
+
+  }
+
+  myGpsWatch =
+    navigator.geolocation.watchPosition(
+
+      async position => {
+
+        myLocation = {
+          lat:
+            position.coords.latitude,
+          lng:
+            position.coords.longitude
+        };
+
+
+        if(!autoGPS){
+
+          return;
+
+        }
+
+
+        if(!currentDriver){
+
+          return;
+
+        }
+
+
+        const id =
+          currentDriver.id ||
+          currentDriver.driverId;
+
+        if(!id){
+
+          return;
+
+        }
+
+
+        const data = {
+
+          driverId:id,
+
+          telegramId:
+            currentTelegramId,
+
+          lat:
+            position.coords.latitude,
+
+          lng:
+            position.coords.longitude,
+
+          online:true,
+
+          duty:duty,
+
+          updatedAt:
+            Date.now()
+
+        };
+
+
+        try{
+
+          await set(
+            ref(
+              rtdb,
+              "liveLocations/" + id
+            ),
+            data
+          );
+
+
+          try{
+
+            await updateDoc(
+              doc(
+                db,
+                "drivers",
+                currentDriver.docId
+              ),
+              {
+                lat:
+                  data.lat,
+                lng:
+                  data.lng,
+                online:true,
+                updatedAt:
+                  Date.now()
+              }
+            );
+
+          }catch(
+            firestoreError
+          ){
+
+            console.warn(
+              firestoreError
+            );
+
+          }
+
+        }catch(error){
+
+          console.warn(
+            "GPS write failed:",
+            error
+          );
+
+        }
+
+      },
+
+      error => {
+
+        console.warn(
+          "GPS error:",
+          error
+        );
+
+      },
+
+      {
+        enableHighAccuracy:true,
+        maximumAge:5000,
+        timeout:15000
+      }
+
+    );
 
 }
 
-}
 
+/* =========================================================
+   PROFILE
+========================================================= */
 
-writeLive(
-lat,
-lng
-);
+async function loadOwnProfile(){
 
+  if(!currentDriver){
 
-db
-.collection("drivers")
-.doc(myDriver.docId)
-.set({
+    return;
 
-lat:lat,
+  }
 
-lng:lng,
+  const d =
+    currentDriver;
 
-online:true,
+  document
+    .getElementById(
+      "profileCard"
+    )
+    .innerHTML = `
 
-duty:myDuty,
+      ${
+        d.profilePhoto
+        ?
+        `<img
+          class="profilePhotoLarge"
+          src="${d.profilePhoto}"
+          onerror="this.style.display='none'"
+        >`
+        : ""
+      }
 
-last:"Live GPS",
+      <div class="center">
 
-updatedAt:
-firebase.firestore
-.FieldValue
-.serverTimestamp()
+        <h2 style="margin:5px 0">
+          ${escapeHtml(
+            d.name || "Driver"
+          )}
+        </h2>
 
-},
-{
-merge:true
-}
-)
-.catch(
-console.error
-);
+        <div class="driverId">
+          ${escapeHtml(
+            d.id || ""
+          )}
+        </div>
 
-}
+      </div>
 
+      <div class="detailRow">
+        <span class="detailLabel">
+          Driver ID
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(
+            d.id || "-"
+          )}
+        </span>
+      </div>
 
+      <div class="detailRow">
+        <span class="detailLabel">
+          Vehicle
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(
+            d.vehicle || "-"
+          )}
+        </span>
+      </div>
 
-/* =====================================================
-   WRITE LIVE LOCATION
-===================================================== */
+      <div class="detailRow">
+        <span class="detailLabel">
+          Vehicle Type
+        </span>
+        <span class="detailValue">
+          ${escapeHtml(
+            d.vehicleType || "-"
+          )}
+        </span>
+      </div>
 
-function writeLive(
-lat,
-lng
-){
+      <div class="detailRow">
+        <span class="detailLabel">
+          GPS
+        </span>
+        <span class="detailValue">
+          ${
+            d.online === true
+            ? "🟢 ONLINE"
+            : "⚪ OFFLINE"
+          }
+        </span>
+      </div>
 
-if(
-!radarAuthorized ||
-!myDriver
-)
-return;
+      <div class="detailRow">
+        <span class="detailLabel">
+          Rating
+        </span>
+        <span class="detailValue">
+          ⭐ ${escapeHtml(
+            String(
+              d.rating || "5"
+            )
+          )}
+        </span>
+      </div>
 
-
-rtdb
-.ref(
-"liveLocations/" +
-myDriver.id
-)
-.set({
-
-driverId:
-myDriver.id,
-
-telegramId:
-myTelegramId,
-
-lat:lat,
-
-lng:lng,
-
-online:true,
-
-duty:myDuty,
-
-updatedAt:
-firebase.database
-.ServerValue
-.TIMESTAMP
-
-})
-.catch(
-function(error){
-
-console.error(
-"RTDB GPS write error:",
-error
-);
-
-}
-);
-
-}
-
-
-
-/* =====================================================
-   START GPS
-===================================================== */
-
-function startGPS(){
-
-if(
-!radarAuthorized ||
-!myDriver ||
-watchId !== null ||
-!navigator.geolocation
-){
-
-return;
+    `;
 
 }
 
 
-watchId =
-navigator.geolocation.watchPosition(
-
-updateMyLocation,
-
-function(error){
-
-console.error(
-"GPS watch error:",
-error
-);
-
-},
-
-{
-enableHighAccuracy:true,
-maximumAge:5000,
-timeout:15000
-}
-
-);
-
-}
-
-
-
-/* =====================================================
-   STOP GPS
-===================================================== */
-
-function stopGPS(){
-
-if(
-watchId !== null
-){
-
-navigator.geolocation
-.clearWatch(
-watchId
-);
-
-watchId = null;
-
-}
-
-}
-
-
-
-/* =====================================================
+/* =========================================================
    DUTY
-===================================================== */
+========================================================= */
 
-async function toggleDuty(){
+window.toggleDuty =
+async function(){
 
-if(!radarAuthorized)
-return;
+  duty = !duty;
 
+  updateSettingsUI();
 
-if(!myDriver){
+  if(!currentDriver){
 
-showNotice(
-"Driver अभी Registered नहीं है."
-);
+    return;
 
-return;
+  }
 
-}
+  try{
 
+    await updateDoc(
+      doc(
+        db,
+        "drivers",
+        currentDriver.docId
+      ),
+      {
+        duty:duty
+      }
+    );
 
-myDuty =
-!myDuty;
+  }catch(error){
 
+    console.warn(error);
 
-$("dutyToggle")
-.classList
-.toggle(
-"on",
-myDuty
-);
+  }
 
-
-try{
-
-await db
-.collection("drivers")
-.doc(myDriver.docId)
-.set({
-
-online:true,
-
-duty:myDuty,
-
-last:"Live Status",
-
-updatedAt:
-firebase.firestore
-.FieldValue
-.serverTimestamp()
-
-},
-{
-merge:true
-});
-
-
-await rtdb
-.ref(
-"liveLocations/" +
-myDriver.id
-)
-.update({
-
-driverId:
-myDriver.id,
-
-telegramId:
-myTelegramId,
-
-online:true,
-
-duty:myDuty,
-
-updatedAt:
-firebase.database
-.ServerValue
-.TIMESTAMP
-
-});
-
-
-showNotice(
-myDuty
-?
-"Duty ON"
-:
-"Duty OFF"
-);
-
-}
-catch(error){
-
-console.error(error);
-
-
-showNotice(
-"Status Firebase में save नहीं हुआ."
-);
-
-}
-
-}
-
-
-
-/* =====================================================
-   AUTO GPS
-===================================================== */
-
-function toggleAutoGPS(){
-
-if(!radarAuthorized)
-return;
-
-
-autoGPS =
-!autoGPS;
-
-
-$("gpsToggle")
-.classList
-.toggle(
-"on",
-autoGPS
-);
-
-
-if(autoGPS){
-
-startGPS();
-
-}
-else{
-
-stopGPS();
-
-}
-
-
-showNotice(
-autoGPS
-?
-"Auto GPS ON"
-:
-"Auto GPS OFF"
-);
-
-}
-
-
-
-/* =====================================================
-   CLOSE MINI APP
-===================================================== */
-
-function closeMiniApp(){
-
-if(
-tg &&
-tg.close
-){
-
-tg.close();
-
-}
-else{
-
-showNotice(
-"Telegram Mini App can be closed from Telegram."
-);
-
-}
-
-}
-
-
-
-/* =====================================================
-   SECURE START
-===================================================== */
-
-async function startApp(){
-
-const telegramOK =
-setupTG();
-
-
-if(!telegramOK){
-
-return;
-
-}
-
-
-const authOK =
-await authAnon();
-
-
-if(!authOK){
-
-denyRadarAccess(
-"Firebase connection failed."
-);
-
-return;
-
-}
-
-
-const registered =
-await checkRegisteredDriver();
-
-
-if(!registered){
-
-denyRadarAccess(
-"आपका Telegram account Safety Cab में Registered नहीं है."
-);
-
-return;
-
-}
-
-
-allowRadarAccess();
-
-
-initMap();
-
-
-await loadOnlineCount();
-
-
-window.searchedDriver =
-{
-...myDriver
 };
 
 
-$("search").value =
-myDriver.id;
+/* =========================================================
+   AUTO GPS
+========================================================= */
 
-
-await selectDriver(
-myDriver.id
-);
-
-
-if(autoGPS){
-
-startGPS();
-
-}
-
-}
-
-
-
-/* =====================================================
-   START
-===================================================== */
-
-startApp();
-
-
-
-/* =====================================================
-   MAP RESIZE
-===================================================== */
-
-setTimeout(
+window.toggleAutoGPS =
 function(){
 
-if(
-radarAuthorized &&
-map
-){
+  autoGPS = !autoGPS;
 
-map.invalidateSize();
+  updateSettingsUI();
+
+};
+
+
+/* =========================================================
+   SETTINGS UI
+========================================================= */
+
+function updateSettingsUI(){
+
+  const dutyBtn =
+    document
+      .getElementById(
+        "dutyBtn"
+      );
+
+  const gpsBtn =
+    document
+      .getElementById(
+        "autoGpsBtn"
+      );
+
+  dutyBtn.textContent =
+    duty
+      ? "🟢 Duty ON"
+      : "⚪ Duty OFF";
+
+  gpsBtn.textContent =
+    autoGPS
+      ? "📡 Auto GPS ON"
+      : "📡 Auto GPS OFF";
 
 }
 
-},
-1200
-);
+
+/* =========================================================
+   SUPPORT
+========================================================= */
+
+window.callSupport =
+function(){
+
+  window.location.href =
+    "tel:08062180745";
+
+};
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+window.page =
+function(name){
+
+  if(!radarAuthorized){
+
+    return;
+
+  }
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p =>
+        p.classList.remove(
+          "active"
+        )
+    );
+
+  document
+    .querySelectorAll(".navBtn")
+    .forEach(
+      b =>
+        b.classList.remove(
+          "active"
+        )
+    );
+
+
+  if(name === "Map"){
+
+    document
+      .getElementById(
+        "pageMap"
+      )
+      .classList.add("active");
+
+    document
+      .getElementById(
+        "navMap"
+      )
+      .classList.add("active");
+
+    setTimeout(
+      () => {
+        if(map){
+          map.invalidateSize();
+        }
+      },
+      100
+    );
+
+  }
+
+
+  if(name === "Drivers"){
+
+    document
+      .getElementById(
+        "pageDrivers"
+      )
+      .classList.add("active");
+
+    document
+      .getElementById(
+        "navDrivers"
+      )
+      .classList.add("active");
+
+  }
+
+
+  if(name === "Profile"){
+
+    document
+      .getElementById(
+        "pageProfile"
+      )
+      .classList.add("active");
+
+    document
+      .getElementById(
+        "navProfile"
+      )
+      .classList.add("active");
+
+  }
+
+
+  if(name === "Settings"){
+
+    document
+      .getElementById(
+        "pageSettings"
+      )
+      .classList.add("active");
+
+    document
+      .getElementById(
+        "navSettings"
+      )
+      .classList.add("active");
+
+  }
+
+};
+
+
+/* =========================================================
+   DRIVER PAGE SEARCH
+========================================================= */
+
+window.searchDriverFromDrivers =
+function(){
+
+  const value =
+    document
+      .getElementById(
+        "driverSearch2"
+      )
+      .value;
+
+  document
+    .getElementById(
+      "driverSearch"
+    )
+    .value =
+    value;
+
+  page("Map");
+
+  searchDriver();
+
+};
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(
+    value == null
+      ? ""
+      : value
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+authorizeDriver();
 
 </script>
 

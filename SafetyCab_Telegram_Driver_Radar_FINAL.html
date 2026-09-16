@@ -29,8 +29,8 @@
 <script>
 const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();const tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
-if(tg){tg.ready();tg.expand();}
-const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null,locationRequestRef=null,lastLocationRequestId=null;
+if(tg){tg.ready();tg.expand();setTimeout(initTelegramLocationManager,0);}
+const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null,locationRequestRef=null,lastLocationRequestId=null,telegramLocationManager=null,telegramLocationReady=false;
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
@@ -119,7 +119,7 @@ function listenSelectedLive(id){if(liveRef){liveRef.off();liveRef=null}liveRef=r
 function openDriver(id){let d=drivers.find(x=>x.id===id);if(!d)return;selectedDriver=d;let profile=d.profilePhoto?`<img class="photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:"";let car=d.carPhoto?`<img class="car-photo-small" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:"";$('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${d.online?"🟢 Online":"🔴 Offline"}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;$('modal').classList.add('show')}
 function closeModal(){$('modal').classList.remove('show')}
 function openPhoto(src){if(!src)return;$('viewerImg').src=src;$('photoViewer').classList.add('show')}function closePhoto(){$('photoViewer').classList.remove('show');$('viewerImg').src=''}
-function setupTG(){if(!tg){$('tgName').textContent='Open from Telegram';return false}let u=tg.initDataUnsafe&&tg.initDataUnsafe.user;if(!u){$('tgName').textContent='Open from Telegram';return false}myTelegramId=String(u.id);$('tgName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||'Telegram User';$('tgId').textContent=myTelegramId;return true}
+function setupTG(){if(!tg){$('tgName').textContent='Open from Telegram';return false}initTelegramLocationManager();let u=tg.initDataUnsafe&&tg.initDataUnsafe.user;if(!u){$('tgName').textContent='Open from Telegram';return false}myTelegramId=String(u.id);$('tgName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||'Telegram User';$('tgId').textContent=myTelegramId;return true}
 function driverCacheKey(){return 'safetyCabDriverCache_'+String(myTelegramId||'')}
 function readCache(){try{let x=JSON.parse(localStorage.getItem(driverCacheKey())||'null');if(!x||!x.driver)return null;if(Date.now()-Number(x.savedAt||0)>86400000)return null;return x.driver}catch(e){return null}}
 function writeCache(d){try{localStorage.setItem(driverCacheKey(),JSON.stringify({savedAt:Date.now(),driver:d}))}catch(e){}}
@@ -133,51 +133,87 @@ async function loadDrivers(){return true}
 async function saveStatus(){if(!myDriver)return;try{await db.collection('drivers').doc(myDriver.docId).set({online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});let d=drivers.find(x=>x.id===myDriver.id);if(d){d.online=true;d.duty=myDuty}stats();renderMarkers()}catch(e){console.error(e);showNotice('Status Firebase में save नहीं हुआ.')}}
 const GEO_PERMISSION_KEY='safetyCabGeoPermissionGranted';
 
-async function geoPermissionState(){
+function initTelegramLocationManager(){
+  if(!tg || !tg.LocationManager)return false;
   try{
-    if(navigator.permissions && navigator.permissions.query){
-      const p=await navigator.permissions.query({name:'geolocation'});
-      return p.state;
+    telegramLocationManager=tg.LocationManager;
+    telegramLocationManager.init(()=>{
+      telegramLocationReady=true;
+    });
+    return true;
+  }catch(e){
+    console.error('Telegram LocationManager init error:',e);
+    telegramLocationManager=null;
+    return false;
+  }
+}
+
+function telegramGetLocation(force=false){
+  return new Promise((resolve,reject)=>{
+    if(!telegramLocationManager){
+      reject(new Error('Telegram LocationManager unavailable'));
+      return;
     }
-  }catch(e){}
-  return 'unknown';
+    try{
+      telegramLocationManager.getLocation(loc=>{
+        if(loc && Number.isFinite(Number(loc.latitude)) && Number.isFinite(Number(loc.longitude))){
+          resolve({
+            coords:{
+              latitude:Number(loc.latitude),
+              longitude:Number(loc.longitude),
+              accuracy:loc.horizontal_accuracy==null?null:Number(loc.horizontal_accuracy)
+            }
+          });
+        }else{
+          reject(new Error('Telegram location access not granted or location unavailable'));
+        }
+      });
+    }catch(e){reject(e)}
+  });
 }
 
 async function requestGPSOnce(force=false){
-  if(!myDriver||!navigator.geolocation)return false;
+  if(!myDriver)return false;
 
-  const state=await geoPermissionState();
+  // Prefer Telegram's native LocationManager inside the Mini App.
+  // Telegram remembers the user's location permission, so after the
+  // first Allow, subsequent calls do not show the permission dialog.
+  if(telegramLocationManager){
+    try{
+      const p=await telegramGetLocation(force);
+      updateMyLocation(p);
+      startGPSWatch();
+      return true;
+    }catch(e){
+      console.error('Telegram location error:',e);
 
-  // Once the browser/Telegram WebView has granted permission,
-  // do not show another permission request UI; start GPS directly.
-  if(state==='granted'){
-    requestCurrentGPS(force);
-    return true;
+      // If Telegram LocationManager exists, do not immediately fall back
+      // to browser geolocation, because that would create the browser
+      // "Allow Safetycab to access your location?" dialog again.
+      showNotice('Telegram Location Permission allow करें. अगर पहले Allow किया है तो Mini App दोबारा खोलें.');
+      return false;
+    }
   }
 
-  // If permission is still undecided, the native Allow dialog may appear.
-  // It is only requested here when needed.
-  if(state==='prompt' || state==='unknown'){
-    navigator.geolocation.getCurrentPosition(
-      p=>{
-        try{localStorage.setItem(GEO_PERMISSION_KEY,'1')}catch(e){}
-        updateMyLocation(p);
-        startGPSWatch();
-      },
-      gpsError,
-      {enableHighAccuracy:true,timeout:15000,maximumAge:0}
-    );
-    return true;
+  // Fallback only for clients without Telegram LocationManager.
+  if(!navigator.geolocation){
+    showNotice('GPS supported नहीं है.');
+    return false;
   }
 
-  // Permission was denied at browser/OS level. Code cannot silently
-  // re-allow it; the user must change the site/device permission.
-  showNotice('Location permission OFF है. Browser/Phone Location Permission में Allow करें.');
-  return false;
+  navigator.geolocation.getCurrentPosition(
+    p=>{updateMyLocation(p);startGPSWatch()},
+    gpsError,
+    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
+  return true;
 }
 
 function shareMyLocation(){
-  if(!myDriver){showNotice('Driver पहले Admin Panel में register होना चाहिए.');return}
+  if(!myDriver){
+    showNotice('Driver पहले Admin Panel में register होना चाहिए.');
+    return;
+  }
   requestGPSOnce(true);
 }
 
@@ -214,10 +250,8 @@ function gpsError(e){
 }
 
 function requestCurrentGPS(force=false){
-  if(!myDriver||!navigator.geolocation||(!autoGPS&&!force))return;
-  navigator.geolocation.getCurrentPosition(updateMyLocation,gpsError,{
-    enableHighAccuracy:true,maximumAge:0,timeout:15000
-  });
+  if(!myDriver||(!autoGPS&&!force))return;
+  requestGPSOnce(force);
 }
 
 function stopLocationRequestListener(){
@@ -232,7 +266,7 @@ function startLocationRequestListener(){
     const req=snap.val();
     if(!req||req.status!=='pending'||!req.requestId||req.requestId===lastLocationRequestId)return;
     lastLocationRequestId=req.requestId;
-    requestGPSOnce(true);
+    requestCurrentGPS(true);
     locationRequestRef.update({
       status:'completed',
       completedAt:firebase.database.ServerValue.TIMESTAMP
@@ -241,13 +275,7 @@ function startLocationRequestListener(){
 }
 
 function startGPSWatch(){
-  if(!myDriver||!navigator.geolocation||!autoGPS)return;
-  if(watchId===null){
-    watchId=navigator.geolocation.watchPosition(
-      updateMyLocation,gpsError,
-      {enableHighAccuracy:true,maximumAge:0,timeout:15000}
-    );
-  }
+  if(!myDriver||!autoGPS)return;
   if(gpsTimer===null){
     gpsTimer=setInterval(()=>{
       if(document.visibilityState==='visible')requestCurrentGPS(false);
@@ -256,22 +284,15 @@ function startGPSWatch(){
 }
 
 async function startGPS(){
-  if(!myDriver||!navigator.geolocation||!autoGPS)return;
-  const state=await geoPermissionState();
-
-  if(state==='granted'){
-    startGPSWatch();
-    requestCurrentGPS(false);
-    return;
-  }
-
-  // Only the first required permission request reaches the native dialog.
-  // After Allow, the granted state is reused on future launches.
+  if(!myDriver||!autoGPS)return;
   requestGPSOnce(false);
 }
 
 function stopGPS(){
-  if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}
+  if(watchId!==null && navigator.geolocation){
+    navigator.geolocation.clearWatch(watchId);
+    watchId=null;
+  }
   if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null}
 }
 

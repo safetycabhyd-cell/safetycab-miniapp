@@ -11,7 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif;padding-bottom:72px}.header{height:96px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:13px 16px;gap:12px}.logo{width:54px;height:54px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:28px}.title{font-size:24px;font-weight:800}.sub{font-size:12px}.page{display:none;padding:12px}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.stat,.card{background:#fff;border-radius:17px;box-shadow:0 2px 10px #0001}.stat{text-align:center;padding:13px 4px}.stat strong{display:block;font-size:26px}.stat.green strong{color:#16a34a}.stat.blue strong{color:#087fc3}.card{padding:14px;margin-bottom:12px}.card h3{margin:2px 0 12px;font-size:20px}.searchrow{display:flex;gap:7px;align-items:center}.searchrow .search{flex:1;min-width:0}.searchrow .action{flex:none;padding:13px 14px}.search{width:100%;padding:13px;border:1px solid #ccd6e2;border-radius:11px;font-size:16px;outline:none}.filters{display:flex;gap:6px;overflow:auto;margin:9px 0}.filter{border:1px solid #ccd6e2;background:#fff;border-radius:20px;padding:7px 11px;white-space:nowrap}.filter.on{background:#0878c9;color:#fff}.driver{display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf0f4;padding:11px 0;cursor:pointer}.driver:last-child{border:0}.avatar{width:42px;height:42px;border-radius:50%;background:#e8f3ff;display:grid;place-items:center;overflow:hidden;flex:none}.avatar img{width:100%;height:100%;object-fit:cover}.driverinfo{flex:1;min-width:0}.small{font-size:11px;color:#667085;margin-top:3px}.badge{padding:4px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}.bgreen{background:#dcfce7;color:#15803d}.bred{background:#fee2e2;color:#b91c1c}.byellow{background:#fef3c7;color:#92400e}.action{border:0;border-radius:10px;padding:10px 12px;font-weight:700;background:#0878c9;color:#fff;cursor:pointer}.secondary{background:#e9f4ff;color:#0878c9}.danger{background:#fee2e2;color:#b91c1c}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f4;padding:10px 0}.row:last-child{border:0}.toggle{width:48px;height:26px;border:0;border-radius:20px;background:#cbd5e1;padding:3px}.toggle i{display:block;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}.toggle.on{background:#16a34a}.toggle.on i{transform:translateX(22px)}#map{height:calc(100vh - 255px);min-height:430px;border-radius:16px;overflow:hidden}.empty{text-align:center;color:#667085;padding:30px}.loading{text-align:center;color:#667085;padding:18px}.notice{font-size:12px;color:#667085;background:#f7fafc;padding:9px;border-radius:10px;margin-top:8px}.booking-list{margin-top:10px}.booking-card{background:#f8fbff;border:1px solid #dcecff;border-radius:13px;padding:12px;margin-top:8px}.booking-card b{color:#0878c9}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:3000;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;padding:15px;max-height:90vh;overflow:auto}.close{float:right;border:0;border-radius:50%;width:32px;height:32px}.photo{width:78px;height:78px;object-fit:cover;border-radius:50%;margin:8px 0;cursor:pointer;border:2px solid #dce5ee}.booking-map{height:300px;border-radius:13px;overflow:hidden;margin-top:10px}.input{width:100%;padding:11px;border:1px solid #ccd6e2;border-radius:10px;margin:5px 0 8px;font-size:15px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.routebox{background:#f8fafc;border-radius:11px;padding:10px;margin-top:8px;font-size:13px}.routebox strong{display:block;margin-bottom:4px}.success{background:#ecfdf3;border:1px solid #bbf7d0;padding:12px;border-radius:12px}.driver-photo-small{width:76px;height:55px;object-fit:cover;border-radius:9px}.car-photo-small{width:78px;height:78px;object-fit:cover;border-radius:10px;margin-top:8px;cursor:pointer;border:2px solid #dce5ee}.photo-viewer{display:none;position:fixed;inset:0;background:#000e;z-index:6000;align-items:center;justify-content:center;padding:15px}.photo-viewer.show{display:flex}.photo-viewer img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:10px}.photo-viewer button{position:absolute;top:15px;right:15px}.bottom{position:fixed;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(4,1fr);z-index:2000}.navbtn{border:0;background:#fff;color:#667085;font-size:11px}.navbtn b{display:block;font-size:22px}.navbtn.active{color:#087fc3;font-weight:700}.access{position:fixed;inset:0;background:#f4f7fb;z-index:7000;display:flex;align-items:center;justify-content:center;padding:20px}.access-card{width:100%;max-width:390px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 4px 20px #0002}.access.hide{display:none}@media(max-width:420px){.title{font-size:22px}#map{min-height:410px}}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif;padding-bottom:72px}.header{height:96px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:13px 16px;gap:12px}.logo{width:54px;height:54px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:28px}.title{font-size:24px;font-weight:800}.sub{font-size:12px}.page{display:none;padding:12px}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.stat,.card{background:#fff;border-radius:17px;box-shadow:0 2px 10px #0001}.stat{text-align:center;padding:13px 4px}.stat strong{display:block;font-size:26px}.stat.green strong{color:#16a34a}.stat.blue strong{color:#087fc3}.card{padding:14px;margin-bottom:12px}.card h3{margin:2px 0 12px;font-size:20px}.searchrow{display:flex;gap:7px;align-items:center}.searchrow .search{flex:1;min-width:0}.searchrow .action{flex:none;padding:13px 14px}.search{width:100%;padding:13px;border:1px solid #ccd6e2;border-radius:11px;font-size:16px;outline:none}.filters{display:flex;gap:6px;overflow:auto;margin:9px 0}.filter{border:1px solid #ccd6e2;background:#fff;border-radius:20px;padding:7px 11px;white-space:nowrap}.filter.on{background:#0878c9;color:#fff}.driver{display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf0f4;padding:11px 0;cursor:pointer}.driver:last-child{border:0}.avatar{width:42px;height:42px;border-radius:50%;background:#e8f3ff;display:grid;place-items:center;overflow:hidden;flex:none}.avatar img{width:100%;height:100%;object-fit:cover}.driverinfo{flex:1;min-width:0}.small{font-size:11px;color:#667085;margin-top:3px}.badge{padding:4px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}.bgreen{background:#dcfce7;color:#15803d}.bred{background:#fee2e2;color:#b91c1c}.byellow{background:#fef3c7;color:#92400e}.action{border:0;border-radius:10px;padding:10px 12px;font-weight:700;background:#0878c9;color:#fff;cursor:pointer}.secondary{background:#e9f4ff;color:#0878c9}.danger{background:#fee2e2;color:#b91c1c}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f4;padding:10px 0}.row:last-child{border:0}.toggle{width:48px;height:26px;border:0;border-radius:20px;background:#cbd5e1;padding:3px}.toggle i{display:block;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}.toggle.on{background:#16a34a}.toggle.on i{transform:translateX(22px)}#map{height:calc(100vh - 255px);min-height:430px;border-radius:16px;overflow:hidden}.empty{text-align:center;color:#667085;padding:30px}.loading{text-align:center;color:#667085;padding:18px}.notice{font-size:12px;color:#667085;background:#f7fafc;padding:9px;border-radius:10px;margin-top:8px}.booking-list{margin-top:10px}.booking-card{background:#f8fbff;border:1px solid #dcecff;border-radius:13px;padding:12px;margin-top:8px}.booking-card b{color:#0878c9}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:3000;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;padding:15px;max-height:90vh;overflow:auto}.close{float:right;border:0;border-radius:50%;width:32px;height:32px}.photo{width:100%;max-height:240px;object-fit:cover;border-radius:14px;margin:8px 0}.booking-map{height:300px;border-radius:13px;overflow:hidden;margin-top:10px}.input{width:100%;padding:11px;border:1px solid #ccd6e2;border-radius:10px;margin:5px 0 8px;font-size:15px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.routebox{background:#f8fafc;border-radius:11px;padding:10px;margin-top:8px;font-size:13px}.routebox strong{display:block;margin-bottom:4px}.success{background:#ecfdf3;border:1px solid #bbf7d0;padding:12px;border-radius:12px}.driver-photo-small{width:76px;height:55px;object-fit:cover;border-radius:9px}.car-photo-small{width:100%;max-height:190px;object-fit:cover;border-radius:12px;margin-top:8px}.photo-viewer{display:none;position:fixed;inset:0;background:#000e;z-index:6000;align-items:center;justify-content:center;padding:15px}.photo-viewer.show{display:flex}.photo-viewer img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:10px}.photo-viewer button{position:absolute;top:15px;right:15px}.bottom{position:fixed;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(4,1fr);z-index:2000}.navbtn{border:0;background:#fff;color:#667085;font-size:11px}.navbtn b{display:block;font-size:22px}.navbtn.active{color:#087fc3;font-weight:700}.access{position:fixed;inset:0;background:#f4f7fb;z-index:7000;display:flex;align-items:center;justify-content:center;padding:20px}.access-card{width:100%;max-width:390px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 4px 20px #0002}.access.hide{display:none}@media(max-width:420px){.title{font-size:22px}#map{min-height:410px}}
 </style>
 </head>
 <body>
@@ -27,58 +27,24 @@
 <div id="photoViewer" class="photo-viewer" onclick="if(event.target===this)closePhoto()"><button class="action" onclick="closePhoto()">✕</button><img id="viewerImg" src="" alt="Photo"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const TELANGANA_BOUNDS=[[15.75,77.0],[19.95,81.35]];
-const TELANGANA_CENTER=[17.42536,78.48694];
 const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();const tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
 if(tg){tg.ready();tg.expand();}
-const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},locationPin=null,areaCache={},activeFilter="all",watchId=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null;
+const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null;
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
 function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),120)}
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
-function initMap(){
-  map=L.map("map").setView(TELANGANA_CENTER,12);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);
-  map.setMaxBounds(TELANGANA_BOUNDS);
-}
+function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
-function clearMarkers(){
-  Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});
-  markers={};
-  if(locationPin){try{map.removeLayer(locationPin)}catch(e){};locationPin=null}
-}
-async function getDriverArea(lat,lng){
-  const key=lat.toFixed(5)+','+lng.toFixed(5);
-  if(areaCache[key])return areaCache[key];
-  try{
-    const url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat='+encodeURIComponent(lat)+'&lon='+encodeURIComponent(lng);
-    const r=await fetch(url,{headers:{Accept:'application/json'}});
-    if(!r.ok)throw new Error('reverse geocode failed');
-    const j=await r.json(),a=j.address||{};
-    const area=a.suburb||a.neighbourhood||a.quarter||a.village||a.town||a.city_district||a.city||a.municipality||'Telangana';
-    const city=a.city||a.town||a.municipality||a.county||'Telangana';
-    const result=area===city?area:(area+', '+city);
-    areaCache[key]=result;
-    return result;
-  }catch(e){return 'Telangana area'}
-}
-function bindDriverPopup(d,m,area='Location loading…'){
-  m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>📍 <b>Current Area:</b> <span id="area_${esc(d.id)}">${esc(area)}</span><br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-}
+function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
 function renderSelectedMarker(d,open=false){
   if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
   clearMarkers();
-  let m=L.marker([d.lat,d.lng],{icon:driverIcon(d),zIndexOffset:1000}).addTo(map);
-  bindDriverPopup(d,m,areaCache[d.lat.toFixed(5)+','+d.lng.toFixed(5)]||'Location loading…');
+  let m=L.marker([d.lat,d.lng],{icon:driverIcon(d)}).addTo(map);
+  m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
   markers[d.id]=m;
-  locationPin=L.marker([d.lat,d.lng],{zIndexOffset:900}).addTo(map);
-  locationPin.bindPopup(`<b>📍 ${esc(d.id)} Location</b><br>Area: <span id="pinarea_${esc(d.id)}">Location loading…</span>`);
-  getDriverArea(d.lat,d.lng).then(area=>{
-    const el=document.getElementById('area_'+d.id); if(el)el.textContent=area;
-    const pe=document.getElementById('pinarea_'+d.id); if(pe)pe.textContent=area;
-  });
   if(open)m.openPopup();
 }
 function renderMarkers(){if(selectedDriver)renderSelectedMarker(selectedDriver,false)}
@@ -105,7 +71,7 @@ async function stats(){
 function renderList(){}
 function showDriverResult(d){
   if(!d){$('driverResult').innerHTML='';return}
-  let profile=d.profilePhoto?`<img class="photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:'';
+  let profile=d.profilePhoto?`<img class="photo" style="max-height:180px" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:'';
   let car=d.carPhoto?`<img class="car-photo-small" style="height:110px;object-fit:cover" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:'';
   let existing=getBookingForDriver(d.id);
   let bookingButton=existing
@@ -143,41 +109,13 @@ async function searchDriverById(){
     selectedDriver=found;
     showDriverResult(found);
     $('searchStatus').textContent=found.online?'Driver found • Online':'Driver found • Offline';
-    // Search stays on the Driver Details card. Map opens only when the user taps Live Map.
-    if(Number.isFinite(found.lat)&&Number.isFinite(found.lng)){
-      showNotice('Driver मिला. Details यहीं रहेंगे; Map देखने के लिए Live Map दबाएँ.');
-    }else{
-      showNotice('Driver मिला, लेकिन current GPS location उपलब्ध नहीं है.');
-    }
+    if(Number.isFinite(found.lat)&&Number.isFinite(found.lng))focusDriver(found.id);else showNotice('Driver मिला, लेकिन current GPS location उपलब्ध नहीं है.');
   }catch(e){console.error(e);$('searchStatus').textContent='Search failed. फिर से कोशिश करें.';showNotice('Driver search Firebase से नहीं हुआ.')}finally{$('searchBtn').disabled=false}
 }
 $('searchBtn').addEventListener('click',searchDriverById);
 $('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchDriverById()});
 
-function listenSelectedLive(id){
-  if(liveRef){liveRef.off();liveRef=null}
-  liveRef=rtdb.ref("liveLocations/"+id);
-  liveRef.on("value",snap=>{
-    let v=snap.val();if(!v)return;
-    let d=drivers.find(x=>x.id===id);if(!d)return;
-    let lat=Number(v.lat),lng=Number(v.lng);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
-    d.lat=lat;d.lng=lng;d.online=v.online!==false;d.duty=v.duty===true;
-    let m=markers[id];
-    if(!m){renderSelectedMarker(d,false);m=markers[id]}
-    else{m.setLatLng([lat,lng]);m.setIcon(driverIcon(d));}
-    if(locationPin)locationPin.setLatLng([lat,lng]);
-    if(selectedDriver&&selectedDriver.id===id){
-      selectedDriver=d;
-      let st=$("searchedStatus");
-      if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}
-      getDriverArea(lat,lng).then(area=>{
-        const el=document.getElementById('area_'+id);if(el)el.textContent=area;
-        const pe=document.getElementById('pinarea_'+id);if(pe)pe.textContent=area;
-      });
-      stats();
-    }
-  });
-}
+function listenSelectedLive(id){if(liveRef){liveRef.off();liveRef=null}liveRef=rtdb.ref("liveLocations/"+id);liveRef.on("value",snap=>{let v=snap.val();if(!v)return;let d=drivers.find(x=>x.id===id);if(!d)return;let lat=Number(v.lat),lng=Number(v.lng);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;d.lat=lat;d.lng=lng;d.online=v.online!==false;d.duty=v.duty===true;let m=markers[id];if(!m){renderSelectedMarker(d,false);m=markers[id]}else{m.setLatLng([lat,lng]);m.setIcon(driverIcon(d));}if(selectedDriver&&selectedDriver.id===id){selectedDriver=d;let st=$("searchedStatus");if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}stats();}});}
 function openDriver(id){let d=drivers.find(x=>x.id===id);if(!d)return;selectedDriver=d;let profile=d.profilePhoto?`<img class="photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:"";let car=d.carPhoto?`<img class="car-photo-small" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:"";$('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${d.online?"🟢 Online":"🔴 Offline"}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;$('modal').classList.add('show')}
 function closeModal(){$('modal').classList.remove('show')}
 function openPhoto(src){if(!src)return;$('viewerImg').src=src;$('photoViewer').classList.add('show')}function closePhoto(){$('photoViewer').classList.remove('show');$('viewerImg').src=''}
@@ -185,34 +123,21 @@ function setupTG(){if(!tg){$('tgName').textContent='Open from Telegram';return f
 function driverCacheKey(){return 'safetyCabDriverCache_'+String(myTelegramId||'')}
 function readCache(){try{let x=JSON.parse(localStorage.getItem(driverCacheKey())||'null');if(!x||!x.driver)return null;if(Date.now()-Number(x.savedAt||0)>86400000)return null;return x.driver}catch(e){return null}}
 function writeCache(d){try{localStorage.setItem(driverCacheKey(),JSON.stringify({savedAt:Date.now(),driver:d}))}catch(e){}}
-function paintMine(d){myDriver={...d,adminEnabled:d.adminEnabled!==false};$('myDriverId').textContent=myDriver.id||'Not Registered';myDuty=myDriver.duty===true;$('dutyToggle').classList.toggle('on',myDuty);if(myDriver.profilePhoto)$('myProfilePhoto').innerHTML=`<img class="driver-photo-small" src="${esc(myDriver.profilePhoto)}" onclick="openPhoto('${js(myDriver.profilePhoto)}')">`;}
+function paintMine(d){myDriver=d;$('myDriverId').textContent=d.id||'Not Registered';myDuty=d.duty===true;$('dutyToggle').classList.toggle('on',myDuty);if(d.profilePhoto)$('myProfilePhoto').innerHTML=`<img class="driver-photo-small" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')">`;}
 async function authAnon(){try{if(auth.currentUser)return true;await auth.signInAnonymously();$('firebaseState').textContent='Connected';return true}catch(e){console.error(e);$('firebaseState').textContent='Auth Error';showNotice('Firebase authentication error.');return false}}
-async function findMine(){if(!myTelegramId)return null;try{let s=await db.collection('drivers').where('telegramId','==',myTelegramId).limit(1).get();if(s.empty)return null;let doc=s.docs[0],d=doc.data();let mine={docId:doc.id,id:d.id||doc.id,name:d.name||'',phone:d.phone||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,adminEnabled:d.adminEnabled!==false,rating:Number(d.rating||0),telegramId:String(d.telegramId||myTelegramId)};writeCache(mine);return mine}catch(e){console.error(e);return null}}
+async function findMine(){if(!myTelegramId)return null;try{let s=await db.collection('drivers').where('telegramId','==',myTelegramId).limit(1).get();if(s.empty)return null;let doc=s.docs[0],d=doc.data();let mine={docId:doc.id,id:d.id||doc.id,name:d.name||'',phone:d.phone||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),telegramId:String(d.telegramId||myTelegramId)};writeCache(mine);return mine}catch(e){console.error(e);return null}}
 async function verifyMineInBackground(cached){let fresh=await findMine();if(fresh){paintMine(fresh);if(autoGPS)startGPS()}else if(!cached){denyAccess('Driver ID registered नहीं मिला.');}}
 function denyAccess(msg){$('accessText').innerHTML=`<b>${esc(msg)}</b><br><br><button class="action" onclick="location.reload()">Reload</button>`}
 function allowAccess(){ $('access').classList.add('hide'); }
-function lockForAdminDisabled(){
-  stopGPS();
-  myDriver={...(myDriver||{}),adminEnabled:false};
-  $('accessText').innerHTML='<b style="color:#b91c1c;font-size:18px">🔴 Driver App Access OFF</b><br><br>Admin ने आपका App Access OFF किया है.<br><br><button class="action" onclick="location.reload()">Reload</button>';
-  $('access').classList.remove('hide');
-}
-function watchAdminAccess(){
-  if(!myDriver||!myDriver.docId)return;
-  db.collection('drivers').doc(myDriver.docId).onSnapshot(s=>{
-    if(!s.exists){lockForAdminDisabled();return;}
-    const d=s.data()||{};
-    myDriver.adminEnabled=d.adminEnabled!==false;
-    if(myDriver.adminEnabled===false)lockForAdminDisabled();
-    else if($('access').classList.contains('hide')===false && myTelegramId)allowAccess();
-  },e=>console.error('Admin access listener:',e));
-}
 async function loadDrivers(){return true}
 async function saveStatus(){if(!myDriver)return;try{await db.collection('drivers').doc(myDriver.docId).set({online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});let d=drivers.find(x=>x.id===myDriver.id);if(d){d.online=true;d.duty=myDuty}stats();renderMarkers()}catch(e){console.error(e);showNotice('Status Firebase में save नहीं हुआ.')}}
 function shareMyLocation(){if(!myDriver){showNotice('Driver पहले Admin Panel में register होना चाहिए.');return}if(!navigator.geolocation){showNotice('GPS supported नहीं है.');return}navigator.geolocation.getCurrentPosition(updateMyLocation,()=>showNotice('Location permission allow करें.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0})}
-function updateMyLocation(p){if(!myDriver)return;let lat=Number(p.coords.latitude),lng=Number(p.coords.longitude);myDriver.lat=lat;myDriver.lng=lng;myDriver.online=true;writeCache(myDriver);let d=drivers.find(x=>x.id===myDriver.id);if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty}$('locStatus').textContent='Location shared';stats();renderMarkers();writeLive(lat,lng);db.collection('drivers').doc(myDriver.docId).set({lat,lng,online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error)}
+function updateMyLocation(p){if(!myDriver)return;let lat=Number(p.coords.latitude),lng=Number(p.coords.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;myDriver.lat=lat;myDriver.lng=lng;myDriver.online=true;writeCache(myDriver);let d=drivers.find(x=>x.id===myDriver.id);if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty}$('locStatus').textContent='Location shared';stats();renderMarkers();writeLive(lat,lng);db.collection('drivers').doc(myDriver.docId).set({lat,lng,online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error)}
 function writeLive(lat,lng){if(!myDriver)return;rtdb.ref('liveLocations/'+myDriver.id).set({driverId:myDriver.id,telegramId:myTelegramId,lat,lng,online:true,duty:myDuty,updatedAt:firebase.database.ServerValue.TIMESTAMP}).catch(console.error)}
-function startGPS(){if(!myDriver||watchId!==null||!navigator.geolocation)return;watchId=navigator.geolocation.watchPosition(updateMyLocation,e=>console.error(e),{enableHighAccuracy:true,maximumAge:5000,timeout:12000})}function stopGPS(){if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}}
+function gpsError(e){console.error('GPS error:',e);if(e&&e.code===1)showNotice('Location permission allow करें.');else if(e&&e.code===2)showNotice('Current GPS location नहीं मिली.');}
+function requestCurrentGPS(){if(!myDriver||!navigator.geolocation||!autoGPS)return;navigator.geolocation.getCurrentPosition(updateMyLocation,gpsError,{enableHighAccuracy:true,maximumAge:0,timeout:15000})}
+function startGPS(){if(!myDriver||!navigator.geolocation||!autoGPS)return;if(watchId===null)watchId=navigator.geolocation.watchPosition(updateMyLocation,gpsError,{enableHighAccuracy:true,maximumAge:0,timeout:15000});requestCurrentGPS();if(gpsTimer===null)gpsTimer=setInterval(requestCurrentGPS,15000)}
+function stopGPS(){if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null}}
 async function toggleDuty(){if(!myDriver){showNotice('Driver अभी Registered नहीं है.');return}myDuty=!myDuty;$('dutyToggle').classList.toggle('on',myDuty);await saveStatus();showNotice(myDuty?'Duty ON':'Duty OFF')}
 function toggleAutoGPS(){autoGPS=!autoGPS;$('gpsToggle').classList.toggle('on',autoGPS);if(autoGPS)startGPS();else stopGPS();showNotice(autoGPS?'Auto GPS ON':'Auto GPS OFF')}
 function closeMiniApp(){if(tg&&tg.close)tg.close();else showNotice('Telegram Mini App can be closed from Telegram.')}
@@ -223,65 +148,22 @@ function getBookingForDriver(id){return getBookings().find(x=>x.driverId===id&&x
 function renderMyBookings(){let a=getBookings().filter(b=>b.status!=='closed');$('myBookings').innerHTML=a.length?a.map(b=>`<div class="booking-card"><b>${esc(b.bookingId)}</b><div>Driver: <strong>${esc(b.driverId)}</strong></div><div>Pickup: ${esc(b.pickupText)}</div><div>Destination: ${esc(b.destinationText)}</div><div style="margin-top:8px"><button class="action" onclick="showSavedBooking('${js(b.bookingId)}')">🗺️ View Booking</button> <button class="action secondary" onclick="newBooking('${js(b.driverId)}')">New Booking</button></div><button class="action danger" style="width:100%;margin-top:8px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button></div>`).join(''):'<div class="empty">No active bookings on this device.</div>'}
 async function closeBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b||b.status==='closed')return;if(!confirm('Booking close करें? Driver फिर Free हो जाएगा.'))return;b.status='closed';b.closedAt=Date.now();saveLocalBooking(b);try{await db.collection('bookings').doc(id).update({status:'closed',closedAt:b.closedAt});showNotice('Booking Closed — Driver Free है.')}catch(e){console.warn('Firebase booking close sync failed:',e);showNotice('Booking Closed — इस device पर Driver Free है.');}renderMyBookings();if(selectedDriver&&selectedDriver.id===b.driverId)searchDriverById(true);}
 function openBooking(id){closeModal();lastRoute=null;let d=drivers.find(x=>x.id===id)||selectedDriver;if(!d){showNotice('Driver नहीं मिला.');return}bookingDriver=d;$('modalBody').innerHTML=`<h2 style="margin-right:38px">🚕 Book ${esc(d.id)}</h2><div class="row"><span>Driver</span><b>${esc(d.name||d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')}</b></div><label>📍 Pickup Location</label><input id="pickupInput" class="input" placeholder="Pickup location"><button class="action secondary" style="width:100%;margin-bottom:5px" onclick="useCurrentLocation()">📍 Use My Current Location</button><label>🏁 Destination / Drop</label><input id="destinationInput" class="input" placeholder="Destination / Drop"><button class="action" style="width:100%;margin-top:5px" onclick="showBookingRoute()">🗺️ Show Route on Map</button><div id="routeStatus" class="notice">Pickup और Destination डालकर route दिखाएँ.</div><div id="bookingMap" class="booking-map"></div><div id="routeInfo"></div><button id="saveBookingBtn" class="action" style="width:100%;margin-top:10px;display:none" onclick="saveBooking()">✅ Confirm Booking</button>`;$('modal').classList.add('show');setTimeout(initBookingMap,80)}
-function initBookingMap(){
-  if(routeMap){routeMap.remove();routeMap=null}
-  routeMap=L.map('bookingMap').setView(TELANGANA_CENTER,12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
-  routeMap.setMaxBounds(TELANGANA_BOUNDS);
-  if(Number.isFinite(bookingDriver.lat)&&Number.isFinite(bookingDriver.lng))
-    L.marker([bookingDriver.lat,bookingDriver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('Driver current location').openPopup();
-}
+function initBookingMap(){if(routeMap){routeMap.remove();routeMap=null}routeMap=L.map('bookingMap').setView([Number(bookingDriver.lat)||17.42536,Number(bookingDriver.lng)||78.48694],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);if(Number.isFinite(bookingDriver.lat)&&Number.isFinite(bookingDriver.lng))L.marker([bookingDriver.lat,bookingDriver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('Driver current location').openPopup()}
 function useCurrentLocation(){if(!navigator.geolocation){showNotice('GPS supported नहीं है.');return}navigator.geolocation.getCurrentPosition(p=>{$('pickupInput').value=`${p.coords.latitude.toFixed(6)}, ${p.coords.longitude.toFixed(6)}`;showNotice('Current Location pickup में डाल दिया गया.');},()=>showNotice('Location permission allow करें.'),{enableHighAccuracy:true,timeout:8000,maximumAge:5000})}
-async function geocode(q){
-  let x=String(q||"").trim();
-  if(!x)throw new Error("Location खाली है");
-
-  // Coordinates are accepted only after reverse-geocoding confirms Telangana.
-  let m=x.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
-  if(m){
-    let lat=Number(m[1]),lng=Number(m[2]);
-    if(!Number.isFinite(lat)||!Number.isFinite(lng))throw new Error("Invalid coordinates");
-    let url="https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lng)+"&zoom=18";
-    let ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),6500);
-    try{
-      let r=await fetch(url,{headers:{Accept:"application/json"}});
-      if(!r.ok)throw new Error("Reverse geocoding failed");
-      let j=await r.json(),state=String(j.address&&j.address.state||"").toLowerCase();
-      if(!state.includes("telangana"))throw new Error("Location Telangana के बाहर है");
-      return{lat,lng,name:j.display_name||x};
-    }finally{clearTimeout(timer)}
-  }
-
-  // Force normal text searches toward Telangana, so names like "Koti"
-  // do not resolve to a similarly named place in another state.
-  let url="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=in&viewbox=77.0,19.95,81.35,15.75&bounded=1&q="+encodeURIComponent(x+", Telangana, India");
-  let ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),6500);
-  try{
-    let r=await fetch(url,{headers:{Accept:"application/json"}});
-    if(!r.ok)throw new Error("Geocoding failed");
-    let a=await r.json();
-    let hit=a.find(v=>String(v.address&&v.address.state||"").toLowerCase().includes("telangana"));
-    if(!hit)throw new Error("Telangana location not found: "+x);
-    return{lat:Number(hit.lat),lng:Number(hit.lon),name:hit.display_name||x};
-  }finally{clearTimeout(timer)}
-}
+async function geocode(q){let x=String(q||'').trim();if(!x)throw new Error('Location खाली है');let m=x.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);if(m)return{lat:Number(m[1]),lng:Number(m[2]),name:x};let url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=in&q='+encodeURIComponent(x);let ctl=new AbortController();let timer=setTimeout(()=>ctl.abort(),6500);try{let r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('Geocoding failed');let a=await r.json();if(!a.length)throw new Error('Location not found: '+x);return{lat:Number(a[0].lat),lng:Number(a[0].lon),name:a[0].display_name||x}}finally{clearTimeout(timer)}}
 async function routeOSRM(points){let coords=points.map(p=>`${p.lng},${p.lat}`).join(';');let ctl=new AbortController();let timer=setTimeout(()=>ctl.abort(),8500);try{let r=await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=false`,{signal:ctl.signal});if(!r.ok)throw new Error('Route server error');let j=await r.json();if(!j.routes||!j.routes.length)throw new Error('Road route not found');return j.routes[0]}finally{clearTimeout(timer)}}
-async function showBookingRoute(){if(!bookingDriver)return;let pText=$('pickupInput').value.trim(),dText=$('destinationInput').value.trim();if(!pText||!dText){showNotice('Pickup और Destination दोनों भरें.');return}$('routeStatus').textContent='Route calculate हो रहा है…';$('saveBookingBtn').style.display='none';try{let driver={lat:Number(bookingDriver.lat),lng:Number(bookingDriver.lng),name:bookingDriver.name,id:bookingDriver.id};
-    if(!Number.isFinite(driver.lat)||!Number.isFinite(driver.lng))throw new Error('Driver current GPS उपलब्ध नहीं है');
-    if(driver.lat<15.75||driver.lat>19.95||driver.lng<77.0||driver.lng>81.35)throw new Error('Driver current GPS Telangana के बाहर है');
-    let [p,dest]=await Promise.all([geocode(pText),geocode(dText)]);let route=await routeOSRM([driver,p,dest]);lastRoute={driver,pickup:p,destination:dest,route,pickupText:pText,destinationText:dText};drawRoute(lastRoute);$('routeStatus').textContent='Route ready • Telangana';$('saveBookingBtn').style.display='block'}catch(e){console.error(e);$('routeStatus').textContent='Route load नहीं हुआ. Location text सही करके फिर कोशिश करें.';showNotice('Route service ने response नहीं दिया.')}}
+async function showBookingRoute(){if(!bookingDriver)return;let pText=$('pickupInput').value.trim(),dText=$('destinationInput').value.trim();if(!pText||!dText){showNotice('Pickup और Destination दोनों भरें.');return}$('routeStatus').textContent='Route calculate हो रहा है…';$('saveBookingBtn').style.display='none';try{let driver={lat:Number(bookingDriver.lat),lng:Number(bookingDriver.lng),name:bookingDriver.name,id:bookingDriver.id};if(!Number.isFinite(driver.lat)||!Number.isFinite(driver.lng))throw new Error('Driver current GPS उपलब्ध नहीं है');let [p,dest]=await Promise.all([geocode(pText),geocode(dText)]);let route=await routeOSRM([driver,p,dest]);lastRoute={driver,pickup:p,destination:dest,route,pickupText:pText,destinationText:dText};drawRoute(lastRoute);$('routeStatus').textContent='Route ready';$('saveBookingBtn').style.display='block'}catch(e){console.error(e);$('routeStatus').textContent='Route load नहीं हुआ. Location text सही करके फिर कोशिश करें.';showNotice('Route service ने response नहीं दिया.')}}
 function drawRoute(x){if(!routeMap)return;routeMap.eachLayer(l=>{if(l instanceof L.Marker||l instanceof L.Polyline)routeMap.removeLayer(l)});let pts=[x.driver,x.pickup,x.destination];L.marker([x.driver.lat,x.driver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver Current Location');L.marker([x.pickup.lat,x.pickup.lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([x.destination.lat,x.destination.lng]).addTo(routeMap).bindPopup('🏁 Destination');let line=L.geoJSON(x.route.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])),{padding:[25,25]});let km=(Number(x.route.distance)/1000).toFixed(1),min=Math.round(Number(x.route.duration)/60);$('routeInfo').innerHTML=`<div class="routebox"><strong>Road Route</strong>Driver → Pickup → Destination<br>Distance: <b>${km} km</b> &nbsp; Estimated Time: <b>${min} min</b><br><span class="small">Pickup: ${esc(x.pickupText)}<br>Destination: ${esc(x.destinationText)}</span></div>`}
 async function saveBooking(){if(!bookingDriver||!lastRoute)return;let id='BK-'+Date.now().toString(36).toUpperCase();let b={bookingId:id,customerId:String(myTelegramId||''),driverId:bookingDriver.id,driverName:bookingDriver.name||'',pickupText:lastRoute.pickupText,pickupLat:lastRoute.pickup.lat,pickupLng:lastRoute.pickup.lng,destinationText:lastRoute.destinationText,destinationLat:lastRoute.destination.lat,destinationLng:lastRoute.destination.lng,driverLat:lastRoute.driver.lat,driverLng:lastRoute.driver.lng,distanceKm:Number((lastRoute.route.distance/1000).toFixed(2)),estimatedMinutes:Math.round(lastRoute.route.duration/60),status:'pending',createdAt:Date.now()};$('saveBookingBtn').disabled=true;try{await db.collection('bookings').doc(id).set(b);saveLocalBooking(b);renderSavedBooking(b);showNotice('Booking Saved')}catch(e){console.error(e);$('saveBookingBtn').disabled=false;showNotice('Booking save नहीं हुई.')}}
 function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h3>✅ Booking Saved</h3><div>Booking ID: <b>${esc(b.bookingId)}</b></div><div>Driver: <b>${esc(b.driverId)}</b></div><div>Pickup: ${esc(b.pickupText)}</div><div>Destination: ${esc(b.destinationText)}</div><div>Road Distance: <b>${b.distanceKm} km</b></div><div>Estimated Time: <b>${b.estimatedMinutes} min</b></div><div style="margin-top:6px;color:#15803d;font-weight:700">Status: ACTIVE</div></div><button class="action" style="width:100%;margin-top:10px" onclick="showSavedBooking('${js(b.bookingId)}')">🗺️ View Booking Map</button><button class="action secondary" style="width:100%;margin-top:8px" onclick="newBooking('${js(b.driverId)}')">🚕 New Booking</button><button class="action danger" style="width:100%;margin-top:8px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`}
 function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b){showNotice('Booking इस device पर नहीं मिली.');return}if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};bookingDriver=d;$('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Distance:</b> ${b.distanceKm} km &nbsp; <b>Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE</div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;$('modal').classList.add('show');setTimeout(()=>drawSavedBookingMap(b),80)}
-function drawSavedBookingMap(b){
-  if(routeMap){routeMap.remove();routeMap=null}
-  routeMap=L.map('bookingMap').setView(TELANGANA_CENTER,12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
-  routeMap.setMaxBounds(TELANGANA_BOUNDS);let points=[{lat:b.driverLat,lng:b.driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver');L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}))}
+function drawSavedBookingMap(b){if(routeMap){routeMap.remove();routeMap=null}routeMap=L.map('bookingMap').setView([b.driverLat,b.driverLng],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);let points=[{lat:b.driverLat,lng:b.driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver');L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}))}
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
-async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}let cached=readCache();if(cached){paintMine(cached);if(myDriver.adminEnabled===false){lockForAdminDisabled();return}allowAccess();watchAdminAccess();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);if(myDriver.adminEnabled===false){lockForAdminDisabled();return}allowAccess();watchAdminAccess();if(autoGPS)startGPS()}authAnon().then(()=>{stats();});}
-startApp();setTimeout(()=>{if(map)map.invalidateSize()},900);
+async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();if(autoGPS)startGPS()}stats();}
+startApp();
+
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS()}});
+setTimeout(()=>{if(map)map.invalidateSize()},900);
 </script>
 </body>
 </html>

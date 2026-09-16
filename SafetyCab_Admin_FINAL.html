@@ -335,8 +335,8 @@ background:#667
 /* ================= PROFILE PHOTO ================= */
 
 .photoBox{
-width:130px;
-height:130px;
+width:74px;
+height:74px;
 border-radius:50%;
 margin:5px auto 12px;
 background:#eef3f7;
@@ -345,7 +345,8 @@ display:flex;
 align-items:center;
 justify-content:center;
 overflow:hidden;
-position:relative
+position:relative;
+cursor:pointer
 }
 
 .photoBox img{
@@ -356,7 +357,7 @@ display:block
 }
 
 .photoPlaceholder{
-font-size:52px
+font-size:32px
 }
 
 .photoInput{
@@ -442,6 +443,87 @@ margin:8px 0 14px
 }
 
 
+/* ================= DETAIL PHOTO THUMBNAILS ================= */
+
+.detailPhotoRow{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:18px;
+margin:8px 0 14px
+}
+
+.detailProfileThumb{
+width:72px;
+height:72px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #ccd5dd;
+background:#eef3f7;
+cursor:pointer;
+display:block
+}
+
+.detailCarThumb{
+width:145px;
+height:85px;
+object-fit:cover;
+border-radius:10px;
+border:2px solid #d5dfe7;
+background:#eef3f7;
+cursor:pointer;
+display:block
+}
+
+.detailThumbLabel{
+text-align:center;
+font-size:11px;
+color:#667;
+margin-top:4px
+}
+
+
+/* ================= PHOTO VIEWER ================= */
+
+#photoViewer{
+display:none;
+position:fixed;
+inset:0;
+z-index:6000;
+background:#000d;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+#photoViewer.show{
+display:flex
+}
+
+#photoViewer img{
+max-width:95vw;
+max-height:88vh;
+object-fit:contain;
+border-radius:12px;
+box-shadow:0 5px 30px #0008;
+background:#fff
+}
+
+.photoViewerClose{
+position:absolute;
+top:15px;
+right:15px;
+width:42px;
+height:42px;
+border:0;
+border-radius:50%;
+background:#fff;
+color:#222;
+font-size:24px;
+font-weight:700
+}
+
+
 /* ================= VEHICLE TYPE ================= */
 
 .vehicleTypeBadge{
@@ -452,6 +534,59 @@ padding:4px 8px;
 border-radius:10px;
 font-size:11px;
 font-weight:700
+}
+
+
+/* ================= BOOKING ================= */
+
+.bookingBox{
+background:#f7fbff;
+border:1px solid #cfe3f0;
+border-radius:12px;
+padding:12px;
+margin:12px 0
+}
+
+.bookingTitle{
+font-size:16px;
+font-weight:800;
+margin-bottom:8px
+}
+
+.bookingStatus{
+display:inline-block;
+padding:5px 9px;
+border-radius:10px;
+font-size:11px;
+font-weight:700;
+background:#fff3cd;
+color:#856404
+}
+
+.bookingRow{
+font-size:12px;
+line-height:1.55;
+margin-top:6px
+}
+
+.bookingCloseBtn{
+margin-top:10px;
+width:100%;
+border:0;
+border-radius:9px;
+padding:10px;
+background:#d93636;
+color:#fff;
+font-weight:700
+}
+
+.bookingEmpty{
+background:#f5f5f5;
+border-radius:10px;
+padding:10px;
+font-size:12px;
+color:#667;
+margin:10px 0
 }
 
 
@@ -581,30 +716,17 @@ color:#075a8c
 }
 
 
-.detailCarPhoto{
-width:100%;
-max-width:320px;
-height:190px;
-object-fit:cover;
-display:block;
-margin:10px auto 15px;
-border-radius:14px;
-border:2px solid #d5dfe7;
-background:#eef3f7
-}
-
 .detailCarPlaceholder{
-width:100%;
-max-width:320px;
-height:190px;
+width:145px;
+height:85px;
 display:flex;
 align-items:center;
 justify-content:center;
-margin:10px auto 15px;
-border-radius:14px;
+margin:0 auto;
+border-radius:10px;
 background:#eef3f7;
 border:2px solid #d5dfe7;
-font-size:60px
+font-size:34px
 }
 
 
@@ -948,6 +1070,32 @@ id="sheet">
 
 
 <!-- =====================================================
+     PHOTO VIEWER
+===================================================== -->
+
+<div
+id="photoViewer"
+onclick="closePhoto(event)">
+
+<button
+class="photoViewerClose"
+onclick="closePhoto()">
+
+✕
+
+</button>
+
+<img
+id="photoViewerImage"
+src=""
+alt="Full Photo"
+onclick="event.stopPropagation()">
+
+</div>
+
+
+
+<!-- =====================================================
      LEAFLET
 ===================================================== -->
 
@@ -1014,6 +1162,9 @@ const DRIVER_COLLECTION =
 
 const PUBLIC_DRIVER_COLLECTION =
 "publicDrivers";
+
+const BOOKING_COLLECTION =
+"bookings";
 
 
 /* =====================================================
@@ -1083,6 +1234,12 @@ document.getElementById("duty");
 const firebaseStatus =
 document.getElementById("firebaseStatus");
 
+const photoViewer =
+document.getElementById("photoViewer");
+
+const photoViewerImage =
+document.getElementById("photoViewerImage");
+
 
 /* =====================================================
    STATUS MESSAGE
@@ -1103,6 +1260,46 @@ function hideStatus(){
 
 firebaseStatus.className =
 "firebaseStatus";
+
+}
+
+
+/* =====================================================
+   PHOTO VIEWER
+===================================================== */
+
+function openPhoto(src){
+
+if(!src){
+
+return;
+
+}
+
+photoViewerImage.src =
+src;
+
+photoViewer.classList.add("show");
+
+}
+
+
+function closePhoto(event){
+
+if(
+event &&
+event.target &&
+event.target.id !== "photoViewer" &&
+event.target.className !== "photoViewerClose"
+){
+
+return;
+
+}
+
+photoViewer.classList.remove("show");
+
+photoViewerImage.src = "";
 
 }
 
@@ -2394,39 +2591,99 @@ map.setView(
 }
 
 
+/* ================= SMALL DRIVER PHOTO ================= */
+
 const photoHTML =
 d.profilePhoto
 ?
 `
-<div class="photoBox">
+<div class="detailPhotoRow">
+
+<div>
+
 <img
+class="detailProfileThumb"
 src="${esc(d.profilePhoto)}"
-alt="Driver Profile Photo">
+alt="Driver Profile Photo"
+onclick="openPhoto('${esc(d.profilePhoto)}')">
+
+<div class="detailThumbLabel">
+👤 Tap to View
+</div>
+
+</div>
+
 </div>
 `
 :
 `
-<div class="photoBox">
-<div class="photoPlaceholder">
+<div class="detailPhotoRow">
+
+<div>
+
+<div
+class="detailProfileThumb"
+style="
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+">
+
 👤
+
 </div>
+
+<div class="detailThumbLabel">
+No Driver Photo
+</div>
+
+</div>
+
 </div>
 `;
 
+
+/* ================= SMALL CAR PHOTO ================= */
 
 const carPhotoHTML =
 d.carPhoto
 ?
 `
+<div class="detailPhotoRow">
+
+<div>
+
 <img
-class="detailCarPhoto"
+class="detailCarThumb"
 src="${esc(d.carPhoto)}"
-alt="Car Photo">
+alt="Car Photo"
+onclick="openPhoto('${esc(d.carPhoto)}')">
+
+<div class="detailThumbLabel">
+🚗 Tap to View
+</div>
+
+</div>
+
+</div>
 `
 :
 `
+<div class="detailPhotoRow">
+
+<div>
+
 <div class="detailCarPlaceholder">
 🚕
+</div>
+
+<div class="detailThumbLabel">
+No Car Photo
+</div>
+
+</div>
+
 </div>
 `;
 
@@ -2551,6 +2808,22 @@ ${esc(d.last || "Not updated")}
 </p>
 
 
+<!-- ================= BOOKING CONTROL ================= -->
+
+<h3>
+🔒 Booking Control
+</h3>
+
+
+<div
+id="adminBookingBox"
+class="bookingBox">
+
+Loading booking information...
+
+</div>
+
+
 <div class="actions">
 
 
@@ -2598,6 +2871,377 @@ updatePresentLocation(
 d.id,
 d.lat,
 d.lng
+);
+
+}
+
+
+/* Get current booking */
+
+loadAdminBookings(d.id);
+
+}
+
+
+/* =====================================================
+   ADMIN BOOKING LOAD
+===================================================== */
+
+async function loadAdminBookings(driverId){
+
+const box =
+document.getElementById(
+"adminBookingBox"
+);
+
+if(!box){
+
+return;
+
+}
+
+box.innerHTML =
+"Loading booking information...";
+
+
+try{
+
+const snapshot =
+await db
+.collection(BOOKING_COLLECTION)
+.where(
+"driverId",
+"==",
+driverId
+)
+.get();
+
+
+const bookings =
+[];
+
+
+snapshot.forEach(
+function(doc){
+
+const data =
+doc.data();
+
+const status =
+String(
+data.status || ""
+)
+.toLowerCase();
+
+
+/*
+ Accept both ACTIVE and PENDING
+ because the current Driver Radar
+ booking system may use either.
+*/
+
+if(
+status === "active" ||
+status === "pending"
+){
+
+bookings.push({
+
+bookingId:
+doc.id,
+
+...data
+
+});
+
+}
+
+});
+
+
+if(!bookings.length){
+
+box.innerHTML =
+
+`
+<div class="bookingEmpty">
+
+✅ No Active Booking for
+<b>${esc(driverId)}</b>.
+
+<br><br>
+
+Driver is available for a new booking.
+
+</div>
+`;
+
+return;
+
+}
+
+
+/* ================= BOOKING CARDS ================= */
+
+box.innerHTML =
+bookings
+.map(
+function(b){
+
+const pickup =
+b.pickupText ||
+b.pickup ||
+b.pickupLocation ||
+"Not provided";
+
+const destination =
+b.destinationText ||
+b.destination ||
+b.dropText ||
+b.dropLocation ||
+"Not provided";
+
+const customerId =
+b.customerId ||
+b.customer ||
+"Not available";
+
+const status =
+String(
+b.status || "active"
+)
+.toUpperCase();
+
+return `
+
+<div class="bookingBox"
+style="
+background:#fff;
+border:1px solid #e1e7ec;
+margin:8px 0;
+">
+
+<div class="bookingTitle">
+
+🔒 Booking
+
+</div>
+
+
+<div>
+
+<span class="bookingStatus">
+
+${esc(status)}
+
+</span>
+
+</div>
+
+
+<div class="bookingRow">
+
+<b>Booking ID:</b><br>
+${esc(b.bookingId)}
+
+</div>
+
+
+<div class="bookingRow">
+
+<b>Customer ID:</b><br>
+${esc(customerId)}
+
+</div>
+
+
+<div class="bookingRow">
+
+📍 <b>Pickup:</b><br>
+${esc(pickup)}
+
+</div>
+
+
+<div class="bookingRow">
+
+🏁 <b>Destination:</b><br>
+${esc(destination)}
+
+</div>
+
+
+<div class="bookingRow">
+
+🕒 <b>Created:</b><br>
+${esc(timestampText(b.createdAt))}
+
+</div>
+
+
+<button
+class="bookingCloseBtn"
+onclick="adminCloseBooking('${esc(b.bookingId)}','${esc(driverId)}')">
+
+🔒 Close Booking as Admin
+
+</button>
+
+</div>
+
+`;
+
+}
+)
+.join("");
+
+}
+catch(error){
+
+console.error(
+"Admin booking load error:",
+error
+);
+
+box.innerHTML =
+
+`
+<div
+class="bookingEmpty"
+style="background:#fde2e2;color:#a40000">
+
+❌ Booking information could not be loaded.
+
+<br><br>
+
+${esc(error.message)}
+
+</div>
+`;
+
+}
+
+}
+
+
+/* =====================================================
+   ADMIN CLOSE BOOKING
+===================================================== */
+
+async function adminCloseBooking(bookingId,driverId){
+
+if(!bookingId){
+
+return;
+
+}
+
+
+const ok =
+confirm(
+"Close this booking as Admin?\n\n" +
+"Booking ID: " +
+bookingId
+);
+
+if(!ok){
+
+return;
+
+}
+
+
+try{
+
+showStatus(
+"Closing booking...",
+"statusInfo"
+);
+
+
+/* ================= CLOSE BOOKING ================= */
+
+await db
+.collection(BOOKING_COLLECTION)
+.doc(bookingId)
+.set({
+
+status:"closed",
+
+closedBy:"admin",
+
+closedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},
+{
+merge:true
+});
+
+
+/*
+ Keep driver state free as well.
+ These fields are harmless if they do not
+ exist in the current Driver Radar yet.
+*/
+
+if(driverId){
+
+await db
+.collection(DRIVER_COLLECTION)
+.doc(driverId)
+.set({
+
+bookingActive:false,
+
+bookingStatus:"free",
+
+bookingClosedBy:"admin",
+
+bookingClosedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},
+{
+merge:true
+});
+
+}
+
+
+/* ================= SUCCESS ================= */
+
+showStatus(
+"Booking closed successfully by Admin.",
+"statusOk"
+);
+
+
+setTimeout(
+hideStatus,
+3000
+);
+
+
+/*
+ Refresh booking section without closing
+ the driver details modal.
+*/
+
+loadAdminBookings(driverId);
+
+}
+catch(error){
+
+console.error(
+"Admin close booking error:",
+error
+);
+
+showStatus(
+"Booking close failed: " +
+error.message,
+"statusError"
 );
 
 }
@@ -3421,7 +4065,7 @@ Remove Car Photo
 
 <!-- =================================================
      DRIVER FIELDS
-================================================= -->
+===================================================== -->
 
 <div class="row">
 
@@ -4411,6 +5055,12 @@ publicDrivers
 
 
 <p>
+<b>Booking Collection:</b>
+bookings
+</p>
+
+
+<p>
 <b>Live GPS Storage:</b>
 Realtime Database / liveLocations
 </p>
@@ -4418,13 +5068,13 @@ Realtime Database / liveLocations
 
 <p>
 <b>Driver Profile Photo:</b>
-Compressed and stored with driver record
+Small thumbnail in details; tap to view large photo
 </p>
 
 
 <p>
 <b>Car Photo:</b>
-Compressed and stored with driver record
+Small thumbnail in details; tap to view large photo
 </p>
 
 
@@ -4447,8 +5097,14 @@ Telegram ID links Driver Radar to Driver ID
 
 
 <p>
+<b>Admin Booking Control:</b>
+Admin can close active/pending bookings
+</p>
+
+
+<p>
 <b>Version:</b>
-Safety Cab Firebase Driver Database v2.3
+Safety Cab Firebase Driver Database v2.4
 </p>
 
 

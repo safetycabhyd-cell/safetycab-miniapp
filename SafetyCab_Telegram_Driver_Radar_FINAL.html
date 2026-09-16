@@ -139,6 +139,7 @@ function initTelegramLocationManager(){
     telegramLocationManager=tg.LocationManager;
     telegramLocationManager.init(()=>{
       telegramLocationReady=true;
+      console.log('Telegram LocationManager initialized. Access granted:',telegramLocationManager.isAccessGranted);
     });
     return true;
   }catch(e){
@@ -148,7 +149,13 @@ function initTelegramLocationManager(){
   }
 }
 
-function telegramGetLocation(force=false){
+function telegramLocationIsGranted(){
+  try{
+    return !!(telegramLocationManager && telegramLocationManager.isAccessGranted===true);
+  }catch(e){return false}
+}
+
+function telegramGetLocation(){
   return new Promise((resolve,reject)=>{
     if(!telegramLocationManager){
       reject(new Error('Telegram LocationManager unavailable'));
@@ -165,7 +172,7 @@ function telegramGetLocation(force=false){
             }
           });
         }else{
-          reject(new Error('Telegram location access not granted or location unavailable'));
+          reject(new Error('Location unavailable or permission not granted'));
         }
       });
     }catch(e){reject(e)}
@@ -175,34 +182,47 @@ function telegramGetLocation(force=false){
 async function requestGPSOnce(force=false){
   if(!myDriver)return false;
 
-  // Prefer Telegram's native LocationManager inside the Mini App.
-  // Telegram remembers the user's location permission, so after the
-  // first Allow, subsequent calls do not show the permission dialog.
+  // Telegram Mini App: use the native LocationManager only.
+  // After the user grants access, isAccessGranted remains true and
+  // getLocation() is used without falling back to browser permission.
   if(telegramLocationManager){
+    if(!telegramLocationReady){
+      showNotice('Location service तैयार हो रहा है. एक क्षण...');
+      return false;
+    }
+
+    if(telegramLocationIsGranted()){
+      try{
+        const p=await telegramGetLocation();
+        updateMyLocation(p);
+        return true;
+      }catch(e){
+        console.error('Telegram getLocation error:',e);
+        showNotice('Current location नहीं मिली. Phone Location/GPS ON रखें.');
+        return false;
+      }
+    }
+
+    // Access has not yet been granted. Calling getLocation() is the
+    // single native Telegram permission request.
     try{
-      const p=await telegramGetLocation(force);
+      const p=await telegramGetLocation();
       updateMyLocation(p);
-      startGPSWatch();
       return true;
     }catch(e){
-      console.error('Telegram location error:',e);
-
-      // If Telegram LocationManager exists, do not immediately fall back
-      // to browser geolocation, because that would create the browser
-      // "Allow Safetycab to access your location?" dialog again.
-      showNotice('Telegram Location Permission allow करें. अगर पहले Allow किया है तो Mini App दोबारा खोलें.');
+      console.error('Telegram permission/location error:',e);
+      showNotice('पहली बार Location के लिए Allow दबाएँ.');
       return false;
     }
   }
 
-  // Fallback only for clients without Telegram LocationManager.
+  // Non-Telegram fallback.
   if(!navigator.geolocation){
     showNotice('GPS supported नहीं है.');
     return false;
   }
-
   navigator.geolocation.getCurrentPosition(
-    p=>{updateMyLocation(p);startGPSWatch()},
+    p=>updateMyLocation(p),
     gpsError,
     {enableHighAccuracy:true,timeout:15000,maximumAge:0}
   );
@@ -246,7 +266,7 @@ function gpsError(e){
   console.error('GPS error:',e);
   if(e&&e.code===1)showNotice('Location permission OFF है. Phone/Browser में Safety Cab को Location Allow करें.');
   else if(e&&e.code===2)showNotice('Current GPS location नहीं मिली. Phone Location/GPS ON करें.');
-  else showNotice('GPS location नहीं मिली. फिर से कोशिश होगी.');
+  else showNotice('GPS location नहीं मिली.');
 }
 
 function requestCurrentGPS(force=false){
@@ -286,6 +306,7 @@ function startGPSWatch(){
 async function startGPS(){
   if(!myDriver||!autoGPS)return;
   requestGPSOnce(false);
+  startGPSWatch();
 }
 
 function stopGPS(){

@@ -211,7 +211,7 @@ function startDriversListener(){
 if(driversUnsubscribe)driversUnsubscribe();
 showStatus("Connecting to Firebase Drivers...","statusInfo");
 driversUnsubscribe=db.collection(DRIVER_COLLECTION).onSnapshot(s=>{
-drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||"",adminEnabled:d.adminEnabled!==false}});
+drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||""}});
 hideStatus();render();
 },e=>{console.error(e);showStatus("Firebase Drivers error: "+e.message,"statusError");drivers=[];render()});
 }
@@ -229,7 +229,7 @@ const arr=drivers.filter(o=>{const d=getDriverLiveData(o),t=((d.id||"")+" "+(d.n
 driverList.innerHTML=arr.map(o=>{const d=getDriverLiveData(o);return`<div class="card">
 <div class="name">${d.profilePhoto?`<img class="listPhoto" src="${esc(d.profilePhoto)}" onclick="openPhoto('${esc(d.profilePhoto)}')">`:"👤"}🚕 ${esc(d.name)} <span class="badge ${d.online?"on":"off"}">${d.online?"GPS ONLINE":"OFFLINE"}</span></div>
 <div class="small">ID: ${esc(d.id)} • ${esc(d.vehicle)} • <span class="vehicleTypeBadge">${esc(d.vehicleType||"Not Set")}</span></div>
-<div class="small">📞 ${esc(d.phone)} • ${d.duty?"🟢 Duty ON":"⚪ Duty OFF"} • ${d.adminEnabled===false?"🔴 APP OFF":"🟢 APP ON"} • ⭐ ${d.rating||"Not Rated"}</div>
+<div class="small">📞 ${esc(d.phone)} • ${d.duty?"🟢 Duty ON":"⚪ Duty OFF"} • ⭐ ${d.rating||"Not Rated"}</div>
 <div class="small">Telegram ID: ${d.telegramId?esc(d.telegramId):"Not linked"}</div>
 <div class="small">Live Coordinates: ${Number.isFinite(d.lat)?d.lat.toFixed(6):"N/A"}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):"N/A"}</div>
 <div class="small">Last update: ${esc(d.last||"Not updated")}</div>
@@ -283,6 +283,43 @@ setTimeout(hideStatus,2500);
 }catch(e){console.error(e);alert("Close booking failed: "+e.message)}
 }
 
+async function requestCurrentLocation(id){
+const d=drivers.find(x=>x.id===id);
+if(!d)return;
+const statusBox=$("locationRequestStatus");
+const btn=$("refreshLocationBtn");
+const oldLive=liveLocations[id];
+const oldUpdated=oldLive&&Number.isFinite(Number(oldLive.updatedAt))?Number(oldLive.updatedAt):0;
+const requestId=String(Date.now())+"_"+String(Math.random()).slice(2,8);
+if(btn){btn.disabled=true;btn.textContent="⏳ Requesting GPS..."}
+if(statusBox)statusBox.innerHTML="📍 Driver GPS refresh request sent. Waiting for current location...";
+try{
+await rtdb.ref("locationRequests/"+id).set({driverId:id,requestId,requestedAt:firebase.database.ServerValue.TIMESTAMP,status:"pending"});
+let tries=0;
+const timer=setInterval(()=>{
+tries++;
+const live=liveLocations[id];
+const updated=live&&Number.isFinite(Number(live.updatedAt))?Number(live.updatedAt):0;
+if(updated>oldUpdated){
+clearInterval(timer);
+if(btn){btn.disabled=false;btn.textContent="📍 Refresh Current Location"}
+if(statusBox)statusBox.innerHTML="✅ Current GPS received. Updating Admin...";
+details(id);
+return;
+}
+if(tries>=25){
+clearInterval(timer);
+if(btn){btn.disabled=false;btn.textContent="📍 Refresh Current Location"}
+if(statusBox)statusBox.innerHTML="⚠️ New GPS not received. Driver's Telegram Mini App must be open and have Location permission.";
+}
+},1000);
+}catch(e){
+console.error(e);
+if(btn){btn.disabled=false;btn.textContent="📍 Refresh Current Location"}
+if(statusBox)statusBox.innerHTML="❌ GPS request failed: "+esc(e.message||e);
+}
+}
+
 function details(id){
 const original=drivers.find(x=>x.id===id);if(!original)return;
 const d=getDriverLiveData(original);
@@ -294,10 +331,14 @@ openModal(`<button class="close" onclick="closeModal()">✕</button>${photo}<h2>
 <p><b>Vehicle Type:</b> <span class="vehicleTypeBadge">${esc(d.vehicleType||"Not Set")}</span></p>
 <h3>🚗 Car Photo</h3>${car}
 <p><b>Telegram ID:</b> ${d.telegramId?esc(d.telegramId):"Not linked"}</p>
-<p><b>GPS:</b> ${d.online?"🟢 ONLINE":"🔴 OFFLINE"}</p><p><b>Duty:</b> ${d.duty?"🟢 ON":"⚪ OFF"}</p><p><b>App Access:</b> ${d.adminEnabled===false?"🔴 OFF — Admin Disabled":"🟢 ON"}</p><p><b>Rating:</b> ⭐ ${d.rating||"Not Rated"}</p>
+<p><b>GPS:</b> ${d.online?"🟢 ONLINE":"🔴 OFFLINE"}</p><p><b>Duty:</b> ${d.duty?"🟢 ON":"⚪ OFF"}</p><p><b>Rating:</b> ⭐ ${d.rating||"Not Rated"}</p>
 <p><b>Coordinates:</b><br>${Number.isFinite(d.lat)?d.lat.toFixed(6):"N/A"}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):"N/A"}</p>
 <div id="presentLocation" style="background:#e4f5ff;padding:12px;border-radius:10px;margin:12px 0;line-height:1.5">📍 <b>Present Location:</b><br>Finding current location...</div>
 <p><b>Last update:</b> ${esc(d.last||"Not updated")}</p>
+<div style="margin:12px 0">
+<button id="refreshLocationBtn" class="btn" style="width:100%;font-weight:700" onclick="requestCurrentLocation('${esc(d.id)}')">📍 Refresh Current Location</button>
+<div id="locationRequestStatus" style="margin-top:8px;font-size:14px;color:#555"></div>
+</div>
 <div class="bookingBox"><h3>🔒 Booking Control</h3><div id="bookingList"><div class="noBooking">Loading booking...</div></div></div>
 <div class="actions"><button class="btn" onclick="center('${esc(d.id)}')">📍 Center Map</button><a class="btn" style="text-decoration:none" href="tel:${esc(d.phone)}">📞 Call</a><button class="btn" onclick="editDriver('${esc(d.id)}')">✏️ Edit</button></div>`);
 if(Number.isFinite(d.lat)&&Number.isFinite(d.lng))updatePresentLocation(d.lat,d.lng);
@@ -316,9 +357,9 @@ function toggleRemoveCarPhoto(){const c=$("f_removeCarPhoto"),i=$("f_carPhoto");
 
 function editDriver(id){
 const original=id?drivers.find(x=>x.id===id):null;
-const d=original||{id:"",name:"",phone:"",vehicle:"",vehicleType:"Sedan",carPhoto:"",telegramId:"",lat:17.42536,lng:78.48694,online:false,duty:false,rating:0,profilePhoto:"",adminEnabled:true};
+const d=original||{id:"",name:"",phone:"",vehicle:"",vehicleType:"Sedan",carPhoto:"",telegramId:"",lat:17.42536,lng:78.48694,online:false,duty:false,rating:0,profilePhoto:""};
 if(id&&!original){alert("Driver not found.");return}
-const currentPhoto=d.profilePhoto||"",currentCar=d.carPhoto||"",vt=d.vehicleType==="SUV"?"SUV":"Sedan",adminEnabled=d.adminEnabled!==false;
+const currentPhoto=d.profilePhoto||"",currentCar=d.carPhoto||"",vt=d.vehicleType==="SUV"?"SUV":"Sedan";
 const photoHTML=currentPhoto?`<div class="photoBox" onclick="openProfileGallery()"><img id="profilePhotoPreview" src="${esc(currentPhoto)}"><div id="profilePhotoPlaceholder" class="photoPlaceholder" style="display:none">👤</div></div>`:`<div class="photoBox" onclick="openProfileGallery()"><img id="profilePhotoPreview" src="" style="display:none"><div id="profilePhotoPlaceholder" class="photoPlaceholder">👤</div></div>`;
 const carHTML=currentCar?`<div id="carPhotoBox" class="carPhotoBox" onclick="openCarGallery()"><img id="carPhotoPreview" src="${esc(currentCar)}"><div id="carPhotoPlaceholder" class="carPhotoPlaceholder" style="display:none"><span class="carPhotoIcon">🚗</span>Tap to Select</div></div>`:`<div id="carPhotoBox" class="carPhotoBox" onclick="openCarGallery()"><img id="carPhotoPreview" src="" style="display:none"><div id="carPhotoPlaceholder" class="carPhotoPlaceholder"><span class="carPhotoIcon">📷</span>Tap to Select</div></div>`;
 openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"✏️ Edit Driver":"➕ Add Driver"}</h2>
@@ -341,7 +382,6 @@ openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"�
 <div class="field"><label>Longitude</label><input id="f_lng" type="number" step="0.000001" value="${d.lng}"></div>
 <div class="field"><label>GPS Status</label><select id="f_online"><option value="1" ${d.online?"selected":""}>Online</option><option value="0" ${!d.online?"selected":""}>Offline</option></select></div>
 <div class="field"><label>Duty Status</label><select id="f_duty"><option value="1" ${d.duty?"selected":""}>Duty ON</option><option value="0" ${!d.duty?"selected":""}>Duty OFF</option></select></div>
-<div class="field"><label>Driver App Access (Admin)</label><select id="f_adminEnabled"><option value="1" ${adminEnabled?"selected":""}>🟢 App ON</option><option value="0" ${!adminEnabled?"selected":""}>🔴 App OFF</option></select></div>
 <div class="field"><label>Rating</label><input id="f_rating" type="number" min="0" max="5" step=".5" value="${d.rating||0}"></div>
 </div>
 <div class="small" style="margin-bottom:12px">Driver ID, Telegram ID, Vehicle Type and Photos are saved with this Driver record.</div>
@@ -349,7 +389,7 @@ openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"�
 }
 
 async function saveDriver(oldId){
-const id=$("f_id").value.trim().toUpperCase(),name=$("f_name").value.trim(),phone=$("f_phone").value.trim(),vehicle=$("f_vehicle").value.trim(),vehicleType=$("f_vehicleType").value,telegramId=$("f_telegramId").value.trim(),lat=parseFloat($("f_lat").value),lng=parseFloat($("f_lng").value),online=$("f_online").value==="1",duty=$("f_duty").value==="1",adminEnabled=$("f_adminEnabled").value==="1",rating=parseFloat($("f_rating").value)||0;
+const id=$("f_id").value.trim().toUpperCase(),name=$("f_name").value.trim(),phone=$("f_phone").value.trim(),vehicle=$("f_vehicle").value.trim(),vehicleType=$("f_vehicleType").value,telegramId=$("f_telegramId").value.trim(),lat=parseFloat($("f_lat").value),lng=parseFloat($("f_lng").value),online=$("f_online").value==="1",duty=$("f_duty").value==="1",rating=parseFloat($("f_rating").value)||0;
 if(!id||!name||!vehicle||!Number.isFinite(lat)||!Number.isFinite(lng)){alert("Driver ID, Name, Vehicle Number, Latitude and Longitude are required.");return}
 if(!["Sedan","SUV"].includes(vehicleType)){alert("Vehicle Type must be Sedan or SUV.");return}
 if(rating<0||rating>5){alert("Rating must be between 0 and 5.");return}
@@ -361,7 +401,7 @@ if($("f_removePhoto")?.checked)profilePhoto="";
 if($("f_profilePhoto")?.files?.[0]){showStatus("Compressing profile photo...","statusInfo");profilePhoto=await compressImage($("f_profilePhoto").files[0])}
 if($("f_removeCarPhoto")?.checked)carPhoto="";
 if($("f_carPhoto")?.files?.[0]){showStatus("Compressing car photo...","statusInfo");carPhoto=await compressImage($("f_carPhoto").files[0])}
-const data={id,name,phone,vehicle,vehicleType,carPhoto:carPhoto||"",telegramId:telegramId||"",lat,lng,online,duty,adminEnabled,rating,profilePhoto:profilePhoto||"",last:"Just updated",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+const data={id,name,phone,vehicle,vehicleType,carPhoto:carPhoto||"",telegramId:telegramId||"",lat,lng,online,duty,rating,profilePhoto:profilePhoto||"",last:"Just updated",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
 if(oldId){
 const oldRef=db.collection(DRIVER_COLLECTION).doc(oldId),oldDoc=await oldRef.get();if(!oldDoc.exists){alert("Old driver record not found in Firebase.");hideStatus();return}
 if(id!==oldId){
@@ -385,7 +425,7 @@ function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").f
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Driver App Access:</b> Admin can set App ON/OFF. This value is saved in the driver document as <code>adminEnabled</code>.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
 </script>

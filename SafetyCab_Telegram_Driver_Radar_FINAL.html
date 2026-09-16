@@ -131,12 +131,99 @@ function denyAccess(msg){$('accessText').innerHTML=`<b>${esc(msg)}</b><br><br><b
 function allowAccess(){ $('access').classList.add('hide'); }
 async function loadDrivers(){return true}
 async function saveStatus(){if(!myDriver)return;try{await db.collection('drivers').doc(myDriver.docId).set({online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});let d=drivers.find(x=>x.id===myDriver.id);if(d){d.online=true;d.duty=myDuty}stats();renderMarkers()}catch(e){console.error(e);showNotice('Status Firebase में save नहीं हुआ.')}}
-function shareMyLocation(){if(!myDriver){showNotice('Driver पहले Admin Panel में register होना चाहिए.');return}if(!navigator.geolocation){showNotice('GPS supported नहीं है.');return}navigator.geolocation.getCurrentPosition(updateMyLocation,()=>showNotice('Location permission allow करें.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0})}
-function updateMyLocation(p){if(!myDriver)return;let lat=Number(p.coords.latitude),lng=Number(p.coords.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;myDriver.lat=lat;myDriver.lng=lng;myDriver.online=true;writeCache(myDriver);let d=drivers.find(x=>x.id===myDriver.id);if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty}$('locStatus').textContent='Location shared';stats();renderMarkers();writeLive(lat,lng);db.collection('drivers').doc(myDriver.docId).set({lat,lng,online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error)}
-function writeLive(lat,lng){if(!myDriver)return;rtdb.ref('liveLocations/'+myDriver.id).set({driverId:myDriver.id,telegramId:myTelegramId,lat,lng,online:true,duty:myDuty,updatedAt:firebase.database.ServerValue.TIMESTAMP}).catch(console.error)}
-function gpsError(e){console.error('GPS error:',e);if(e&&e.code===1)showNotice('Location permission allow करें.');else if(e&&e.code===2)showNotice('Current GPS location नहीं मिली.');}
-function requestCurrentGPS(force=false){if(!myDriver||!navigator.geolocation||(!autoGPS&&!force))return;navigator.geolocation.getCurrentPosition(updateMyLocation,gpsError,{enableHighAccuracy:true,maximumAge:0,timeout:15000})}
-function stopLocationRequestListener(){if(locationRequestRef){locationRequestRef.off();locationRequestRef=null}}
+const GEO_PERMISSION_KEY='safetyCabGeoPermissionGranted';
+
+async function geoPermissionState(){
+  try{
+    if(navigator.permissions && navigator.permissions.query){
+      const p=await navigator.permissions.query({name:'geolocation'});
+      return p.state;
+    }
+  }catch(e){}
+  return 'unknown';
+}
+
+async function requestGPSOnce(force=false){
+  if(!myDriver||!navigator.geolocation)return false;
+
+  const state=await geoPermissionState();
+
+  // Once the browser/Telegram WebView has granted permission,
+  // do not show another permission request UI; start GPS directly.
+  if(state==='granted'){
+    requestCurrentGPS(force);
+    return true;
+  }
+
+  // If permission is still undecided, the native Allow dialog may appear.
+  // It is only requested here when needed.
+  if(state==='prompt' || state==='unknown'){
+    navigator.geolocation.getCurrentPosition(
+      p=>{
+        try{localStorage.setItem(GEO_PERMISSION_KEY,'1')}catch(e){}
+        updateMyLocation(p);
+        startGPSWatch();
+      },
+      gpsError,
+      {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+    );
+    return true;
+  }
+
+  // Permission was denied at browser/OS level. Code cannot silently
+  // re-allow it; the user must change the site/device permission.
+  showNotice('Location permission OFF है. Browser/Phone Location Permission में Allow करें.');
+  return false;
+}
+
+function shareMyLocation(){
+  if(!myDriver){showNotice('Driver पहले Admin Panel में register होना चाहिए.');return}
+  requestGPSOnce(true);
+}
+
+function updateMyLocation(p){
+  if(!myDriver)return;
+  let lat=Number(p.coords.latitude),lng=Number(p.coords.longitude);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+  myDriver.lat=lat;myDriver.lng=lng;myDriver.online=true;
+  writeCache(myDriver);
+  let d=drivers.find(x=>x.id===myDriver.id);
+  if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty}
+  $('locStatus').textContent='Location shared';
+  stats();renderMarkers();writeLive(lat,lng);
+  db.collection('drivers').doc(myDriver.docId).set({
+    lat,lng,online:true,duty:myDuty,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true}).catch(console.error);
+}
+
+function writeLive(lat,lng){
+  if(!myDriver)return;
+  rtdb.ref('liveLocations/'+myDriver.id).set({
+    driverId:myDriver.id,telegramId:myTelegramId,lat,lng,
+    online:true,duty:myDuty,
+    updatedAt:firebase.database.ServerValue.TIMESTAMP
+  }).catch(console.error);
+}
+
+function gpsError(e){
+  console.error('GPS error:',e);
+  if(e&&e.code===1)showNotice('Location permission OFF है. Phone/Browser में Safety Cab को Location Allow करें.');
+  else if(e&&e.code===2)showNotice('Current GPS location नहीं मिली. Phone Location/GPS ON करें.');
+  else showNotice('GPS location नहीं मिली. फिर से कोशिश होगी.');
+}
+
+function requestCurrentGPS(force=false){
+  if(!myDriver||!navigator.geolocation||(!autoGPS&&!force))return;
+  navigator.geolocation.getCurrentPosition(updateMyLocation,gpsError,{
+    enableHighAccuracy:true,maximumAge:0,timeout:15000
+  });
+}
+
+function stopLocationRequestListener(){
+  if(locationRequestRef){locationRequestRef.off();locationRequestRef=null}
+}
+
 function startLocationRequestListener(){
   stopLocationRequestListener();
   if(!myDriver)return;
@@ -145,12 +232,49 @@ function startLocationRequestListener(){
     const req=snap.val();
     if(!req||req.status!=='pending'||!req.requestId||req.requestId===lastLocationRequestId)return;
     lastLocationRequestId=req.requestId;
-    requestCurrentGPS(true);
-    locationRequestRef.update({status:'completed',completedAt:firebase.database.ServerValue.TIMESTAMP}).catch(console.error);
+    requestGPSOnce(true);
+    locationRequestRef.update({
+      status:'completed',
+      completedAt:firebase.database.ServerValue.TIMESTAMP
+    }).catch(console.error);
   },e=>console.error('Location request listener error:',e));
 }
-function startGPS(){if(!myDriver||!navigator.geolocation||!autoGPS)return;if(watchId===null)watchId=navigator.geolocation.watchPosition(updateMyLocation,gpsError,{enableHighAccuracy:true,maximumAge:0,timeout:15000});requestCurrentGPS();if(gpsTimer===null)gpsTimer=setInterval(()=>requestCurrentGPS(false),15000)}
-function stopGPS(){if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null}}
+
+function startGPSWatch(){
+  if(!myDriver||!navigator.geolocation||!autoGPS)return;
+  if(watchId===null){
+    watchId=navigator.geolocation.watchPosition(
+      updateMyLocation,gpsError,
+      {enableHighAccuracy:true,maximumAge:0,timeout:15000}
+    );
+  }
+  if(gpsTimer===null){
+    gpsTimer=setInterval(()=>{
+      if(document.visibilityState==='visible')requestCurrentGPS(false);
+    },15000);
+  }
+}
+
+async function startGPS(){
+  if(!myDriver||!navigator.geolocation||!autoGPS)return;
+  const state=await geoPermissionState();
+
+  if(state==='granted'){
+    startGPSWatch();
+    requestCurrentGPS(false);
+    return;
+  }
+
+  // Only the first required permission request reaches the native dialog.
+  // After Allow, the granted state is reused on future launches.
+  requestGPSOnce(false);
+}
+
+function stopGPS(){
+  if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}
+  if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null}
+}
+
 async function toggleDuty(){if(!myDriver){showNotice('Driver अभी Registered नहीं है.');return}myDuty=!myDuty;$('dutyToggle').classList.toggle('on',myDuty);await saveStatus();showNotice(myDuty?'Duty ON':'Duty OFF')}
 function toggleAutoGPS(){autoGPS=!autoGPS;$('gpsToggle').classList.toggle('on',autoGPS);if(autoGPS)startGPS();else stopGPS();showNotice(autoGPS?'Auto GPS ON':'Auto GPS OFF')}
 function closeMiniApp(){if(tg&&tg.close)tg.close();else showNotice('Telegram Mini App can be closed from Telegram.')}

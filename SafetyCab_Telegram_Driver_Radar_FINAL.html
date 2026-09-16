@@ -185,12 +185,28 @@ function setupTG(){if(!tg){$('tgName').textContent='Open from Telegram';return f
 function driverCacheKey(){return 'safetyCabDriverCache_'+String(myTelegramId||'')}
 function readCache(){try{let x=JSON.parse(localStorage.getItem(driverCacheKey())||'null');if(!x||!x.driver)return null;if(Date.now()-Number(x.savedAt||0)>86400000)return null;return x.driver}catch(e){return null}}
 function writeCache(d){try{localStorage.setItem(driverCacheKey(),JSON.stringify({savedAt:Date.now(),driver:d}))}catch(e){}}
-function paintMine(d){myDriver=d;$('myDriverId').textContent=d.id||'Not Registered';myDuty=d.duty===true;$('dutyToggle').classList.toggle('on',myDuty);if(d.profilePhoto)$('myProfilePhoto').innerHTML=`<img class="driver-photo-small" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')">`;}
+function paintMine(d){myDriver={...d,adminEnabled:d.adminEnabled!==false};$('myDriverId').textContent=myDriver.id||'Not Registered';myDuty=myDriver.duty===true;$('dutyToggle').classList.toggle('on',myDuty);if(myDriver.profilePhoto)$('myProfilePhoto').innerHTML=`<img class="driver-photo-small" src="${esc(myDriver.profilePhoto)}" onclick="openPhoto('${js(myDriver.profilePhoto)}')">`;}
 async function authAnon(){try{if(auth.currentUser)return true;await auth.signInAnonymously();$('firebaseState').textContent='Connected';return true}catch(e){console.error(e);$('firebaseState').textContent='Auth Error';showNotice('Firebase authentication error.');return false}}
-async function findMine(){if(!myTelegramId)return null;try{let s=await db.collection('drivers').where('telegramId','==',myTelegramId).limit(1).get();if(s.empty)return null;let doc=s.docs[0],d=doc.data();let mine={docId:doc.id,id:d.id||doc.id,name:d.name||'',phone:d.phone||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),telegramId:String(d.telegramId||myTelegramId)};writeCache(mine);return mine}catch(e){console.error(e);return null}}
+async function findMine(){if(!myTelegramId)return null;try{let s=await db.collection('drivers').where('telegramId','==',myTelegramId).limit(1).get();if(s.empty)return null;let doc=s.docs[0],d=doc.data();let mine={docId:doc.id,id:d.id||doc.id,name:d.name||'',phone:d.phone||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,adminEnabled:d.adminEnabled!==false,rating:Number(d.rating||0),telegramId:String(d.telegramId||myTelegramId)};writeCache(mine);return mine}catch(e){console.error(e);return null}}
 async function verifyMineInBackground(cached){let fresh=await findMine();if(fresh){paintMine(fresh);if(autoGPS)startGPS()}else if(!cached){denyAccess('Driver ID registered नहीं मिला.');}}
 function denyAccess(msg){$('accessText').innerHTML=`<b>${esc(msg)}</b><br><br><button class="action" onclick="location.reload()">Reload</button>`}
 function allowAccess(){ $('access').classList.add('hide'); }
+function lockForAdminDisabled(){
+  stopGPS();
+  myDriver={...(myDriver||{}),adminEnabled:false};
+  $('accessText').innerHTML='<b style="color:#b91c1c;font-size:18px">🔴 Driver App Access OFF</b><br><br>Admin ने आपका App Access OFF किया है.<br><br><button class="action" onclick="location.reload()">Reload</button>';
+  $('access').classList.remove('hide');
+}
+function watchAdminAccess(){
+  if(!myDriver||!myDriver.docId)return;
+  db.collection('drivers').doc(myDriver.docId).onSnapshot(s=>{
+    if(!s.exists){lockForAdminDisabled();return;}
+    const d=s.data()||{};
+    myDriver.adminEnabled=d.adminEnabled!==false;
+    if(myDriver.adminEnabled===false)lockForAdminDisabled();
+    else if($('access').classList.contains('hide')===false && myTelegramId)allowAccess();
+  },e=>console.error('Admin access listener:',e));
+}
 async function loadDrivers(){return true}
 async function saveStatus(){if(!myDriver)return;try{await db.collection('drivers').doc(myDriver.docId).set({online:true,duty:myDuty,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});let d=drivers.find(x=>x.id===myDriver.id);if(d){d.online=true;d.duty=myDuty}stats();renderMarkers()}catch(e){console.error(e);showNotice('Status Firebase में save नहीं हुआ.')}}
 function shareMyLocation(){if(!myDriver){showNotice('Driver पहले Admin Panel में register होना चाहिए.');return}if(!navigator.geolocation){showNotice('GPS supported नहीं है.');return}navigator.geolocation.getCurrentPosition(updateMyLocation,()=>showNotice('Location permission allow करें.'),{enableHighAccuracy:true,timeout:10000,maximumAge:0})}
@@ -264,7 +280,7 @@ function drawSavedBookingMap(b){
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
   routeMap.setMaxBounds(TELANGANA_BOUNDS);let points=[{lat:b.driverLat,lng:b.driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver');L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}))}
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
-async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();if(autoGPS)startGPS()}authAnon().then(()=>{stats();});}
+async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}let cached=readCache();if(cached){paintMine(cached);if(myDriver.adminEnabled===false){lockForAdminDisabled();return}allowAccess();watchAdminAccess();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);if(myDriver.adminEnabled===false){lockForAdminDisabled();return}allowAccess();watchAdminAccess();if(autoGPS)startGPS()}authAnon().then(()=>{stats();});}
 startApp();setTimeout(()=>{if(map)map.invalidateSize()},900);
 </script>
 </body>

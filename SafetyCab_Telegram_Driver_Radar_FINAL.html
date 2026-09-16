@@ -32,7 +32,7 @@ const TELANGANA_CENTER=[17.42536,78.48694];
 const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();const tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
 if(tg){tg.ready();tg.expand();}
-const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null;
+const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},locationPin=null,areaCache={},activeFilter="all",watchId=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null;
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
@@ -44,13 +44,41 @@ function initMap(){
   map.setMaxBounds(TELANGANA_BOUNDS);
 }
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
-function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
+function clearMarkers(){
+  Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});
+  markers={};
+  if(locationPin){try{map.removeLayer(locationPin)}catch(e){};locationPin=null}
+}
+async function getDriverArea(lat,lng){
+  const key=lat.toFixed(5)+','+lng.toFixed(5);
+  if(areaCache[key])return areaCache[key];
+  try{
+    const url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat='+encodeURIComponent(lat)+'&lon='+encodeURIComponent(lng);
+    const r=await fetch(url,{headers:{Accept:'application/json'}});
+    if(!r.ok)throw new Error('reverse geocode failed');
+    const j=await r.json(),a=j.address||{};
+    const area=a.suburb||a.neighbourhood||a.quarter||a.village||a.town||a.city_district||a.city||a.municipality||'Telangana';
+    const city=a.city||a.town||a.municipality||a.county||'Telangana';
+    const result=area===city?area:(area+', '+city);
+    areaCache[key]=result;
+    return result;
+  }catch(e){return 'Telangana area'}
+}
+function bindDriverPopup(d,m,area='Location loading…'){
+  m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>📍 <b>Current Area:</b> <span id="area_${esc(d.id)}">${esc(area)}</span><br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+}
 function renderSelectedMarker(d,open=false){
   if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
   clearMarkers();
-  let m=L.marker([d.lat,d.lng],{icon:driverIcon(d)}).addTo(map);
-  m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+  let m=L.marker([d.lat,d.lng],{icon:driverIcon(d),zIndexOffset:1000}).addTo(map);
+  bindDriverPopup(d,m,areaCache[d.lat.toFixed(5)+','+d.lng.toFixed(5)]||'Location loading…');
   markers[d.id]=m;
+  locationPin=L.marker([d.lat,d.lng],{zIndexOffset:900}).addTo(map);
+  locationPin.bindPopup(`<b>📍 ${esc(d.id)} Location</b><br>Area: <span id="pinarea_${esc(d.id)}">Location loading…</span>`);
+  getDriverArea(d.lat,d.lng).then(area=>{
+    const el=document.getElementById('area_'+d.id); if(el)el.textContent=area;
+    const pe=document.getElementById('pinarea_'+d.id); if(pe)pe.textContent=area;
+  });
   if(open)m.openPopup();
 }
 function renderMarkers(){if(selectedDriver)renderSelectedMarker(selectedDriver,false)}
@@ -126,7 +154,30 @@ async function searchDriverById(){
 $('searchBtn').addEventListener('click',searchDriverById);
 $('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchDriverById()});
 
-function listenSelectedLive(id){if(liveRef){liveRef.off();liveRef=null}liveRef=rtdb.ref("liveLocations/"+id);liveRef.on("value",snap=>{let v=snap.val();if(!v)return;let d=drivers.find(x=>x.id===id);if(!d)return;let lat=Number(v.lat),lng=Number(v.lng);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;d.lat=lat;d.lng=lng;d.online=v.online!==false;d.duty=v.duty===true;let m=markers[id];if(!m){renderSelectedMarker(d,false);m=markers[id]}else{m.setLatLng([lat,lng]);m.setIcon(driverIcon(d));}if(selectedDriver&&selectedDriver.id===id){selectedDriver=d;let st=$("searchedStatus");if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}stats();}});}
+function listenSelectedLive(id){
+  if(liveRef){liveRef.off();liveRef=null}
+  liveRef=rtdb.ref("liveLocations/"+id);
+  liveRef.on("value",snap=>{
+    let v=snap.val();if(!v)return;
+    let d=drivers.find(x=>x.id===id);if(!d)return;
+    let lat=Number(v.lat),lng=Number(v.lng);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+    d.lat=lat;d.lng=lng;d.online=v.online!==false;d.duty=v.duty===true;
+    let m=markers[id];
+    if(!m){renderSelectedMarker(d,false);m=markers[id]}
+    else{m.setLatLng([lat,lng]);m.setIcon(driverIcon(d));}
+    if(locationPin)locationPin.setLatLng([lat,lng]);
+    if(selectedDriver&&selectedDriver.id===id){
+      selectedDriver=d;
+      let st=$("searchedStatus");
+      if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}
+      getDriverArea(lat,lng).then(area=>{
+        const el=document.getElementById('area_'+id);if(el)el.textContent=area;
+        const pe=document.getElementById('pinarea_'+id);if(pe)pe.textContent=area;
+      });
+      stats();
+    }
+  });
+}
 function openDriver(id){let d=drivers.find(x=>x.id===id);if(!d)return;selectedDriver=d;let profile=d.profilePhoto?`<img class="photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:"";let car=d.carPhoto?`<img class="car-photo-small" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:"";$('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${d.online?"🟢 Online":"🔴 Offline"}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;$('modal').classList.add('show')}
 function closeModal(){$('modal').classList.remove('show')}
 function openPhoto(src){if(!src)return;$('viewerImg').src=src;$('photoViewer').classList.add('show')}function closePhoto(){$('photoViewer').classList.remove('show');$('viewerImg').src=''}

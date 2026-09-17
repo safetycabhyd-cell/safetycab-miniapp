@@ -219,11 +219,50 @@ function startLiveLocationListener(){
 if(liveLocationsUnsubscribe)liveLocationsUnsubscribe();
 liveLocationsUnsubscribe=rtdb.ref("liveLocations").on("value",s=>{liveLocations=s.val()||{};applyLiveLocations()},e=>showStatus("Realtime GPS error: "+e.message,"statusError"));
 }
-function applyLiveLocations(){if(!drivers.length)return;let changed=false;drivers=drivers.map(d=>{const l=liveLocations[d.id];if(!l||!Number.isFinite(Number(l.lat))||!Number.isFinite(Number(l.lng)))return d;changed=true;return getDriverLiveData({...d,lat:Number(l.lat),lng:Number(l.lng),online:l.online!==undefined?l.online===true:d.online,duty:l.duty!==undefined?l.duty===true:d.duty,telegramId:l.telegramId?String(l.telegramId):d.telegramId,last:l.updatedAt?liveTimestampText(l.updatedAt):d.last})});if(changed)render();}
+function applyLiveLocations(){
+if(!drivers.length)return;
+let changed=false;
+drivers=drivers.map(d=>{
+  const l=liveLocations[d.id];
+  if(!l||!Number.isFinite(Number(l.lat))||!Number.isFinite(Number(l.lng)))return d;
+  changed=true;
+  const next=getDriverLiveData({...d,lat:Number(l.lat),lng:Number(l.lng),online:l.online!==undefined?l.online===true:d.online,duty:l.duty!==undefined?l.duty===true:d.duty,telegramId:l.telegramId?String(l.telegramId):d.telegramId,last:l.updatedAt?liveTimestampText(l.updatedAt):d.last});
+  const m=markers[d.id];
+  if(m){
+    m.setLatLng([next.lat,next.lng]);
+    m.setIcon(ico(next));
+    m.bindTooltip(next.name||next.id,{direction:"top"});
+  }
+  return next;
+});
+if(changed){
+  render();
+  // Keep the selected/current driver centered on its newest GPS point without changing zoom.
+  const sel=window.selectedDriverId&&drivers.find(x=>x.id===window.selectedDriverId);
+  if(sel&&Number.isFinite(sel.lat)&&Number.isFinite(sel.lng)){map.panTo([sel.lat,sel.lng],{animate:true,duration:0.5});}
+}
+}
 
 function render(){
-clearMarkers();
-drivers.forEach(o=>{const d=getDriverLiveData(o);if(!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;const m=L.marker([d.lat,d.lng],{icon:ico(d)}).addTo(map);m.bindTooltip(d.name||d.id,{direction:"top"});m.on("click",()=>details(d.id));markers[d.id]=m});
+const activeMarkerIds={};
+drivers.forEach(o=>{
+  const d=getDriverLiveData(o);
+  if(!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
+  activeMarkerIds[d.id]=true;
+  let m=markers[d.id];
+  if(!m){
+    m=L.marker([d.lat,d.lng],{icon:ico(d)}).addTo(map);
+    m.on("click",()=>details(d.id));
+    markers[d.id]=m;
+  }else{
+    m.setLatLng([d.lat,d.lng]);
+    m.setIcon(ico(d));
+  }
+  m.bindTooltip(d.name||d.id,{direction:"top"});
+});
+Object.keys(markers).forEach(id=>{
+  if(!activeMarkerIds[id]){try{map.removeLayer(markers[id])}catch(e){}delete markers[id]}
+});
 const q=search.value.toLowerCase().trim();
 const arr=drivers.filter(o=>{const d=getDriverLiveData(o),t=((d.id||"")+" "+(d.name||"")+" "+(d.vehicle||"")+" "+(d.vehicleType||"")+" "+(d.phone||"")).toLowerCase();const qok=!q||t.includes(q);const fok=filter==="all"||(filter==="online"&&d.online)||(filter==="offline"&&!d.online)||(filter==="duty"&&d.duty)||(filter==="offduty"&&!d.duty);return qok&&fok});
 driverList.innerHTML=arr.map(o=>{const d=getDriverLiveData(o);return`<div class="card">
@@ -322,6 +361,7 @@ if(statusBox)statusBox.innerHTML="❌ GPS request failed: "+esc(e.message||e);
 
 function details(id){
 const original=drivers.find(x=>x.id===id);if(!original)return;
+window.selectedDriverId=id;
 const d=getDriverLiveData(original);
 if(Number.isFinite(d.lat)&&Number.isFinite(d.lng))map.setView([d.lat,d.lng],16);
 const photo=d.profilePhoto?`<img class="detailThumb" src="${esc(d.profilePhoto)}" onclick="openPhoto('${esc(d.profilePhoto)}')" alt="Driver Profile Photo"><div class="thumbHint">👤 Tap to View</div>`:`<div class="photoBox">👤</div>`;
@@ -364,12 +404,12 @@ const photoHTML=currentPhoto?`<div class="photoBox" onclick="openProfileGallery(
 const carHTML=currentCar?`<div id="carPhotoBox" class="carPhotoBox" onclick="openCarGallery()"><img id="carPhotoPreview" src="${esc(currentCar)}"><div id="carPhotoPlaceholder" class="carPhotoPlaceholder" style="display:none"><span class="carPhotoIcon">🚗</span>Tap to Select</div></div>`:`<div id="carPhotoBox" class="carPhotoBox" onclick="openCarGallery()"><img id="carPhotoPreview" src="" style="display:none"><div id="carPhotoPlaceholder" class="carPhotoPlaceholder"><span class="carPhotoIcon">📷</span>Tap to Select</div></div>`;
 openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"✏️ Edit Driver":"➕ Add Driver"}</h2>
 <label style="display:block;font-size:13px;font-weight:700;text-align:center;margin-bottom:5px">Driver Profile Photo</label>${photoHTML}
-<input id="f_profilePhoto" class="photoInput" type="file" accept="image/*" onchange="previewProfilePhoto(this)">
-<div class="photoHint">Tap small photo or Choose file to open Gallery</div>
+<input id="f_profilePhoto" class="photoInput" type="file" accept="image/*" capture="user" onchange="previewProfilePhoto(this)">
+<div class="photoHint">Tap photo to open Camera/Gallery</div>
 <label class="photoRemove"><input id="f_removePhoto" type="checkbox" onchange="toggleRemovePhoto()">Remove Profile Photo</label>
 <label style="display:block;font-size:13px;font-weight:700;text-align:center;margin-top:8px;margin-bottom:5px">🚗 Car Photo</label>${carHTML}
-<input id="f_carPhoto" class="photoInput" type="file" accept="image/*" onchange="previewCarPhoto(this)">
-<div class="carPhotoHint">Tap small car photo or Choose file to open Gallery</div>
+<input id="f_carPhoto" class="photoInput" type="file" accept="image/*" capture="environment" onchange="previewCarPhoto(this)">
+<div class="carPhotoHint">Tap photo to open Camera/Gallery</div>
 <label class="carPhotoRemove"><input id="f_removeCarPhoto" type="checkbox" onchange="toggleRemoveCarPhoto()">Remove Car Photo</label>
 <div class="row">
 <div class="field"><label>Driver ID</label><input id="f_id" value="${esc(d.id)}"></div>
@@ -425,7 +465,7 @@ function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").f
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
 </script>

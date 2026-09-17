@@ -21,7 +21,7 @@
 <section id="home" class="page active"><div class="stats"><div class="stat"><strong id="total">0</strong><span>Total</span></div><div class="stat green"><strong id="online">0</strong><span>Online</span></div><div class="stat blue"><strong id="duty">0</strong><span>Duty ON</span></div></div><div id="map"></div></section>
 <section id="drivers" class="page"><div class="card"><h3>🚕 Search Driver</h3><div class="searchrow"><input id="search" class="search" placeholder="Search Driver ID e.g. DC001" autocomplete="off" autocapitalize="characters"><button id="searchBtn" class="action">Search</button></div><div id="searchStatus" class="notice">Driver ID डालकर Search दबाएँ.</div><div id="driverResult"></div></div></section>
 <section id="profile" class="page"><div class="card"><h3>👤 My Profile</h3><div id="myProfilePhoto"></div><div class="row"><span>Name</span><strong id="tgName">Telegram User</strong></div><div class="row"><span>Telegram ID</span><strong id="tgId">-</strong></div><div class="row"><span>Driver ID</span><strong id="myDriverId">Not Registered</strong></div><div class="row"><span>Location</span><span id="locStatus">Not shared</span></div><button class="action" style="width:100%;margin-top:12px" onclick="shareMyLocation()">📍 Share My Location</button></div><div class="card"><h3>🚦 My Status</h3><div class="row"><span>Duty Status</span><button id="dutyToggle" class="toggle" onclick="toggleDuty()"><i></i></button></div><div class="row"><span>Auto GPS Update</span><button id="gpsToggle" class="toggle on" onclick="toggleAutoGPS()"><i></i></button></div></div><div class="card"><h3>📋 My Bookings</h3><div id="myBookings" class="booking-list"><div class="empty">No bookings on this device.</div></div></div></section>
-<section id="settings" class="page"><div class="card"><h3>⚙️ Settings</h3><div class="row"><span>Language</span><strong>Hindi / English</strong></div><div class="row"><span>Map</span><strong>OpenStreetMap</strong></div><div class="row"><span>GPS Update</span><strong>Every 15 sec</strong></div><div class="row"><span>Firebase</span><strong id="firebaseState">Connecting…</strong></div><div class="row"><span>Version</span><strong>Safety Cab Radar 4.0</strong></div></div><div class="card"><button class="action secondary" style="width:100%;margin-bottom:8px" onclick="callSupport()">📞 Call Support</button><button class="action danger" style="width:100%" onclick="closeMiniApp()">🚪 Close Mini App</button></div></section>
+<section id="settings" class="page"><div class="card"><h3>⚙️ Settings</h3><div class="row"><span>Language</span><strong>Hindi / English</strong></div><div class="row"><span>Map</span><strong>OpenStreetMap</strong></div><div class="row"><span>GPS Update</span><strong>Every 5 sec (when app is open)</strong></div><div class="row"><span>Firebase</span><strong id="firebaseState">Connecting…</strong></div><div class="row"><span>Version</span><strong>Safety Cab Radar 4.0</strong></div></div><div class="card"><button class="action secondary" style="width:100%;margin-bottom:8px" onclick="callSupport()">📞 Call Support</button><button class="action danger" style="width:100%" onclick="closeMiniApp()">🚪 Close Mini App</button></div></section>
 <nav class="bottom"><button class="navbtn active" data-page="home"><b>🗺️</b>Map</button><button class="navbtn" data-page="drivers"><b>🚕</b>Drivers</button><button class="navbtn" data-page="profile"><b>👤</b>Profile</button><button class="navbtn" data-page="settings"><b>⚙️</b>Settings</button></nav>
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><button class="close" onclick="closeModal()">✕</button><div id="modalBody"></div></div></div>
 <div id="photoViewer" class="photo-viewer" onclick="if(event.target===this)closePhoto()"><button class="action" onclick="closePhoto()">✕</button><img id="viewerImg" src="" alt="Photo"></div>
@@ -30,7 +30,7 @@
 const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();const tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
 if(tg){tg.ready();tg.expand();setTimeout(initTelegramLocationManager,0);}
-const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null,locationRequestRef=null,lastLocationRequestId=null,telegramLocationManager=null,telegramLocationReady=false;
+const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,gpsBusy=false,lastGpsSentAt=0,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,routeMap=null,bookingDriver=null,lastRoute=null,locationRequestRef=null,lastLocationRequestId=null,telegramLocationManager=null,telegramLocationReady=false;
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
@@ -339,30 +339,44 @@ function shareMyLocation(){
 }
 
 function updateMyLocation(p){
-  if(!myDriver)return;
-  let lat=Number(p.coords.latitude),lng=Number(p.coords.longitude);
-  if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+  if(!myDriver)return false;
+  let c=p&&p.coords||{};
+  let lat=Number(c.latitude),lng=Number(c.longitude);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng))return false;
+  let accuracy=Number(c.accuracy);
+  let speed=Number(c.speed),heading=Number(c.heading);
   myDriver.lat=lat;myDriver.lng=lng;myDriver.online=true;
+  myDriver.gpsAccuracy=Number.isFinite(accuracy)?accuracy:null;
+  myDriver.speed=Number.isFinite(speed)&&speed>=0?speed:null;
+  myDriver.heading=Number.isFinite(heading)?heading:null;
+  myDriver.updatedAt=Date.now();
   writeCache(myDriver);
   let d=drivers.find(x=>x.id===myDriver.id);
-  if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty}
-  $('locStatus').textContent='Location shared';
-  stats();renderMarkers();writeLive(lat,lng);
+  if(d){d.lat=lat;d.lng=lng;d.online=true;d.duty=myDuty;d.updatedAt=myDriver.updatedAt;d.gpsAccuracy=myDriver.gpsAccuracy;d.speed=myDriver.speed;d.heading=myDriver.heading}
+  if($('locStatus'))$('locStatus').textContent='Location shared • '+new Date().toLocaleTimeString();
+  stats();renderMarkers();writeLive(lat,lng,accuracy,speed,heading);
   db.collection('drivers').doc(myDriver.docId).set({
     lat,lng,online:true,duty:myDuty,
+    gpsAccuracy:Number.isFinite(accuracy)?accuracy:null,
+    speed:Number.isFinite(speed)&&speed>=0?speed:null,
+    heading:Number.isFinite(heading)?heading:null,
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   },{merge:true}).catch(console.error);
+  return true;
 }
 
-function writeLive(lat,lng){
+function writeLive(lat,lng,accuracy=null,speed=null,heading=null){
   if(!myDriver)return;
+  lastGpsSentAt=Date.now();
   rtdb.ref('liveLocations/'+myDriver.id).set({
     driverId:myDriver.id,telegramId:myTelegramId,lat,lng,
     online:true,duty:myDuty,
+    accuracy:Number.isFinite(Number(accuracy))?Number(accuracy):null,
+    speed:Number.isFinite(Number(speed))&&Number(speed)>=0?Number(speed):null,
+    heading:Number.isFinite(Number(heading))?Number(heading):null,
     updatedAt:firebase.database.ServerValue.TIMESTAMP
   }).catch(console.error);
 }
-
 function gpsError(e){
   console.error('GPS error:',e);
   if(e&&e.code===1)showNotice('Location permission OFF है. Phone/Browser में Safety Cab को Location Allow करें.');
@@ -388,8 +402,9 @@ function startLocationRequestListener(){
     if(!req||req.status!=='pending'||!req.requestId||req.requestId===lastLocationRequestId)return;
     lastLocationRequestId=req.requestId;
 
+    const before=lastGpsSentAt;
     const ok=await requestGPSOnce(true);
-    if(ok){
+    if(ok && lastGpsSentAt>before){
       locationRequestRef.update({
         status:'completed',
         completedAt:firebase.database.ServerValue.TIMESTAMP
@@ -403,35 +418,48 @@ function startLocationRequestListener(){
   },e=>console.error('Location request listener error:',e));
 }
 
+async function pushTelegramGPS(){
+  if(!myDriver||!autoGPS||document.visibilityState!=='visible'||gpsBusy)return;
+  if(!(tg&&tg.LocationManager))return;
+  gpsBusy=true;
+  try{
+    await initTelegramLocationManager();
+    if(!telegramLocationReady||!telegramLocationIsGranted())return;
+    const p=await telegramGetLocation();
+    if(p)updateMyLocation(p);
+  }catch(e){
+    console.warn('Telegram GPS heartbeat:',e);
+  }finally{gpsBusy=false;}
+}
+
 function startGPSWatch(){
   if(!myDriver||!autoGPS)return;
+  // Fast foreground heartbeat: Telegram native location + browser watch.
   if(gpsTimer===null){
     gpsTimer=setInterval(()=>{
-      if(document.visibilityState==='visible')requestCurrentGPS(false);
+      if(document.visibilityState==='visible')pushTelegramGPS();
     },5000);
   }
   if(watchId===null && navigator.geolocation){
     watchId=navigator.geolocation.watchPosition(
       p=>updateMyLocation(p),
       e=>console.warn('Browser GPS watch:',e),
-      {enableHighAccuracy:true,maximumAge:2000,timeout:10000}
+      {enableHighAccuracy:true,maximumAge:1000,timeout:10000}
     );
   }
+  pushTelegramGPS();
 }
 
 async function startGPS(){
   if(!myDriver||!autoGPS)return;
-  if(tg && tg.LocationManager) await initTelegramLocationManager();
+  if(tg && tg.LocationManager)await initTelegramLocationManager();
   await requestGPSOnce(false);
   startGPSWatch();
 }
 
 function stopGPS(){
-  if(watchId!==null && navigator.geolocation){
-    navigator.geolocation.clearWatch(watchId);
-    watchId=null;
-  }
-  if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null}
+  if(watchId!==null && navigator.geolocation){navigator.geolocation.clearWatch(watchId);watchId=null;}
+  if(gpsTimer!==null){clearInterval(gpsTimer);gpsTimer=null;}
 }
 
 async function toggleDuty(){if(!myDriver){showNotice('Driver अभी Registered नहीं है.');return}myDuty=!myDuty;$('dutyToggle').classList.toggle('on',myDuty);await saveStatus();showNotice(myDuty?'Duty ON':'Duty OFF')}
@@ -466,7 +494,7 @@ function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openB
 async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();stats();}
 startApp();
 
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS();pushTelegramGPS();}});
 setTimeout(()=>{if(map)map.invalidateSize()},900);
 </script>
 </body>

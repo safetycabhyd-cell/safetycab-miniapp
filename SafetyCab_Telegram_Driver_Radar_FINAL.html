@@ -408,7 +408,14 @@ function startGPSWatch(){
   if(gpsTimer===null){
     gpsTimer=setInterval(()=>{
       if(document.visibilityState==='visible')requestCurrentGPS(false);
-    },15000);
+    },5000);
+  }
+  if(watchId===null && navigator.geolocation){
+    watchId=navigator.geolocation.watchPosition(
+      p=>updateMyLocation(p),
+      e=>console.warn('Browser GPS watch:',e),
+      {enableHighAccuracy:true,maximumAge:2000,timeout:10000}
+    );
   }
 }
 

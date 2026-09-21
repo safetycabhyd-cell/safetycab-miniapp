@@ -158,8 +158,46 @@ const loginScreen=$("loginScreen"),adminApp=$("adminApp"),loginEmail=$("loginEma
 function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
 function showStatus(message,type){firebaseStatus.textContent=message;firebaseStatus.className="firebaseStatus show "+type;}
 function hideStatus(){firebaseStatus.className="firebaseStatus";}
-function timestampText(v){if(!v)return"Not updated";try{if(v.toDate)return v.toDate().toLocaleString();if(v instanceof Date)return v.toLocaleString();return String(v)}catch(e){return"Not updated"}}
-function liveTimestampText(v){const n=Number(v);return Number.isFinite(n)?new Date(n).toLocaleString():"Not updated";}
+function timestampText(v){
+if(!v)return"Not updated";
+try{
+if(v.toDate)return v.toDate().toLocaleString();
+if(v instanceof Date)return v.toLocaleString();
+return String(v)
+}catch(e){return"Not updated"}
+}
+function toMillis(v){
+try{
+if(v&&typeof v.toMillis==="function")return v.toMillis();
+if(v&&typeof v.toDate==="function")return v.toDate().getTime();
+const n=Number(v);
+return Number.isFinite(n)?n:0;
+}catch(e){return 0}
+}
+function liveTimestampText(v){
+const n=toMillis(v);
+return n?new Date(n).toLocaleString():"Not updated";
+}
+function relativeTimeText(v){
+const n=toMillis(v);
+if(!n)return"Not updated";
+const sec=Math.floor(Math.max(0,Date.now()-n)/1000);
+if(sec<10)return"Just now";
+if(sec<60)return sec+" sec ago";
+const min=Math.floor(sec/60);
+if(min<60)return min+" min ago";
+const hr=Math.floor(min/60);
+if(hr<24)return hr+" hr ago";
+const day=Math.floor(hr/24);
+if(day<7)return day+" day"+(day===1?"":"s")+" ago";
+return new Date(n).toLocaleString();
+}
+function updateRelativeTimes(){
+document.querySelectorAll("[data-last-update]").forEach(el=>{
+const ms=Number(el.getAttribute("data-last-update")||0);
+el.textContent=relativeTimeText(ms);
+});
+}
 
 async function adminLogin(){
 const email=loginEmail.value.trim(),password=loginPassword.value;
@@ -211,7 +249,7 @@ function startDriversListener(){
 if(driversUnsubscribe)driversUnsubscribe();
 showStatus("Connecting to Firebase Drivers...","statusInfo");
 driversUnsubscribe=db.collection(DRIVER_COLLECTION).onSnapshot(s=>{
-drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||""}});
+drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),updatedAtMs:toMillis(d.updatedAt),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||""}});
 hideStatus();render();
 },e=>{console.error(e);showStatus("Firebase Drivers error: "+e.message,"statusError");drivers=[];render()});
 }
@@ -226,7 +264,7 @@ drivers=drivers.map(d=>{
   const l=liveLocations[d.id];
   if(!l||!Number.isFinite(Number(l.lat))||!Number.isFinite(Number(l.lng)))return d;
   changed=true;
-  const next=getDriverLiveData({...d,lat:Number(l.lat),lng:Number(l.lng),online:l.online!==undefined?l.online===true:d.online,duty:l.duty!==undefined?l.duty===true:d.duty,telegramId:l.telegramId?String(l.telegramId):d.telegramId,last:l.updatedAt?liveTimestampText(l.updatedAt):d.last});
+  const next=getDriverLiveData({...d,lat:Number(l.lat),lng:Number(l.lng),online:l.online!==undefined?l.online===true:d.online,duty:l.duty!==undefined?l.duty===true:d.duty,telegramId:l.telegramId?String(l.telegramId):d.telegramId,updatedAtMs:l.updatedAt?toMillis(l.updatedAt):d.updatedAtMs,last:l.updatedAt?liveTimestampText(l.updatedAt):d.last});
   const m=markers[d.id];
   if(m){
     m.setLatLng([next.lat,next.lng]);
@@ -237,10 +275,27 @@ drivers=drivers.map(d=>{
 });
 if(changed){
   render();
+  updateRelativeTimes();
   // Keep the selected/current driver centered on its newest GPS point without changing zoom.
   const sel=window.selectedDriverId&&drivers.find(x=>x.id===window.selectedDriverId);
   if(sel&&Number.isFinite(sel.lat)&&Number.isFinite(sel.lng)){map.panTo([sel.lat,sel.lng],{animate:true,duration:0.5});}
 }
+}
+
+function driverLastUpdateMs(d){
+const live=liveLocations[d.id];
+if(live&&live.updatedAt!=null){
+const n=toMillis(live.updatedAt);
+if(n)return n;
+}
+const n=Number(d.updatedAtMs||0);
+return Number.isFinite(n)&&n>0?n:0;
+}
+function driverLastUpdateHtml(d){
+const ms=driverLastUpdateMs(d);
+return ms
+?`<span data-last-update="${ms}">${relativeTimeText(ms)}</span>`
+:esc(d.last||"Not updated");
 }
 
 function render(){
@@ -271,7 +326,7 @@ driverList.innerHTML=arr.map(o=>{const d=getDriverLiveData(o);return`<div class=
 <div class="small">📞 ${esc(d.phone)} • ${d.duty?"🟢 Duty ON":"⚪ Duty OFF"} • ⭐ ${d.rating||"Not Rated"}</div>
 <div class="small">Telegram ID: ${d.telegramId?esc(d.telegramId):"Not linked"}</div>
 <div class="small">Live Coordinates: ${Number.isFinite(d.lat)?d.lat.toFixed(6):"N/A"}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):"N/A"}</div>
-<div class="small">Last update: ${esc(d.last||"Not updated")}</div>
+<div class="small">Last update: ${driverLastUpdateHtml(d)}</div>
 <div class="actions"><button class="btn" onclick="details('${esc(d.id)}')">View</button><button class="btn" onclick="editDriver('${esc(d.id)}')">Edit</button><button class="btn redbtn" onclick="delDriver('${esc(d.id)}')">Delete</button></div>
 </div>`}).join("")||'<div class="card">No drivers found in Firebase.</div>';
 total.textContent=drivers.length;online.textContent=drivers.filter(o=>getDriverLiveData(o).online).length;duty.textContent=drivers.filter(o=>getDriverLiveData(o).duty).length;
@@ -374,7 +429,7 @@ openModal(`<button class="close" onclick="closeModal()">✕</button>${photo}<h2>
 <p><b>GPS:</b> ${d.online?"🟢 ONLINE":"🔴 OFFLINE"}</p><p><b>Duty:</b> ${d.duty?"🟢 ON":"⚪ OFF"}</p><p><b>Rating:</b> ⭐ ${d.rating||"Not Rated"}</p>
 <p><b>Coordinates:</b><br>${Number.isFinite(d.lat)?d.lat.toFixed(6):"N/A"}, ${Number.isFinite(d.lng)?d.lng.toFixed(6):"N/A"}</p>
 <div id="presentLocation" style="background:#e4f5ff;padding:12px;border-radius:10px;margin:12px 0;line-height:1.5">📍 <b>Present Location:</b><br>Finding current location...</div>
-<p><b>Last update:</b> ${esc(d.last||"Not updated")}</p>
+<p><b>Last update:</b> ${driverLastUpdateHtml(d)}</p>
 <div style="margin:12px 0">
 <button id="refreshLocationBtn" class="btn" style="width:100%;font-weight:700" onclick="requestCurrentLocation('${esc(d.id)}')">📍 Refresh Current Location</button>
 <div id="locationRequestStatus" style="margin-top:8px;font-size:14px;color:#555"></div>
@@ -465,9 +520,11 @@ function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").f
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
+setInterval(updateRelativeTimes,1000);
+setTimeout(updateRelativeTimes,100);
 </script>
 </body>
 </html>

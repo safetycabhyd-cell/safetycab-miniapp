@@ -34,7 +34,7 @@ const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activ
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
-function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),120)}
+function page(id){if(!myDriver||!$('access').classList.contains('hide'))return;document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),120)}
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
@@ -256,7 +256,7 @@ function paintMine(d){myDriver=d;$('myDriverId').textContent=d.id||'Not Register
 async function authAnon(){try{if(auth.currentUser)return true;await auth.signInAnonymously();$('firebaseState').textContent='Connected';return true}catch(e){console.error(e);$('firebaseState').textContent='Auth Error';showNotice('Firebase authentication error.');return false}}
 async function findMine(){if(!myTelegramId)return null;try{let s=await db.collection('drivers').where('telegramId','==',myTelegramId).limit(1).get();if(s.empty)return null;let doc=s.docs[0],d=doc.data();let mine={docId:doc.id,id:d.id||doc.id,name:d.name||'',phone:d.phone||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),telegramId:String(d.telegramId||myTelegramId)};writeCache(mine);return mine}catch(e){console.error(e);return null}}
 async function verifyMineInBackground(cached){let fresh=await findMine();if(fresh){paintMine(fresh);startLocationRequestListener();if(autoGPS)startGPS()}else if(!cached){denyAccess('Driver ID registered नहीं मिला.');}}
-function denyAccess(msg){$('accessText').innerHTML=`<b>${esc(msg)}</b><br><br><button class="action" onclick="location.reload()">Reload</button>`}
+function denyAccess(msg){stopLocationRequestListener();stopGPS();if(radarLiveRef){radarLiveRef.off();radarLiveRef=null}if(liveRef){liveRef.off();liveRef=null}if(map){try{map.remove()}catch(e){}map=null}myDriver=null;drivers=[];selectedDriver=null;$('accessText').innerHTML=`<b>${esc(msg)}</b><br><br><button class="action" onclick="location.reload()">Reload</button>`}
 function allowAccess(){ $('access').classList.add('hide'); }
 async function loadDrivers(){
   try{
@@ -568,7 +568,21 @@ function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h
 function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b){showNotice('Booking इस device पर नहीं मिली.');return}if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};bookingDriver=d;$('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Distance:</b> ${b.distanceKm} km &nbsp; <b>Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE</div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;$('modal').classList.add('show');setTimeout(()=>drawSavedBookingMap(b),80)}
 function drawSavedBookingMap(b){if(routeMap){routeMap.remove();routeMap=null}routeMap=L.map('bookingMap').setView([b.driverLat,b.driverLng],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);let points=[{lat:b.driverLat,lng:b.driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver');L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}))}
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
-async function startApp(){initMap();setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();startDutyRadar();stats();}
+async function startApp(){
+  // Fresh Admin registration + matching Telegram ID is required every launch.
+  setupTG();renderMyBookings();
+  if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}
+  $('accessText').textContent='Checking Driver ID…';
+  if(tg&&tg.LocationManager)await initTelegramLocationManager();
+  let ok=await authAnon();
+  if(!ok){denyAccess('Firebase connection failed.');return}
+  // Cache is never used to grant access.
+  let fresh=await findMine();
+  if(!fresh){denyAccess('यह Telegram account Admin Panel में registered नहीं है.');return}
+  paintMine(fresh);allowAccess();
+  startLocationRequestListener();if(autoGPS)startGPS();
+  initMap();await loadDrivers();startDutyRadar();stats();
+}
 startApp();
 
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS();pushTelegramGPS();}});

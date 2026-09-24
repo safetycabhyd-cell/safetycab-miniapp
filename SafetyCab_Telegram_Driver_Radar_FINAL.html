@@ -21,7 +21,7 @@
 <section id="home" class="page active"><div class="stats"><div class="stat"><strong id="total">0</strong><span>Total</span></div><div class="stat green"><strong id="online">0</strong><span>Online</span></div><div class="stat blue"><strong id="duty">0</strong><span>Duty ON</span></div></div><div id="map"></div></section>
 <section id="drivers" class="page"><div class="card"><h3>🚕 Search Driver</h3><div class="searchrow"><input id="search" class="search" placeholder="Search Driver ID e.g. DC001" autocomplete="off" autocapitalize="characters"><button id="searchBtn" class="action">Search</button></div><div id="searchStatus" class="notice">Driver ID डालकर Search दबाएँ.</div><div id="driverResult"></div></div></section>
 <section id="profile" class="page"><div class="card"><h3>👤 My Profile</h3><div id="myProfilePhoto"></div><div class="row"><span>Name</span><strong id="tgName">Telegram User</strong></div><div class="row"><span>Telegram ID</span><strong id="tgId">-</strong></div><div class="row"><span>Driver ID</span><strong id="myDriverId">Not Registered</strong></div><div class="row"><span>Location</span><span id="locStatus">Not shared</span></div><button class="action" style="width:100%;margin-top:12px" onclick="shareMyLocation()">📍 Share My Location</button></div><div class="card"><h3>🚦 My Status</h3><div class="row"><span>Duty Status</span><button id="dutyToggle" class="toggle" onclick="toggleDuty()"><i></i></button></div><div class="row"><span>Auto GPS Update</span><button id="gpsToggle" class="toggle on" onclick="toggleAutoGPS()"><i></i></button></div></div><div class="card"><h3>📋 My Bookings</h3><div id="myBookings" class="booking-list"><div class="empty">No bookings on this device.</div></div></div></section>
-<section id="settings" class="page"><div class="card"><h3>⚙️ Settings</h3><div class="row"><span>Language</span><strong>Hindi / English</strong></div><div class="row"><span>Map</span><strong>OpenStreetMap</strong></div><div class="row"><span>GPS Update</span><strong>Every 5 sec (when app is open)</strong></div><div class="row"><span>Firebase</span><strong id="firebaseState">Connecting…</strong></div><div class="row"><span>Version</span><strong>Safety Cab Radar 4.1</strong></div></div><div class="card"><button class="action secondary" style="width:100%;margin-bottom:8px" onclick="callSupport()">📞 Call Support</button><button class="action danger" style="width:100%" onclick="closeMiniApp()">🚪 Close Mini App</button></div></section>
+<section id="settings" class="page"><div class="card"><h3>⚙️ Settings</h3><div class="row"><span>Language</span><strong>Hindi / English</strong></div><div class="row"><span>Map</span><strong>OpenStreetMap</strong></div><div class="row"><span>GPS Update</span><strong>Every 5 sec (when app is open)</strong></div><div class="row"><span>Radar</span><strong>Nearest 4 • Search any Driver ID</strong></div><div class="row"><span>Firebase</span><strong id="firebaseState">Connecting…</strong></div><div class="row"><span>Version</span><strong>Safety Cab Radar 4.2</strong></div></div><div class="card"><button class="action secondary" style="width:100%;margin-bottom:8px" onclick="callSupport()">📞 Call Support</button><button class="action danger" style="width:100%" onclick="closeMiniApp()">🚪 Close Mini App</button></div></section>
 <nav class="bottom"><button class="navbtn active" data-page="home"><b>🗺️</b>Map</button><button class="navbtn" data-page="drivers"><b>🚕</b>Drivers</button><button class="navbtn" data-page="profile"><b>👤</b>Profile</button><button class="navbtn" data-page="settings"><b>⚙️</b>Settings</button></nav>
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><button class="close" onclick="closeModal()">✕</button><div id="modalBody"></div></div></div>
 <div id="photoViewer" class="photo-viewer" onclick="if(event.target===this)closePhoto()"><button class="action" onclick="closePhoto()">✕</button><img id="viewerImg" src="" alt="Photo"></div>
@@ -49,6 +49,21 @@ function renderSelectedMarker(d,open=false){
 }
 function isRadarDriver(d){
   return !!(d && d.online===true && d.duty===true);
+}
+function distanceKm(a,b){
+  if(!a||!b||!Number.isFinite(Number(a.lat))||!Number.isFinite(Number(a.lng))||!Number.isFinite(Number(b.lat))||!Number.isFinite(Number(b.lng)))return Infinity;
+  const R=6371;
+  const p1=Number(a.lat)*Math.PI/180,p2=Number(b.lat)*Math.PI/180;
+  const dp=(Number(b.lat)-Number(a.lat))*Math.PI/180;
+  const dl=(Number(b.lng)-Number(a.lng))*Math.PI/180;
+  const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function nearestRadarDrivers(limit=4){
+  const base=myDriver&&Number.isFinite(Number(myDriver.lat))&&Number.isFinite(Number(myDriver.lng))?myDriver:null;
+  let list=drivers.filter(d=>isRadarDriver(d)&&d.id!==myDriver?.id);
+  if(!base)return list.slice(0,limit);
+  return list.map(d=>({d,dist:distanceKm(base,d)})).sort((a,b)=>a.dist-b.dist).slice(0,limit).map(x=>x.d);
 }
 function applyRadarLive(id,v){
   if(!id)return;
@@ -80,7 +95,9 @@ function renderAllDriverMarkers(){
   clearMarkers();
   let list;
   if(radarActive){
-    list=drivers.filter(d=>isRadarDriver(d) && d.id!==myDriver?.id);
+    // Radar shows only the 4 nearest active-duty drivers.
+    // A searched driver is always added even if far away.
+    list=nearestRadarDrivers(4);
     if(selectedDriver && selectedDriver.id!==myDriver?.id && !list.some(x=>x.id===selectedDriver.id)){
       list.push(selectedDriver);
     }
@@ -170,8 +187,10 @@ async function searchDriverById(){
     if(snap.empty){$('searchStatus').textContent='Driver '+id+' नहीं मिला.';showNotice('Driver ID registered नहीं मिला.');return}
     let doc=snap.docs[0],d=doc.data();
     let found={docId:doc.id,id:d.id||doc.id,name:d.name||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),telegramId:d.telegramId?String(d.telegramId):''};
-    drivers=[found];
-    selectedDriver=found;
+    const existingIndex=drivers.findIndex(x=>x.id===found.id);
+    if(existingIndex>=0) drivers[existingIndex]={...drivers[existingIndex],...found};
+    else drivers.push(found);
+    selectedDriver=drivers.find(x=>x.id===found.id)||found;
     showDriverResult(found);
     $('searchStatus').textContent=found.online?'Driver found • Online':'Driver found • Offline';
     if(Number.isFinite(found.lat)&&Number.isFinite(found.lng))focusDriver(found.id);else showNotice('Driver मिला, लेकिन current GPS location उपलब्ध नहीं है.');

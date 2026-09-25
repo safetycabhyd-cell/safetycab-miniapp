@@ -69,6 +69,7 @@ position:relative;cursor:pointer
 .bookingStatus{display:inline-block;padding:5px 9px;border-radius:12px;background:#fff0bd;color:#806500;font-size:11px;font-weight:800}
 .closeBookingBtn{width:100%;margin-top:10px;background:#d93636;border:0;border-radius:10px;color:#fff;padding:11px;font-weight:800}
 .noBooking{font-size:13px;color:#667;background:#fff;border-radius:10px;padding:10px}
+.qrScanOverlay{display:none;position:fixed;inset:0;z-index:7000;background:#000d;align-items:center;justify-content:center;padding:16px}.qrScanOverlay.show{display:flex}.qrScanCard{width:100%;max-width:430px;background:#fff;border-radius:18px;padding:16px}.qrScanCard h3{margin:0 0 10px}.qrReader{width:100%;min-height:260px;border-radius:12px;overflow:hidden;background:#111}.qrScanHint{font-size:12px;color:#667;margin:10px 0}.qrScanClose{width:100%;margin-top:10px;border:0;border-radius:10px;padding:11px;background:#667;color:#fff;font-weight:700}
 .photoViewer{display:none;position:fixed;inset:0;z-index:6000;background:#000d;align-items:center;justify-content:center;padding:20px}
 .photoViewer.show{display:flex}.photoViewer img{max-width:96vw;max-height:88vh;object-fit:contain;border-radius:12px}
 .viewerClose{position:fixed;right:16px;top:18px;width:42px;height:42px;border:0;border-radius:50%;background:#fff;font-size:25px}
@@ -127,6 +128,14 @@ position:relative;cursor:pointer
 </div>
 
 <div id="modal" class="modal"><div class="sheet" id="sheet"></div></div>
+<div id="qrScanOverlay" class="qrScanOverlay">
+  <div class="qrScanCard">
+    <h3>📷 Scan Driver Pairing QR</h3>
+    <div id="qr-reader" class="qrReader"></div>
+    <div class="qrScanHint">Driver App का Pairing QR camera के सामने रखें। Scan होते ही Device Pairing ID अपने आप fill हो जाएगी.</div>
+    <button class="qrScanClose" onclick="closeQrScanner()">✕ Close Scanner</button>
+  </div>
+</div>
 </div>
 
 <div id="photoViewer" class="photoViewer" onclick="closePhoto(event)">
@@ -450,6 +459,40 @@ function compressImage(file){return new Promise((resolve,reject)=>{if(!file)retu
 function toggleRemovePhoto(){const c=$("f_removePhoto"),i=$("f_profilePhoto");if(c?.checked){if(i)i.value="";const p=$("profilePhotoPreview");if(p)p.style.display="none";const h=$("profilePhotoPlaceholder");if(h)h.style.display="block"}}
 function toggleRemoveCarPhoto(){const c=$("f_removeCarPhoto"),i=$("f_carPhoto");if(c?.checked){if(i)i.value="";const p=$("carPhotoPreview");if(p)p.style.display="none";const h=$("carPhotoPlaceholder");if(h)h.style.display="block"}}
 
+let qrScanner=null;
+let qrScannerRunning=false;
+async function openQrScanner(){
+  const input=$("f_deviceUid");
+  if(!input){alert("Device Pairing field not found.");return}
+  const overlay=$("qrScanOverlay");
+  if(!overlay)return;
+  overlay.classList.add("show");
+  try{
+    if(typeof Html5Qrcode==="undefined"){throw new Error("QR scanner library load nahi hui. Internet connection check karein.")}
+    if(qrScanner){try{await qrScanner.stop()}catch(e){}try{await qrScanner.clear()}catch(e){}}
+    qrScanner=new Html5Qrcode("qr-reader");
+    await qrScanner.start({facingMode:"environment"},{fps:10,qrbox:{width:240,height:240}},async(decodedText)=>{
+      const value=String(decodedText||"").trim();
+      if(!value)return;
+      input.value=value;
+      await closeQrScanner();
+      showStatus("Device Pairing ID scanned successfully.","statusOk");
+      setTimeout(hideStatus,2500);
+    },()=>{});
+    qrScannerRunning=true;
+  }catch(e){
+    console.error(e);
+    alert("QR Camera start nahi hua: "+e.message);
+    await closeQrScanner();
+  }
+}
+async function closeQrScanner(){
+  const overlay=$("qrScanOverlay");
+  if(qrScanner){try{if(qrScannerRunning)await qrScanner.stop()}catch(e){}try{await qrScanner.clear()}catch(e){}}
+  qrScanner=null;qrScannerRunning=false;
+  if(overlay)overlay.classList.remove("show");
+}
+
 function editDriver(id){
 const original=id?drivers.find(x=>x.id===id):null;
 const d=original||{id:"",name:"",phone:"",vehicle:"",vehicleType:"Sedan",carPhoto:"",telegramId:"",deviceUid:"",lat:17.42536,lng:78.48694,online:false,duty:false,rating:0,profilePhoto:""};
@@ -473,7 +516,13 @@ openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"�
 <div class="field"><label>Vehicle Number</label><input id="f_vehicle" value="${esc(d.vehicle)}" placeholder="Example: TS08UE0850"></div>
 <div class="field"><label>Vehicle Type</label><select id="f_vehicleType"><option value="Sedan" ${vt==="Sedan"?"selected":""}>Sedan</option><option value="SUV" ${vt==="SUV"?"selected":""}>SUV</option></select></div>
 <div class="field"><label>Telegram ID</label><input id="f_telegramId" inputmode="numeric" value="${esc(d.telegramId)}"></div>
-<div class="field"><label>Device Pairing ID</label><input id="f_deviceUid" value="${esc(d.deviceUid||"")}" placeholder="Paste Pairing ID from Driver App"></div>
+<div class="field"><label>Device Pairing ID</label>
+<div style="display:flex;gap:7px;align-items:stretch">
+<input id="f_deviceUid" style="flex:1;min-width:0" value="${esc(d.deviceUid||"")}" placeholder="Scan Driver QR">
+<button type="button" class="btn" style="white-space:nowrap" onclick="openQrScanner()">📷 Scan QR</button>
+</div>
+<div class="small" style="margin-top:5px">अब Pairing ID type/paste करने की जरूरत नहीं — Driver App का QR scan करें.</div>
+</div>
 <div class="field"><label>Latitude</label><input id="f_lat" type="number" step="0.000001" value="${d.lat}"></div>
 <div class="field"><label>Longitude</label><input id="f_lng" type="number" step="0.000001" value="${d.lng}"></div>
 <div class="field"><label>GPS Status</label><select id="f_online"><option value="1" ${d.online?"selected":""}>Online</option><option value="0" ${!d.online?"selected":""}>Offline</option></select></div>
@@ -527,7 +576,7 @@ function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").f
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v4.0 • Device Pairing</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v4.1 • QR Device Pairing</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
 setInterval(updateRelativeTimes,1000);

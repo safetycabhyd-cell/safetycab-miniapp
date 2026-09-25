@@ -249,7 +249,7 @@ function startDriversListener(){
 if(driversUnsubscribe)driversUnsubscribe();
 showStatus("Connecting to Firebase Drivers...","statusInfo");
 driversUnsubscribe=db.collection(DRIVER_COLLECTION).onSnapshot(s=>{
-drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),updatedAtMs:toMillis(d.updatedAt),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||""}});
+drivers=s.docs.map(doc=>{const d=doc.data();return{id:d.id||doc.id,name:d.name||"",phone:d.phone||"",vehicle:d.vehicle||"",vehicleType:d.vehicleType||"",carPhoto:d.carPhoto||"",telegramId:d.telegramId?String(d.telegramId):"",lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),updatedAtMs:toMillis(d.updatedAt),last:d.last||timestampText(d.updatedAt),profilePhoto:d.profilePhoto||"",deviceUid:d.deviceUid||""}});
 hideStatus();render();
 },e=>{console.error(e);showStatus("Firebase Drivers error: "+e.message,"statusError");drivers=[];render()});
 }
@@ -452,7 +452,7 @@ function toggleRemoveCarPhoto(){const c=$("f_removeCarPhoto"),i=$("f_carPhoto");
 
 function editDriver(id){
 const original=id?drivers.find(x=>x.id===id):null;
-const d=original||{id:"",name:"",phone:"",vehicle:"",vehicleType:"Sedan",carPhoto:"",telegramId:"",lat:17.42536,lng:78.48694,online:false,duty:false,rating:0,profilePhoto:""};
+const d=original||{id:"",name:"",phone:"",vehicle:"",vehicleType:"Sedan",carPhoto:"",telegramId:"",deviceUid:"",lat:17.42536,lng:78.48694,online:false,duty:false,rating:0,profilePhoto:""};
 if(id&&!original){alert("Driver not found.");return}
 const currentPhoto=d.profilePhoto||"",currentCar=d.carPhoto||"",vt=d.vehicleType==="SUV"?"SUV":"Sedan";
 const photoHTML=currentPhoto?`<div class="photoBox" onclick="openProfileGallery()"><img id="profilePhotoPreview" src="${esc(currentPhoto)}"><div id="profilePhotoPlaceholder" class="photoPlaceholder" style="display:none">👤</div></div>`:`<div class="photoBox" onclick="openProfileGallery()"><img id="profilePhotoPreview" src="" style="display:none"><div id="profilePhotoPlaceholder" class="photoPlaceholder">👤</div></div>`;
@@ -473,19 +473,21 @@ openModal(`<button class="close" onclick="closeModal()">✕</button><h2>${id?"�
 <div class="field"><label>Vehicle Number</label><input id="f_vehicle" value="${esc(d.vehicle)}" placeholder="Example: TS08UE0850"></div>
 <div class="field"><label>Vehicle Type</label><select id="f_vehicleType"><option value="Sedan" ${vt==="Sedan"?"selected":""}>Sedan</option><option value="SUV" ${vt==="SUV"?"selected":""}>SUV</option></select></div>
 <div class="field"><label>Telegram ID</label><input id="f_telegramId" inputmode="numeric" value="${esc(d.telegramId)}"></div>
+<div class="field"><label>Device Pairing ID</label><input id="f_deviceUid" value="${esc(d.deviceUid||"")}" placeholder="Paste Pairing ID from Driver App"></div>
 <div class="field"><label>Latitude</label><input id="f_lat" type="number" step="0.000001" value="${d.lat}"></div>
 <div class="field"><label>Longitude</label><input id="f_lng" type="number" step="0.000001" value="${d.lng}"></div>
 <div class="field"><label>GPS Status</label><select id="f_online"><option value="1" ${d.online?"selected":""}>Online</option><option value="0" ${!d.online?"selected":""}>Offline</option></select></div>
 <div class="field"><label>Duty Status</label><select id="f_duty"><option value="1" ${d.duty?"selected":""}>Duty ON</option><option value="0" ${!d.duty?"selected":""}>Duty OFF</option></select></div>
 <div class="field"><label>Rating</label><input id="f_rating" type="number" min="0" max="5" step=".5" value="${d.rating||0}"></div>
 </div>
-<div class="small" style="margin-bottom:12px">Driver ID, Telegram ID, Vehicle Type and Photos are saved with this Driver record.</div>
+<div class="small" style="margin-bottom:12px">Driver ID, Telegram ID, Device Pairing ID, Vehicle Type and Photos are saved with this Driver record.</div>
 <button class="btn" onclick="saveDriver('${esc(id||"")}')">💾 Save Driver</button>`);
 }
 
 async function saveDriver(oldId){
-const id=$("f_id").value.trim().toUpperCase(),name=$("f_name").value.trim(),phone=$("f_phone").value.trim(),vehicle=$("f_vehicle").value.trim(),vehicleType=$("f_vehicleType").value,telegramId=$("f_telegramId").value.trim(),lat=parseFloat($("f_lat").value),lng=parseFloat($("f_lng").value),online=$("f_online").value==="1",duty=$("f_duty").value==="1",rating=parseFloat($("f_rating").value)||0;
+const id=$("f_id").value.trim().toUpperCase(),name=$("f_name").value.trim(),phone=$("f_phone").value.trim(),vehicle=$("f_vehicle").value.trim(),vehicleType=$("f_vehicleType").value,telegramId=$("f_telegramId").value.trim(),deviceUid=$("f_deviceUid").value.trim(),lat=parseFloat($("f_lat").value),lng=parseFloat($("f_lng").value),online=$("f_online").value==="1",duty=$("f_duty").value==="1",rating=parseFloat($("f_rating").value)||0;
 if(!id||!name||!vehicle||!Number.isFinite(lat)||!Number.isFinite(lng)){alert("Driver ID, Name, Vehicle Number, Latitude and Longitude are required.");return}
+if(!oldId&&!deviceUid){alert("New Driver ke liye Device Pairing ID required hai. Driver App se Pairing ID copy karke yahan paste karein.");return}
 if(!["Sedan","SUV"].includes(vehicleType)){alert("Vehicle Type must be Sedan or SUV.");return}
 if(rating<0||rating>5){alert("Rating must be between 0 and 5.");return}
 try{
@@ -496,7 +498,12 @@ if($("f_removePhoto")?.checked)profilePhoto="";
 if($("f_profilePhoto")?.files?.[0]){showStatus("Compressing profile photo...","statusInfo");profilePhoto=await compressImage($("f_profilePhoto").files[0])}
 if($("f_removeCarPhoto")?.checked)carPhoto="";
 if($("f_carPhoto")?.files?.[0]){showStatus("Compressing car photo...","statusInfo");carPhoto=await compressImage($("f_carPhoto").files[0])}
-const data={id,name,phone,vehicle,vehicleType,carPhoto:carPhoto||"",telegramId:telegramId||"",lat,lng,online,duty,rating,profilePhoto:profilePhoto||"",last:"Just updated",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+const data={id,name,phone,vehicle,vehicleType,carPhoto:carPhoto||"",telegramId:telegramId||"",deviceUid:deviceUid||"",lat,lng,online,duty,rating,profilePhoto:profilePhoto||"",last:"Just updated",updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+const oldData=oldId?((await db.collection(DRIVER_COLLECTION).doc(oldId).get()).data()||{}):{};
+const oldDeviceUid=String(oldData.deviceUid||"").trim();
+if(deviceUid){const pairSnap=await rtdb.ref("driverDevices").child(deviceUid).get();if(pairSnap.exists()){const pairedId=String(pairSnap.child("driverId").val()||"").trim().toUpperCase();if(pairedId&&pairedId!==oldId&&pairedId!==id){alert("Ye Device Pairing ID already "+pairedId+" ke saath paired hai.");hideStatus();return}}}
+if(oldDeviceUid&&oldDeviceUid!==deviceUid){await rtdb.ref("driverDevices").child(oldDeviceUid).remove();}
+if(deviceUid){await rtdb.ref("driverDevices").child(deviceUid).set({driverId:id,updatedAt:firebase.database.ServerValue.TIMESTAMP});}
 if(oldId){
 const oldRef=db.collection(DRIVER_COLLECTION).doc(oldId),oldDoc=await oldRef.get();if(!oldDoc.exists){alert("Old driver record not found in Firebase.");hideStatus();return}
 if(id!==oldId){
@@ -514,13 +521,13 @@ closeModal();showStatus("Driver saved successfully.","statusOk");setTimeout(hide
 
 async function delDriver(id){
 const d=drivers.find(x=>x.id===id);if(!d)return;if(!confirm("Delete "+d.name+"?"))return;
-try{await db.collection(DRIVER_COLLECTION).doc(id).delete();try{await deletePublicDriver(id)}catch(e){}showStatus("Driver deleted successfully from Firebase.","statusOk");setTimeout(hideStatus,2500)}catch(e){alert("Firebase delete failed: "+e.message)}
+try{const snap=await db.collection(DRIVER_COLLECTION).doc(id).get();const du=snap.exists?String(snap.data().deviceUid||"").trim():"";await db.collection(DRIVER_COLLECTION).doc(id).delete();if(du){try{await rtdb.ref("driverDevices").child(du).remove()}catch(e){console.warn("Pairing remove failed",e)}}try{await deletePublicDriver(id)}catch(e){}showStatus("Driver deleted successfully from Firebase.","statusOk");setTimeout(hideStatus,2500)}catch(e){alert("Firebase delete failed: "+e.message)}
 }
 function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));el.classList.add("active");render()}
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v3.0</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v4.0 • Device Pairing</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
 setInterval(updateRelativeTimes,1000);

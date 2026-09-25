@@ -481,43 +481,59 @@ async function openQrScanner(){
   const overlay=$("qrScanOverlay");
   if(!overlay)return;
   overlay.classList.add("show");
+  const hint=document.querySelector(".qrScanHint");
   try{
-    if(typeof Html5Qrcode==="undefined"){throw new Error("QR scanner library load nahi hui. Page ko refresh karke dobara try karein.")}
+    if(typeof Html5Qrcode==="undefined"){
+      throw new Error("QR scanner library load nahi hui. Internet check karke page refresh karein.");
+    }
+
+    // Ask Chrome for camera permission first so the real camera error is visible.
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      throw new Error("Is browser mein camera access available nahi hai. Chrome HTTPS page par try karein.");
+    }
+    const permissionStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});
+    permissionStream.getTracks().forEach(t=>t.stop());
+
     if(qrScanner){try{await qrScanner.stop()}catch(e){}try{await qrScanner.clear()}catch(e){}}
     qrScanner=new Html5Qrcode("qr-reader");
-    await qrScanner.start({facingMode:{exact:"environment"}},{fps:10,qrbox:{width:240,height:240}},async(decodedText)=>{
+
+    const onScan=async(decodedText)=>{
       const value=extractPairingId(decodedText);
       if(!value)return;
       input.value=value;
-      const hint=document.querySelector(".qrScanHint");
       if(hint)hint.innerHTML="<b>✅ QR Result:</b> "+esc(value)+"<br>Device Pairing ID automatically filled.";
       await closeQrScanner();
       showStatus("QR scanned successfully. Pairing ID automatically filled.","statusOk");
       setTimeout(hideStatus,2500);
-    },()=>{});
-    qrScannerRunning=true;
-  }catch(e){
-    console.error(e);
-    // Retry without exact camera constraint for phones that do not expose camera labels.
+    };
+
     try{
-      if(qrScanner){try{await qrScanner.stop()}catch(x){}try{await qrScanner.clear()}catch(x){}}
+      await qrScanner.start(
+        {facingMode:{exact:"environment"}},
+        {fps:10,qrbox:{width:240,height:240}},
+        onScan,
+        ()=>{}
+      );
+    }catch(firstErr){
+      console.warn("Exact camera start failed",firstErr);
+      try{await qrScanner.stop()}catch(e){}
+      try{await qrScanner.clear()}catch(e){}
       qrScanner=new Html5Qrcode("qr-reader");
-      await qrScanner.start({facingMode:"environment"},{fps:10,qrbox:{width:240,height:240}},async(decodedText)=>{
-        const value=extractPairingId(decodedText);
-        if(!value)return;
-        input.value=value;
-        const hint=document.querySelector(".qrScanHint");
-        if(hint)hint.innerHTML="<b>✅ QR Result:</b> "+esc(value)+"<br>Device Pairing ID automatically filled.";
-        await closeQrScanner();
-        showStatus("QR scanned successfully. Pairing ID automatically filled.","statusOk");
-        setTimeout(hideStatus,2500);
-      },()=>{});
-      qrScannerRunning=true;
-    }catch(e2){
-      console.error(e2);
-      alert("QR Camera start nahi hua: "+e2.message+"\nCamera permission allow karein aur page refresh karein.");
-      await closeQrScanner();
+      await qrScanner.start(
+        {facingMode:"environment"},
+        {fps:10,qrbox:{width:240,height:240}},
+        onScan,
+        ()=>{}
+      );
     }
+    qrScannerRunning=true;
+    if(hint)hint.innerHTML="Driver App का Pairing QR camera के सामने रखें।";
+  }catch(e){
+    console.error("QR camera error",e);
+    const msg=(e && (e.message||e.name||e.toString())) ? String(e.message||e.name||e.toString()) : "Unknown camera error";
+    if(hint)hint.innerHTML="<b>❌ Camera error:</b> "+esc(msg)+"<br>Chrome में Camera permission Allow करके फिर Try Again करें.";
+    alert("QR Camera start nahi hua.\n\nReason: "+msg+"\n\nChrome Camera permission Allow karein, phir page refresh karke dobara Scan QR dabayein.");
+    await closeQrScanner();
   }
 }
 async function closeQrScanner(){
@@ -610,7 +626,7 @@ function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").f
 search.addEventListener("input",render);
 function scrollList(){driverList.scrollIntoView({behavior:"smooth"})}
 function topMap(){window.scrollTo({top:0,behavior:"smooth"})}
-function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v4.2 • QR Device Pairing</p>`)}
+function settings(){openModal(`<button class="close" onclick="closeModal()">✕</button><h2>⚙️ Admin Settings</h2><p><b>System:</b> Safety Cab Driver Radar</p><p><b>Firebase Project:</b> Safety Cab Radar</p><p><b>Private Driver Storage:</b> Firebase Firestore / drivers</p><p><b>Radar Collection:</b> publicDrivers</p><p><b>Live GPS:</b> Realtime Database / liveLocations • Map marker updates whenever a new driver GPS point arrives.</p><p><b>GPS Time:</b> Last update now shows live relative time like “Just now”, “1 min ago”, “2 min ago”. It refreshes automatically every second.</p><p><b>Photos:</b> Small thumbnails in UI; tap to view large photo.</p><p><b>Booking:</b> Admin can close active/pending bookings from Driver Details.</p><p><b>Vehicle Type:</b> Sedan / SUV</p><p><b>Phone Protection:</b> Phone is NOT copied to publicDrivers</p><p><b>Version:</b> Safety Cab Admin FINAL v4.3 • QR Device Pairing</p>`)}
 modal.addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
 setTimeout(()=>map.invalidateSize(),500);
 setInterval(updateRelativeTimes,1000);

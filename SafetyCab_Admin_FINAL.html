@@ -602,7 +602,7 @@ const oldData=oldId?((await db.collection(DRIVER_COLLECTION).doc(oldId).get()).d
 const oldDeviceUid=String(oldData.deviceUid||"").trim();
 if(deviceUid){const pairSnap=await rtdb.ref("driverDevices").child(deviceUid).get();if(pairSnap.exists()){const pairedId=String(pairSnap.child("driverId").val()||"").trim().toUpperCase();if(pairedId&&pairedId!==oldId&&pairedId!==id){alert("Ye Device Pairing ID already "+pairedId+" ke saath paired hai.");hideStatus();return}}}
 if(oldDeviceUid&&oldDeviceUid!==deviceUid){await rtdb.ref("driverDevices").child(oldDeviceUid).remove();}
-if(deviceUid){await rtdb.ref("driverDevices").child(deviceUid).set({driverId:id,updatedAt:firebase.database.ServerValue.TIMESTAMP});}
+if(deviceUid){await rtdb.ref("driverDevices").child(deviceUid).set({driverId:id,name:name,vehicle:vehicle,vehicleType:vehicleType,telegramId:telegramId||"",profilePhoto:profilePhoto||"",carPhoto:carPhoto||"",updatedAt:firebase.database.ServerValue.TIMESTAMP});}
 if(oldId){
 const oldRef=db.collection(DRIVER_COLLECTION).doc(oldId),oldDoc=await oldRef.get();if(!oldDoc.exists){alert("Old driver record not found in Firebase.");hideStatus();return}
 if(id!==oldId){

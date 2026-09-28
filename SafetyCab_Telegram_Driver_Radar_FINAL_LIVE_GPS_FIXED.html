@@ -45,45 +45,6 @@ function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remo
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
-
-// MASTER GPS SYNC: RTDB liveLocations is the single source of live GPS truth.
-function mergeLiveDriver(id,live){
-  if(!id||!live)return null;
-  const lat=Number(live.lat),lng=Number(live.lng);
-  if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
-  let d=drivers.find(x=>x.id===id);
-  if(!d){
-    d={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};
-    drivers.push(d);
-  }
-  d.id=id;
-  d.lat=lat; d.lng=lng;
-  d.online=live.online===true;
-  d.duty=live.duty===true;
-  d.gpsAccuracy=Number(live.accuracy);
-  d.speed=Number(live.speed);
-  d.heading=Number(live.heading);
-  d.updatedAt=Number(live.updatedAt||Date.now());
-  radarLive[id]={driverId:id,lat,lng,online:d.online,duty:d.duty,accuracy:d.gpsAccuracy,speed:d.speed,heading:d.heading,updatedAt:d.updatedAt};
-  return d;
-}
-function syncRadarMarker(d,open=false){
-  if(!map||!d||!Number.isFinite(Number(d.lat))||!Number.isFinite(Number(d.lng)))return null;
-  const id=String(d.id);
-  let m=markers[id];
-  const pos=[Number(d.lat),Number(d.lng)];
-  if(m){
-    m.setLatLng(pos);
-    m.setIcon(driverIcon(d));
-    m.setPopupContent(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>Duty: ${d.duty?'🟢 ON':'🔴 OFF'}<br>GPS: ${Number(d.lat).toFixed(6)}, ${Number(d.lng).toFixed(6)}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-  }else{
-    m=L.marker(pos,{icon:driverIcon(d),title:(d.id||'Driver')+' • '+(d.name||'')}).addTo(map);
-    m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>Duty: ${d.duty?'🟢 ON':'🔴 OFF'}<br>GPS: ${Number(d.lat).toFixed(6)}, ${Number(d.lng).toFixed(6)}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-    markers[id]=m;
-  }
-  if(open)m.openPopup();
-  return m;
-}
 function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
 function renderSelectedMarker(d,open=false){
   if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
@@ -111,44 +72,54 @@ function nearestRadarDrivers(limit=4){
   if(!base)return list.slice(0,limit);
   return list.map(d=>({d,dist:distanceKm(base,d)})).sort((a,b)=>a.dist-b.dist).slice(0,limit).map(x=>x.d);
 }
-
 function applyRadarLive(id,v){
   if(!id)return;
-  const d=mergeLiveDriver(id,v);
-  if(!d)return;
-  if(d.online!==true || d.duty!==true){
+  const live=v||{};
+  const online=live.online!==false;
+  const duty=live.duty===true;
+  const lat=Number(live.lat),lng=Number(live.lng);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)||!online||!duty){
     delete radarLive[id];
-    d.online=!!d.online; d.duty=!!d.duty;
+    const existing=drivers.find(x=>x.id===id);
+    if(existing){existing.online=online;existing.duty=duty;}
+    return;
   }
+  radarLive[id]={driverId:id,lat,lng,online,duty,accuracy:Number(live.accuracy),speed:Number(live.speed),heading:Number(live.heading),updatedAt:Number(live.updatedAt||Date.now())};
+  let d=drivers.find(x=>x.id===id);
+  if(!d){
+    d={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};
+    drivers.push(d);
+  }
+  d.lat=lat;d.lng=lng;d.online=true;d.duty=true;d.gpsAccuracy=Number(live.accuracy);d.speed=Number(live.speed);d.heading=Number(live.heading);d.updatedAt=Number(live.updatedAt||Date.now());
 }
 function removeRadarDriver(id){
   delete radarLive[id];
   const d=drivers.find(x=>x.id===id);
   if(d){d.online=false;d.duty=false;}
 }
-
 function renderAllDriverMarkers(){
   if(!map)return;
-  // FINAL MASTER: every active driver in RTDB is a map marker.
-  // No distance filtering and no Firestore GPS fallback.
-  const activeIds=Object.keys(radarLive||{});
-  const wanted={};
-  activeIds.forEach(id=>{
-    const d=drivers.find(x=>x.id===id);
-    if(!d||d.online!==true||d.duty!==true)return;
-    if(!Number.isFinite(Number(d.lat))||!Number.isFinite(Number(d.lng)))return;
-    wanted[id]=true;
-    syncRadarMarker(d,false);
-  });
-  Object.keys(markers).forEach(id=>{
-    if(!wanted[id] && !(selectedDriver && selectedDriver.id===id)){
-      try{map.removeLayer(markers[id])}catch(e){}
-      delete markers[id];
+  clearMarkers();
+  let list;
+  if(radarActive){
+    // Radar shows only the 4 nearest active-duty drivers.
+    // A searched driver is always added even if far away.
+    list=nearestRadarDrivers(4);
+    if(selectedDriver && selectedDriver.id!==myDriver?.id && !list.some(x=>x.id===selectedDriver.id)){
+      list.push(selectedDriver);
     }
+  }else{
+    list=drivers.filter(d=>d.id!==myDriver?.id);
+  }
+  list.forEach(d=>{
+    if(!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
+    const m=L.marker([d.lat,d.lng],{icon:driverIcon(d),title:(d.id||"Driver")+" • "+(d.name||"")}).addTo(map);
+    m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+    markers[d.id]=m;
   });
-  if(selectedDriver && Number.isFinite(Number(selectedDriver.lat)) && Number.isFinite(Number(selectedDriver.lng))){
+  if(selectedDriver && Number.isFinite(selectedDriver.lat)&&Number.isFinite(selectedDriver.lng)){
     const m=markers[selectedDriver.id];
-    if(m)m.setZIndexOffset(2000);
+    if(m)m.setZIndexOffset(1000);
   }
 }
 
@@ -197,151 +168,130 @@ function showDriverResult(d){
     : '';
   $('driverResult').innerHTML=`<div class="booking-card" style="margin-top:10px" id="searchedDriverCard"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">${d.profilePhoto?`<img src="${esc(d.profilePhoto)}" alt="">`:'🚕'}</div><div style="flex:1"><b>${esc(d.id)} • ${esc(d.name||d.id)}</b><div class="small">${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')} • ⭐ ${d.rating||'Not Rated'}</div></div><span id="searchedStatus" class="badge ${d.online?'bgreen':'bred'}">${d.online?'ONLINE':'OFFLINE'}</span></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" type="button" onclick="focusDriver('${js(d.id)}')">🗺️ Live Map</button><button class="action secondary" type="button" onclick="openDriver('${js(d.id)}')">📋 Details</button></div><button class="action" type="button" style="width:100%;margin-top:8px" onclick="openBooking('${js(d.id)}')">🚕 New Booking</button>${bookingButton}</div>`;
 }
-
-async function focusDriver(id){
-  id=String(id||'').trim().toUpperCase();
-  if(!id)return false;
+async function getLiveLocation(id){
   try{
-    const snap=await rtdb.ref('liveLocations/'+id).once('value');
-    const d=mergeLiveDriver(id,snap.val());
-    if(!d || !Number.isFinite(Number(d.lat)) || !Number.isFinite(Number(d.lng))){showNotice(id+' का live GPS Firebase में उपलब्ध नहीं है.');return false;}
-    selectedDriver=d;
-    page('home');
-    setTimeout(()=>{
-      try{
-        if(!map)return;
-        map.invalidateSize(true);
-        syncRadarMarker(d,true);
-        map.setView([Number(d.lat),Number(d.lng)],17,{animate:false});
-        renderAllDriverMarkers();
-        const mm=markers[id];
-        if(mm){mm.setZIndexOffset(3000);mm.openPopup();}
-      }catch(e){console.error('Map render error:',e);}
-    },180);
-    listenSelectedLive(id);
-    return true;
-  }catch(e){console.error('focusDriver RTDB error:',e);showNotice(id+' का Firebase live GPS नहीं पढ़ा गया.');return false;}
-}
-
-
-async function searchDriverById(){
-  const id=$('search').value.trim().toUpperCase();
-  if(!/^DC\d{1,5}$/.test(id)){showNotice('सही Driver ID डालें, जैसे DC001.');return}
-  $('searchBtn').disabled=true;
-  $('searchStatus').textContent='Firebase GPS पढ़ा जा रहा है…';
-  try{
-    // RTDB is the ONLY source for live GPS/status.
-    const liveSnap=await rtdb.ref('liveLocations/'+id).once('value');
-    const live=liveSnap.val();
-    if(!live){
-      $('searchStatus').textContent='Driver '+id+' का live GPS Firebase में नहीं मिला.';
-      showNotice(id+' का liveLocations record नहीं मिला.');
-      return;
-    }
-    const liveDriver=mergeLiveDriver(id,live);
-    if(!liveDriver){
-      $('searchStatus').textContent='Driver '+id+' का GPS data invalid है.';
-      showNotice(id+' का latitude/longitude valid नहीं है.');
-      return;
-    }
-
-    // Metadata is optional; GPS must never depend on Firestore search.
-    try{
-      const snap=await db.collection('drivers').where('id','==',id).limit(1).get();
-      if(!snap.empty){
-        const doc=snap.docs[0],md=doc.data();
-        Object.assign(liveDriver,{docId:doc.id,name:md.name||liveDriver.name,vehicle:md.vehicle||liveDriver.vehicle,vehicleType:md.vehicleType||liveDriver.vehicleType,profilePhoto:md.profilePhoto||liveDriver.profilePhoto,carPhoto:md.carPhoto||liveDriver.carPhoto,rating:Number(md.rating||liveDriver.rating||0),telegramId:md.telegramId?String(md.telegramId):liveDriver.telegramId});
-      }
-    }catch(metaErr){ console.warn('Metadata read skipped:',metaErr); }
-
-    selectedDriver=liveDriver;
-    const idx=drivers.findIndex(x=>x.id===id);
-    if(idx>=0)drivers[idx]=liveDriver;else drivers.push(liveDriver);
-    showDriverResult(liveDriver);
-    $('searchStatus').textContent=(liveDriver.online===true?'Driver found • Online':'Driver found • Offline')+' • Live GPS';
-
-    // Map action is deliberately isolated so a map rendering problem can never show Search failed.
-    try{
-      await focusDriver(id);
-    }catch(mapErr){
-      console.error('Map focus error after successful GPS read:',mapErr);
-      showNotice(id+' का Firebase GPS मिल गया, लेकिन Map focus में समस्या आई.');
-    }
-  }catch(e){
-    console.error('FINAL search Firebase error:',e);
-    $('searchStatus').textContent='Firebase search error.';
-    showNotice('Firebase error: '+(e&&e.message?e.message:'read failed'));
-  }finally{$('searchBtn').disabled=false}
-}
-
-$('searchBtn').addEventListener('click',searchDriverById);
-$('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchDriverById()});
-
-
-function listenSelectedLive(id){
-  if(liveRef){try{liveRef.off()}catch(e){}liveRef=null}
-  liveRef=rtdb.ref('liveLocations/'+id);
-  liveRef.on('value',snap=>{
+    const snap=await rtdb.ref("liveLocations/"+id).once("value");
     const v=snap.val();
-    if(!v)return;
-    const d=mergeLiveDriver(id,v);
-    if(!d)return;
-    if(selectedDriver&&selectedDriver.id===id)selectedDriver=d;
-    if(radarActive && d.online===true && d.duty===true){
-      const m=syncRadarMarker(d,false);
-      if(selectedDriver&&selectedDriver.id===id){
-        if(m){m.setZIndexOffset(2000);}
-        const st=$('searchedStatus');
-        if(st){st.textContent='ONLINE • LIVE GPS';st.className='badge bgreen';}
-      }
-    }else{
-      const m=markers[id];
-      if(m){try{map.removeLayer(m)}catch(e){}delete markers[id]}
-    }
-    if(selectedDriver&&selectedDriver.id===id){
-      $('searchStatus').textContent=d.online&&d.duty?'Driver found • Online • Live GPS':'Driver found • Offline/Duty OFF';
-    }
-  },err=>{
-    console.error('Selected RTDB listener error:',err);
-    showNotice('Firebase Live GPS read error.');
-  });
-}
-
-
-async function startDutyRadar(){
-  if(radarLiveRef){try{radarLiveRef.off()}catch(e){}radarLiveRef=null}
-  radarLive={};radarActive=true;
-  try{
-    const ref=rtdb.ref('liveLocations');
-    radarLiveRef=ref;
-    const snap=await ref.once('value');
-    const all=snap.val()||{};
-    Object.keys(all).forEach(id=>applyRadarLive(id,all[id]));
-    renderAllDriverMarkers();
-    fitRadarMap();
-    ref.on('child_added',snap=>{
-      applyRadarLive(snap.key,snap.val());
-      renderAllDriverMarkers();
-      if(!selectedDriver)fitRadarMap();
-    });
-    ref.on('child_changed',snap=>{
-      applyRadarLive(snap.key,snap.val());
-      renderAllDriverMarkers();
-      if(selectedDriver&&selectedDriver.id===snap.key)fitRadarMap(snap.key);
-    });
-    ref.on('child_removed',snap=>{
-      removeRadarDriver(snap.key);
-      const m=markers[snap.key];
-      if(m){try{map.removeLayer(m)}catch(e){}delete markers[snap.key]}
-      renderAllDriverMarkers();
-    });
+    if(!v)return null;
+    const lat=Number(v.lat),lng=Number(v.lng);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
+    return {lat,lng,online:v.online!==false,duty:v.duty===true,accuracy:Number(v.accuracy),speed:Number(v.speed),heading:Number(v.heading),updatedAt:Number(v.updatedAt||0)};
   }catch(e){
-    console.error('startDutyRadar RTDB error:',e);
-    showNotice('Radar Firebase liveLocations read error.');
+    console.error("getLiveLocation error:",e);
+    return null;
   }
 }
 
-async function openDriver(id){let d=drivers.find(x=>x.id===id);if(!d){d={id};drivers.push(d);}try{const s=await rtdb.ref('liveLocations/'+id).once('value');const live=s.val();if(live)mergeLiveDriver(id,live);}catch(e){console.error(e)}selectedDriver=d;let profile=d.profilePhoto?`<img class="detail-photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:"";let car=d.carPhoto?`<img class="car-photo-small" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:"";$('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${d.online?"🟢 Online":"🔴 Offline"}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;$('modal').classList.add('show')}
+async function focusDriver(id){
+  const d=drivers.find(x=>x.id===id);
+  if(!d){showNotice('Driver नहीं मिला.');return}
+  const live=await getLiveLocation(id);
+  if(!live){showNotice('इस Driver की current GPS location liveLocations में उपलब्ध नहीं है.');return}
+  d.lat=live.lat; d.lng=live.lng; d.online=live.online; d.duty=live.duty;
+  d.gpsAccuracy=live.accuracy; d.speed=live.speed; d.heading=live.heading; d.updatedAt=live.updatedAt;
+  selectedDriver=d;
+  page('home');
+  setTimeout(()=>{
+    if(!map)return;
+    map.invalidateSize();
+    map.setView([live.lat,live.lng],17,{animate:false});
+    renderAllDriverMarkers();
+    let m=markers[id];
+    if(m){m.openPopup();m.setZIndexOffset(1000)}
+  },80);
+  listenSelectedLive(id);
+}
+
+async function searchDriverById(){
+  let id=$('search').value.trim().toUpperCase();
+  if(!/^DC\d{1,5}$/.test(id)){showNotice('सही Driver ID डालें, जैसे DC001.');return}
+  $('searchBtn').disabled=true;
+  $('searchStatus').textContent='Searching '+id+'…';
+  try{
+    let snap=await db.collection('drivers').where('id','==',id).limit(1).get();
+    if(snap.empty){$('searchStatus').textContent='Driver '+id+' नहीं मिला.';showNotice('Driver ID registered नहीं मिला.');return}
+    let doc=snap.docs[0],d=doc.data();
+    let found={docId:doc.id,id:d.id||doc.id,name:d.name||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:null,lng:null,online:false,duty:false,rating:Number(d.rating||0),telegramId:d.telegramId?String(d.telegramId):''};
+    const existingIndex=drivers.findIndex(x=>x.id===found.id);
+    if(existingIndex>=0) drivers[existingIndex]={...drivers[existingIndex],...found};
+    else drivers.push(found);
+    const live=await getLiveLocation(found.id);
+    if(!live){
+      selectedDriver=drivers.find(x=>x.id===found.id)||found;
+      showDriverResult(selectedDriver);
+      $('searchStatus').textContent='Driver found • Live GPS unavailable';
+      showNotice('Driver मिला, लेकिन liveLocations में current GPS उपलब्ध नहीं है.');
+      return;
+    }
+    const target=drivers.find(x=>x.id===found.id)||found;
+    Object.assign(target,{lat:live.lat,lng:live.lng,online:live.online,duty:live.duty,gpsAccuracy:live.accuracy,speed:live.speed,heading:live.heading,updatedAt:live.updatedAt});
+    selectedDriver=target;
+    showDriverResult(target);
+    $('searchStatus').textContent=live.online?'Driver found • Online':'Driver found • Offline';
+    await focusDriver(target.id);
+  }catch(e){console.error(e);$('searchStatus').textContent='Search failed. फिर से कोशिश करें.';showNotice('Driver search Firebase से नहीं हुआ.')}finally{$('searchBtn').disabled=false}
+}
+$('searchBtn').addEventListener('click',searchDriverById);
+$('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchDriverById()});
+
+function listenSelectedLive(id){
+  if(liveRef){liveRef.off();liveRef=null}
+  liveRef=rtdb.ref("liveLocations/"+id);
+  liveRef.on("value",snap=>{
+    let v=snap.val();if(!v)return;
+    let d=drivers.find(x=>x.id===id);if(!d)return;
+    let lat=Number(v.lat),lng=Number(v.lng);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+    d.lat=lat;d.lng=lng;d.online=v.online!==false;d.duty=v.duty===true;
+    if(selectedDriver&&selectedDriver.id===id)selectedDriver=d;
+    let m=markers[id];
+    if(!m){
+      renderAllDriverMarkers();
+      m=markers[id];
+    }else{
+      m.setLatLng([lat,lng]);
+      m.setIcon(driverIcon(d));
+      m.setPopupContent(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+    }
+    if(selectedDriver&&selectedDriver.id===id){
+      let st=$("searchedStatus");
+      if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}
+      stats();
+    }
+  });
+}
+function startDutyRadar(){
+  if(radarLiveRef){radarLiveRef.off();radarLiveRef=null;}
+  radarLive={};
+  radarActive=true;
+  const query=rtdb.ref("liveLocations").orderByChild("duty").equalTo(true);
+  radarLiveRef=query;
+  query.on("child_added",snap=>{
+    applyRadarLive(snap.key,snap.val());
+    renderAllDriverMarkers();
+  });
+  query.on("child_changed",snap=>{
+    applyRadarLive(snap.key,snap.val());
+    renderAllDriverMarkers();
+  });
+  query.on("child_removed",snap=>{
+    removeRadarDriver(snap.key);
+    renderAllDriverMarkers();
+  });
+}
+
+async function openDriver(id){
+  let d=drivers.find(x=>x.id===id);if(!d)return;
+  const live=await getLiveLocation(id);
+  if(live){Object.assign(d,{lat:live.lat,lng:live.lng,online:live.online,duty:live.duty,gpsAccuracy:live.accuracy,speed:live.speed,heading:live.heading,updatedAt:live.updatedAt});}
+  selectedDriver=d;
+  let profile=d.profilePhoto?`<img class="detail-photo" src="${esc(d.profilePhoto)}" onclick="openPhoto('${js(d.profilePhoto)}')" alt="Profile">`:"";
+  let car=d.carPhoto?`<img class="car-photo-small" src="${esc(d.carPhoto)}" onclick="openPhoto('${js(d.carPhoto)}')" alt="Car Photo">`:"";
+  const gpsText=live?(d.online?"🟢 Online":"🔴 Offline"):"⚠️ Live GPS unavailable";
+  $('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${gpsText}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${live?`<div class="row"><span>Coordinates</span><b>${live.lat.toFixed(6)}, ${live.lng.toFixed(6)}</b></div>`:""}${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;
+  $('modal').classList.add('show');
+}
+
 function closeModal(){$('modal').classList.remove('show')}
 function openPhoto(src){if(!src)return;$('viewerImg').src=src;$('photoViewer').classList.add('show')}function closePhoto(){$('photoViewer').classList.remove('show');$('viewerImg').src=''}
 async function setupTG(){
@@ -386,10 +336,10 @@ async function loadDrivers(){
         vehicleType:d.vehicleType||"",
         profilePhoto:d.profilePhoto||"",
         carPhoto:d.carPhoto||"",
-        lat:Number(d.lat),
-        lng:Number(d.lng),
-        online:d.online===true,
-        duty:d.duty===true,
+        lat:null,
+        lng:null,
+        online:false,
+        duty:false,
         rating:Number(d.rating||0),
         telegramId:d.telegramId?String(d.telegramId):""
       };
@@ -670,7 +620,7 @@ function saveLocalBooking(b){let a=getBookings().filter(x=>x.bookingId!==b.booki
 function getBookingForDriver(id){return getBookings().find(x=>x.driverId===id&&x.status!=='closed')||null}
 function renderMyBookings(){let a=getBookings().filter(b=>b.status!=='closed');$('myBookings').innerHTML=a.length?a.map(b=>`<div class="booking-card"><b>${esc(b.bookingId)}</b><div>Driver: <strong>${esc(b.driverId)}</strong></div><div>Pickup: ${esc(b.pickupText)}</div><div>Destination: ${esc(b.destinationText)}</div><div style="margin-top:8px"><button class="action" onclick="showSavedBooking('${js(b.bookingId)}')">🗺️ View Booking</button> <button class="action secondary" onclick="newBooking('${js(b.driverId)}')">New Booking</button></div><button class="action danger" style="width:100%;margin-top:8px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button></div>`).join(''):'<div class="empty">No active bookings on this device.</div>'}
 async function closeBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b||b.status==='closed')return;if(!confirm('Booking close करें? Driver फिर Free हो जाएगा.'))return;b.status='closed';b.closedAt=Date.now();saveLocalBooking(b);try{await db.collection('bookings').doc(id).update({status:'closed',closedAt:b.closedAt});showNotice('Booking Closed — Driver Free है.')}catch(e){console.warn('Firebase booking close sync failed:',e);showNotice('Booking Closed — इस device पर Driver Free है.');}renderMyBookings();if(selectedDriver&&selectedDriver.id===b.driverId)searchDriverById(true);}
-function openBooking(id){closeModal();lastRoute=null;let d=drivers.find(x=>x.id===id)||selectedDriver;if(!d){showNotice('Driver नहीं मिला.');return}bookingDriver=d;$('modalBody').innerHTML=`<h2 style="margin-right:38px">🚕 Book ${esc(d.id)}</h2><div class="row"><span>Driver</span><b>${esc(d.name||d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')}</b></div><label>📍 Pickup Location</label><input id="pickupInput" class="input" placeholder="Pickup location"><button class="action secondary" style="width:100%;margin-bottom:5px" onclick="useCurrentLocation()">📍 Use My Current Location</button><label>🏁 Destination / Drop</label><input id="destinationInput" class="input" placeholder="Destination / Drop"><button class="action" style="width:100%;margin-top:5px" onclick="showBookingRoute()">🗺️ Show Route on Map</button><div id="routeStatus" class="notice">Pickup और Destination डालकर route दिखाएँ.</div><div id="bookingMap" class="booking-map"></div><div id="routeInfo"></div><button id="saveBookingBtn" class="action" style="width:100%;margin-top:10px;display:none" onclick="saveBooking()">✅ Confirm Booking</button>`;$('modal').classList.add('show');setTimeout(initBookingMap,80)}
+async function openBooking(id){closeModal();lastRoute=null;let d=drivers.find(x=>x.id===id)||selectedDriver;if(!d){showNotice('Driver नहीं मिला.');return}const live=await getLiveLocation(id);if(live)Object.assign(d,{lat:live.lat,lng:live.lng,online:live.online,duty:live.duty,gpsAccuracy:live.accuracy,speed:live.speed,heading:live.heading,updatedAt:live.updatedAt});bookingDriver=d;$('modalBody').innerHTML=`<h2 style="margin-right:38px">🚕 Book ${esc(d.id)}</h2><div class="row"><span>Driver</span><b>${esc(d.name||d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')}</b></div><label>📍 Pickup Location</label><input id="pickupInput" class="input" placeholder="Pickup location"><button class="action secondary" style="width:100%;margin-bottom:5px" onclick="useCurrentLocation()">📍 Use My Current Location</button><label>🏁 Destination / Drop</label><input id="destinationInput" class="input" placeholder="Destination / Drop"><button class="action" style="width:100%;margin-top:5px" onclick="showBookingRoute()">🗺️ Show Route on Map</button><div id="routeStatus" class="notice">Pickup और Destination डालकर route दिखाएँ.</div><div id="bookingMap" class="booking-map"></div><div id="routeInfo"></div><button id="saveBookingBtn" class="action" style="width:100%;margin-top:10px;display:none" onclick="saveBooking()">✅ Confirm Booking</button>`;$('modal').classList.add('show');setTimeout(initBookingMap,80)}
 function initBookingMap(){if(routeMap){routeMap.remove();routeMap=null}routeMap=L.map('bookingMap').setView([Number(bookingDriver.lat)||17.42536,Number(bookingDriver.lng)||78.48694],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);if(Number.isFinite(bookingDriver.lat)&&Number.isFinite(bookingDriver.lng))L.marker([bookingDriver.lat,bookingDriver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('Driver current location').openPopup()}
 function useCurrentLocation(){if(!navigator.geolocation){showNotice('GPS supported नहीं है.');return}navigator.geolocation.getCurrentPosition(p=>{$('pickupInput').value=`${p.coords.latitude.toFixed(6)}, ${p.coords.longitude.toFixed(6)}`;showNotice('Current Location pickup में डाल दिया गया.');},()=>showNotice('Location permission allow करें.'),{enableHighAccuracy:true,timeout:8000,maximumAge:5000})}
 async function geocode(q){let x=String(q||'').trim();if(!x)throw new Error('Location खाली है');let m=x.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);if(m)return{lat:Number(m[1]),lng:Number(m[2]),name:x};let url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=in&q='+encodeURIComponent(x);let ctl=new AbortController();let timer=setTimeout(()=>ctl.abort(),6500);try{let r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('Geocoding failed');let a=await r.json();if(!a.length)throw new Error('Location not found: '+x);return{lat:Number(a[0].lat),lng:Number(a[0].lon),name:a[0].display_name||x}}finally{clearTimeout(timer)}}
@@ -682,7 +632,7 @@ function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h
 function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b){showNotice('Booking इस device पर नहीं मिली.');return}if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};bookingDriver=d;$('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Distance:</b> ${b.distanceKm} km &nbsp; <b>Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE</div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;$('modal').classList.add('show');setTimeout(()=>drawSavedBookingMap(b),80)}
 function drawSavedBookingMap(b){if(routeMap){routeMap.remove();routeMap=null}routeMap=L.map('bookingMap').setView([b.driverLat,b.driverLng],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);let points=[{lat:b.driverLat,lng:b.driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver');L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}))}
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
-async function startApp(){initMap();await setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();await startDutyRadar();stats();}
+async function startApp(){initMap();await setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();startDutyRadar();stats();}
 startApp();
 
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS();pushTelegramGPS();}});

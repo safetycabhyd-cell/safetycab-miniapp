@@ -45,6 +45,45 @@ function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remo
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
+
+// MASTER GPS SYNC: RTDB liveLocations is the single source of live GPS truth.
+function mergeLiveDriver(id,live){
+  if(!id||!live)return null;
+  const lat=Number(live.lat),lng=Number(live.lng);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
+  let d=drivers.find(x=>x.id===id);
+  if(!d){
+    d={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};
+    drivers.push(d);
+  }
+  d.id=id;
+  d.lat=lat; d.lng=lng;
+  d.online=live.online===true;
+  d.duty=live.duty===true;
+  d.gpsAccuracy=Number(live.accuracy);
+  d.speed=Number(live.speed);
+  d.heading=Number(live.heading);
+  d.updatedAt=Number(live.updatedAt||Date.now());
+  radarLive[id]={driverId:id,lat,lng,online:d.online,duty:d.duty,accuracy:d.gpsAccuracy,speed:d.speed,heading:d.heading,updatedAt:d.updatedAt};
+  return d;
+}
+function syncRadarMarker(d,open=false){
+  if(!map||!d||!Number.isFinite(Number(d.lat))||!Number.isFinite(Number(d.lng)))return null;
+  const id=String(d.id);
+  let m=markers[id];
+  const pos=[Number(d.lat),Number(d.lng)];
+  if(m){
+    m.setLatLng(pos);
+    m.setIcon(driverIcon(d));
+    m.setPopupContent(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>Duty: ${d.duty?'🟢 ON':'🔴 OFF'}<br>GPS: ${Number(d.lat).toFixed(6)}, ${Number(d.lng).toFixed(6)}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+  }else{
+    m=L.marker(pos,{icon:driverIcon(d),title:(d.id||'Driver')+' • '+(d.name||'')}).addTo(map);
+    m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>Duty: ${d.duty?'🟢 ON':'🔴 OFF'}<br>GPS: ${Number(d.lat).toFixed(6)}, ${Number(d.lng).toFixed(6)}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
+    markers[id]=m;
+  }
+  if(open)m.openPopup();
+  return m;
+}
 function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
 function renderSelectedMarker(d,open=false){
   if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
@@ -223,32 +262,41 @@ async function searchDriverById(){
   $('searchBtn').disabled=true;
   $('searchStatus').textContent='Searching '+id+'…';
   try{
-    let found;
-    const snap=await db.collection('drivers').where('id','==',id).limit(1).get();
-    if(!snap.empty){
-      const doc=snap.docs[0],d=doc.data();
-      found={docId:doc.id,id:d.id||doc.id,name:d.name||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',lat:Number(d.lat),lng:Number(d.lng),online:d.online===true,duty:d.duty===true,rating:Number(d.rating||0),telegramId:d.telegramId?String(d.telegramId):''};
-    }else{
-      found={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',lat:NaN,lng:NaN,online:false,duty:false,rating:0,telegramId:''};
-    }
+    // 1) RTDB first: this is the authoritative live GPS source.
     const liveSnap=await rtdb.ref('liveLocations/'+id).once('value');
     const live=liveSnap.val();
-    const liveDriver=mergeLiveDriver(id,live);
-    if(liveDriver){
-      found={...found,...liveDriver};
-    }else{
-      const idx=drivers.findIndex(x=>x.id===id);
-      if(idx>=0)drivers[idx]={...drivers[idx],...found};
-      else drivers.push(found);
+    let liveDriver=mergeLiveDriver(id,live);
+
+    // 2) Firestore is only metadata. If it is unavailable, GPS search still works.
+    let meta=null;
+    try{
+      const snap=await db.collection('drivers').where('id','==',id).limit(1).get();
+      if(!snap.empty){
+        const doc=snap.docs[0],d=doc.data();
+        meta={docId:doc.id,id:d.id||doc.id,name:d.name||'',vehicle:d.vehicle||'',vehicleType:d.vehicleType||'',profilePhoto:d.profilePhoto||'',carPhoto:d.carPhoto||'',rating:Number(d.rating||0),telegramId:d.telegramId?String(d.telegramId):''};
+      }
+    }catch(metaErr){console.warn('Firestore metadata search skipped:',metaErr);}
+
+    if(!liveDriver && !meta){
+      $('searchStatus').textContent='Driver '+id+' नहीं मिला.';
+      showNotice(id+' Firebase में नहीं मिला.');
+      return;
     }
-    selectedDriver=drivers.find(x=>x.id===id)||found;
-    showDriverResult(selectedDriver);
+
+    let found=drivers.find(x=>x.id===id)||{id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};
+    if(meta)found={...found,...meta};
+    if(liveDriver)found={...found,...liveDriver};
+    const idx=drivers.findIndex(x=>x.id===id);
+    if(idx>=0)drivers[idx]=found;else drivers.push(found);
+    selectedDriver=found;
+    showDriverResult(found);
+
     if(liveDriver && liveDriver.online===true && liveDriver.duty===true){
       $('searchStatus').textContent='Driver found • Online • Live GPS';
       await focusDriver(id);
     }else if(liveDriver){
-      $('searchStatus').textContent='Driver found • GPS available • Duty OFF';
-      showNotice(id+' Firebase में है, लेकिन Duty ON नहीं है.');
+      $('searchStatus').textContent=liveDriver.online?'Driver found • Online • Duty OFF':'Driver found • Live GPS available';
+      showNotice(id+' का GPS मिला, लेकिन Duty ON नहीं है.');
     }else{
       $('searchStatus').textContent='Driver found • Live GPS unavailable';
       showNotice(id+' का live GPS Firebase में नहीं मिला.');
@@ -256,7 +304,7 @@ async function searchDriverById(){
   }catch(e){
     console.error('searchDriverById error:',e);
     $('searchStatus').textContent='Search failed.';
-    showNotice('Driver search Firebase से नहीं हुआ.');
+    showNotice('Radar search error: '+(e&&e.message?e.message:'unknown error'));
   }finally{$('searchBtn').disabled=false}
 }
 

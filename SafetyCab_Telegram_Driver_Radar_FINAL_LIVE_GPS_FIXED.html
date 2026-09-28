@@ -102,10 +102,21 @@ function removeRadarDriver(id){
   if(d){d.online=false;d.duty=false;}
 }
 function updateRadarStats(){
-  const active=Object.values(radarLive).filter(x=>x.online===true&&x.duty===true);
+  // Status is taken from the freshest RTDB record when available, with Firestore
+  // status as a fallback so the Radar does not show 0 just because one RTDB
+  // listener temporarily reconnects.
+  const ids=new Set(drivers.map(d=>d.id));
+  let online=0,duty=0;
+  ids.forEach(id=>{
+    const live=radarLive[id];
+    const d=drivers.find(x=>x.id===id);
+    const on=live ? live.online===true : d?.online===true;
+    const du=live ? live.duty===true : d?.duty===true;
+    if(on)online++; if(du)duty++;
+  });
   $('total').textContent=drivers.length;
-  $('online').textContent=active.length;
-  $('duty').textContent=active.length;
+  $('online').textContent=online;
+  $('duty').textContent=duty;
 }
 function renderAllDriverMarkers(){
   if(!map)return;
@@ -248,24 +259,76 @@ function startBookingLive(id){
     if(marker){marker.setLatLng([lat,lng]);marker.setIcon(driverIcon(bookingDriver));marker.setPopupContent(`🚕 Driver Current Location<br>${lat.toFixed(6)}, ${lng.toFixed(6)}`);}
   });
 }
-function startDutyRadar(){
-  if(radarLiveRef){radarLiveRef.off();radarLiveRef=null;}
+async function startDutyRadar(){
+  if(radarLiveRef){try{radarLiveRef.off();}catch(e){}radarLiveRef=null;}
   radarLive={};
   radarActive=true;
+  try{await ensureRTDBAuth();}catch(e){
+    console.error('Radar auth error:',e);
+    updateRadarStats();
+    renderAllDriverMarkers();
+    showNotice('Radar Firebase login नहीं हुआ.');
+    return;
+  }
   const ref=rtdb.ref('liveLocations');
   radarLiveRef=ref;
+  // Initial one-shot read: this makes the first screen deterministic.
+  try{
+    const snap=await ref.get();
+    const all=snap.val()||{};
+    Object.keys(all).forEach(id=>applyRadarLive(id,all[id]));
+    updateRadarStats();
+    renderAllDriverMarkers();
+  }catch(e){
+    console.error('Radar initial RTDB read error:',e);
+    // Keep Firestore status/coordinates as a temporary fallback instead of 0.
+    updateRadarStats();
+    renderAllDriverMarkers();
+    showNotice('Live GPS reconnect हो रहा है…');
+  }
+  // Continuous RTDB listener. child events are used in addition to value so a
+  // single changed driver is enough to refresh the map immediately.
+  const syncChild=(snap)=>{
+    const id=snap.key;
+    if(!id)return;
+    const v=snap.val()||{};
+    const lat=Number(v.lat),lng=Number(v.lng);
+    if(Number.isFinite(lat)&&Number.isFinite(lng)){
+      applyRadarLive(id,v);
+    }else{
+      removeRadarDriver(id);
+    }
+    updateRadarStats();
+    renderAllDriverMarkers();
+  };
+  ref.on('child_added',syncChild);
+  ref.on('child_changed',syncChild);
+  ref.on('child_removed',snap=>{removeRadarDriver(snap.key);updateRadarStats();renderAllDriverMarkers();});
   ref.on('value',snap=>{
     const all=snap.val()||{};
     const seen={};
     Object.keys(all).forEach(id=>{seen[id]=true;applyRadarLive(id,all[id]);});
     Object.keys(radarLive).forEach(id=>{if(!seen[id])removeRadarDriver(id);});
+    updateRadarStats();
     renderAllDriverMarkers();
   },err=>{
-    console.error('Radar RTDB read error:',err);
-    radarLive={};
+    console.error('Radar RTDB listener error:',err);
+    updateRadarStats();
     renderAllDriverMarkers();
-    showNotice('Radar Firebase Live GPS read नहीं कर पा रहा है.');
+    showNotice('Live GPS listener reconnect हो रहा है…');
   });
+  // Small polling safety net. It does not write anything to Firebase.
+  clearInterval(window.radarPollTimer);
+  window.radarPollTimer=setInterval(async()=>{
+    if(!radarActive)return;
+    try{
+      const snap=await ref.get();
+      const all=snap.val()||{};
+      Object.keys(all).forEach(id=>applyRadarLive(id,all[id]));
+      updateRadarStats();
+      renderAllDriverMarkers();
+    }catch(e){console.warn('Radar poll:',e);updateRadarStats();renderAllDriverMarkers();}
+  },5000);
 }
 async function openDriver(id){
   let d=drivers.find(x=>x.id===id);
@@ -654,7 +717,8 @@ function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h
 function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b){showNotice('Booking इस device पर नहीं मिली.');return}if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};bookingDriver=d;$('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Distance:</b> ${b.distanceKm} km &nbsp; <b>Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE</div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;$('modal').classList.add('show');setTimeout(()=>drawSavedBookingMap(b),80)}
 async function drawSavedBookingMap(b){if(routeMap){routeMap.remove();routeMap=null}let live=await rtdb.ref('liveLocations/'+b.driverId).get();let v=live.val()||{};let liveLat=Number(v.lat),liveLng=Number(v.lng);let driverLat=Number.isFinite(liveLat)?liveLat:Number(b.driverLat),driverLng=Number.isFinite(liveLng)?liveLng:Number(b.driverLng);bookingDriver={...bookingDriver,lat:driverLat,lng:driverLng,online:v.online!==false,duty:v.duty===true};routeMap=L.map('bookingMap').setView([driverLat,driverLng],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);bookingLiveMarker=L.marker([driverLat,driverLng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup(`🚕 Driver Current Location<br>${driverLat.toFixed(6)}, ${driverLng.toFixed(6)}`).openPopup();let points=[{lat:driverLat,lng:driverLng},{lat:b.pickupLat,lng:b.pickupLng},{lat:b.destinationLat,lng:b.destinationLng}];L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}));startBookingLive(b.driverId)}
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
-async function startApp(){initMap();await setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();startDutyRadar();stats();}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&radarActive){setTimeout(()=>startDutyRadar(),250);}});
+async function startApp(){initMap();await setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();await startDutyRadar();stats();}
 startApp();
 
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoGPS&&myDriver){startGPS();pushTelegramGPS();}});

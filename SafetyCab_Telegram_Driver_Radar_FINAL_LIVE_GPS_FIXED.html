@@ -192,26 +192,42 @@ async function ensureRTDBAuth(){
 async function focusDriver(id){
   id=String(id||'').trim().toUpperCase();
   if(!id){showNotice('Driver ID missing.');return;}
-  let d=drivers.find(x=>x.id===id);
-  if(!d){d={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};drivers.push(d);}
-  const live=await getLiveDriver(id);
-  if(!live){showNotice(id+' का live GPS Firebase से नहीं मिला.');return;}
-  d.lat=live.lat; d.lng=live.lng; d.online=live.online; d.duty=live.duty;
-  d.gpsAccuracy=live.accuracy; d.speed=live.speed; d.heading=live.heading; d.updatedAt=live.updatedAt;
-  radarLive[id]={driverId:id,...live};
-  selectedDriver=d;
-  page('home');
-  listenSelectedLive(id);
-  const move=()=>{
-    if(!map)return;
-    map.invalidateSize(true);
-    map.setView([live.lat,live.lng],17,{animate:false});
-    renderAllDriverMarkers();
-    const m=renderSelectedMarker(d,true);
-    if(m){m.setZIndexOffset(10000);m.openPopup();}
-  };
-  setTimeout(move,120);
-  setTimeout(move,450);
+  try{
+    if(!map){initMap();}
+    await ensureRTDBAuth();
+    const snap=await rtdb.ref('liveLocations/'+id).get();
+    const v=snap.val();
+    const lat=Number(v&&v.lat), lng=Number(v&&v.lng);
+    if(!v || !Number.isFinite(lat) || !Number.isFinite(lng)){
+      showNotice(id+' का live GPS Firebase से नहीं मिला.');
+      return;
+    }
+    let d=drivers.find(x=>x.id===id);
+    if(!d){
+      d={id,name:id,vehicle:'',vehicleType:'',profilePhoto:'',carPhoto:'',rating:0,telegramId:''};
+      drivers.push(d);
+    }
+    d.lat=lat; d.lng=lng; d.online=v.online===true; d.duty=v.duty===true;
+    d.gpsAccuracy=Number(v.accuracy); d.speed=Number(v.speed); d.heading=Number(v.heading); d.updatedAt=Number(v.updatedAt||Date.now());
+    radarLive[id]={driverId:id,lat,lng,online:d.online,duty:d.duty,accuracy:d.gpsAccuracy,speed:d.speed,heading:d.heading,updatedAt:d.updatedAt};
+    selectedDriver=d;
+    page('home');
+    listenSelectedLive(id);
+    const draw=()=>{
+      if(!map)return;
+      map.invalidateSize(true);
+      clearMarkers();
+      map.setView([lat,lng],17,{animate:false});
+      const m=L.marker([lat,lng],{icon:driverIcon(d),zIndexOffset:10000,title:id+' • LIVE GPS'}).addTo(map);
+      markers[id]=m;
+      m.bindPopup('<b>🚕 '+esc(d.name||id)+'</b><br>Driver ID: '+esc(id)+'<br>Status: '+(d.online?'🟢 Online':'🔴 Offline')+'<br>GPS: '+lat.toFixed(6)+', '+lng.toFixed(6)+'<br>Accuracy: '+(Number.isFinite(d.gpsAccuracy)?d.gpsAccuracy.toFixed(1)+' m':'-')).openPopup();
+      updateRadarStats();
+    };
+    setTimeout(draw,100); setTimeout(draw,500); setTimeout(draw,1000);
+  }catch(e){
+    console.error('focusDriver failed:',id,e);
+    showNotice(id+' का Live Map खुल नहीं पाया.');
+  }
 }
 async function searchDriverById(){
   let id=$('search').value.trim().toUpperCase();

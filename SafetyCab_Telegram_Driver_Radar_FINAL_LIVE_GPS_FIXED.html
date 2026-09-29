@@ -45,28 +45,55 @@ function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remo
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
-function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
+function clearMarkers(){
+  Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});
+  markers={};
+}
 function markerKey(id){return String(id||"").trim().toUpperCase()}
+function driverPopupHtml(d){
+  return `<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?"🟢 Online":"🔴 Offline"}<br>⭐ ${d.rating||"Not Rated"}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`;
+}
 function makeDriverMarker(d){
+  if(!map||!d||!Number.isFinite(Number(d.lat))||!Number.isFinite(Number(d.lng)))return null;
   const key=markerKey(d.id);
-  const m=L.marker([d.lat,d.lng],{icon:driverIcon(d),title:(d.id||"Driver")+" • "+(d.name||"")}).addTo(map);
-  const popup=`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?"🟢 Online":"🔴 Offline"}<br>⭐ ${d.rating||"Not Rated"}<br><br><button class="action" onclick="openDriver(\'${js(d.id)}\')">View Details</button>`;
-  m.bindPopup(popup);
+  const m=L.marker([Number(d.lat),Number(d.lng)],{
+    icon:driverIcon(d),
+    title:(d.id||"Driver")+" • "+(d.name||"")
+  }).addTo(map);
   m.__driverId=d.id;
-  m.on("click",()=>{ const current=drivers.find(x=>markerKey(x.id)===key)||d; m.setPopupContent(`<b>🚕 ${esc(current.name||current.id)}</b><br>Driver ID: ${esc(current.id)}<br>Vehicle: ${esc(current.vehicle||"-")}<br>Vehicle Type: ${esc(current.vehicleType||"-")}<br>Status: ${current.online?"🟢 Online":"🔴 Offline"}<br>⭐ ${current.rating||"Not Rated"}<br><br><button class="action" onclick="openDriver(\'${js(current.id)}\')">View Details</button>`); });
+  m.bindPopup(driverPopupHtml(d));
+  m.on("click",()=>{
+    const current=drivers.find(x=>markerKey(x.id)===key)||d;
+    m.setPopupContent(driverPopupHtml(current));
+  });
   markers[key]=m;
   return m;
 }
-function renderSelectedMarker(d,open=false){
-  if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
-  clearMarkers();
-  let m=L.marker([d.lat,d.lng],{icon:driverIcon(d)}).addTo(map);
-  m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Vehicle Type: ${esc(d.vehicleType||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-  markers[d.id]=m;
+function updateDriverMarker(d,open=false){
+  if(!map||!d)return null;
+  const key=markerKey(d.id);
+  if(!Number.isFinite(Number(d.lat))||!Number.isFinite(Number(d.lng))){
+    const old=markers[key];
+    if(old){try{map.removeLayer(old)}catch(e){}delete markers[key];}
+    return null;
+  }
+  let m=markers[key];
+  if(!m)m=makeDriverMarker(d);
+  if(!m)return null;
+  m.setLatLng([Number(d.lat),Number(d.lng)]);
+  m.setIcon(driverIcon(d));
+  m.setPopupContent(driverPopupHtml(d));
   if(open)m.openPopup();
+  return m;
+}
+function renderSelectedMarker(d,open=false){
+  if(!map||!d)return;
+  clearMarkers();
+  const m=updateDriverMarker(d,open);
+  if(m)m.setZIndexOffset(1000);
 }
 function isRadarDriver(d){
-  return !!(d && d.online===true && d.duty===true);
+  return !!(d&&d.online===true&&d.duty===true&&Number.isFinite(Number(d.lat))&&Number.isFinite(Number(d.lng)));
 }
 function distanceKm(a,b){
   if(!a||!b||!Number.isFinite(Number(a.lat))||!Number.isFinite(Number(a.lng))||!Number.isFinite(Number(b.lat))||!Number.isFinite(Number(b.lng)))return Infinity;
@@ -79,70 +106,63 @@ function distanceKm(a,b){
 }
 function nearestRadarDrivers(limit=4){
   const base=myDriver&&Number.isFinite(Number(myDriver.lat))&&Number.isFinite(Number(myDriver.lng))?myDriver:null;
-  let list=drivers.filter(d=>isRadarDriver(d)&&d.id!==myDriver?.id);
+  let list=drivers.filter(isRadarDriver);
   if(!base)return list.slice(0,limit);
   return list.map(d=>({d,dist:distanceKm(base,d)})).sort((a,b)=>a.dist-b.dist).slice(0,limit).map(x=>x.d);
 }
 function applyRadarLive(id,v){
   if(!id)return;
+  const key=markerKey(id);
   const live=v||{};
-  const online=live.online!==false;
+  const online=live.online===true;
   const duty=live.duty===true;
   const lat=Number(live.lat),lng=Number(live.lng);
+  const d=drivers.find(x=>markerKey(x.id)===key);
+  // Firestore/Admin remains the master list. RTDB only supplies live GPS/status.
+  if(!d)return;
   if(!Number.isFinite(lat)||!Number.isFinite(lng)||!online||!duty){
-    delete radarLive[id];
-    const existing=drivers.find(x=>x.id===id);
-    if(existing){existing.online=online;existing.duty=duty;}
+    delete radarLive[key];
+    d.lat=null;d.lng=null;d.online=online;d.duty=duty;
+    updateDriverMarker(d);
     return;
   }
-  radarLive[id]={driverId:id,lat,lng,online,duty,accuracy:Number(live.accuracy),speed:Number(live.speed),heading:Number(live.heading),updatedAt:Number(live.updatedAt||Date.now())};
-  let d=drivers.find(x=>String(x.id).toUpperCase()===String(id).toUpperCase());
-  // Firestore/Admin is the master driver list. Never create a driver in Radar
-  // only because an old/stale liveLocations node exists.
-  if(!d)return;
-  d.lat=lat;d.lng=lng;d.online=true;d.duty=true;d.gpsAccuracy=Number(live.accuracy);d.speed=Number(live.speed);d.heading=Number(live.heading);d.updatedAt=Number(live.updatedAt||Date.now());
+  const updatedAt=Number(live.updatedAt||Date.now());
+  radarLive[key]={driverId:d.id,lat,lng,online,duty,accuracy:Number(live.accuracy),speed:Number(live.speed),heading:Number(live.heading),updatedAt};
+  d.lat=lat;d.lng=lng;d.online=true;d.duty=true;
+  d.gpsAccuracy=Number(live.accuracy);d.speed=Number(live.speed);d.heading=Number(live.heading);d.updatedAt=updatedAt;
+  updateDriverMarker(d);
+  if(selectedDriver&&markerKey(selectedDriver.id)===key)selectedDriver=d;
 }
 function removeRadarDriver(id){
-  delete radarLive[id];
-  const d=drivers.find(x=>x.id===id);
-  if(d){d.online=false;d.duty=false;}
+  const key=markerKey(id);
+  delete radarLive[key];
+  const d=drivers.find(x=>markerKey(x.id)===key);
+  if(d){d.lat=null;d.lng=null;d.online=false;d.duty=false;}
+  const m=markers[key];
+  if(m){try{map.removeLayer(m)}catch(e){}delete markers[key];}
 }
-function renderAllDriverMarkers(){
+function renderAllDriverMarkers(fit=false){
   if(!map)return;
   clearMarkers();
-  let list;
-  if(radarActive){
-    // Radar shows only the 4 nearest active-duty drivers.
-    // A searched driver is always added even if far away.
-    list=nearestRadarDrivers(4);
-    if(selectedDriver && selectedDriver.id!==myDriver?.id && Number.isFinite(selectedDriver.lat)&&Number.isFinite(selectedDriver.lng) && !list.some(x=>x.id===selectedDriver.id)){
-      list.push(selectedDriver);
-    }
-  }else{
-    list=drivers.filter(d=>d.id!==myDriver?.id && Number.isFinite(d.lat)&&Number.isFinite(d.lng));
+  let list=drivers.filter(isRadarDriver);
+  // If a driver was explicitly searched, keep that registered driver visible.
+  if(selectedDriver&&Number.isFinite(Number(selectedDriver.lat))&&Number.isFinite(Number(selectedDriver.lng))&&!list.some(x=>markerKey(x.id)===markerKey(selectedDriver.id))){
+    list.push(selectedDriver);
   }
-  list.forEach(d=>{
-    if(!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
-    const m=L.marker([d.lat,d.lng],{icon:driverIcon(d),title:(d.id||"Driver")+" • "+(d.name||"")}).addTo(map);
-    m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-    markers[markerKey(d.id)]=m;
-  });
-  if(selectedDriver && Number.isFinite(selectedDriver.lat)&&Number.isFinite(selectedDriver.lng)){
-    const m=markers[markerKey(selectedDriver.id)];
-    if(m)m.setZIndexOffset(1000);
+  list.forEach(d=>updateDriverMarker(d));
+  if(selectedDriver){
+    const sm=markers[markerKey(selectedDriver.id)];
+    if(sm)sm.setZIndexOffset(1000);
+  }
+  if(fit&&list.length){
+    const bounds=L.latLngBounds(list.map(d=>[Number(d.lat),Number(d.lng)]));
+    if(bounds.isValid())map.fitBounds(bounds,{padding:[30,30],maxZoom:16});
   }
 }
-
 function renderMarkers(){
-  if(selectedDriver && Number.isFinite(selectedDriver.lat)&&Number.isFinite(selectedDriver.lng)){
-    const m=markers[markerKey(selectedDriver.id)];
-    if(m){
-      m.setLatLng([selectedDriver.lat,selectedDriver.lng]);
-      m.setIcon(driverIcon(selectedDriver));
-      m.setZIndexOffset(1000);
-    }else{
-      renderAllDriverMarkers();
-    }
+  if(selectedDriver&&Number.isFinite(Number(selectedDriver.lat))&&Number.isFinite(Number(selectedDriver.lng))){
+    const m=updateDriverMarker(selectedDriver);
+    if(m)m.setZIndexOffset(1000);else renderAllDriverMarkers();
   }else{
     renderAllDriverMarkers();
   }
@@ -254,53 +274,48 @@ $('searchBtn').addEventListener('click',searchDriverById);
 $('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchDriverById()});
 
 function listenSelectedLive(id){
-  if(liveRef){liveRef.off();liveRef=null}
+  if(liveRef){liveRef.off();liveRef=null;}
+  const key=markerKey(id);
   liveRef=rtdb.ref("liveLocations/"+id);
   liveRef.on("value",snap=>{
-    let v=snap.val();
-    let d=drivers.find(x=>String(x.id).toUpperCase()===String(id).toUpperCase());
+    const v=snap.val();
+    const d=drivers.find(x=>markerKey(x.id)===key);
     if(!d)return;
-    let lat=Number(v&&v.lat),lng=Number(v&&v.lng);
+    const lat=Number(v&&v.lat),lng=Number(v&&v.lng);
     if(!v||!Number.isFinite(lat)||!Number.isFinite(lng)){
       d.lat=null;d.lng=null;d.online=false;d.duty=false;
-      if(selectedDriver&&selectedDriver.id===id)selectedDriver=d;
-      renderAllDriverMarkers();
+      if(selectedDriver&&markerKey(selectedDriver.id)===key)selectedDriver=d;
+      updateDriverMarker(d);
       return;
     }
     d.lat=lat;d.lng=lng;d.online=v.online===true;d.duty=v.duty===true;
     d.gpsAccuracy=Number(v.accuracy);d.speed=Number(v.speed);d.heading=Number(v.heading);d.updatedAt=Number(v.updatedAt||0);
-    if(selectedDriver&&selectedDriver.id===id)selectedDriver=d;
-    let m=markers[markerKey(id)];
-    if(!m){renderAllDriverMarkers();m=markers[id]}
-    if(m){
-      m.setLatLng([lat,lng]);
-      m.setIcon(driverIcon(d));
-      m.setPopupContent(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||"-")}<br>Vehicle Type: ${esc(d.vehicleType||"-")}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}<br>⭐ ${d.rating||'Not Rated'}<br><br><button class="action" onclick="openDriver('${js(d.id)}')">View Details</button>`);
-    }
-    if(selectedDriver&&selectedDriver.id===id){
-      let st=$("searchedStatus");
+    if(selectedDriver&&markerKey(selectedDriver.id)===key)selectedDriver=d;
+    updateDriverMarker(d);
+    if(selectedDriver&&markerKey(selectedDriver.id)===key){
+      const st=$("searchedStatus");
       if(st){st.textContent=d.online?"ONLINE":"OFFLINE";st.className="badge "+(d.online?"bgreen":"bred");}
       stats();
     }
   });
 }
+
 function startDutyRadar(){
   if(radarLiveRef){radarLiveRef.off();radarLiveRef=null;}
   radarLive={};
   radarActive=true;
-  const query=rtdb.ref("liveLocations").orderByChild("duty").equalTo(true);
-  radarLiveRef=query;
-  query.on("child_added",snap=>{
+  // Read the complete liveLocations tree. Firestore/Admin decides which
+  // driver IDs are valid; RTDB decides the exact current GPS/status.
+  const ref=rtdb.ref("liveLocations");
+  radarLiveRef=ref;
+  ref.on("child_added",snap=>{
     applyRadarLive(snap.key,snap.val());
-    renderAllDriverMarkers();
   });
-  query.on("child_changed",snap=>{
+  ref.on("child_changed",snap=>{
     applyRadarLive(snap.key,snap.val());
-    renderAllDriverMarkers();
   });
-  query.on("child_removed",snap=>{
+  ref.on("child_removed",snap=>{
     removeRadarDriver(snap.key);
-    renderAllDriverMarkers();
   });
 }
 

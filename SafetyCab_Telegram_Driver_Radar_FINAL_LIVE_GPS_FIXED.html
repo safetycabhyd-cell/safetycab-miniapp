@@ -12,7 +12,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:Arial,sans-serif;padding-bottom:72px}.header{height:96px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:13px 16px;gap:12px}.logo{width:54px;height:54px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:28px}.title{font-size:24px;font-weight:800}.sub{font-size:12px}.page{display:none;padding:12px}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.stat,.card{background:#fff;border-radius:17px;box-shadow:0 2px 10px #0001}.stat{text-align:center;padding:13px 4px}.stat strong{display:block;font-size:26px}.stat.green strong{color:#16a34a}.stat.blue strong{color:#087fc3}.card{padding:14px;margin-bottom:12px}.card h3{margin:2px 0 12px;font-size:20px}.searchrow{display:flex;gap:7px;align-items:center}.searchrow .search{flex:1;min-width:0}.searchrow .action{flex:none;padding:13px 14px}.search{width:100%;padding:13px;border:1px solid #ccd6e2;border-radius:11px;font-size:16px;outline:none}.filters{display:flex;gap:6px;overflow:auto;margin:9px 0}.filter{border:1px solid #ccd6e2;background:#fff;border-radius:20px;padding:7px 11px;white-space:nowrap}.filter.on{background:#0878c9;color:#fff}.driver{display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf0f4;padding:11px 0;cursor:pointer}.driver:last-child{border:0}.avatar{width:42px;height:42px;border-radius:50%;background:#e8f3ff;display:grid;place-items:center;overflow:hidden;flex:none}.avatar img{width:100%;height:100%;object-fit:cover}.driverinfo{flex:1;min-width:0}.small{font-size:11px;color:#667085;margin-top:3px}.badge{padding:4px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}.bgreen{background:#dcfce7;color:#15803d}.bred{background:#fee2e2;color:#b91c1c}.byellow{background:#fef3c7;color:#92400e}.action{border:0;border-radius:10px;padding:10px 12px;font-weight:700;background:#0878c9;color:#fff;cursor:pointer}.secondary{background:#e9f4ff;color:#0878c9}.danger{background:#fee2e2;color:#b91c1c}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f4;padding:10px 0}.row:last-child{border:0}.toggle{width:48px;height:26px;border:0;border-radius:20px;background:#cbd5e1;padding:3px}.toggle i{display:block;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}.toggle.on{background:#16a34a}.toggle.on i{transform:translateX(22px)}#map{height:calc(100vh - 255px);min-height:430px;border-radius:16px;overflow:hidden}.empty{text-align:center;color:#667085;padding:30px}.loading{text-align:center;color:#667085;padding:18px}.notice{font-size:12px;color:#667085;background:#f7fafc;padding:9px;border-radius:10px;margin-top:8px}.booking-list{margin-top:10px}.booking-card{background:#f8fbff;border:1px solid #dcecff;border-radius:13px;padding:12px;margin-top:8px}.booking-card b{color:#0878c9}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:3000;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;padding:15px;max-height:90vh;overflow:auto}.close{float:right;border:0;border-radius:50%;width:32px;height:32px}.photo{width:120px;height:120px;object-fit:cover;border-radius:14px;margin:8px auto;display:block;cursor:pointer}.detail-photo{width:120px;height:120px;object-fit:cover;border-radius:14px;margin:8px auto;display:block;cursor:pointer}.booking-map{height:300px;border-radius:13px;overflow:hidden;margin-top:10px}.input{width:100%;padding:11px;border:1px solid #ccd6e2;border-radius:10px;margin:5px 0 8px;font-size:15px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.routebox{background:#f8fafc;border-radius:11px;padding:10px;margin-top:8px;font-size:13px}.routebox strong{display:block;margin-bottom:4px}.success{background:#ecfdf3;border:1px solid #bbf7d0;padding:12px;border-radius:12px}.driver-photo-small{width:76px;height:55px;object-fit:cover;border-radius:9px}.car-photo-small{width:140px;height:100px;object-fit:cover;border-radius:12px;margin:8px auto;display:block;cursor:pointer}.photo-viewer{display:none;position:fixed;inset:0;background:#000e;z-index:6000;align-items:center;justify-content:center;padding:15px}.photo-viewer.show{display:flex}.photo-viewer img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:10px}.photo-viewer button{position:absolute;top:15px;right:15px}.bottom{position:fixed;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(4,1fr);z-index:2000}.navbtn{border:0;background:#fff;color:#667085;font-size:11px}.navbtn b{display:block;font-size:22px}.navbtn.active{color:#087fc3;font-weight:700}.access{position:fixed;inset:0;background:#f4f7fb;z-index:7000;display:flex;align-items:center;justify-content:center;padding:20px}.access-card{width:100%;max-width:390px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 4px 20px #0002}.access.hide{display:none}@media(max-width:420px){.title{font-size:22px}#map{min-height:410px}}
-</style>
+
+.safety-cab-car-icon{background:transparent!important;border:0!important}.safety-cab-car-icon svg{display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}.booking-map{overflow:hidden}.routebox{border-radius:10px;padding:8px 10px;background:#f5f9ff;border:1px solid #dbeafe}</style>
 </head>
 <body>
 <div id="notice"></div>
@@ -38,13 +39,29 @@ refreshTelegram();
 setTimeout(refreshTelegram,500);
 setTimeout(refreshTelegram,1500);
 const $=id=>document.getElementById(id);let map=null,drivers=[],markers={},activeFilter="all",watchId=null,gpsTimer=null,autoGPS=true,gpsBusy=false,lastGpsSentAt=0,myDuty=false,myDriver=null,myTelegramId=null,selectedDriver=null,liveRef=null,radarLiveRef=null,radarLive={},radarActive=false,routeMap=null,bookingDriver=null,lastRoute=null,locationRequestRef=null,lastLocationRequestId=null,telegramLocationManager=null,telegramLocationReady=false;
+let bookingLiveRef=null,bookingLiveTimer=null,bookingRouteLayer=null,bookingCarMarker=null,bookingPickupMarker=null,bookingDestinationMarker=null,bookingCurrentLive=null,bookingRoadPoint=null,bookingRouteBusy=false,bookingRouteQueued=false,bookingLastRouteRefresh=0,bookingLastSnapAt=0,bookingFollowCar=true,bookingPickupReached=false,bookingInitialPickupDistanceKm=null;
 function showNotice(t){let n=$("notice");n.textContent=t;n.style.display="block";clearTimeout(window.nt);window.nt=setTimeout(()=>n.style.display="none",3200)}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
 function js(v){return String(v??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
 function page(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.toggle("active",x.dataset.page===id));if(id==="home"&&map)setTimeout(()=>map.invalidateSize(),120)}
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.page));
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
-function driverIcon(d){let s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";return L.divIcon({className:"",html:`<div style="font-size:25px;white-space:nowrap">${s}🚕</div>`,iconSize:[42,42],iconAnchor:[21,21]})}
+function driverIcon(d){
+  const status=d&&d.online&&d.duty?'#18a957':d&&d.online?'#e8a900':'#d73535';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="58" height="40" viewBox="0 0 116 80">
+    <ellipse cx="58" cy="68" rx="42" ry="6" fill="rgba(0,0,0,.22)"/>
+    <rect x="20" y="10" width="76" height="58" rx="20" fill="#ffd21a" stroke="#151b2d" stroke-width="3"/>
+    <rect x="29" y="16" width="58" height="22" rx="9" fill="#1c2738"/>
+    <rect x="32" y="42" width="52" height="15" rx="7" fill="#1c2738"/>
+    <rect x="9" y="24" width="13" height="22" rx="5" fill="#ffd21a" stroke="#151b2d" stroke-width="3"/>
+    <rect x="94" y="24" width="13" height="22" rx="5" fill="#ffd21a" stroke="#151b2d" stroke-width="3"/>
+    <circle cx="58" cy="29" r="10" fill="#0b67c2" stroke="#fff" stroke-width="2"/>
+    <path d="M52 29l4 4 8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="58" y="52" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" font-weight="700" fill="#fff">SAFETY CAB</text>
+    <circle cx="98" cy="9" r="7" fill="${status}" stroke="#fff" stroke-width="2"/>
+  </svg>`;
+  return L.divIcon({className:"safety-cab-car-icon",html:svg,iconSize:[58,40],iconAnchor:[29,20],popupAnchor:[0,-18]});
+}
 function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
 function renderSelectedMarker(d,open=false){
   if(!map||!d||!Number.isFinite(d.lat)||!Number.isFinite(d.lng))return;
@@ -306,7 +323,7 @@ async function openDriver(id){
   $('modalBody').innerHTML=`<h2>🚕 ${esc(d.name||d.id)}</h2>${profile}<div class="row"><span>Driver ID</span><b>${esc(d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||"-")}</b></div><div class="row"><span>Vehicle Type</span><b>${esc(d.vehicleType||"-")}</b></div><div class="row"><span>GPS</span><b>${live&&d.online?"🟢 Online":"🔴 Offline / Unavailable"}</b></div><div class="row"><span>Coordinates</span><b>${esc(coords)}</b></div><div class="row"><span>Rating</span><b>⭐ ${d.rating||"Not Rated"}</b></div>${car}<div class="grid2" style="margin-top:10px"><button class="action" onclick="focusDriver('${js(d.id)}');closeModal()">🗺️ Live Map</button><button class="action secondary" onclick="openBooking('${js(d.id)}')">🚕 Book Now</button></div>`;
   $('modal').classList.add('show');
 }
-function closeModal(){$('modal').classList.remove('show')}
+function closeModal(){stopBookingLive();bookingActiveBooking=null;$('modal').classList.remove('show')}
 function openPhoto(src){if(!src)return;$('viewerImg').src=src;$('photoViewer').classList.add('show')}function closePhoto(){$('photoViewer').classList.remove('show');$('viewerImg').src=''}
 async function setupTG(){
   for(let i=0;i<8;i++){
@@ -644,42 +661,152 @@ async function showBookingRoute(){if(!bookingDriver)return;let pText=$('pickupIn
 function drawRoute(x){if(!routeMap)return;routeMap.eachLayer(l=>{if(l instanceof L.Marker||l instanceof L.Polyline)routeMap.removeLayer(l)});let pts=[x.driver,x.pickup,x.destination];L.marker([x.driver.lat,x.driver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup('🚕 Driver Current Location');L.marker([x.pickup.lat,x.pickup.lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([x.destination.lat,x.destination.lng]).addTo(routeMap).bindPopup('🏁 Destination');let line=L.geoJSON(x.route.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])),{padding:[25,25]});let km=(Number(x.route.distance)/1000).toFixed(1),min=Math.round(Number(x.route.duration)/60);$('routeInfo').innerHTML=`<div class="routebox"><strong>Road Route</strong>Driver → Pickup → Destination<br>Distance: <b>${km} km</b> &nbsp; Estimated Time: <b>${min} min</b><br><span class="small">Pickup: ${esc(x.pickupText)}<br>Destination: ${esc(x.destinationText)}</span></div>`}
 async function saveBooking(){if(!bookingDriver||!lastRoute)return;let id='BK-'+Date.now().toString(36).toUpperCase();let b={bookingId:id,customerId:String(myTelegramId||''),driverId:bookingDriver.id,driverName:bookingDriver.name||'',pickupText:lastRoute.pickupText,pickupLat:lastRoute.pickup.lat,pickupLng:lastRoute.pickup.lng,destinationText:lastRoute.destinationText,destinationLat:lastRoute.destination.lat,destinationLng:lastRoute.destination.lng,driverLat:lastRoute.driver.lat,driverLng:lastRoute.driver.lng,distanceKm:Number((lastRoute.route.distance/1000).toFixed(2)),estimatedMinutes:Math.round(lastRoute.route.duration/60),status:'pending',createdAt:Date.now()};$('saveBookingBtn').disabled=true;try{await db.collection('bookings').doc(id).set(b);saveLocalBooking(b);renderSavedBooking(b);showNotice('Booking Saved')}catch(e){console.error(e);$('saveBookingBtn').disabled=false;showNotice('Booking save नहीं हुई.')}}
 function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h3>✅ Booking Saved</h3><div>Booking ID: <b>${esc(b.bookingId)}</b></div><div>Driver: <b>${esc(b.driverId)}</b></div><div>Pickup: ${esc(b.pickupText)}</div><div>Destination: ${esc(b.destinationText)}</div><div>Road Distance: <b>${b.distanceKm} km</b></div><div>Estimated Time: <b>${b.estimatedMinutes} min</b></div><div style="margin-top:6px;color:#15803d;font-weight:700">Status: ACTIVE</div></div><button class="action" style="width:100%;margin-top:10px" onclick="showSavedBooking('${js(b.bookingId)}')">🗺️ View Booking Map</button><button class="action secondary" style="width:100%;margin-top:8px" onclick="newBooking('${js(b.driverId)}')">🚕 New Booking</button><button class="action danger" style="width:100%;margin-top:8px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`}
-async function getCurrentDriverLive(driverId){
-  const id=String(driverId||'').trim().toUpperCase();
-  if(!id)return null;
-  try{
-    const snap=await rtdb.ref('liveLocations/'+id).once('value');
-    const v=snap.val()||{};
-    const lat=Number(v.lat),lng=Number(v.lng);
-    if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
-    return {driverId:id,lat,lng,online:v.online!==false,duty:v.duty===true,accuracy:Number(v.accuracy),speed:Number(v.speed),heading:Number(v.heading),updatedAt:Number(v.updatedAt||0)};
-  }catch(e){console.error('Current driver live GPS read failed:',e);return null;}
+function formatLiveAge(ts){
+  const t=Number(ts||0);
+  if(!t)return {label:'No live update',stale:true};
+  const sec=Math.max(0,Math.floor((Date.now()-t)/1000));
+  if(sec<60)return {label:'Just now',stale:false};
+  const min=Math.floor(sec/60);
+  if(min<60)return {label:`${min} min ago`,stale:min>=5};
+  const hr=Math.floor(min/60);
+  if(hr<24)return {label:`${hr} hr ago`,stale:true};
+  return {label:`${Math.floor(hr/24)} day ago`,stale:true};
 }
-async function showSavedBooking(id){
+function stopBookingLive(){
+  if(bookingLiveRef){try{bookingLiveRef.off()}catch(e){}bookingLiveRef=null}
+  if(bookingLiveTimer){clearInterval(bookingLiveTimer);bookingLiveTimer=null}
+  bookingCurrentLive=null;bookingRoadPoint=null;bookingRouteBusy=false;bookingRouteQueued=false;
+  bookingLastRouteRefresh=0;bookingLastSnapAt=0;bookingPickupReached=false;bookingInitialPickupDistanceKm=null;
+}
+function clearBookingLayers(){
+  if(!routeMap)return;
+  [bookingCarMarker,bookingPickupMarker,bookingDestinationMarker,bookingRouteLayer].forEach(x=>{if(x){try{routeMap.removeLayer(x)}catch(e){}}});
+  bookingCarMarker=bookingPickupMarker=bookingDestinationMarker=bookingRouteLayer=null;
+}
+function updateBookingLiveHeader(b){
+  const box=$('bookingLiveInfo'); if(!box)return;
+  const v=bookingCurrentLive;
+  if(!v){
+    box.innerHTML=`🛰️ <b>Live GPS:</b> Waiting for device location…`;
+    return;
+  }
+  const age=formatLiveAge(v.updatedAt);
+  const dot=age.stale?'#e8a900':'#18a957';
+  const speed=Number.isFinite(Number(v.speed))?` • Speed ${Math.max(0,Number(v.speed)*3.6).toFixed(1)} km/h`:'';
+  box.innerHTML=`<span style="color:${dot};font-size:18px">●</span> <b>Live GPS:</b> ${Number(v.lat).toFixed(6)}, ${Number(v.lng).toFixed(6)} • <b>${age.label}</b> <span class="small">(${new Date(Number(v.updatedAt||Date.now())).toLocaleTimeString()})${speed}</span>`;
+}
+function updateBookingTimeOnly(){
+  if(bookingCurrentLive)updateBookingLiveHeader(bookingCurrentLive);
+}
+async function snapToRoad(lat,lng){
+  try{
+    const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),6500);
+    try{
+      const url=`https://router.project-osrm.org/nearest/v1/driving/${Number(lng)},${Number(lat)}?number=1`;
+      const r=await fetch(url,{signal:ctl.signal});
+      if(!r.ok)throw new Error('Nearest road failed');
+      const j=await r.json();
+      const loc=j&&j.waypoints&&j.waypoints[0]&&j.waypoints[0].location;
+      if(!loc||loc.length<2)throw new Error('No road point');
+      return {lat:Number(loc[1]),lng:Number(loc[0])};
+    }finally{clearTimeout(timer)}
+  }catch(e){console.warn('Road snap failed',e);return {lat:Number(lat),lng:Number(lng)}}
+}
+function setBookingCar(lat,lng,pan){
+  if(!routeMap)return;
+  const d=bookingDriver||{};
+  if(!bookingCarMarker)bookingCarMarker=L.marker([lat,lng],{icon:driverIcon({...d,online:true,duty:true}),zIndexOffset:1000}).addTo(routeMap);
+  else bookingCarMarker.setLatLng([lat,lng]).setIcon(driverIcon({...d,online:true,duty:true}));
+  bookingCarMarker.bindPopup(`<b>🚕 ${esc(d.id||'Driver')}</b><br>🛡️ Safety Cab<br>🛰️ Live GPS<br>${Number(lat).toFixed(6)}, ${Number(lng).toFixed(6)}`);
+  if(pan&&bookingFollowCar)routeMap.panTo([lat,lng],{animate:true,duration:.35});
+}
+async function refreshBookingRoute(force=false){
+  if(!routeMap||!bookingCurrentLive)return;
+  const now=Date.now();
+  if(!force && now-bookingLastRouteRefresh<10000)return;
+  if(bookingRouteBusy){bookingRouteQueued=true;return}
+  bookingRouteBusy=true;bookingRouteQueued=false;
+  const token=now;bookingLastRouteRefresh=now;
+  try{
+    const raw={lat:Number(bookingCurrentLive.lat),lng:Number(bookingCurrentLive.lng)};
+    if(!Number.isFinite(raw.lat)||!Number.isFinite(raw.lng))return;
+    const road=await snapToRoad(raw.lat,raw.lng);
+    if(token<bookingLastRouteRefresh-1)return;
+    bookingRoadPoint=road;
+    setBookingCar(road.lat,road.lng,true);
+    const pickup={lat:Number(bookingActiveBooking.pickupLat),lng:Number(bookingActiveBooking.pickupLng)};
+    const dest={lat:Number(bookingActiveBooking.destinationLat),lng:Number(bookingActiveBooking.destinationLng)};
+    const toPickup=distanceKm(road,pickup);
+    if(bookingInitialPickupDistanceKm===null)bookingInitialPickupDistanceKm=toPickup;
+    if(toPickup<=0.20 || (bookingInitialPickupDistanceKm>0.30 && toPickup>bookingInitialPickupDistanceKm+0.30))bookingPickupReached=true;
+    const points=bookingPickupReached?[road,dest]:[road,pickup,dest];
+    const route=await routeOSRM(points);
+    if(token<bookingLastRouteRefresh-1)return;
+    if(bookingRouteLayer){try{routeMap.removeLayer(bookingRouteLayer)}catch(e){}}
+    bookingRouteLayer=L.geoJSON(route.geometry,{style:{color:'#147ee8',weight:6,opacity:.9,lineCap:'round',lineJoin:'round'}}).addTo(routeMap);
+    const km=(Number(route.distance)/1000).toFixed(1),min=Math.max(1,Math.round(Number(route.duration)/60));
+    const info=$('bookingRouteInfo');
+    if(info)info.innerHTML=`<b>🛣️ Remaining Route:</b> ${km} km &nbsp; <b>⏱ ${min} min</b><br><span class="small">${bookingPickupReached?'Pickup reached • route to destination':'Driver → Pickup → Destination'}</span>`;
+    if(bookingFollowCar && force)routeMap.fitBounds(bookingRouteLayer.getBounds().extend([pickup.lat,pickup.lng,dest.lat,dest.lng]),{padding:[25,25]});
+  }catch(e){
+    console.warn('Booking live route failed',e);
+    if(bookingRoadPoint)setBookingCar(bookingRoadPoint.lat,bookingRoadPoint.lng,true);
+  }finally{
+    bookingRouteBusy=false;
+    if(bookingRouteQueued)setTimeout(()=>refreshBookingRoute(true),250);
+  }
+}
+function handleBookingLive(v){
+  if(!v)return;
+  const lat=Number(v.lat),lng=Number(v.lng),updatedAt=Number(v.updatedAt||Date.now());
+  if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+  bookingCurrentLive={lat,lng,updatedAt,online:v.online!==false,duty:v.duty===true,accuracy:Number(v.accuracy),speed:Number(v.speed),heading:Number(v.heading)};
+  updateBookingLiveHeader(bookingActiveBooking);
+  const last=bookingRoadPoint;
+  const moved=last?distanceKm(last,bookingCurrentLive)*1000:9999;
+  if(!bookingRoadPoint){refreshBookingRoute(true)}
+  else if(moved>=25 && Date.now()-bookingLastSnapAt>=8000){bookingLastSnapAt=Date.now();refreshBookingRoute(true)}
+  else{
+    // Keep the branded car on the last road-snapped point between road-snap calls.
+    setBookingCar(bookingRoadPoint.lat,bookingRoadPoint.lng,false);
+  }
+}
+let bookingActiveBooking=null;
+function showSavedBooking(id){
+  stopBookingLive();
   let b=getBookings().find(x=>x.bookingId===id);
   if(!b){showNotice('Booking इस device पर नहीं मिली.');return}
   if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}
-  let d=drivers.find(x=>String(x.id).toUpperCase()===String(b.driverId).toUpperCase())||{id:b.driverId,name:b.driverName,online:true,duty:false};
+  bookingActiveBooking=b;
+  let d=drivers.find(x=>String(x.id).toUpperCase()===String(b.driverId).toUpperCase())||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};
   bookingDriver=d;
-  $('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Distance:</b> ${b.distanceKm} km &nbsp; <b>Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE<br><span id="bookingLiveStatus" class="small">📡 Current Driver GPS पढ़ रहा है…</span></div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;
+  $('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2>
+  <div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br>
+  <b>Booking Route:</b> ${b.distanceKm} km &nbsp; <b>Initial Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE</div>
+  <div id="bookingLiveInfo" class="routebox" style="margin-top:8px">🛰️ <b>Live GPS:</b> Connecting to driver device…</div>
+  <div id="bookingMap" class="booking-map"></div>
+  <div id="bookingRouteInfo" class="routebox" style="margin-top:8px"><b>🛣️ Remaining Route:</b> Calculating…</div>
+  <button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;
   $('modal').classList.add('show');
   setTimeout(()=>drawSavedBookingMap(b),80);
 }
-async function drawSavedBookingMap(b){
+function drawSavedBookingMap(b){
+  stopBookingLive();
   if(routeMap){routeMap.remove();routeMap=null}
-  const live=await getCurrentDriverLive(b.driverId);
-  const driverLat=live?live.lat:Number(b.driverLat), driverLng=live?live.lng:Number(b.driverLng);
-  if(!Number.isFinite(driverLat)||!Number.isFinite(driverLng)){showNotice('Driver की current GPS उपलब्ध नहीं है.');return}
-  if(bookingDriver){bookingDriver.lat=driverLat;bookingDriver.lng=driverLng;bookingDriver.online=live?live.online:true;bookingDriver.duty=live?live.duty:bookingDriver.duty;bookingDriver.updatedAt=live?live.updatedAt:Date.now()}
-  const status=$('bookingLiveStatus');
-  if(status)status.textContent=live?`📡 Live GPS: ${driverLat.toFixed(6)}, ${driverLng.toFixed(6)} • ${live.updatedAt?new Date(live.updatedAt).toLocaleTimeString():'just now'}`:'📍 Saved GPS (live GPS unavailable)';
-  routeMap=L.map('bookingMap').setView([driverLat,driverLng],13);
+  routeMap=L.map('bookingMap').setView([Number(b.driverLat)||17.42536,Number(b.driverLng)||78.48694],14);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
-  let points=[{lat:driverLat,lng:driverLng},{lat:Number(b.pickupLat),lng:Number(b.pickupLng)},{lat:Number(b.destinationLat),lng:Number(b.destinationLng)}];
-  L.marker([points[0].lat,points[0].lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup(`🚕 ${esc(b.driverId)}<br>📡 Live GPS`).openPopup();
-  L.marker([points[1].lat,points[1].lng]).addTo(routeMap).bindPopup('📍 Pickup');
-  L.marker([points[2].lat,points[2].lng]).addTo(routeMap).bindPopup('🏁 Destination');
-  routeOSRM(points).then(r=>{L.geoJSON(r.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]})}).catch(()=>routeMap.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lng])),{padding:[25,25]}));
+  bookingFollowCar=true;
+  routeMap.on('dragstart',()=>{bookingFollowCar=false});
+  routeMap.on('zoomstart',()=>{});
+  bookingPickupMarker=L.marker([Number(b.pickupLat),Number(b.pickupLng)]).addTo(routeMap).bindPopup('📍 Pickup');
+  bookingDestinationMarker=L.marker([Number(b.destinationLat),Number(b.destinationLng)]).addTo(routeMap).bindPopup('🏁 Destination');
+  const fallback={lat:Number(b.driverLat),lng:Number(b.driverLng),updatedAt:Number(b.createdAt||Date.now()),online:true,duty:true};
+  bookingCurrentLive=fallback;
+  updateBookingLiveHeader(b);
+  bookingLiveRef=rtdb.ref('liveLocations/'+b.driverId);
+  bookingLiveRef.on('value',snap=>handleBookingLive(snap.val()));
+  bookingLiveTimer=setInterval(updateBookingTimeOnly,1000);
+  refreshBookingRoute(true);
 }
 function newBooking(id){closeModal();let d=drivers.find(x=>x.id===id);if(d)openBooking(id);else page('drivers')}
 async function startApp(){initMap();await setupTG();renderMyBookings();if(!myTelegramId){denyAccess('Telegram Mini App के अंदर खोलें.');return}if(tg&&tg.LocationManager)await initTelegramLocationManager();let ok=await authAnon();if(!ok){denyAccess('Firebase connection failed.');return}let cached=readCache();if(cached){paintMine(cached);allowAccess();startLocationRequestListener();if(autoGPS)startGPS();setTimeout(()=>verifyMineInBackground(cached),0)}else{$('accessText').textContent='Checking Driver ID…';let fresh=await findMine();if(!fresh){denyAccess('Driver ID registered नहीं मिला.');return}paintMine(fresh);allowAccess();startLocationRequestListener();if(autoGPS)startGPS()}await loadDrivers();startDutyRadar();stats();}

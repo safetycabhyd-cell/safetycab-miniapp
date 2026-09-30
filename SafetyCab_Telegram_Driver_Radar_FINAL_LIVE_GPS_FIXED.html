@@ -46,7 +46,8 @@ document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>page(b.dataset.pag
 function initMap(){map=L.map("map").setView([17.42536,78.48694],13);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map)}
 function driverIcon(d){
   const s=d.online&&d.duty?"🟢":d.online?"🟡":"🔴";
-  return L.divIcon({className:"",html:`<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 2px #0007);font-size:15px;line-height:1;transform:rotate(${Number.isFinite(Number(d.heading))?Number(d.heading):0}deg)">${s}<span style="font-size:22px">🚕</span></div>`,iconSize:[30,30],iconAnchor:[15,15]});
+  // Keep the car graphic physically upright on the map. GPS heading must NOT rotate the icon.
+  return L.divIcon({className:"",html:`<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 2px #0007);font-size:15px;line-height:1;transform:none;rotate:0deg"><span style="font-size:22px;display:inline-block;transform:none;rotate:0deg">🚕</span></div>`,iconSize:[30,30],iconAnchor:[15,15]});
 }
 function clearMarkers(){Object.values(markers).forEach(m=>{try{map.removeLayer(m)}catch(e){}});markers={}}
 function renderSelectedMarker(d,open=false){
@@ -312,7 +313,7 @@ async function snapToRoad(lat,lng){
   }finally{clearTimeout(timer)}
 }
 
-async function refreshLiveBookingRoute(destination,rawLat,rawLng,updatedAt){
+async function refreshLiveBookingRoute(destination,rawLat,rawLng,updatedAt,fitOnce=false){
   if(!routeMap||!destination)return;
   if(bookingRouteBusy)return;
   bookingRouteBusy=true;
@@ -325,7 +326,12 @@ async function refreshLiveBookingRoute(destination,rawLat,rawLng,updatedAt){
 
     // Remove ONLY the old route line. Keep the pickup/destination markers and live car marker.
     routeMap.eachLayer(l=>{if(l instanceof L.Polyline||l instanceof L.GeoJSON)routeMap.removeLayer(l)});
-    L.geoJSON(r.geometry,{style:{weight:5}}).addTo(routeMap);
+    const liveRouteLayer=L.geoJSON(r.geometry,{style:{weight:5}}).addTo(routeMap);
+
+    if(fitOnce){
+      const routeBounds=liveRouteLayer.getBounds();
+      if(routeBounds.isValid()) routeMap.fitBounds(routeBounds,{padding:[28,28],maxZoom:16});
+    }
 
     if(bookingLiveMarker){
       bookingLiveMarker.setLatLng([snapped.lat,snapped.lng]);
@@ -904,20 +910,42 @@ function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!
 async function drawSavedBookingMap(b){
   if(routeMap){routeMap.remove();routeMap=null}
   stopBookingLive();
+
+  // Get the freshest driver position from RTDB. Booking-time coordinates are only fallback.
   let live=await rtdb.ref('liveLocations/'+b.driverId).get();
   let v=live.val()||{};
   let liveLat=Number(v.lat),liveLng=Number(v.lng);
-  let driverLat=Number.isFinite(liveLat)?liveLat:Number(b.driverLat),driverLng=Number.isFinite(liveLng)?liveLng:Number(b.driverLng);
+  let driverLat=Number.isFinite(liveLat)?liveLat:Number(b.driverLat);
+  let driverLng=Number.isFinite(liveLng)?liveLng:Number(b.driverLng);
   const updatedAt=Number(v.updatedAt||Date.now());
+
   bookingDriver={...bookingDriver,lat:driverLat,lng:driverLng,online:v.online!==false,duty:v.duty===true,updatedAt,speed:Number(v.speed),heading:Number(v.heading),gpsAccuracy:Number(v.accuracy)};
   bookingRouteContext={driverId:b.driverId,pickupText:b.pickupText,destinationText:b.destinationText,destination:{lat:Number(b.destinationLat),lng:Number(b.destinationLng)}};
-  routeMap=L.map('bookingMap').setView([driverLat,driverLng],13);
+
+  const mapEl=$('bookingMap');
+  if(!mapEl)return;
+  routeMap=L.map('bookingMap',{preferCanvas:true}).setView([driverLat,driverLng],15);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
-  bookingLiveMarker=L.marker([driverLat,driverLng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup(`🚕 Driver Current Location<br>GPS: ${driverLat.toFixed(6)}, ${driverLng.toFixed(6)}<br>${gpsAgeText(updatedAt)}`).openPopup();
-  L.marker([b.pickupLat,b.pickupLng]).addTo(routeMap).bindPopup('📍 Pickup');
-  L.marker([b.destinationLat,b.destinationLng]).addTo(routeMap).bindPopup('🏁 Destination');
-  await refreshLiveBookingRoute(bookingRouteContext.destination,driverLat,driverLng,updatedAt);
+
+  // Let Leaflet calculate its real size after the booking modal is visible.
+  setTimeout(()=>{try{routeMap.invalidateSize(true)}catch(e){}},80);
+
+  bookingLiveMarker=L.marker([driverLat,driverLng],{icon:driverIcon(bookingDriver)}).addTo(routeMap)
+    .bindPopup(`🚕 Driver Current Location<br>GPS: ${driverLat.toFixed(6)}, ${driverLng.toFixed(6)}<br>${gpsAgeText(updatedAt)}`)
+    .openPopup();
+
+  const pickupLat=Number(b.pickupLat),pickupLng=Number(b.pickupLng);
+  const destinationLat=Number(b.destinationLat),destinationLng=Number(b.destinationLng);
+  if(Number.isFinite(pickupLat)&&Number.isFinite(pickupLng))
+    L.marker([pickupLat,pickupLng]).addTo(routeMap).bindPopup('📍 Pickup');
+  if(Number.isFinite(destinationLat)&&Number.isFinite(destinationLng))
+    L.marker([destinationLat,destinationLng]).addTo(routeMap).bindPopup('🏁 Destination');
+
+  // First draw the CURRENT road-snapped position to destination, then start live RTDB updates.
+  await refreshLiveBookingRoute(bookingRouteContext.destination,driverLat,driverLng,updatedAt,true);
   startBookingLive(b.driverId);
+
+  setTimeout(()=>{try{routeMap.invalidateSize(true)}catch(e){}},250);
 }
 function gpsAgeText(ts){
   ts=Number(ts);if(!Number.isFinite(ts)||ts<=0)return 'GPS time unavailable';

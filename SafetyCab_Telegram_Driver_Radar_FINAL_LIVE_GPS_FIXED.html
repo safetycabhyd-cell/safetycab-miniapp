@@ -348,7 +348,8 @@ async function refreshLiveBookingRoute(destination,rawLat,rawLng,updatedAt,fitOn
     if(info){
       const km=(Number(r.distance)/1000).toFixed(1);
       const min=Math.max(1,Math.round(Number(r.duration)/60));
-      info.innerHTML=`<b>Driver:</b> ${esc(bookingRouteContext.driverId)}<br><b>Pickup:</b> ${esc(bookingRouteContext.pickupText||'-')}<br><b>Destination:</b> ${esc(bookingRouteContext.destinationText||'-')}<br><b>Remaining Distance:</b> ${km} km &nbsp; <b>Time:</b> ${min} min<br><b>Live GPS:</b> ${Number(rawLat).toFixed(6)}, ${Number(rawLng).toFixed(6)} • ${gpsAgeText(updatedAt)}<br><span class="small">Road position: ${snapped.lat.toFixed(6)}, ${snapped.lng.toFixed(6)}${snapped.roadName?' • '+esc(snapped.roadName):''}</span>`;
+      info.innerHTML=`<b>Driver:</b> ${esc(bookingRouteContext.driverId)}<br><b>Pickup:</b> ${esc(bookingRouteContext.pickupText||'-')}<br><b>Destination:</b> ${esc(bookingRouteContext.destinationText||'-')}<br><b>Remaining Distance:</b> ${km} km &nbsp; <b>Time:</b> ${min} min<br><b>Driver Area:</b> <span id="bookingDriverArea">Finding current area…</span><br><span class="small">${gpsAgeText(updatedAt)}${snapped.roadName?' • '+esc(snapped.roadName):''}</span>`;
+      reverseGeocodeAddress(rawLat,rawLng).then(area=>{const el=$('bookingDriverArea');if(el)el.textContent=area||'Area not available'});
     }
   }catch(e){
     console.warn('Live booking route refresh failed:',e);
@@ -842,25 +843,19 @@ async function reverseGeocodeAddress(lat,lng){
   lat=Number(lat);lng=Number(lng);
   if(!Number.isFinite(lat)||!Number.isFinite(lng))return '';
   let fallback=`${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-  let url=
-    "https://nominatim.openstreetmap.org/reverse"+
-    "?format=jsonv2"+
-    "&lat="+encodeURIComponent(lat)+
-    "&lon="+encodeURIComponent(lng)+
-    "&zoom=18&addressdetails=1";
+  let url="https://nominatim.openstreetmap.org/reverse"+"?format=jsonv2"+"&lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lng)+"&zoom=18&addressdetails=1";
   let ctl=new AbortController();
   let timer=setTimeout(()=>ctl.abort(),6500);
   try{
     let r=await fetch(url,{headers:{Accept:'application/json'}});
     if(!r.ok)return fallback;
-    let j=await r.json();
-    return j.display_name||fallback;
-  }catch(e){
-    console.warn('Reverse geocode failed:',e);
-    return fallback;
-  }finally{
-    clearTimeout(timer);
-  }
+    let j=await r.json(),a=j.address||{};
+    const area=a.neighbourhood||a.suburb||a.quarter||a.village||a.town||a.city_district||a.city||a.municipality||'';
+    const city=a.city||a.town||a.municipality||'';
+    if(area&&city&&area.toLowerCase()!==city.toLowerCase())return `${area}, ${city}`;
+    return area||j.display_name||fallback;
+  }catch(e){console.warn('Reverse geocode failed:',e);return fallback}
+  finally{clearTimeout(timer)}
 }
 
 function openBooking(id){closeModal();lastRoute=null;let d=drivers.find(x=>x.id===id)||selectedDriver;if(!d){showNotice('Driver नहीं मिला.');return}bookingDriver=d;startBookingLive(d.id);$('modalBody').innerHTML=`<h2 style="margin-right:38px">🚕 Book ${esc(d.id)}</h2><div class="row"><span>Driver</span><b>${esc(d.name||d.id)}</b></div><div class="row"><span>Vehicle</span><b>${esc(d.vehicle||'-')} • ${esc(d.vehicleType||'-')}</b></div><div class="row"><span>Driver Current GPS</span><b id="bookingDriverGPS">${Number.isFinite(Number(d.lat))&&Number.isFinite(Number(d.lng))?esc(Number(d.lat).toFixed(6)+', '+Number(d.lng).toFixed(6)):'GPS unavailable'}</b></div><div class="row"><span>Driver Current Address</span><b id="bookingDriverAddress">Getting location...</b></div><label>📍 Pickup Location</label><input id="pickupInput" class="input" placeholder="Pickup location"><button class="action secondary" style="width:100%;margin-bottom:5px" onclick="useCurrentLocation()">📍 Use My Current Location</button><label>🏁 Destination / Drop</label><input id="destinationInput" class="input" placeholder="Destination / Drop"><button class="action" style="width:100%;margin-top:5px" onclick="showBookingRoute()">🗺️ Show Route on Map</button><div id="routeStatus" class="notice">Pickup और Destination डालकर route दिखाएँ.</div><div id="bookingMap" class="booking-map"></div><div id="routeInfo"></div><button id="saveBookingBtn" class="action" style="width:100%;margin-top:10px;display:none" onclick="saveBooking()">✅ Confirm Booking</button>`;$('modal').classList.add('show');setTimeout(initBookingMap,80)}
@@ -906,47 +901,66 @@ async function showBookingRoute(){
 function drawRoute(x){if(!routeMap)return;routeMap.eachLayer(l=>{if(l instanceof L.Marker||l instanceof L.Polyline)routeMap.removeLayer(l)});let pts=[x.driver,x.pickup,x.destination];L.marker([x.driver.lat,x.driver.lng],{icon:driverIcon(bookingDriver)}).addTo(routeMap).bindPopup(`🚕 Driver Current Location<br>${Number(x.driver.lat).toFixed(6)}, ${Number(x.driver.lng).toFixed(6)}`);L.marker([x.pickup.lat,x.pickup.lng]).addTo(routeMap).bindPopup('📍 Pickup');L.marker([x.destination.lat,x.destination.lng]).addTo(routeMap).bindPopup('🏁 Destination');let line=L.geoJSON(x.route.geometry).addTo(routeMap);routeMap.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])),{padding:[25,25]});let km=(Number(x.route.distance)/1000).toFixed(1),min=Math.round(Number(x.route.duration)/60);$('routeInfo').innerHTML=`<div class="routebox"><strong>Road Route</strong>Driver → Pickup → Destination<br>Distance: <b>${km} km</b> &nbsp; Estimated Time: <b>${min} min</b><br><span class="small">Driver GPS: ${Number(x.driver.lat).toFixed(6)}, ${Number(x.driver.lng).toFixed(6)}<br>Pickup: ${esc(x.pickupText)}<br>Destination: ${esc(x.destinationText)}</span></div>`}
 async function saveBooking(){if(!bookingDriver||!lastRoute)return;let id='BK-'+Date.now().toString(36).toUpperCase();let b={bookingId:id,customerId:String(myTelegramId||''),driverId:bookingDriver.id,driverName:bookingDriver.name||'',pickupText:lastRoute.pickupText,pickupLat:lastRoute.pickup.lat,pickupLng:lastRoute.pickup.lng,destinationText:lastRoute.destinationText,destinationLat:lastRoute.destination.lat,destinationLng:lastRoute.destination.lng,driverLat:lastRoute.driver.lat,driverLng:lastRoute.driver.lng,distanceKm:Number((lastRoute.route.distance/1000).toFixed(2)),estimatedMinutes:Math.round(lastRoute.route.duration/60),status:'pending',createdAt:Date.now()};$('saveBookingBtn').disabled=true;try{await db.collection('bookings').doc(id).set(b);saveLocalBooking(b);renderSavedBooking(b);showNotice('Booking Saved')}catch(e){console.error(e);$('saveBookingBtn').disabled=false;showNotice('Booking save नहीं हुई.')}}
 function renderSavedBooking(b){$('modalBody').innerHTML=`<div class="success"><h3>✅ Booking Saved</h3><div>Booking ID: <b>${esc(b.bookingId)}</b></div><div>Driver: <b>${esc(b.driverId)}</b></div><div>Pickup: ${esc(b.pickupText)}</div><div>Destination: ${esc(b.destinationText)}</div><div>Road Distance: <b>${b.distanceKm} km</b></div><div>Estimated Time: <b>${b.estimatedMinutes} min</b></div><div style="margin-top:6px;color:#15803d;font-weight:700">Status: ACTIVE</div></div><button class="action" style="width:100%;margin-top:10px" onclick="showSavedBooking('${js(b.bookingId)}')">🗺️ View Booking Map</button><button class="action secondary" style="width:100%;margin-top:8px" onclick="newBooking('${js(b.driverId)}')">🚕 New Booking</button><button class="action danger" style="width:100%;margin-top:8px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`}
-function showSavedBooking(id){let b=getBookings().find(x=>x.bookingId===id);if(!b){showNotice('Booking इस device पर नहीं मिली.');return}if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};bookingDriver=d;$('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Booking Distance:</b> ${b.distanceKm} km &nbsp; <b>Booking Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE<br><b>Live GPS:</b> Waiting for current GPS…</div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;$('modal').classList.add('show');setTimeout(()=>drawSavedBookingMap(b),80)}
+async function showSavedBooking(id){
+  let b=getBookings().find(x=>x.bookingId===id);
+  if(!b){
+    try{const snap=await db.collection('bookings').doc(String(id)).get();if(snap.exists)b=snap.data()}catch(e){console.warn('Booking Firestore lookup failed:',e)}
+  }
+  if(!b){showNotice('Booking नहीं मिली.');return}
+  if(b.status==='closed'){showNotice('यह booking close हो चुकी है. Driver Free है.');return}
+  let d=drivers.find(x=>x.id===b.driverId)||{id:b.driverId,name:b.driverName,lat:b.driverLat,lng:b.driverLng,online:true,duty:false};
+  bookingDriver=d;
+  $('modalBody').innerHTML=`<h2>🗺️ Booking ${esc(b.bookingId)}</h2><div class="routebox"><b>Driver:</b> ${esc(b.driverId)}<br><b>Pickup:</b> ${esc(b.pickupText)}<br><b>Destination:</b> ${esc(b.destinationText)}<br><b>Booking Distance:</b> ${b.distanceKm} km &nbsp; <b>Booking Time:</b> ${b.estimatedMinutes} min<br><b>Status:</b> ACTIVE<br><b>Driver Area:</b> <span id="bookingDriverArea">Finding current area…</span></div><div id="bookingMap" class="booking-map"></div><button class="action danger" style="width:100%;margin-top:10px" onclick="closeBooking('${js(b.bookingId)}')">🔒 Close Booking / Free Driver</button>`;
+  $('modal').classList.add('show');
+  setTimeout(()=>drawSavedBookingMap(b),60);
+}
 async function drawSavedBookingMap(b){
   if(routeMap){routeMap.remove();routeMap=null}
   stopBookingLive();
-
-  // Get the freshest driver position from RTDB. Booking-time coordinates are only fallback.
-  let live=await rtdb.ref('liveLocations/'+b.driverId).get();
-  let v=live.val()||{};
-  let liveLat=Number(v.lat),liveLng=Number(v.lng);
-  let driverLat=Number.isFinite(liveLat)?liveLat:Number(b.driverLat);
-  let driverLng=Number.isFinite(liveLng)?liveLng:Number(b.driverLng);
-  const updatedAt=Number(v.updatedAt||Date.now());
-
-  bookingDriver={...bookingDriver,lat:driverLat,lng:driverLng,online:v.online!==false,duty:v.duty===true,updatedAt,speed:Number(v.speed),heading:Number(v.heading),gpsAccuracy:Number(v.accuracy)};
-  bookingRouteContext={driverId:b.driverId,pickupText:b.pickupText,destinationText:b.destinationText,destination:{lat:Number(b.destinationLat),lng:Number(b.destinationLng)}};
-
+  const fallbackLat=Number(b.driverLat),fallbackLng=Number(b.driverLng);
+  const initialLat=Number.isFinite(fallbackLat)?fallbackLat:17.42536;
+  const initialLng=Number.isFinite(fallbackLng)?fallbackLng:78.48694;
   const mapEl=$('bookingMap');
   if(!mapEl)return;
-  routeMap=L.map('bookingMap',{preferCanvas:true}).setView([driverLat,driverLng],15);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
 
-  // Let Leaflet calculate its real size after the booking modal is visible.
+  // Create the map first. A slow Firebase read must never stop the booking map from opening.
+  routeMap=L.map('bookingMap',{preferCanvas:true}).setView([initialLat,initialLng],15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(routeMap);
   setTimeout(()=>{try{routeMap.invalidateSize(true)}catch(e){}},80);
 
-  bookingLiveMarker=L.marker([driverLat,driverLng],{icon:driverIcon(bookingDriver)}).addTo(routeMap)
-    .bindPopup(`🚕 Driver Current Location<br>GPS: ${driverLat.toFixed(6)}, ${driverLng.toFixed(6)}<br>${gpsAgeText(updatedAt)}`)
-    .openPopup();
+  bookingDriver={...bookingDriver,lat:initialLat,lng:initialLng,online:true,duty:false,updatedAt:Number(b.createdAt||Date.now())};
+  bookingRouteContext={driverId:b.driverId,pickupText:b.pickupText,destinationText:b.destinationText,destination:{lat:Number(b.destinationLat),lng:Number(b.destinationLng)}};
+  bookingLiveMarker=L.marker([initialLat,initialLng],{icon:driverIcon(bookingDriver)}).addTo(routeMap);
 
   const pickupLat=Number(b.pickupLat),pickupLng=Number(b.pickupLng);
   const destinationLat=Number(b.destinationLat),destinationLng=Number(b.destinationLng);
-  if(Number.isFinite(pickupLat)&&Number.isFinite(pickupLng))
-    L.marker([pickupLat,pickupLng]).addTo(routeMap).bindPopup('📍 Pickup');
-  if(Number.isFinite(destinationLat)&&Number.isFinite(destinationLng))
-    L.marker([destinationLat,destinationLng]).addTo(routeMap).bindPopup('🏁 Destination');
+  if(Number.isFinite(pickupLat)&&Number.isFinite(pickupLng))L.marker([pickupLat,pickupLng]).addTo(routeMap).bindPopup('📍 Pickup');
+  if(Number.isFinite(destinationLat)&&Number.isFinite(destinationLng))L.marker([destinationLat,destinationLng]).addTo(routeMap).bindPopup('🏁 Destination');
 
-  // First draw the CURRENT road-snapped position to destination, then start live RTDB updates.
-  await refreshLiveBookingRoute(bookingRouteContext.destination,driverLat,driverLng,updatedAt,true);
+  let driverLat=initialLat,driverLng=initialLng,updatedAt=Number(b.createdAt||Date.now());
+  try{
+    const live=await rtdb.ref('liveLocations/'+b.driverId).get(),v=live.val()||{};
+    const liveLat=Number(v.lat),liveLng=Number(v.lng);
+    if(Number.isFinite(liveLat)&&Number.isFinite(liveLng)){driverLat=liveLat;driverLng=liveLng}
+    updatedAt=Number(v.updatedAt||updatedAt);
+    bookingDriver={...bookingDriver,lat:driverLat,lng:driverLng,online:v.online!==false,duty:v.duty===true,updatedAt,speed:Number(v.speed),heading:Number(v.heading),gpsAccuracy:Number(v.accuracy)};
+  }catch(e){console.warn('Live GPS read failed; using booking GPS:',e)}
+
+  bookingLiveMarker.setLatLng([driverLat,driverLng]);
+  bookingLiveMarker.setIcon(driverIcon(bookingDriver));
+  bookingLiveMarker.bindPopup(`🚕 ${esc(b.driverId)}<br>Driver Area: <span id="bookingMapAreaPopup">Finding current area…</span><br>${gpsAgeText(updatedAt)}`).openPopup();
+
+  reverseGeocodeAddress(driverLat,driverLng).then(area=>{
+    const a=area||'Area not available';
+    const el=$('bookingDriverArea');if(el)el.textContent=a;
+    const pel=$('bookingMapAreaPopup');if(pel)pel.textContent=a;
+  });
+
+  if(Number.isFinite(destinationLat)&&Number.isFinite(destinationLng))await refreshLiveBookingRoute(bookingRouteContext.destination,driverLat,driverLng,updatedAt,true);
   startBookingLive(b.driverId);
-
   setTimeout(()=>{try{routeMap.invalidateSize(true)}catch(e){}},250);
 }
+
 function gpsAgeText(ts){
   ts=Number(ts);if(!Number.isFinite(ts)||ts<=0)return 'GPS time unavailable';
   const diff=Math.max(0,Date.now()-ts),sec=Math.floor(diff/1000);

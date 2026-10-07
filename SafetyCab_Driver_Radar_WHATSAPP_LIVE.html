@@ -27,6 +27,33 @@
 <div id="photoViewer" class="photo-viewer" onclick="if(event.target===this)closePhoto()"><button class="action" onclick="closePhoto()">✕</button><img id="viewerImg" src="" alt="Photo"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const WHATSAPP_ACCESS_CODE="4826";
+let whatsappUnlocked=false;
+function showWhatsAppLock(){
+  $('accessText').innerHTML=`<b>🔐 Safety Cab Radar Security</b>
+    <div style="margin-top:12px;color:#667085">WhatsApp Radar खोलने के लिए Access Code डालें.</div>
+    <input id="waAccessCode" type="password" inputmode="numeric" maxlength="12"
+      placeholder="Access Code"
+      style="width:100%;padding:13px;border:1px solid #ccd6e2;border-radius:10px;font-size:18px;text-align:center;margin:12px 0">
+    <button class="action" style="width:100%" onclick="checkWhatsAppAccess()">🔓 OPEN RADAR</button>
+    <div id="waAccessMsg" style="margin-top:10px;color:#b91c1c;font-size:12px"></div>`;
+}
+async function checkWhatsAppAccess(){
+  const input=$('waAccessCode');
+  const msg=$('waAccessMsg');
+  if(!input)return;
+  if(String(input.value||"").trim()!==WHATSAPP_ACCESS_CODE){
+    if(msg)msg.textContent="❌ गलत Access Code";
+    input.value="";
+    input.focus();
+    return;
+  }
+  whatsappUnlocked=true;
+  allowAccess();
+  await loadDrivers();
+  startDutyRadar();
+  stats();
+}
 const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();let tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
 function refreshTelegram(){
@@ -978,13 +1005,9 @@ async function startApp(){
   // 1) Telegram: keep the existing Driver ID, profile and GPS workflow.
   // 2) Normal browser/WhatsApp: open the Radar without requiring Telegram.
   if(!myTelegramId){
-    $('accessText').innerHTML='<b>Safety Cab Driver Radar</b><br><br>Web / WhatsApp Radar Mode';
     let ok=await authAnon();
     if(!ok){denyAccess('Firebase connection failed.');return}
-    allowAccess();
-    await loadDrivers();
-    startDutyRadar();
-    stats();
+    showWhatsAppLock();
     return;
   }
 

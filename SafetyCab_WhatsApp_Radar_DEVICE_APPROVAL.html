@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Safety Cab Driver Radar - Device Approval</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238;padding-bottom:72px}.hide{display:none!important}
+#gate{position:fixed;inset:0;z-index:9000;background:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:20px}.gateCard{width:100%;max-width:410px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 5px 25px #0002}.gateLogo{font-size:48px}.gateTitle{font-size:23px;font-weight:800;margin:8px 0}.gateSub{font-size:13px;color:#667;line-height:1.5;margin-bottom:18px}.input{width:100%;padding:13px;border:1px solid #cbd5df;border-radius:10px;font-size:16px;text-transform:uppercase;outline:none}.btn{width:100%;padding:12px;border:0;border-radius:10px;background:#087fc3;color:#fff;font-weight:800;margin-top:10px}.btn:disabled{opacity:.55}.msg{margin-top:12px;padding:10px;border-radius:10px;font-size:13px;line-height:1.45;display:none}.msg.show{display:block}.info{background:#e4f1fb;color:#075a8c}.warn{background:#fff4cf;color:#765b00}.ok{background:#dff6e7;color:#087b35}.bad{background:#fde2e2;color:#a40000}.deviceBox{font-size:11px;color:#667;background:#f4f7fb;border-radius:9px;padding:9px;margin-top:12px;word-break:break-all;text-align:left}
+#app{display:none}.header{height:64px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:0 14px;gap:10px}.logo{width:42px;height:42px;border-radius:50%;background:#ffd21c;display:flex;align-items:center;justify-content:center;font-size:22px}.title{font-size:19px;font-weight:800}.sub{font-size:11px;opacity:.9}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;background:#fff}.stat{background:#fff;border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 8px #0001}.stat b{font-size:23px;display:block}.blue{color:#087fc3}.green{color:#159447}.red{color:#d93636}#map{height:calc(100vh - 210px);min-height:430px}.panel{background:#fff;padding:10px;border-top:1px solid #ddd}.search{width:100%;padding:11px;border:1px solid #ccd5dd;border-radius:10px}.list{padding:8px;background:#f4f7fb}.card{background:#fff;border-radius:12px;padding:11px;margin-bottom:8px;box-shadow:0 2px 7px #0001}.small{font-size:12px;color:#667;margin-top:4px}.badge{font-size:11px;padding:4px 7px;border-radius:10px}.on{background:#dff6e7;color:#087b35}.off{background:#eee;color:#666}.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(3,1fr);z-index:1200}.navbtn{border:0;background:#fff;padding:8px 3px;color:#59636d;font-size:11px}.navbtn b{display:block;font-size:21px}.navbtn.active{color:#087fc3}
+.notice{margin:10px;padding:10px;border-radius:10px;font-size:13px;background:#e4f1fb;color:#075a8c}.driverPhoto{width:44px;height:44px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:7px;border:2px solid #d5dfe7}
+</style>
+</head>
+<body>
+<div id="gate">
+ <div class="gateCard">
+  <div class="gateLogo">🚕</div>
+  <div class="gateTitle">Safety Cab Driver Radar</div>
+  <div class="gateSub">🔐 Device Approval Security<br>पहली बार इस फोन पर Radar चलाने के लिए Driver ID से Device Approval लेना होगा।</div>
+  <input id="driverId" class="input" maxlength="12" placeholder="Driver ID e.g. DC001" autocomplete="off">
+  <button id="requestBtn" class="btn" onclick="requestApproval()">📱 REQUEST DEVICE APPROVAL</button>
+  <button id="retryBtn" class="btn hide" onclick="checkApproval()">🔄 CHECK APPROVAL</button>
+  <div id="gateMsg" class="msg"></div>
+  <div class="deviceBox"><b>Device ID:</b><br><span id="deviceIdText"></span><br><span>यह ID इसी browser/device में सुरक्षित रहेगी।</span></div>
+ </div>
+</div>
+
+<div id="app">
+<header class="header"><div class="logo">🚕</div><div><div class="title">Safety Cab Driver Radar</div><div class="sub">WhatsApp • Approved Device</div></div></header>
+<section class="stats"><div class="stat"><b id="total" class="blue">0</b>Total</div><div class="stat"><b id="online" class="green">0</b>Online</div><div class="stat"><b id="duty" class="green">0</b>Duty ON</div></section>
+<div id="notice" class="notice">Approved device connected.</div>
+<div id="map"></div>
+<section class="panel"><input id="search" class="search" placeholder="🔎 Search Driver / ID / Vehicle"></section>
+<section id="driverList" class="list"></section>
+<nav class="bottom"><button class="navbtn active" onclick="goMap()"><b>🗺️</b>Map</button><button class="navbtn" onclick="goDrivers()"><b>🚕</b>Drivers</button><button class="navbtn" onclick="showDeviceInfo()"><b>📱</b>Device</button></nav>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",authDomain:"safety-cab-radar.firebaseapp.com",databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"safety-cab-radar",storageBucket:"safety-cab-radar.firebasestorage.app",messagingSenderId:"900129993912",appId:"1:900129993912:web:48c98c4d62154d0f39704d"};
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();
+const $=id=>document.getElementById(id);function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function makeDeviceId(){let x=localStorage.getItem('safetyCabApprovedDeviceId');if(x)return x;const raw=(crypto&&crypto.randomUUID)?crypto.randomUUID():('SC-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12));x=raw.replace(/[^a-zA-Z0-9_-]/g,'');localStorage.setItem('safetyCabApprovedDeviceId',x);return x}
+const deviceId=makeDeviceId();$('deviceIdText').textContent=deviceId;
+let approvalUnsub=null,approvalDriverId=localStorage.getItem('safetyCabApprovedDriverId')||'';
+function setMsg(t,c){const e=$('gateMsg');e.innerHTML=t;e.className='msg show '+c}
+async function ensureAnon(){if(auth.currentUser)return true;try{await auth.signInAnonymously();return true}catch(e){setMsg('Firebase login failed. Admin को बताइए कि Anonymous Authentication enabled है या नहीं.<br>'+esc(e.message),'bad');return false}}
+async function requestApproval(){
+ const id=$('driverId').value.trim().toUpperCase(); if(!/^DC\d{3,}$/.test(id)){setMsg('कृपया सही Driver ID डालें, जैसे <b>DC001</b>.','warn');return}
+ $('requestBtn').disabled=true;$('requestBtn').textContent='⏳ REQUESTING...';
+ if(!(await ensureAnon())){$('requestBtn').disabled=false;$('requestBtn').textContent='📱 REQUEST DEVICE APPROVAL';return}
+ try{
+  const ds=await db.collection('drivers').doc(id).get();
+  if(!ds.exists){setMsg('❌ Driver ID <b>'+esc(id)+'</b> Firebase में नहीं मिला। पहले Admin Panel में Driver add करें.','bad');return}
+  const d=ds.data()||{};approvalDriverId=id;localStorage.setItem('safetyCabApprovedDriverId',id);
+  const ref=db.collection('deviceRequests').doc(deviceId);const old=await ref.get();
+  const data={deviceId,driverId:id,name:d.name||'',status:'pending',requestedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp(),userAgent:navigator.userAgent,platform:navigator.platform||''};
+  if(old.exists && ['pending','approved'].includes(String(old.data().status||'').toLowerCase())){setMsg('📱 इस device की request पहले से मौजूद है।<br><b>Status: '+esc(String(old.data().status).toUpperCase())+'</b>','info');subscribeApproval();return}
+  await ref.set(data,{merge:true});
+  setMsg('✅ Request Admin को भेज दी गई है।<br><br><b>Driver ID:</b> '+esc(id)+'<br><b>Status:</b> PENDING<br><br>Admin approval के बाद यही फोन अपने-आप Radar खोल देगा.','info');
+  subscribeApproval();
+ }catch(e){console.error(e);setMsg('❌ Request भेजी नहीं गई.<br>'+esc(e.message),'bad')}
+ finally{$('requestBtn').disabled=false;$('requestBtn').textContent='📱 REQUEST DEVICE APPROVAL'}
+}
+async function checkApproval(){if(!(await ensureAnon()))return;subscribeApproval()}
+function subscribeApproval(){
+ if(approvalUnsub)approvalUnsub();
+ approvalUnsub=db.collection('approvedDevices').doc(deviceId).onSnapshot(s=>{
+  if(!s.exists){$('retryBtn').classList.remove('hide');return}
+  const d=s.data()||{},status=String(d.status||'').toLowerCase();
+  if(status==='approved'){
+    localStorage.setItem('safetyCabApprovedDriverId',String(d.driverId||approvalDriverId));
+    setMsg('✅ Device APPROVED! Radar खुल रहा है...','ok');setTimeout(openRadar,500);
+  }else if(status==='rejected')setMsg('❌ Admin ने इस device request को REJECT किया है।','bad');
+  else if(status==='revoked')setMsg('🚫 इस device की approval REVOKE कर दी गई है। Admin से दोबारा approval लें.','bad');
+ },e=>setMsg('Approval status read failed.<br>'+esc(e.message),'bad'));
+}
+async function openRadar(){
+ $('gate').classList.add('hide');$('app').style.display='block';setTimeout(()=>{map.invalidateSize();loadDrivers();startLive();},150);
+}
+function autoCheck(){if(!auth.currentUser)return;const saved=localStorage.getItem('safetyCabApprovedDriverId');if(!saved)return;db.collection('approvedDevices').doc(deviceId).get().then(s=>{if(s.exists&&String(s.data().status||'').toLowerCase()==='approved'){approvalDriverId=s.data().driverId||saved;openRadar()}}).catch(()=>{})}
+let map,markers={},drivers=[],live={};
+function icon(d){return L.divIcon({className:'',html:`<div style="width:38px;height:38px;border-radius:50%;background:${d.online?'#18a957':'#777'};border:3px solid white;box-shadow:0 2px 7px #0008;display:flex;align-items:center;justify-content:center;font-size:19px">🚕</div>`,iconSize:[38,38],iconAnchor:[19,19]})}
+function initMap(){map=L.map('map').setView([17.42536,78.48694],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map)}
+async function loadDrivers(){try{const s=await db.collection('publicDrivers').get();drivers=s.docs.map(x=>({id:x.id,...x.data()}));render()}catch(e){$('driverList').innerHTML='<div class="card">Firebase load failed: '+esc(e.message)+'</div>'}}
+function startLive(){rtdb.ref('liveLocations').on('value',s=>{live=s.val()||{};render()})}
+function render(){if(!map)return;Object.values(markers).forEach(m=>map.removeLayer(m));markers={};let q=($('search').value||'').toLowerCase().trim();let arr=drivers.filter(d=>{const t=((d.id||'')+' '+(d.name||'')+' '+(d.vehicle||'')).toLowerCase();return !q||t.includes(q)});let on=0,duty=0;arr.forEach(d=>{const l=live[d.id];if(l&&Number.isFinite(Number(l.lat))&&Number.isFinite(Number(l.lng))){d.lat=Number(l.lat);d.lng=Number(l.lng);d.online=l.online!==false;d.duty=l.duty===true}if(d.online)on++;if(d.duty)duty++;if(Number.isFinite(Number(d.lat))&&Number.isFinite(Number(d.lng))){const m=L.marker([Number(d.lat),Number(d.lng)],{icon:icon(d)}).addTo(map);m.bindPopup(`<b>🚕 ${esc(d.name||d.id)}</b><br>Driver ID: ${esc(d.id)}<br>Vehicle: ${esc(d.vehicle||'-')}<br>Status: ${d.online?'🟢 Online':'🔴 Offline'}`);markers[d.id]=m}});$('total').textContent=arr.length;$('online').textContent=on;$('duty').textContent=duty;$('driverList').innerHTML=arr.map(d=>`<div class="card"><div><b>🚕 ${esc(d.name||d.id)}</b> <span class="badge ${d.online?'on':'off'}">${d.online?'GPS ONLINE':'OFFLINE'}</span></div><div class="small">Driver ID: ${esc(d.id)} • Vehicle: ${esc(d.vehicle||'-')}</div></div>`).join('')||'<div class="card">No drivers found.</div>'}
+$('search').addEventListener('input',render);
+function goMap(){window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>map.invalidateSize(),150)}function goDrivers(){document.getElementById('driverList').scrollIntoView({behavior:'smooth'})}
+function showDeviceInfo(){alert('Driver ID: '+(approvalDriverId||'Not set')+'\nDevice ID: '+deviceId+'\n\nApproval status is controlled by Admin Panel.')}
+initMap();
+ensureAnon().then(()=>autoCheck());
+</script>
+</body></html>

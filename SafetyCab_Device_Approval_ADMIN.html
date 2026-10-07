@@ -2,515 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Safety Cab - Device Approval Admin</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Safety Cab - Admin + Device Approval</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238;padding-bottom:20px}
-button,input{font:inherit}
-#loginScreen{position:fixed;inset:0;z-index:10;background:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:20px}
-.loginBox{width:100%;max-width:420px;background:#fff;border-radius:18px;padding:24px;box-shadow:0 5px 25px #0002}
-.logo{width:64px;height:64px;border-radius:50%;background:#ffd21c;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 14px}
-.title{text-align:center;font-size:24px;font-weight:800}
-.sub{text-align:center;font-size:13px;color:#667;margin:6px 0 22px}
-.field{margin-bottom:13px}
-.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
-.field input{width:100%;padding:12px;border:1px solid #ccd5dd;border-radius:10px;outline:none}
-#loginBtn{width:100%;padding:12px;border:0;border-radius:10px;background:#087fc3;color:#fff;font-weight:700}
-#loginBtn:disabled{opacity:.6}
-#loginMsg{margin-top:12px;font-size:13px;text-align:center;color:#d93636;min-height:18px}
-#app{display:none}
-.header{background:#087fc3;color:#fff;padding:14px;display:flex;align-items:center;gap:10px}
-.headerLogo{width:44px;height:44px;border-radius:50%;background:#ffd21c;display:flex;align-items:center;justify-content:center;font-size:22px}
-.headerTitle{font-size:19px;font-weight:800}
-.headerSub{font-size:11px;opacity:.9;margin-top:2px}
-.logout{margin-left:auto;border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:8px;padding:7px 10px}
-.wrap{max-width:900px;margin:auto;padding:12px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat{background:#fff;border-radius:14px;padding:12px;text-align:center;box-shadow:0 2px 8px #0001}
-.stat b{display:block;font-size:25px}
-.blue{color:#087fc3}.green{color:#159447}.red{color:#d93636}
-.toolbar{background:#fff;border-radius:14px;padding:12px;box-shadow:0 2px 8px #0001;margin-bottom:12px}
-.toolbarTop{display:flex;gap:8px}
-.search{flex:1;padding:11px;border:1px solid #ccd5dd;border-radius:10px}
-.refresh{border:0;border-radius:10px;background:#087fc3;color:#fff;padding:10px 13px}
-.filters{display:flex;gap:6px;overflow:auto;margin-top:9px}
-.filters button{border:1px solid #ccd5dd;background:#fff;border-radius:18px;padding:8px 12px;white-space:nowrap}
-.filters button.active{background:#087fc3;color:#fff}
-.card{background:#fff;border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:0 2px 8px #0001}
-.cardHead{display:flex;align-items:center;gap:10px}
-.driverIcon{width:44px;height:44px;border-radius:50%;background:#e9f3f9;display:flex;align-items:center;justify-content:center;font-size:23px}
-.name{font-weight:800;font-size:16px}
-.id{font-size:12px;color:#087fc3;font-weight:700;margin-top:3px}
-.status{margin-left:auto;padding:5px 8px;border-radius:12px;font-size:11px;font-weight:800}
-.pending{background:#fff0bd;color:#806500}
-.approved{background:#dff6e7;color:#087b35}
-.rejected{background:#fde2e2;color:#a40000}
-.info{font-size:12px;color:#667;margin-top:9px;line-height:1.55}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.btn{border:0;border-radius:9px;padding:9px 12px;color:#fff;background:#087fc3}
-.approve{background:#159447}.reject{background:#d93636}.gray{background:#667}
-.empty{background:#fff;border-radius:14px;padding:20px;text-align:center;color:#667}
-.note{font-size:11px;color:#667;background:#eef6fb;border:1px solid #d6e8f2;border-radius:10px;padding:10px;margin-bottom:12px}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:20;align-items:flex-end}
-.modal.show{display:flex}
-.sheet{background:#fff;width:100%;max-width:700px;margin:auto;border-radius:18px 18px 0 0;padding:18px;max-height:88vh;overflow:auto}
-.close{float:right;border:0;background:#eee;border-radius:50%;width:34px;height:34px}
-.detailRow{padding:9px 0;border-bottom:1px solid #edf0f2;font-size:13px}
-.detailRow b{display:block;font-size:11px;color:#667;margin-bottom:3px}
-@media(max-width:600px){.stats{grid-template-columns:repeat(3,1fr)}.toolbarTop{flex-direction:column}.refresh{width:100%}}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238}
+.top{height:64px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:0 12px;gap:10px;position:sticky;top:0;z-index:1000}
+.logo{width:42px;height:42px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:22px}
+.title{font-size:18px;font-weight:800}.sub{font-size:11px;opacity:.9}
+.top button{margin-left:auto;border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:9px;padding:8px 11px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:64px;z-index:900}
+.tab{border:0;background:#fff;padding:12px;font-weight:700;color:#667}
+.tab.active{color:#087fc3;border-bottom:3px solid #087fc3}
+#existingWrap{height:calc(100vh - 112px);background:#f4f7fb}
+#existing{width:100%;height:100%;border:0;background:#fff}
+#approval{display:none;padding:10px;min-height:calc(100vh - 112px)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{background:#fff;border-radius:14px;padding:11px;text-align:center;box-shadow:0 2px 8px #0001}
+.stat b{display:block;font-size:25px}.blue{color:#087fc3}.green{color:#159447}.yellow{color:#b88400}.red{color:#d93636}
+.card{background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px #0001}
+.search{width:100%;padding:11px;border:1px solid #ccd5dd;border-radius:10px;outline:none;margin-bottom:8px}
+.filters{display:flex;gap:6px;overflow:auto}.filters button{border:1px solid #ccd5dd;background:#fff;border-radius:18px;padding:8px 12px;white-space:nowrap}.filters button.active{background:#087fc3;color:#fff}
+.request{background:#fff;border-radius:14px;padding:12px;margin-bottom:9px;box-shadow:0 2px 8px #0001}
+.row{display:flex;justify-content:space-between;gap:10px;margin:5px 0;font-size:13px}.muted{color:#667;font-size:12px}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:700}.pending{background:#fff1bf;color:#806500}.approved{background:#dff6e7;color:#087b35}.rejected{background:#fde2e2;color:#a40000}.revoked{background:#eee;color:#555}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.btn{border:0;border-radius:8px;padding:9px 11px;background:#087fc3;color:#fff;font-weight:700}.approve{background:#159447}.reject,.revoke{background:#d93636}.gray{background:#667}
+.notice{padding:10px;border-radius:10px;background:#e4f1fb;color:#075a8c;font-size:12px;margin-bottom:10px}
+.login{position:fixed;inset:0;background:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:20px;z-index:3000}
+.loginbox{width:100%;max-width:410px;background:#fff;border-radius:18px;padding:22px;box-shadow:0 5px 25px #0002}.loginbox h2{text-align:center}.loginbox input{width:100%;padding:12px;border:1px solid #ccd5dd;border-radius:9px;margin:6px 0 11px}.loginbox button{width:100%;padding:12px;border:0;border-radius:9px;background:#087fc3;color:#fff;font-weight:700}
+.msg{text-align:center;color:#d93636;font-size:13px;min-height:18px}
+.empty{background:#fff;padding:16px;border-radius:12px;text-align:center;color:#667}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:2500;align-items:flex-end}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-height:85vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}.close{float:right;border:0;background:#eee;border-radius:50%;width:34px;height:34px}
+@media(min-width:800px){#approval{max-width:900px;margin:auto}}
 </style>
 </head>
 <body>
-
-<div id="loginScreen">
-  <div class="loginBox">
-    <div class="logo">🚕</div>
-    <div class="title">Safety Cab</div>
-    <div class="sub">Device Approval Admin</div>
-
-    <div class="field">
-      <label>Admin Email</label>
-      <input id="loginEmail" type="email" placeholder="Enter admin email" autocomplete="username">
-    </div>
-
-    <div class="field">
-      <label>Password</label>
-      <input id="loginPassword" type="password" placeholder="Enter password" autocomplete="current-password">
-    </div>
-
-    <button id="loginBtn" onclick="adminLogin()">🔐 Login</button>
-    <div id="loginMsg"></div>
+<div id="login" class="login">
+  <div class="loginbox">
+    <div style="text-align:center;font-size:42px">🚕</div>
+    <h2>Safety Cab Admin</h2>
+    <div style="text-align:center;color:#667;font-size:13px;margin-bottom:14px">Admin + Device Approval</div>
+    <label>Admin Email</label><input id="email" type="email" autocomplete="username" placeholder="Enter admin email">
+    <label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
+    <button id="loginBtn" onclick="login()">🔐 Login</button>
+    <div id="msg" class="msg"></div>
   </div>
 </div>
 
-<div id="app">
-  <header class="header">
-    <div class="headerLogo">🚕</div>
-    <div>
-      <div class="headerTitle">Device Approval Admin</div>
-      <div class="headerSub">Safety Cab • WhatsApp Radar Security</div>
-    </div>
-    <button class="logout" onclick="adminLogout()">Logout</button>
-  </header>
+<div id="app" style="display:none">
+  <div class="top"><div class="logo">🚕</div><div><div class="title">Safety Cab Admin</div><div class="sub">Existing Admin + Device Approval</div></div><button onclick="logout()">Logout</button></div>
+  <div class="tabs">
+    <button id="tabAdmin" class="tab active" onclick="showTab('admin')">🛠️ Admin Panel</button>
+    <button id="tabApproval" class="tab" onclick="showTab('approval')">📱 Device Approval <span id="pendingMini"></span></button>
+  </div>
+  <div id="existingWrap"><iframe id="existing" src="SafetyCab_Admin_FINAL.html" title="Existing Safety Cab Admin Panel"></iframe></div>
 
-  <main class="wrap">
+  <div id="approval">
+    <div class="notice">📱 नया Driver/Device पहले यहाँ <b>Pending</b> रहेगा। Admin <b>Approve</b> करने के बाद वह approved device list में जाएगा.</div>
     <div class="stats">
-      <div class="stat"><b id="total">0</b>Total</div>
-      <div class="stat"><b id="pending" class="blue">0</b>Pending</div>
-      <div class="stat"><b id="approved" class="green">0</b>Approved</div>
+      <div class="stat"><b id="totalReq" class="blue">0</b>Total</div>
+      <div class="stat"><b id="pendingReq" class="yellow">0</b>Pending</div>
+      <div class="stat"><b id="approvedReq" class="green">0</b>Approved</div>
     </div>
-
-    <div class="note">
-      📱 नया Driver/Device पहले <b>Pending</b> रहेगा। Admin उसे Approve करने के बाद ही
-      Secure WhatsApp Radar में approved device के रूप में इस्तेमाल किया जाएगा।
-    </div>
-
-    <section class="toolbar">
-      <div class="toolbarTop">
-        <input id="search" class="search" placeholder="🔎 Search Driver ID / Device ID / Name">
-        <button class="refresh" onclick="loadRequests()">🔄 Refresh</button>
-      </div>
+    <div class="card">
+      <input id="searchReq" class="search" placeholder="🔎 Search Driver ID / Device ID / Name" oninput="renderRequests()">
       <div class="filters">
         <button class="active" onclick="setFilter('all',this)">All</button>
         <button onclick="setFilter('pending',this)">🟡 Pending</button>
         <button onclick="setFilter('approved',this)">🟢 Approved</button>
         <button onclick="setFilter('rejected',this)">🔴 Rejected</button>
+        <button onclick="setFilter('revoked',this)">⚫ Revoked</button>
       </div>
-    </section>
-
-    <section id="list"></section>
-  </main>
-</div>
-
-<div id="modal" class="modal" onclick="if(event.target.id==='modal')closeModal()">
-  <div class="sheet">
-    <button class="close" onclick="closeModal()">✕</button>
-    <div id="detail"></div>
+    </div>
+    <div id="requestList"></div>
   </div>
 </div>
 
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><button class="close" onclick="closeModal()">✕</button><div id="modalBody"></div></div></div>
+
 <script>
 const firebaseConfig={
-  apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
-  authDomain:"safety-cab-radar.firebaseapp.com",
-  databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"safety-cab-radar",
-  storageBucket:"safety-cab-radar.firebasestorage.app",
-  messagingSenderId:"900129993912",
-  appId:"1:900129993912:web:48c98c4d62154d0f39704d"
+apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
+authDomain:"safety-cab-radar.firebaseapp.com",
+databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"safety-cab-radar",
+storageBucket:"safety-cab-radar.firebasestorage.app",
+messagingSenderId:"900129993912",
+appId:"1:900129993912:web:48c98c4d62154d0f39704d"
 };
-
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
-
-const REQUEST_COLLECTION="deviceRequests";
-const APPROVED_COLLECTION="approvedDevices";
-
-let requests=[];
-let filter="all";
-let unsubscribe=null;
+const auth=firebase.auth(),db=firebase.firestore();
+let requests=[],filter="all",unsub=null;
 
 const $=id=>document.getElementById(id);
-
-function esc(x){
-  return String(x??"").replace(/[&<>"']/g,m=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[m]));
+function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function fmt(v){try{if(v&&v.toDate)return v.toDate().toLocaleString();return v?new Date(v).toLocaleString():"Not available"}catch(e){return String(v||"Not available")}}
+function showTab(t){
+  const a=t==="admin";
+  $("existingWrap").style.display=a?"block":"none";
+  $("approval").style.display=a?"none":"block";
+  $("tabAdmin").classList.toggle("active",a);
+  $("tabApproval").classList.toggle("active",!a);
+  if(!a)renderRequests();
+  if(a)setTimeout(()=>{try{$("existing").contentWindow.postMessage({type:"SC_ADMIN_FOCUS"},"*")}catch(e){}},150);
 }
-
-async function adminLogin(){
-  const email=$("loginEmail").value.trim();
-  const password=$("loginPassword").value;
-  $("loginMsg").textContent="";
-
-  if(!email||!password){
-    $("loginMsg").textContent="Email and Password required.";
-    return;
-  }
-
-  $("loginBtn").disabled=true;
-  $("loginBtn").textContent="Logging in...";
-
-  try{
-    const result=await auth.signInWithEmailAndPassword(email,password);
-    const uid=result.user.uid;
-    const adminDoc=await db.collection("admins").doc(uid).get();
-
-    if(!adminDoc.exists || adminDoc.data().role!=="admin"){
-      await auth.signOut();
-      $("loginMsg").textContent="Access denied. Admin account required.";
-      $("loginBtn").disabled=false;
-      $("loginBtn").textContent="🔐 Login";
-    }
-  }catch(e){
-    console.error(e);
-    $("loginMsg").textContent="Login failed: "+e.message;
-    $("loginBtn").disabled=false;
-    $("loginBtn").textContent="🔐 Login";
-  }
-}
-
-auth.onAuthStateChanged(async user=>{
-  if(!user){
-    $("app").style.display="none";
-    $("loginScreen").style.display="flex";
-    if(unsubscribe){unsubscribe();unsubscribe=null}
-    return;
-  }
-
-  try{
-    const adminDoc=await db.collection("admins").doc(user.uid).get();
-
-    if(!adminDoc.exists || adminDoc.data().role!=="admin"){
-      await auth.signOut();
-      $("loginMsg").textContent="Access denied. Admin account required.";
-      return;
-    }
-
-    $("loginScreen").style.display="none";
-    $("app").style.display="block";
-    $("loginBtn").disabled=false;
-    $("loginBtn").textContent="🔐 Login";
-    startListener();
-  }catch(e){
-    $("loginMsg").textContent="Authorization error: "+e.message;
-    await auth.signOut();
-  }
-});
-
-function startListener(){
-  if(unsubscribe)unsubscribe();
-
-  unsubscribe=db.collection(REQUEST_COLLECTION)
-    .orderBy("requestedAt","desc")
-    .onSnapshot(snapshot=>{
-      requests=snapshot.docs.map(doc=>({
-        docId:doc.id,
-        ...doc.data()
-      }));
-      render();
-    },error=>{
-      console.error(error);
-      $("list").innerHTML=
-        '<div class="empty">❌ Firebase error: '+esc(error.message)+'</div>';
-    });
-}
-
-function loadRequests(){
-  render();
-}
-
-function setFilter(value,button){
-  filter=value;
-  document.querySelectorAll(".filters button")
-    .forEach(b=>b.classList.remove("active"));
-  button.classList.add("active");
-  render();
-}
-
-$("search").addEventListener("input",render);
-
-function statusOf(r){
-  return String(r.status||"pending").toLowerCase();
-}
-
-function dateText(v){
-  try{
-    if(v&&v.toDate)return v.toDate().toLocaleString();
-    if(typeof v==="number")return new Date(v).toLocaleString();
-    return v?String(v):"Not available";
-  }catch(e){
-    return "Not available";
-  }
-}
-
-function render(){
-  const q=$("search").value.toLowerCase().trim();
-
-  const filtered=requests.filter(r=>{
-    const status=statusOf(r);
-    const text=(
-      (r.driverId||"")+" "+
-      (r.deviceId||"")+" "+
-      (r.deviceName||"")+" "+
-      (r.name||"")+" "+
-      (r.userAgent||"")
-    ).toLowerCase();
-
-    const qok=!q||text.includes(q);
-    const fok=filter==="all"||status===filter;
-
-    return qok&&fok;
+function setFilter(f,el){filter=f;document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));el.classList.add("active");renderRequests();}
+function statusClass(s){s=String(s||"pending").toLowerCase();return ["pending","approved","rejected","revoked"].includes(s)?s:"pending";}
+function deviceKey(x){return String(x.deviceId||x.id||x.deviceUid||"").trim();}
+function driverKey(x){return String(x.driverId||x.id||"").trim().toUpperCase();}
+function renderRequests(){
+  const q=$("searchReq").value.trim().toLowerCase();
+  let arr=requests.filter(x=>{
+    const s=statusClass(x.status),t=(driverKey(x)+" "+deviceKey(x)+" "+String(x.name||"")+" "+String(x.phone||"")).toLowerCase();
+    return (filter==="all"||s===filter)&&(!q||t.includes(q));
   });
-
-  const total=requests.length;
-  const pending=requests.filter(r=>statusOf(r)==="pending").length;
-  const approved=requests.filter(r=>statusOf(r)==="approved").length;
-
-  $("total").textContent=total;
-  $("pending").textContent=pending;
-  $("approved").textContent=approved;
-
-  if(!filtered.length){
-    $("list").innerHTML='<div class="empty">📭 No device requests found.</div>';
-    return;
-  }
-
-  $("list").innerHTML=filtered.map(r=>{
-    const status=statusOf(r);
-    const statusClass=
-      status==="approved"?"approved":
-      status==="rejected"?"rejected":"pending";
-
-    return `
-      <div class="card">
-        <div class="cardHead">
-          <div class="driverIcon">📱</div>
-          <div>
-            <div class="name">${esc(r.name||"Unknown Driver")}</div>
-            <div class="id">Driver ID: ${esc(r.driverId||"Not set")}</div>
-          </div>
-          <span class="status ${statusClass}">
-            ${status.toUpperCase()}
-          </span>
-        </div>
-
-        <div class="info">
-          📱 <b>Device ID:</b> ${esc(r.deviceId||"Not available")}<br>
-          🕐 <b>Request:</b> ${esc(dateText(r.requestedAt))}<br>
-          🌐 <b>Browser:</b> ${esc(r.deviceName||"Web Browser")}<br>
-          🔑 <b>Auth UID:</b> ${esc(r.authUid||"Not available")}
-        </div>
-
-        <div class="actions">
-          <button class="btn" onclick="viewRequest('${esc(r.docId)}')">👁️ View</button>
-          ${status!=="approved"
-            ? `<button class="btn approve" onclick="approveDevice('${esc(r.docId)}')">🟢 Approve</button>`
-            : `<button class="btn gray" onclick="revokeDevice('${esc(r.docId)}')">🔒 Revoke</button>`
-          }
-          ${status!=="rejected"
-            ? `<button class="btn reject" onclick="rejectDevice('${esc(r.docId)}')">🔴 Reject</button>`
-            : ""
-          }
-        </div>
+  $("requestList").innerHTML=arr.map(x=>{
+    const s=statusClass(x.status),did=driverKey(x),devid=deviceKey(x);
+    return `<div class="request">
+      <div class="row"><b>🚕 ${esc(did||"Driver ID not set")}</b><span class="badge ${s}">${esc(s.toUpperCase())}</span></div>
+      <div class="row"><span>👤 Name</span><b>${esc(x.name||"Not available")}</b></div>
+      <div class="row"><span>📱 Device ID</span><b style="word-break:break-all">${esc(devid||"Not available")}</b></div>
+      <div class="row"><span>🕒 Requested</span><span>${esc(fmt(x.createdAt||x.requestedAt))}</span></div>
+      ${x.approvedAt?`<div class="row"><span>✅ Approved</span><span>${esc(fmt(x.approvedAt))}</span></div>`:""}
+      ${x.rejectedAt?`<div class="row"><span>❌ Rejected</span><span>${esc(fmt(x.rejectedAt))}</span>`:""}
+      <div class="actions">
+        <button class="btn" onclick="viewReq('${esc(x._id)}')">👁️ View</button>
+        ${s==="pending"?`<button class="btn approve" onclick="approveReq('${esc(x._id)}')">✅ Approve</button><button class="btn reject" onclick="rejectReq('${esc(x._id)}')">❌ Reject</button>`:""}
+        ${s==="approved"?`<button class="btn revoke" onclick="revokeReq('${esc(x._id)}')">🚫 Revoke</button>`:""}
       </div>
-    `;
-  }).join("");
+    </div>`;
+  }).join("")||'<div class="empty">📭 No device requests found.</div>';
+  const p=requests.filter(x=>statusClass(x.status)==="pending").length;
+  $("totalReq").textContent=requests.length;
+  $("pendingReq").textContent=p;
+  $("approvedReq").textContent=requests.filter(x=>statusClass(x.status)==="approved").length;
+  $("pendingMini").textContent=p?`(${p})`:"";
 }
-
-function findRequest(id){
-  return requests.find(r=>r.docId===id);
-}
-
-function viewRequest(id){
-  const r=findRequest(id);
-  if(!r)return;
-
-  $("detail").innerHTML=`
-    <h2>📱 Device Details</h2>
-
-    <div class="detailRow">
-      <b>Driver ID</b>${esc(r.driverId||"Not set")}
-    </div>
-
-    <div class="detailRow">
-      <b>Driver Name</b>${esc(r.name||"Not available")}
-    </div>
-
-    <div class="detailRow">
-      <b>Device ID</b>${esc(r.deviceId||"Not available")}
-    </div>
-
-    <div class="detailRow">
-      <b>Firebase Auth UID</b>${esc(r.authUid||"Not available")}
-    </div>
-
-    <div class="detailRow">
-      <b>Status</b>${esc(statusOf(r).toUpperCase())}
-    </div>
-
-    <div class="detailRow">
-      <b>Requested At</b>${esc(dateText(r.requestedAt))}
-    </div>
-
-    <div class="detailRow">
-      <b>User Agent</b>${esc(r.userAgent||"Not available")}
-    </div>
-  `;
-
+function viewReq(id){
+  const x=requests.find(r=>r._id===id);if(!x)return;
+  $("modalBody").innerHTML=`<h2>📱 Device Request</h2>
+  <p><b>Driver ID:</b> ${esc(driverKey(x)||"-")}</p>
+  <p><b>Name:</b> ${esc(x.name||"-")}</p>
+  <p><b>Device ID:</b><br>${esc(deviceKey(x)||"-")}</p>
+  <p><b>Status:</b> ${esc(String(x.status||"pending").toUpperCase())}</p>
+  <p><b>Requested:</b> ${esc(fmt(x.createdAt||x.requestedAt))}</p>
+  <p><b>User Agent:</b><br>${esc(x.userAgent||"-")}</p>
+  <p><b>Last IP:</b> ${esc(x.ip||"Not supplied")}</p>`;
   $("modal").classList.add("show");
 }
-
-function closeModal(){
-  $("modal").classList.remove("show");
-}
-
-async function approveDevice(id){
-  const r=findRequest(id);
-  if(!r)return;
-
-  if(!r.deviceId){
-    alert("Device ID missing. This request cannot be approved yet.");
-    return;
-  }
-
-  if(!confirm(
-    "Approve this device?\n\n"+
-    "Driver: "+(r.driverId||"Unknown")+
-    "\nDevice: "+r.deviceId
-  ))return;
-
+function closeModal(){$("modal").classList.remove("show");}
+async function approveReq(id){
+  const x=requests.find(r=>r._id===id);if(!x)return;
+  const did=driverKey(x),devid=deviceKey(x);
+  if(!did||!devid){alert("Driver ID और Device ID दोनों required हैं.");return}
+  if(!confirm(did+" को इस device पर APPROVE करें?"))return;
   try{
     const now=firebase.firestore.FieldValue.serverTimestamp();
-
-    await db.collection(APPROVED_COLLECTION)
-      .doc(r.deviceId)
-      .set({
-        driverId:r.driverId||"",
-        name:r.name||"",
-        deviceId:r.deviceId,
-        authUid:r.authUid||"",
-        status:"approved",
-        approvedAt:now,
-        approvedBy:auth.currentUser.uid
-      },{merge:true});
-
-    await db.collection(REQUEST_COLLECTION)
-      .doc(id)
-      .set({
-        status:"approved",
-        approvedAt:now,
-        approvedBy:auth.currentUser.uid
-      },{merge:true});
-
-    alert("✅ Device Approved");
-  }catch(e){
-    console.error(e);
-    alert("Approve failed: "+e.message);
-  }
+    await db.collection("approvedDevices").doc(devid).set({
+      deviceId:devid,driverId:did,name:x.name||"",status:"approved",approvedAt:now,
+      requestId:id,approvedBy:auth.currentUser.uid
+    },{merge:true});
+    await db.collection("deviceRequests").doc(id).set({
+      status:"approved",approvedAt:now,approvedBy:auth.currentUser.uid
+    },{merge:true});
+  }catch(e){alert("Approve failed: "+e.message)}
 }
-
-async function rejectDevice(id){
-  const r=findRequest(id);
-  if(!r)return;
-
-  if(!confirm(
-    "Reject this device?\n\n"+
-    "Driver: "+(r.driverId||"Unknown")+
-    "\nDevice: "+(r.deviceId||"Unknown")
-  ))return;
-
+async function rejectReq(id){
+  const x=requests.find(r=>r._id===id);if(!x)return;
+  if(!confirm("इस device request को Reject करें?"))return;
   try{
-    await db.collection(REQUEST_COLLECTION)
-      .doc(id)
-      .set({
-        status:"rejected",
-        rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        rejectedBy:auth.currentUser.uid
-      },{merge:true});
-
-    if(r.deviceId){
-      await db.collection(APPROVED_COLLECTION)
-        .doc(r.deviceId)
-        .set({
-          status:"rejected",
-          rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
-          rejectedBy:auth.currentUser.uid
-        },{merge:true});
-    }
-
-    alert("🔴 Device Rejected");
-  }catch(e){
-    console.error(e);
-    alert("Reject failed: "+e.message);
-  }
+    await db.collection("deviceRequests").doc(id).set({status:"rejected",rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),rejectedBy:auth.currentUser.uid},{merge:true});
+    const devid=deviceKey(x);
+    if(devid)await db.collection("approvedDevices").doc(devid).set({deviceId:devid,driverId:driverKey(x),status:"rejected",rejectedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  }catch(e){alert("Reject failed: "+e.message)}
 }
-
-async function revokeDevice(id){
-  const r=findRequest(id);
-  if(!r||!r.deviceId)return;
-
-  if(!confirm(
-    "Revoke this approved device?\n\n"+
-    "Driver: "+(r.driverId||"Unknown")+
-    "\nDevice: "+r.deviceId
-  ))return;
-
+async function revokeReq(id){
+  const x=requests.find(r=>r._id===id);if(!x)return;
+  if(!confirm("इस approved device को Revoke करें?"))return;
   try{
-    await db.collection(APPROVED_COLLECTION)
-      .doc(r.deviceId)
-      .set({
-        status:"revoked",
-        revokedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        revokedBy:auth.currentUser.uid
-      },{merge:true});
-
-    await db.collection(REQUEST_COLLECTION)
-      .doc(id)
-      .set({
-        status:"rejected",
-        revokedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        revokedBy:auth.currentUser.uid
-      },{merge:true});
-
-    alert("🔒 Device Revoked");
-  }catch(e){
-    console.error(e);
-    alert("Revoke failed: "+e.message);
-  }
+    const devid=deviceKey(x),now=firebase.firestore.FieldValue.serverTimestamp();
+    if(devid)await db.collection("approvedDevices").doc(devid).set({status:"revoked",revokedAt:now,revokedBy:auth.currentUser.uid},{merge:true});
+    await db.collection("deviceRequests").doc(id).set({status:"revoked",revokedAt:now,revokedBy:auth.currentUser.uid},{merge:true});
+  }catch(e){alert("Revoke failed: "+e.message)}
 }
-
-async function adminLogout(){
-  if(unsubscribe){unsubscribe();unsubscribe=null}
-  await auth.signOut();
+function startRequests(){
+  if(unsub)unsub();
+  unsub=db.collection("deviceRequests").onSnapshot(s=>{
+    requests=s.docs.map(d=>({_id:d.id,...d.data()}));
+    requests.sort((a,b)=>{
+      const am=a.createdAt?.toMillis?a.createdAt.toMillis():Number(a.createdAt||0);
+      const bm=b.createdAt?.toMillis?b.createdAt.toMillis():Number(b.createdAt||0);
+      return bm-am;
+    });
+    renderRequests();
+  },e=>{$("requestList").innerHTML=`<div class="empty">❌ Device requests load failed.<br>${esc(e.message)}</div>`});
 }
+async function login(){
+  const email=$("email").value.trim(),pw=$("password").value;
+  $("msg").textContent="";
+  if(!email||!pw){$("msg").textContent="Email and Password required.";return}
+  $("loginBtn").disabled=true;$("loginBtn").textContent="Logging in...";
+  try{
+    const r=await auth.signInWithEmailAndPassword(email,pw);
+    const a=await db.collection("admins").doc(r.user.uid).get();
+    if(!a.exists||a.data().role!=="admin"){await auth.signOut();$("msg").textContent="Access denied. Admin account required.";return}
+    $("login").style.display="none";$("app").style.display="block";startRequests();
+  }catch(e){$("msg").textContent="Login failed: "+e.message}
+  finally{$("loginBtn").disabled=false;$("loginBtn").textContent="🔐 Login"}
+}
+async function logout(){
+  if(unsub){unsub();unsub=null}
+  await auth.signOut();$("app").style.display="none";$("login").style.display="flex";$("password").value="";
+}
+auth.onAuthStateChanged(async user=>{
+  if(!user)return;
+  try{
+    const a=await db.collection("admins").doc(user.uid).get();
+    if(a.exists&&a.data().role==="admin"){
+      $("login").style.display="none";$("app").style.display="block";startRequests();
+    }else await auth.signOut();
+  }catch(e){console.error(e)}
+});
 </script>
 </body>
 </html>

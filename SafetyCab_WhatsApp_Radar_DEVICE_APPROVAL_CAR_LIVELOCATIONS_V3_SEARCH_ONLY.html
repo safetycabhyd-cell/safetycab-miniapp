@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Safety Cab Driver Radar - Device Approval V3</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238;padding-bottom:72px}
+.hide{display:none!important}
+#gate{position:fixed;inset:0;z-index:9000;background:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:20px}
+.gateCard{width:100%;max-width:410px;background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 5px 25px #0002}
+.gateLogo{font-size:48px}.gateTitle{font-size:23px;font-weight:800;margin:8px 0}
+.gateSub{font-size:13px;color:#667;line-height:1.5;margin-bottom:18px}
+.input{width:100%;padding:13px;border:1px solid #cbd5df;border-radius:10px;font-size:16px;text-transform:uppercase;outline:none}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;background:#087fc3;color:#fff;font-weight:800;margin-top:10px}
+.btn:disabled{opacity:.55}
+.msg{margin-top:12px;padding:10px;border-radius:10px;font-size:13px;line-height:1.45;display:none}
+.msg.show{display:block}.info{background:#e4f1fb;color:#075a8c}.warn{background:#fff4cf;color:#765b00}
+.ok{background:#dff6e7;color:#087b35}.bad{background:#fde2e2;color:#a40000}
+.deviceBox{font-size:11px;color:#667;background:#f4f7fb;border-radius:9px;padding:9px;margin-top:12px;word-break:break-all;text-align:left}
+#app{display:none}.header{height:64px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:0 14px;gap:10px}
+.logo{width:42px;height:42px;border-radius:50%;background:#ffd21c;display:flex;align-items:center;justify-content:center;font-size:22px}
+.title{font-size:19px;font-weight:800}.sub{font-size:11px;opacity:.9}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;background:#fff}
+.stat{background:#fff;border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 8px #0001}
+.stat b{font-size:23px;display:block}.blue{color:#087fc3}.green{color:#159447}
+#map{height:calc(100vh - 210px);min-height:430px}
+.panel{background:#fff;padding:10px;border-top:1px solid #ddd}
+.search{width:100%;padding:12px;border:1px solid #ccd5dd;border-radius:10px;font-size:16px;outline:none}
+.searchBtn{width:100%;padding:11px;border:0;border-radius:10px;background:#159447;color:#fff;font-weight:800;margin-top:8px}
+.list{padding:8px;background:#f4f7fb}
+.card{background:#fff;border-radius:14px;padding:12px;margin-bottom:8px;box-shadow:0 2px 7px #0001}
+.small{font-size:12px;color:#667;margin-top:5px}
+.badge{font-size:11px;padding:4px 7px;border-radius:10px}.on{background:#dff6e7;color:#087b35}.off{background:#eee;color:#666}
+.profile{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:start}
+.photo{width:92px;height:92px;border-radius:14px;object-fit:cover;background:#eef2f6;border:1px solid #d7dee5}
+.carphoto{width:100%;max-height:220px;object-fit:cover;border-radius:12px;margin-top:10px;background:#eef2f6}
+.detailrow{padding:7px 0;border-bottom:1px solid #eee;font-size:14px}
+.call{display:block;text-align:center;text-decoration:none;background:#159447;color:#fff;border-radius:10px;padding:12px;font-weight:800;margin-top:12px}
+.back{width:100%;border:0;background:#667;color:#fff;border-radius:10px;padding:11px;font-weight:800;margin-top:8px}
+.notice{margin:10px;padding:10px;border-radius:10px;font-size:13px;background:#e4f1fb;color:#075a8c}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(3,1fr);z-index:1200}
+.navbtn{border:0;background:#fff;padding:8px 3px;color:#59636d;font-size:11px}.navbtn b{display:block;font-size:21px}.navbtn.active{color:#087fc3}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gateCard">
+    <div class="gateLogo">🚕</div>
+    <div class="gateTitle">Safety Cab Driver Radar</div>
+    <div class="gateSub">🔐 Device Approval Security<br>पहली बार इस फोन पर Radar चलाने के लिए Driver ID से Device Approval लेना होगा।</div>
+    <input id="driverId" class="input" maxlength="12" placeholder="Driver ID e.g. DC001" autocomplete="off">
+    <button id="requestBtn" class="btn" onclick="requestApproval()">📱 REQUEST DEVICE APPROVAL</button>
+    <button id="retryBtn" class="btn hide" onclick="checkApproval()">🔄 CHECK APPROVAL</button>
+    <div id="gateMsg" class="msg"></div>
+    <div class="deviceBox"><b>Device ID:</b><br><span id="deviceIdText"></span><br>यह ID इसी browser/device में सुरक्षित रहेगी।</div>
+  </div>
+</div>
+
+<div id="app">
+<header class="header">
+  <div class="logo">🚕</div>
+  <div><div class="title">Safety Cab Driver Radar</div><div class="sub">WhatsApp • Approved Device • Live GPS</div></div>
+</header>
+
+<section class="stats">
+  <div class="stat"><b id="total" class="blue">0</b>Total</div>
+  <div class="stat"><b id="online" class="green">0</b>Online</div>
+  <div class="stat"><b id="duty" class="green">0</b>Duty ON</div>
+</section>
+
+<div id="notice" class="notice">Approved device connected • केवल आपका driver profile दिखेगा। दूसरे driver की details सिर्फ Driver ID search करने पर आएगी।</div>
+<div id="map"></div>
+
+<section class="panel">
+  <input id="search" class="search" placeholder="🔎 Search Driver ID e.g. DC007" autocomplete="off">
+  <button class="searchBtn" onclick="searchDriver()">🔎 SEARCH DRIVER</button>
+</section>
+
+<section id="driverList" class="list"></section>
+
+<nav class="bottom">
+  <button class="navbtn active" onclick="goMap()"><b>🗺️</b>Map</button>
+  <button class="navbtn" onclick="goDrivers()"><b>🚕</b>Drivers</button>
+  <button class="navbtn" onclick="showDeviceInfo()"><b>📱</b>Device</button>
+</nav>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const firebaseConfig={
+ apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
+ authDomain:"safety-cab-radar.firebaseapp.com",
+ databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
+ projectId:"safety-cab-radar",
+ storageBucket:"safety-cab-radar.firebasestorage.app",
+ messagingSenderId:"900129993912",
+ appId:"1:900129993912:web:48c98c4d62154d0f39704d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();
+const $=id=>document.getElementById(id);
+
+function esc(x){
+ return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function val(o,keys,def=""){
+ for(const k of keys){
+   if(o && o[k]!==undefined && o[k]!==null && String(o[k]).trim()!=="") return o[k];
+ }
+ return def;
+}
+function normalizeId(x){return String(x||"").trim().toUpperCase().replace(/\s+/g,"");}
+
+function makeDeviceId(){
+ let x=localStorage.getItem("safetyCabApprovedDeviceId");
+ if(x)return x;
+ const raw=(crypto&&crypto.randomUUID)?crypto.randomUUID():("SC-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,12));
+ x=raw.replace(/[^a-zA-Z0-9_-]/g,"");
+ localStorage.setItem("safetyCabApprovedDeviceId",x);
+ return x;
+}
+const deviceId=makeDeviceId();
+$("deviceIdText").textContent=deviceId;
+let approvalUnsub=null,approvalDriverId=localStorage.getItem("safetyCabApprovedDriverId")||"";
+
+function setMsg(t,c){const e=$("gateMsg");e.innerHTML=t;e.className="msg show "+c;}
+
+async function ensureAnon(){
+ if(auth.currentUser)return true;
+ try{
+   const existing=await new Promise(resolve=>{
+     let done=false;
+     const unsub=auth.onAuthStateChanged(user=>{if(done)return;done=true;unsub();resolve(user||null);});
+   });
+   if(existing)return true;
+   await auth.signInAnonymously();
+   return !!auth.currentUser;
+ }catch(e){
+   setMsg("❌ Firebase secure login नहीं हो पाया.<br>"+esc(e.message),"bad");
+   return false;
+ }
+}
+
+async function requestApproval(){
+ const id=normalizeId($("driverId").value);
+ if(!/^DC\d{3,}$/.test(id)){setMsg("कृपया सही Driver ID डालें, जैसे <b>DC001</b>.","warn");return;}
+ $("requestBtn").disabled=true;$("requestBtn").textContent="⏳ REQUESTING...";
+ if(!(await ensureAnon())){resetRequestButton();return;}
+ try{
+   approvalDriverId=id;
+   localStorage.setItem("safetyCabApprovedDriverId",id);
+   const ref=db.collection("deviceRequests").doc(deviceId);
+   const old=await ref.get();
+   const data={
+     deviceId,driverId:id,name:"",status:"pending",
+     requestedAt:firebase.firestore.FieldValue.serverTimestamp(),
+     createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+     userAgent:navigator.userAgent,platform:navigator.platform||""
+   };
+   const oldStatus=old.exists?String(old.data().status||"").toLowerCase():"";
+   if(oldStatus==="pending"||oldStatus==="approved"){
+     setMsg("📱 इस device की request पहले से मौजूद है।<br><b>Status: "+esc(oldStatus.toUpperCase())+"</b>","info");
+     subscribeApproval();return;
+   }
+   if(oldStatus==="rejected"||oldStatus==="revoked") await ref.update(data);
+   else await ref.set(data,{merge:true});
+   setMsg("✅ Request Admin को भेज दी गई है।<br><b>Driver ID:</b> "+esc(id)+"<br><b>Status:</b> PENDING","info");
+   subscribeApproval();
+ }catch(e){setMsg("❌ Request भेजी नहीं गई.<br>"+esc(e.message),"bad");}
+ finally{resetRequestButton();}
+}
+function resetRequestButton(){$("requestBtn").disabled=false;$("requestBtn").textContent="📱 REQUEST DEVICE APPROVAL";}
+async function checkApproval(){if(await ensureAnon())subscribeApproval();}
+
+function subscribeApproval(){
+ if(approvalUnsub)approvalUnsub();
+ approvalUnsub=db.collection("approvedDevices").doc(deviceId).onSnapshot(s=>{
+   if(!s.exists){$("retryBtn").classList.remove("hide");return;}
+   const d=s.data()||{},status=String(d.status||"").toLowerCase();
+   if(status==="approved"){
+     approvalDriverId=String(d.driverId||approvalDriverId);
+     localStorage.setItem("safetyCabApprovedDriverId",approvalDriverId);
+     setMsg("✅ Device APPROVED! Radar खुल रहा है...","ok");
+     setTimeout(openRadar,400);
+   }else if(status==="rejected")setMsg("❌ Admin ने इस device request को REJECT किया है।","bad");
+   else if(status==="revoked")setMsg("🚫 इस device की approval REVOKE कर दी गई है।","bad");
+ },e=>setMsg("Approval status read failed.<br>"+esc(e.message),"bad"));
+}
+
+async function openRadar(){
+ $("gate").classList.add("hide");$("app").style.display="block";
+ setTimeout(()=>{map.invalidateSize();loadDrivers();startLive();},150);
+}
+function autoCheck(){
+ const saved=localStorage.getItem("safetyCabApprovedDriverId");
+ if(!saved||!auth.currentUser)return;
+ db.collection("approvedDevices").doc(deviceId).get().then(s=>{
+   if(s.exists && String(s.data().status||"").toLowerCase()==="approved"){
+     approvalDriverId=String(s.data().driverId||saved);openRadar();
+   }
+ }).catch(()=>{});
+}
+
+let map,markers={},drivers=[],live={},profiles={};
+
+function icon(d){
+ return L.divIcon({
+  className:"",
+  html:`<div style="width:42px;height:42px;border-radius:50%;background:${d.online?"#18a957":"#777"};border:3px solid white;box-shadow:0 2px 7px #0008;display:flex;align-items:center;justify-content:center;font-size:25px">🚕</div>`,
+  iconSize:[42,42],iconAnchor:[21,21]
+ });
+}
+function initMap(){
+ map=L.map("map").setView([17.42536,78.48694],13);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);
+}
+
+/* Profile lookup:
+   1) Firestore drivers/{DCID}
+   2) RTDB drivers/{DCID}
+   3) RTDB driverProfiles/{DCID}
+   Live GPS remains from liveLocations/{DCID}.
+   The old V2 Device Approval flow is unchanged. */
+async function getProfile(id){
+ const key=normalizeId(id);
+ if(profiles[key])return profiles[key];
+
+ let p={driverId:key};
+ try{
+   const s=await db.collection("drivers").doc(key).get();
+   if(s.exists)p={...p,...(s.data()||{})};
+ }catch(e){}
+
+ for(const path of ["drivers/"+key,"driverProfiles/"+key]){
+   try{
+     const s=await rtdb.ref(path).once("value");
+     if(s.exists())p={...p,...(s.val()||{})};
+   }catch(e){}
+ }
+ profiles[key]=p;
+ return p;
+}
+
+function merged(id){
+ const key=normalizeId(id);
+ const l=live[key]||{};
+ const p=profiles[key]||{};
+ return {
+   id:key,
+   name:val(p,["name","driverName","displayName"],val(l,["name","driverName","displayName"],"Safety Cab")),
+   phone:val(p,["phone","mobile","mobileNumber","phoneNumber"],val(l,["phone","mobile","mobileNumber","phoneNumber"],"")),
+   vehicle:val(p,["vehicleNumber","vehicleNo","carNumber","vehicle"],val(l,["vehicleNumber","vehicleNo","carNumber","vehicle","vehicleName","car"],"-")),
+   vehicleType:val(p,["vehicleType","type"],val(l,["vehicleType","type"],"-")),
+   profilePhoto:val(p,["profilePhoto","driverPhoto","photo","photoUrl","profileImage"],val(l,["profilePhoto","driverPhoto","photo","photoUrl","profileImage"],"")),
+   carPhoto:val(p,["carPhoto","vehiclePhoto","carImage","vehicleImage","carPhotoUrl"],val(l,["carPhoto","vehiclePhoto","carImage","vehicleImage","carPhotoUrl"],"")),
+   telegramId:val(p,["telegramId","telegram"],""),
+   lat:Number(val(l,["lat","latitude"],val(p,["lat","latitude"],NaN))),
+   lng:Number(val(l,["lng","longitude"],val(p,["lng","longitude"],NaN))),
+   online:l.online!==false,
+   duty:l.duty===true,
+   rating:val(p,["rating"],val(l,["rating"],"Not Rated"))
+ };
+}
+
+async function loadDrivers(){
+ try{
+   const s=await rtdb.ref("liveLocations").once("value");
+   live=s.val()||{};
+   drivers=Object.keys(live).map(id=>({id:normalizeId(id)}));
+   await Promise.all(drivers.map(d=>getProfile(d.id)));
+   render();
+ }catch(e){$("driverList").innerHTML='<div class="card">Firebase load failed: '+esc(e.message)+'</div>';}
+}
+function startLive(){
+ rtdb.ref("liveLocations").on("value",async s=>{
+   live=s.val()||{};
+   drivers=Object.keys(live).map(id=>({id:normalizeId(id)}));
+   await Promise.all(drivers.map(d=>getProfile(d.id)));
+   render();
+ });
+}
+
+async function searchDriver(){
+ const q=normalizeId($("search").value);
+ if(!q){alert("Driver ID डालें, जैसे DC007");return;}
+ const id=q;
+ if(!/^DC\d{3,}$/.test(id)){alert("सही Driver ID डालें, जैसे DC007");return;}
+ if(!live[id]) {
+   /* Profile can still exist even if GPS is offline. */
+   await getProfile(id);
+ } else {
+   await getProfile(id);
+ }
+ const p=merged(id);
+ showProfile(p);
+}
+
+function showProfile(d){
+ Object.values(markers).forEach(m=>{});
+ let hasLoc=Number.isFinite(d.lat)&&Number.isFinite(d.lng);
+ if(hasLoc){
+   const m=L.marker([d.lat,d.lng],{icon:icon({online:d.online})}).addTo(map);
+   m.bindPopup("<b>"+esc(d.name)+"</b><br>"+esc(d.id));
+   m.openPopup();
+   map.setView([d.lat,d.lng],16);
+ }
+ const photo=d.profilePhoto||"";
+ const car=d.carPhoto||"";
+ const phone=String(d.phone||"").replace(/[^0-9+]/g,"");
+ $("driverList").innerHTML=`
+ <div class="card">
+   <div class="profile">
+     <img class="photo" src="${esc(photo)}" onerror="this.style.display='none'">
+     <div>
+       <h3 style="margin:0 0 6px">🚕 ${esc(d.name)}</h3>
+       <div class="small"><b>Driver ID:</b> ${esc(d.id)}</div>
+       <div class="small">${d.online?'🟢 Online':'🔴 Offline'} | ${d.duty?'🟢 Duty ON':'⚪ Duty OFF'}</div>
+     </div>
+   </div>
+   ${car?`<img class="carphoto" src="${esc(car)}" onerror="this.style.display='none'">`:""}
+   <div class="detailrow"><b>📞 Phone:</b> ${esc(d.phone||"-")}</div>
+   <div class="detailrow"><b>🚘 Vehicle Number:</b> ${esc(d.vehicle||"-")}</div>
+   <div class="detailrow"><b>🚗 Vehicle Type:</b> ${esc(d.vehicleType||"-")}</div>
+   <div class="detailrow"><b>⭐ Rating:</b> ${esc(d.rating)}</div>
+   ${d.telegramId?`<div class="detailrow"><b>✈️ Telegram ID:</b> ${esc(d.telegramId)}</div>`:""}
+   <div class="detailrow"><b>📍 Location:</b> ${hasLoc?esc(d.lat.toFixed(6)+", "+d.lng.toFixed(6)):"GPS location not available"}</div>
+   ${phone?`<a class="call" href="tel:${esc(phone)}">📞 CALL ${esc(d.name)}</a>`:""}
+   <button class="back" onclick="render()">↩️ BACK TO DRIVERS</button>
+ </div>`;
+ document.getElementById("driverList").scrollIntoView({behavior:"smooth"});
+}
+
+async function render(){
+ if(!map)return;
+ Object.values(markers).forEach(m=>map.removeLayer(m));markers={};
+ let on=0,duty=0;
+ for(const d of drivers){
+   const x=merged(d.id);
+   if(x.online)on++;if(x.duty)duty++;
+   if(Number.isFinite(x.lat)&&Number.isFinite(x.lng)){
+     markers[d.id]=L.marker([x.lat,x.lng],{icon:icon(x)}).addTo(map);
+     markers[d.id].bindPopup("<b>🚕 "+esc(x.name)+"</b><br>"+esc(x.id));
+   }
+ }
+ $("total").textContent=drivers.length;$("online").textContent=on;$("duty").textContent=duty;
+ const q=normalizeId($("search").value);
+
+ // PRIVACY: never show the complete active-driver list.
+ // Only the exact searched Driver ID is shown.
+ if(q){
+   const exists = drivers.some(d=>normalizeId(d.id)===q);
+   if(!exists && !profiles[q]){
+     $("driverList").innerHTML='<div class="card">🔎 Search result नहीं मिला। Driver ID check करें.</div>';
+     return;
+   }
+   return;
+ }
+
+ // Before a search, show only this approved device's own Driver ID.
+ const ownId=normalizeId(approvalDriverId);
+ if(ownId){
+   const own=merged(ownId);
+   $("driverList").innerHTML=`<div class="card">
+     <b>🚕 My Driver Profile</b>
+     <div class="small">Driver ID: ${esc(own.id)}</div>
+     <div class="small">${own.online?'🟢 Online':'🔴 Offline'} | ${own.duty?'🟢 Duty ON':'⚪ Duty OFF'}</div>
+     <button class="searchBtn" onclick="searchExact('${esc(own.id)}')">VIEW MY FULL DETAILS</button>
+   </div>`;
+ }else{
+   $("driverList").innerHTML='<div class="card">🔎 किसी Driver की details देखने के लिए ऊपर Driver ID search करें.</div>';
+ }
+}
+async function searchExact(id){$("search").value=id;await searchDriver();}
+$("search").addEventListener("keydown",e=>{if(e.key==="Enter")searchDriver();});
+
+function goMap(){window.scrollTo({top:0,behavior:"smooth"});setTimeout(()=>map.invalidateSize(),150);}
+function goDrivers(){document.getElementById("driverList").scrollIntoView({behavior:"smooth"});}
+function showDeviceInfo(){alert("Device ID: "+deviceId+"\n\nApproval status is controlled by Admin Panel.");}
+
+initMap();
+ensureAnon().then(()=>autoCheck());
+</script>
+</body>
+</html>

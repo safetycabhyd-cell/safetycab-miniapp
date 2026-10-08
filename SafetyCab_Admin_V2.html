@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Safety Cab Admin V2</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238}
+.top{height:64px;background:#087fc3;color:#fff;display:flex;align-items:center;padding:0 12px;gap:10px;position:sticky;top:0;z-index:1000}
+.logo{width:42px;height:42px;border-radius:50%;background:#ffd21c;display:grid;place-items:center;font-size:22px}
+.title{font-size:18px;font-weight:800}.sub{font-size:11px;opacity:.9}
+.top button{margin-left:auto;border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:9px;padding:8px 11px}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:64px;z-index:900}
+.tab{border:0;background:#fff;padding:12px 5px;font-weight:700;color:#667}
+.tab.active{color:#087fc3;border-bottom:3px solid #087fc3}
+#adminWrap,#approval{min-height:calc(100vh - 112px)}
+#adminWrap{padding:10px}
+#approval{display:none;padding:10px}
+.card{background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px #0001}
+.notice{padding:10px;border-radius:10px;background:#e4f1fb;color:#075a8c;font-size:12px;margin-bottom:10px}
+.search{width:100%;padding:12px;border:1px solid #ccd5dd;border-radius:10px;outline:none}
+.btn{border:0;border-radius:9px;padding:10px 12px;background:#087fc3;color:#fff;font-weight:700}
+.green{background:#159447}.red{background:#d93636}.gray{background:#667}.orange{background:#b88400}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.result{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 8px #0001;margin-top:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.field label{display:block;font-size:12px;font-weight:700;color:#59636b;margin-bottom:4px}
+.field input,.field select{width:100%;padding:10px;border:1px solid #ccd5dd;border-radius:9px;background:#fff}
+.full{grid-column:1/-1}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.photoBox{border:1px solid #d9e0e5;border-radius:12px;padding:8px;text-align:center;background:#fafcfd}
+.photoBox img{width:100%;height:150px;object-fit:cover;border-radius:9px;background:#eee}
+.photoBox input{width:100%;margin-top:7px}
+.status{font-size:12px;margin-top:8px;min-height:18px}
+.ok{color:#087b35}.err{color:#b00020}.muted{color:#667;font-size:12px}
+.login{position:fixed;inset:0;background:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:20px;z-index:3000}
+.loginbox{width:100%;max-width:410px;background:#fff;border-radius:18px;padding:22px;box-shadow:0 5px 25px #0002}
+.loginbox h2{text-align:center}.loginbox input{width:100%;padding:12px;border:1px solid #ccd5dd;border-radius:9px;margin:6px 0 11px}
+.loginbox button{width:100%;padding:12px;border:0;border-radius:9px;background:#087fc3;color:#fff;font-weight:700}
+.msg{text-align:center;color:#d93636;font-size:13px;min-height:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{background:#fff;border-radius:14px;padding:11px;text-align:center;box-shadow:0 2px 8px #0001}
+.stat b{display:block;font-size:25px}.blue{color:#087fc3}.yellow{color:#b88400}.greenText{color:#159447}
+.filters{display:flex;gap:6px;overflow:auto}.filters button{border:1px solid #ccd5dd;background:#fff;border-radius:18px;padding:8px 12px;white-space:nowrap}.filters button.active{background:#087fc3;color:#fff}
+.request{background:#fff;border-radius:14px;padding:12px;margin-bottom:9px;box-shadow:0 2px 8px #0001}
+.row{display:flex;justify-content:space-between;gap:10px;margin:5px 0;font-size:13px}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.pending{background:#fff1bf;color:#806500}.approved{background:#dff6e7;color:#087b35}.rejected{background:#fde2e2;color:#a40000}.revoked{background:#eee;color:#555}
+.empty{background:#fff;padding:16px;border-radius:12px;text-align:center;color:#667}
+#embeddedOld{display:none}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .photos{grid-template-columns:1fr}
+  .tabs{font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+  <div class="loginbox">
+    <div style="text-align:center;font-size:42px">🚕</div>
+    <h2>Safety Cab Admin V2</h2>
+    <div style="text-align:center;color:#667;font-size:13px;margin-bottom:14px">
+      Driver Management + Device Approval
+    </div>
+    <label>Admin Email</label>
+    <input id="email" type="email" autocomplete="username" placeholder="Enter admin email">
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
+    <button id="loginBtn" onclick="login()">🔐 Login</button>
+    <div id="msg" class="msg"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="top">
+    <div class="logo">🚕</div>
+    <div>
+      <div class="title">Safety Cab Admin V2</div>
+      <div class="sub">Driver Search + Profile + Device Approval</div>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="tabs">
+    <button id="tabDriver" class="tab active" onclick="showTab('driver')">🚕 Driver</button>
+    <button id="tabApproval" class="tab" onclick="showTab('approval')">📱 Approval <span id="pendingMini"></span></button>
+    <button id="tabOld" class="tab" onclick="showTab('old')">🛠️ Old Admin</button>
+  </div>
+
+  <div id="adminWrap">
+    <div class="notice">
+      🔎 <b>Driver Search</b> — Driver ID जैसे <b>DC001</b> डालें। सभी 1000 drivers एक साथ load नहीं होंगे।
+      सिर्फ searched driver का profile खुलेगा।
+    </div>
+
+    <div class="card">
+      <input id="driverSearch" class="search"
+             placeholder="🔎 Search Driver ID — e.g. DC001"
+             onkeydown="if(event.key==='Enter')searchDriver()">
+      <div class="actions">
+        <button class="btn" onclick="searchDriver()">🔎 Search Driver</button>
+        <button class="btn gray" onclick="newDriver()">➕ New Driver</button>
+      </div>
+      <div id="driverSearchStatus" class="status"></div>
+    </div>
+
+    <div id="driverEditor" style="display:none">
+      <div class="result">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+          <h3 style="margin:0">🚕 Driver Profile</h3>
+          <button class="btn gray" onclick="closeEditor()">✕ Close</button>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="field">
+            <label>Driver ID *</label>
+            <input id="f_id" placeholder="DC001">
+          </div>
+          <div class="field">
+            <label>Name *</label>
+            <input id="f_name" placeholder="Driver Name">
+          </div>
+
+          <div class="field">
+            <label>Phone</label>
+            <input id="f_phone" type="tel" placeholder="Driver mobile number">
+          </div>
+          <div class="field">
+            <label>Vehicle Number *</label>
+            <input id="f_vehicle" placeholder="TS09AB1234">
+          </div>
+
+          <div class="field">
+            <label>Vehicle Type *</label>
+            <select id="f_vehicleType">
+              <option value="">Select</option>
+              <option value="Sedan">Sedan</option>
+              <option value="SUV">SUV</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Rating (0–5)</label>
+            <input id="f_rating" type="number" min="0" max="5" step="0.1" value="0">
+          </div>
+
+          <div class="field">
+            <label>Device Pairing ID</label>
+            <input id="f_deviceUid" placeholder="Firebase Device Pairing ID">
+          </div>
+          <div class="field">
+            <label>Telegram ID (kept for now)</label>
+            <input id="f_telegramId" placeholder="Telegram ID">
+          </div>
+
+          <div class="field">
+            <label>Latitude *</label>
+            <input id="f_lat" type="number" step="any" placeholder="17.3850">
+          </div>
+          <div class="field">
+            <label>Longitude *</label>
+            <input id="f_lng" type="number" step="any" placeholder="78.4867">
+          </div>
+
+          <div class="field">
+            <label>GPS Status</label>
+            <select id="f_online">
+              <option value="1">Online / GPS ON</option>
+              <option value="0">Offline / GPS OFF</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Duty Status</label>
+            <select id="f_duty">
+              <option value="1">Duty ON</option>
+              <option value="0">Duty OFF</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>Last Update</label>
+            <input id="f_last" readonly placeholder="Just updated">
+          </div>
+        </div>
+
+        <div class="photos">
+          <div class="photoBox">
+            <b>👤 Driver Profile Photo</b>
+            <img id="profilePreview" alt="Driver photo">
+            <input id="f_profilePhoto" type="file" accept="image/*" onchange="previewFile(this,'profilePreview')">
+            <label style="display:block;font-size:12px;margin-top:7px">
+              <input id="f_removePhoto" type="checkbox"> Remove existing photo
+            </label>
+          </div>
+
+          <div class="photoBox">
+            <b>🚕 Car Photo</b>
+            <img id="carPreview" alt="Car photo">
+            <input id="f_carPhoto" type="file" accept="image/*" onchange="previewFile(this,'carPreview')">
+            <label style="display:block;font-size:12px;margin-top:7px">
+              <input id="f_removeCarPhoto" type="checkbox"> Remove existing photo
+            </label>
+          </div>
+        </div>
+
+        <div id="liveInfo" class="notice" style="margin-top:10px;display:none"></div>
+
+        <div class="actions">
+          <button class="btn green" id="saveBtn" onclick="saveDriver()">💾 Save Driver</button>
+          <button class="btn gray" onclick="loadLive()">📍 Refresh Live GPS</button>
+          <button class="btn orange" onclick="callDriver()">📞 Call Driver</button>
+        </div>
+        <div id="saveStatus" class="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="approval">
+    <div class="notice">
+      📱 नया Driver/Device पहले <b>Pending</b> रहेगा। Approve करने के बाद device approved होगा।
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="totalReq" class="blue">0</b>Total</div>
+      <div class="stat"><b id="pendingReq" class="yellow">0</b>Pending</div>
+      <div class="stat"><b id="approvedReq" class="greenText">0</b>Approved</div>
+    </div>
+
+    <div class="card">
+      <input id="searchReq" class="search"
+             placeholder="🔎 Search Driver ID / Device ID / Name"
+             oninput="renderRequests()">
+      <div class="filters" style="margin-top:8px">
+        <button class="active" onclick="setFilter('all',this)">All</button>
+        <button onclick="setFilter('pending',this)">🟡 Pending</button>
+        <button onclick="setFilter('approved',this)">🟢 Approved</button>
+        <button onclick="setFilter('rejected',this)">🔴 Rejected</button>
+        <button onclick="setFilter('revoked',this)">⚫ Revoked</button>
+      </div>
+    </div>
+    <div id="requestList"></div>
+  </div>
+
+  <div id="oldWrap" style="display:none;height:calc(100vh - 112px);background:#f4f7fb">
+    <iframe id="oldFrame" src="SafetyCab_Admin_FINAL.html"
+            style="width:100%;height:100%;border:0;background:#fff"
+            title="Existing Safety Cab Admin"></iframe>
+  </div>
+</div>
+
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyBqSICccKKX94x04rjCUHXjW5EJoaI10Bc",
+  authDomain:"safety-cab-radar.firebaseapp.com",
+  databaseURL:"https://safety-cab-radar-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"safety-cab-radar",
+  storageBucket:"safety-cab-radar.firebasestorage.app",
+  messagingSenderId:"900129993912",
+  appId:"1:900129993912:web:48c98c4d62154d0f39704d"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
+const db=firebase.firestore();
+const rtdb=firebase.database();
+
+const DRIVER_COLLECTION="drivers";
+
+let requests=[];
+let filter="all";
+let unsub=null;
+let currentDriverId="";
+let currentProfile={};
+
+const $=id=>document.getElementById(id);
+
+function esc(x){
+  return String(x??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+
+function normalizeId(v){
+  return String(v||"").trim().toUpperCase();
+}
+
+function val(obj,keys,fallback=""){
+  for(const k of keys){
+    if(obj && obj[k]!==undefined && obj[k]!==null && obj[k]!=="") return obj[k];
+  }
+  return fallback;
+}
+
+function setStatus(id,msg,type=""){
+  const el=$(id);
+  el.className="status "+(type==="ok"?"ok":type==="err"?"err":"");
+  el.textContent=msg||"";
+}
+
+function showTab(t){
+  const driver=t==="driver";
+  const approval=t==="approval";
+  const old=t==="old";
+
+  $("adminWrap").style.display=driver?"block":"none";
+  $("approval").style.display=approval?"block":"none";
+  $("oldWrap").style.display=old?"block":"none";
+
+  $("tabDriver").classList.toggle("active",driver);
+  $("tabApproval").classList.toggle("active",approval);
+  $("tabOld").classList.toggle("active",old);
+
+  if(approval) renderRequests();
+
+  if(old){
+    setTimeout(()=>{
+      try{
+        $("oldFrame").contentWindow.postMessage({type:"SC_ADMIN_FOCUS"},"*");
+      }catch(e){}
+    },150);
+  }
+}
+
+function setPreview(id,src){
+  const img=$(id);
+  img.src=src||"";
+  img.style.display=src?"block":"none";
+}
+
+function previewFile(input,target){
+  const f=input.files && input.files[0];
+  if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>setPreview(target,reader.result);
+  reader.readAsDataURL(f);
+}
+
+function compressImage(file,maxW=900,quality=.72){
+  return new Promise((resolve,reject)=>{
+    const fr=new FileReader();
+    fr.onerror=reject;
+    fr.onload=()=>{
+      const img=new Image();
+      img.onerror=reject;
+      img.onload=()=>{
+        const scale=Math.min(1,maxW/img.width);
+        const w=Math.max(1,Math.round(img.width*scale));
+        const h=Math.max(1,Math.round(img.height*scale));
+        const c=document.createElement("canvas");
+        c.width=w;c.height=h;
+        const ctx=c.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+        resolve(c.toDataURL("image/jpeg",quality));
+      };
+      img.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+function clearForm(){
+  ["f_id","f_name","f_phone","f_vehicle","f_deviceUid","f_telegramId","f_lat","f_lng","f_last"].forEach(id=>$(id).value="");
+  $("f_vehicleType").value="";
+  $("f_rating").value="0";
+  $("f_online").value="1";
+  $("f_duty").value="0";
+  $("f_profilePhoto").value="";
+  $("f_carPhoto").value="";
+  $("f_removePhoto").checked=false;
+  $("f_removeCarPhoto").checked=false;
+  setPreview("profilePreview","");
+  setPreview("carPreview","");
+  $("liveInfo").style.display="none";
+  currentProfile={};
+  currentDriverId="";
+}
+
+function newDriver(){
+  clearForm();
+  $("driverEditor").style.display="block";
+  $("f_id").focus();
+  setStatus("driverSearchStatus","New Driver mode. Driver ID + profile details भरें.");
+}
+
+function closeEditor(){
+  $("driverEditor").style.display="none";
+  clearForm();
+}
+
+async function searchDriver(){
+  const id=normalizeId($("driverSearch").value);
+  if(!id){
+    setStatus("driverSearchStatus","Driver ID डालिए, जैसे DC001.","err");
+    return;
+  }
+
+  setStatus("driverSearchStatus","Searching "+id+"...");
+  $("driverEditor").style.display="none";
+
+  try{
+    const s=await db.collection(DRIVER_COLLECTION).doc(id).get();
+
+    if(!s.exists){
+      setStatus("driverSearchStatus",id+" नहीं मिला. New Driver बनाना है तो ➕ New Driver दबाएँ.","err");
+      return;
+    }
+
+    currentDriverId=id;
+    currentProfile=s.data()||{};
+    fillForm(id,currentProfile);
+
+    $("driverEditor").style.display="block";
+    setStatus("driverSearchStatus",id+" profile loaded.","ok");
+
+    await loadLive();
+  }catch(e){
+    setStatus("driverSearchStatus","Search failed: "+e.message,"err");
+  }
+}
+
+function fillForm(id,p){
+  $("f_id").value=normalizeId(id||p.id);
+  $("f_name").value=val(p,["name","driverName","displayName"],"");
+  $("f_phone").value=val(p,["phone","mobile","mobileNumber","phoneNumber"],"");
+  $("f_vehicle").value=val(p,["vehicle","vehicleNumber","vehicleNo","carNumber"],"");
+  $("f_vehicleType").value=val(p,["vehicleType","type"],"");
+  $("f_rating").value=val(p,["rating"],0);
+  $("f_deviceUid").value=val(p,["deviceUid","deviceId","devicePairingId"],"");
+  $("f_telegramId").value=val(p,["telegramId","telegram"],"");
+  $("f_lat").value=val(p,["lat","latitude"],"");
+  $("f_lng").value=val(p,["lng","longitude"],"");
+  $("f_online").value=p.online===false?"0":"1";
+  $("f_duty").value=p.duty===true?"1":"0";
+  $("f_last").value=val(p,["last"],"");
+  $("f_profilePhoto").value="";
+  $("f_carPhoto").value="";
+  $("f_removePhoto").checked=false;
+  $("f_removeCarPhoto").checked=false;
+
+  setPreview("profilePreview",val(p,["profilePhoto","driverPhoto","photo","photoUrl","profileImage"],""));
+  setPreview("carPreview",val(p,["carPhoto","vehiclePhoto","carImage","vehicleImage","carPhotoUrl"],""));
+}
+
+async function loadLive(){
+  const id=normalizeId($("f_id").value);
+  if(!id)return;
+
+  try{
+    const s=await rtdb.ref("liveLocations/"+id).once("value");
+    if(!s.exists()){
+      $("liveInfo").style.display="block";
+      $("liveInfo").innerHTML="📍 Live GPS: अभी liveLocations में data नहीं है.";
+      return;
+    }
+
+    const l=s.val()||{};
+    const lat=Number(val(l,["lat","latitude"],NaN));
+    const lng=Number(val(l,["lng","longitude"],NaN));
+
+    if(Number.isFinite(lat)&&Number.isFinite(lng)){
+      $("f_lat").value=lat;
+      $("f_lng").value=lng;
+    }
+
+    $("f_online").value=l.online===false?"0":"1";
+    $("f_duty").value=l.duty===true?"1":"0";
+
+    $("liveInfo").style.display="block";
+    $("liveInfo").innerHTML=
+      "📍 <b>Live GPS मिला</b> — Lat: "+esc(lat)+
+      " | Lng: "+esc(lng)+
+      " | "+(l.duty===true?"🟢 Duty ON":"⚪ Duty OFF");
+  }catch(e){
+    $("liveInfo").style.display="block";
+    $("liveInfo").textContent="Live GPS load failed: "+e.message;
+  }
+}
+
+async function saveDriver(){
+  const id=normalizeId($("f_id").value);
+  const name=$("f_name").value.trim();
+  const phone=$("f_phone").value.trim();
+  const vehicle=$("f_vehicle").value.trim();
+  const vehicleType=$("f_vehicleType").value;
+  const telegramId=$("f_telegramId").value.trim();
+  const deviceUid=$("f_deviceUid").value.trim();
+  const lat=parseFloat($("f_lat").value);
+  const lng=parseFloat($("f_lng").value);
+  const online=$("f_online").value==="1";
+  const duty=$("f_duty").value==="1";
+  const rating=parseFloat($("f_rating").value)||0;
+
+  if(!id||!name||!vehicle||!Number.isFinite(lat)||!Number.isFinite(lng)){
+    setStatus("saveStatus","Driver ID, Name, Vehicle Number, Latitude and Longitude required.","err");
+    return;
+  }
+
+  if(!/^DC\d+$/i.test(id)){
+    setStatus("saveStatus","Driver ID format DC001, DC002... होना चाहिए.","err");
+    return;
+  }
+
+  if(!["Sedan","SUV"].includes(vehicleType)){
+    setStatus("saveStatus","Vehicle Type सिर्फ Sedan या SUV होना चाहिए.","err");
+    return;
+  }
+
+  if(rating<0||rating>5){
+    setStatus("saveStatus","Rating 0 से 5 के बीच होना चाहिए.","err");
+    return;
+  }
+
+  const oldId=currentDriverId;
+
+  if(!oldId && !deviceUid){
+    setStatus("saveStatus","New Driver के लिए Device Pairing ID required है.","err");
+    return;
+  }
+
+  $("saveBtn").disabled=true;
+  $("saveBtn").textContent="Saving...";
+
+  try{
+    let existingProfile="";
+    let existingCar="";
+
+    if(oldId){
+      const old=await db.collection(DRIVER_COLLECTION).doc(oldId).get();
+      if(old.exists){
+        existingProfile=old.data().profilePhoto||"";
+        existingCar=old.data().carPhoto||"";
+      }
+    }
+
+    let profilePhoto=existingProfile;
+    let carPhoto=existingCar;
+
+    if($("f_removePhoto").checked) profilePhoto="";
+    if($("f_profilePhoto").files[0]){
+      setStatus("saveStatus","Compressing driver photo...");
+      profilePhoto=await compressImage($("f_profilePhoto").files[0]);
+    }
+
+    if($("f_removeCarPhoto").checked) carPhoto="";
+    if($("f_carPhoto").files[0]){
+      setStatus("saveStatus","Compressing car photo...");
+      carPhoto=await compressImage($("f_carPhoto").files[0]);
+    }
+
+    const data={
+      id,
+      name,
+      phone,
+      vehicle,
+      vehicleType,
+      carPhoto:carPhoto||"",
+      telegramId:telegramId||"",
+      deviceUid:deviceUid||"",
+      lat,
+      lng,
+      online,
+      duty,
+      rating,
+      profilePhoto:profilePhoto||"",
+      last:"Just updated",
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    await db.collection(DRIVER_COLLECTION).doc(id).set(data,{merge:true});
+
+    currentDriverId=id;
+    currentProfile={...currentProfile,...data};
+
+    setStatus("saveStatus",id+" profile successfully saved.","ok");
+    $("f_last").value="Just updated";
+    setPreview("profilePreview",profilePhoto);
+    setPreview("carPreview",carPhoto);
+
+    if(oldId && oldId!==id){
+      setStatus("saveStatus","Saved as "+id+". Old ID "+oldId+" was not deleted.","ok");
+    }
+  }catch(e){
+    setStatus("saveStatus","Save failed: "+e.message,"err");
+  }finally{
+    $("saveBtn").disabled=false;
+    $("saveBtn").textContent="💾 Save Driver";
+  }
+}
+
+function callDriver(){
+  const phone=$("f_phone").value.trim();
+  if(!phone){
+    alert("Driver phone number available नहीं है.");
+    return;
+  }
+  window.location.href="tel:"+phone.replace(/[^\d+]/g,"");
+}
+
+/* ---------- DEVICE APPROVAL ---------- */
+
+function statusClass(s){
+  s=String(s||"pending").toLowerCase();
+  return ["pending","approved","rejected","revoked"].includes(s)?s:"pending";
+}
+
+function deviceKey(x){
+  return String(x.deviceId||x.id||x.deviceUid||"").trim();
+}
+
+function driverKey(x){
+  return String(x.driverId||x.id||"").trim().toUpperCase();
+}
+
+function fmt(v){
+  try{
+    if(v&&v.toDate)return v.toDate().toLocaleString();
+    return v?new Date(v).toLocaleString():"Not available";
+  }catch(e){
+    return String(v||"Not available");
+  }
+}
+
+function setFilter(f,el){
+  filter=f;
+  document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  renderRequests();
+}
+
+function renderRequests(){
+  const q=$("searchReq").value.trim().toLowerCase();
+
+  const arr=requests.filter(x=>{
+    const s=statusClass(x.status);
+    const t=(driverKey(x)+" "+deviceKey(x)+" "+String(x.name||"")+" "+String(x.phone||"")).toLowerCase();
+    return (filter==="all"||s===filter)&&(!q||t.includes(q));
+  });
+
+  $("requestList").innerHTML=arr.map(x=>{
+    const s=statusClass(x.status);
+    const did=driverKey(x);
+    const devid=deviceKey(x);
+
+    return `<div class="request">
+      <div class="row">
+        <b>🚕 ${esc(did||"Driver ID not set")}</b>
+        <span class="badge ${s}">${esc(s.toUpperCase())}</span>
+      </div>
+      <div class="row"><span>👤 Name</span><b>${esc(x.name||"Not available")}</b></div>
+      <div class="row"><span>📱 Device ID</span><b style="word-break:break-all">${esc(devid||"Not available")}</b></div>
+      <div class="row"><span>🕒 Requested</span><span>${esc(fmt(x.createdAt||x.requestedAt))}</span></div>
+      <div class="actions">
+        ${s==="pending"
+          ? `<button class="btn green" onclick="approveReq('${esc(x._id)}')">✅ Approve</button>
+             <button class="btn red" onclick="rejectReq('${esc(x._id)}')">❌ Reject</button>`
+          : ""}
+        ${s==="approved"
+          ? `<button class="btn red" onclick="revokeReq('${esc(x._id)}')">🚫 Revoke</button>`
+          : ""}
+      </div>
+    </div>`;
+  }).join("") || '<div class="empty">📭 No device requests found.</div>';
+
+  const p=requests.filter(x=>statusClass(x.status)==="pending").length;
+
+  $("totalReq").textContent=requests.length;
+  $("pendingReq").textContent=p;
+  $("approvedReq").textContent=requests.filter(x=>statusClass(x.status)==="approved").length;
+  $("pendingMini").textContent=p?`(${p})`:"";
+}
+
+async function approveReq(id){
+  const x=requests.find(r=>r._id===id);
+  if(!x)return;
+
+  const did=driverKey(x);
+  const devid=deviceKey(x);
+
+  if(!did||!devid){
+    alert("Driver ID और Device ID दोनों required हैं.");
+    return;
+  }
+
+  if(!confirm(did+" को इस device पर APPROVE करें?"))return;
+
+  try{
+    const now=firebase.firestore.FieldValue.serverTimestamp();
+
+    await db.collection("approvedDevices").doc(devid).set({
+      deviceId:devid,
+      driverId:did,
+      name:x.name||"",
+      status:"approved",
+      approvedAt:now,
+      requestId:id,
+      approvedBy:auth.currentUser.uid
+    },{merge:true});
+
+    await db.collection("deviceRequests").doc(id).set({
+      status:"approved",
+      approvedAt:now,
+      approvedBy:auth.currentUser.uid
+    },{merge:true});
+  }catch(e){
+    alert("Approve failed: "+e.message);
+  }
+}
+
+async function rejectReq(id){
+  const x=requests.find(r=>r._id===id);
+  if(!x)return;
+
+  if(!confirm("इस device request को Reject करें?"))return;
+
+  try{
+    await db.collection("deviceRequests").doc(id).set({
+      status:"rejected",
+      rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      rejectedBy:auth.currentUser.uid
+    },{merge:true});
+
+    const devid=deviceKey(x);
+
+    if(devid){
+      await db.collection("approvedDevices").doc(devid).set({
+        deviceId:devid,
+        driverId:driverKey(x),
+        status:"rejected",
+        rejectedAt:firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
+    }
+  }catch(e){
+    alert("Reject failed: "+e.message);
+  }
+}
+
+async function revokeReq(id){
+  const x=requests.find(r=>r._id===id);
+  if(!x)return;
+
+  if(!confirm("इस approved device को Revoke करें?"))return;
+
+  try{
+    const devid=deviceKey(x);
+    const now=firebase.firestore.FieldValue.serverTimestamp();
+
+    if(devid){
+      await db.collection("approvedDevices").doc(devid).set({
+        status:"revoked",
+        revokedAt:now,
+        revokedBy:auth.currentUser.uid
+      },{merge:true});
+    }
+
+    await db.collection("deviceRequests").doc(id).set({
+      status:"revoked",
+      revokedAt:now,
+      revokedBy:auth.currentUser.uid
+    },{merge:true});
+  }catch(e){
+    alert("Revoke failed: "+e.message);
+  }
+}
+
+function startRequests(){
+  if(unsub)unsub();
+
+  unsub=db.collection("deviceRequests").onSnapshot(s=>{
+    requests=s.docs.map(d=>({_id:d.id,...d.data()}));
+
+    requests.sort((a,b)=>{
+      const am=a.createdAt?.toMillis?a.createdAt.toMillis():Number(a.createdAt||0);
+      const bm=b.createdAt?.toMillis?b.createdAt.toMillis():Number(b.createdAt||0);
+      return bm-am;
+    });
+
+    renderRequests();
+  },e=>{
+    $("requestList").innerHTML=
+      `<div class="empty">❌ Device requests load failed.<br>${esc(e.message)}</div>`;
+  });
+}
+
+/* ---------- LOGIN ---------- */
+
+async function login(){
+  const email=$("email").value.trim();
+  const pw=$("password").value;
+
+  $("msg").textContent="";
+
+  if(!email||!pw){
+    $("msg").textContent="Email and Password required.";
+    return;
+  }
+
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="Logging in...";
+
+  try{
+    const r=await auth.signInWithEmailAndPassword(email,pw);
+    const a=await db.collection("admins").doc(r.user.uid).get();
+
+    if(!a.exists||a.data().role!=="admin"){
+      await auth.signOut();
+      $("msg").textContent="Access denied. Admin account required.";
+      return;
+    }
+
+    $("login").style.display="none";
+    $("app").style.display="block";
+    startRequests();
+
+  }catch(e){
+    $("msg").textContent="Login failed: "+e.message;
+  }finally{
+    $("loginBtn").disabled=false;
+    $("loginBtn").textContent="🔐 Login";
+  }
+}
+
+async function logout(){
+  if(unsub){
+    unsub();
+    unsub=null;
+  }
+
+  await auth.signOut();
+
+  $("app").style.display="none";
+  $("login").style.display="flex";
+  $("password").value="";
+}
+
+auth.onAuthStateChanged(async user=>{
+  if(!user)return;
+
+  try{
+    const a=await db.collection("admins").doc(user.uid).get();
+
+    if(a.exists&&a.data().role==="admin"){
+      $("login").style.display="none";
+      $("app").style.display="block";
+      startRequests();
+    }else{
+      await auth.signOut();
+    }
+  }catch(e){
+    console.error(e);
+  }
+});
+</script>
+
+</body>
+</html>

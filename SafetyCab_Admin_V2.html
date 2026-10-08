@@ -153,15 +153,6 @@ body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238}
           </div>
 
           <div class="field">
-            <label>Device Pairing ID</label>
-            <input id="f_deviceUid" placeholder="Firebase Device Pairing ID">
-          </div>
-          <div class="field">
-            <label>Telegram ID (kept for now)</label>
-            <input id="f_telegramId" placeholder="Telegram ID">
-          </div>
-
-          <div class="field">
             <label>Latitude *</label>
             <input id="f_lat" type="number" step="any" placeholder="17.3850">
           </div>
@@ -189,6 +180,11 @@ body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238}
             <label>Last Update</label>
             <input id="f_last" readonly placeholder="Just updated">
           </div>
+        </div>
+
+        <div class="notice" style="margin-top:10px">
+          ℹ️ इस Driver Profile में <b>Telegram ID</b> और <b>Device Pairing ID</b> नहीं रखे गए हैं।
+          Device Approval अलग <b>Approval</b> tab से manage होगा।
         </div>
 
         <div class="photos">
@@ -367,7 +363,7 @@ function compressImage(file,maxW=900,quality=.72){
 }
 
 function clearForm(){
-  ["f_id","f_name","f_phone","f_vehicle","f_deviceUid","f_telegramId","f_lat","f_lng","f_last"].forEach(id=>$(id).value="");
+  ["f_id","f_name","f_phone","f_vehicle","f_lat","f_lng","f_last"].forEach(id=>$(id).value="");
   $("f_vehicleType").value="";
   $("f_rating").value="0";
   $("f_online").value="1";
@@ -433,8 +429,6 @@ function fillForm(id,p){
   $("f_vehicle").value=val(p,["vehicle","vehicleNumber","vehicleNo","carNumber"],"");
   $("f_vehicleType").value=val(p,["vehicleType","type"],"");
   $("f_rating").value=val(p,["rating"],0);
-  $("f_deviceUid").value=val(p,["deviceUid","deviceId","devicePairingId"],"");
-  $("f_telegramId").value=val(p,["telegramId","telegram"],"");
   $("f_lat").value=val(p,["lat","latitude"],"");
   $("f_lng").value=val(p,["lng","longitude"],"");
   $("f_online").value=p.online===false?"0":"1";
@@ -490,8 +484,6 @@ async function saveDriver(){
   const phone=$("f_phone").value.trim();
   const vehicle=$("f_vehicle").value.trim();
   const vehicleType=$("f_vehicleType").value;
-  const telegramId=$("f_telegramId").value.trim();
-  const deviceUid=$("f_deviceUid").value.trim();
   const lat=parseFloat($("f_lat").value);
   const lng=parseFloat($("f_lng").value);
   const online=$("f_online").value==="1";
@@ -519,11 +511,6 @@ async function saveDriver(){
   }
 
   const oldId=currentDriverId;
-
-  if(!oldId && !deviceUid){
-    setStatus("saveStatus","New Driver के लिए Device Pairing ID required है.","err");
-    return;
-  }
 
   $("saveBtn").disabled=true;
   $("saveBtn").textContent="Saving...";
@@ -562,8 +549,6 @@ async function saveDriver(){
       vehicle,
       vehicleType,
       carPhoto:carPhoto||"",
-      telegramId:telegramId||"",
-      deviceUid:deviceUid||"",
       lat,
       lng,
       online,

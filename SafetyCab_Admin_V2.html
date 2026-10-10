@@ -210,9 +210,10 @@ body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#263238}
         <div id="liveInfo" class="notice" style="margin-top:10px;display:none"></div>
 
         <div class="actions">
-          <button class="btn green" id="saveBtn" onclick="saveDriver()">💾 Save Driver</button>
+          <button class="btn green" id="saveBtn" onclick="saveDriver()">💾 Save / Update Driver</button>
           <button class="btn gray" onclick="loadLive()">📍 Refresh Live GPS</button>
           <button class="btn orange" onclick="callDriver()">📞 Call Driver</button>
+          <button class="btn red" id="deleteDriverBtn" onclick="deleteDriver()" style="display:none">🗑️ Delete Driver Profile</button>
         </div>
         <div id="saveStatus" class="status"></div>
       </div>
@@ -382,6 +383,7 @@ function clearForm(){
 function newDriver(){
   clearForm();
   $("driverEditor").style.display="block";
+  $("deleteDriverBtn").style.display="none";
   $("f_id").focus();
   setStatus("driverSearchStatus","New Driver mode. Driver ID + profile details भरें.");
 }
@@ -414,6 +416,7 @@ async function searchDriver(){
     fillForm(id,currentProfile);
 
     $("driverEditor").style.display="block";
+    $("deleteDriverBtn").style.display="inline-block";
     setStatus("driverSearchStatus",id+" profile loaded.","ok");
 
     await loadLive();
@@ -580,6 +583,22 @@ async function saveDriver(){
   }
 }
 
+async function deleteDriver(){
+  const id=normalizeId($("f_id").value);
+  if(!id){alert("Driver ID नहीं मिला.");return;}
+  if(!confirm(id+" का Driver Profile Firestore से permanently delete करना है?\n\nयह action वापस नहीं होगा. Live GPS या दूसरी जगह की copy अलग हो सकती है."))return;
+  try{
+    await db.collection(DRIVER_COLLECTION).doc(id).delete();
+    setStatus("saveStatus",id+" Driver Profile Firestore से delete हो गया.","ok");
+    $("driverEditor").style.display="none";
+    clearForm();
+    $("driverSearch").value=id;
+    setStatus("driverSearchStatus",id+" profile deleted.","ok");
+  }catch(e){
+    setStatus("saveStatus","Delete failed: "+e.message,"err");
+  }
+}
+
 function callDriver(){
   const phone=$("f_phone").value.trim();
   if(!phone){
@@ -649,6 +668,9 @@ function renderRequests(){
           : ""}
         ${s==="approved"
           ? `<button class="btn red" onclick="revokeReq('${esc(x._id)}')">🚫 Revoke</button>`
+          : ""}
+        ${(s==="revoked"||s==="rejected")
+          ? `<button class="btn gray" onclick="deleteReq('${esc(x._id)}')">🗑️ Delete Record</button>`
           : ""}
       </div>
     </div>`;
@@ -752,6 +774,19 @@ async function revokeReq(id){
     },{merge:true});
   }catch(e){
     alert("Revoke failed: "+e.message);
+  }
+}
+
+async function deleteReq(id){
+  const x=requests.find(r=>r._id===id);
+  if(!x)return;
+  const devid=deviceKey(x);
+  if(!confirm("इस "+statusClass(x.status).toUpperCase()+" device record को permanently delete करें?\nDevice ID: "+(devid||"unknown")+"\n\nयह action वापस नहीं होगा."))return;
+  try{
+    await db.collection("deviceRequests").doc(id).delete();
+    if(devid) await db.collection("approvedDevices").doc(devid).delete();
+  }catch(e){
+    alert("Delete failed: "+e.message);
   }
 }
 
